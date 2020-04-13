@@ -1,0 +1,9 @@
+.outer-container {
+  width: 600px;
+  margin: auto;
+}
+
+.food-row {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+}
