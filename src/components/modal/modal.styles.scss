@@ -1,0 +1,101 @@
+$primary-border-style: 0px solid rgba(0, 0, 0, 0.123);
+$input-background-color: rgba(0, 0, 0, 0.027);
+$google-blue: #4285f4;
+$google-red: #db4437;
+$google-yellow: #f4b400;
+$google-green: #0f9d58;
+$background-color: white;
+$border-radius: 0.2rem;
+$input-font-size: 1rem;
+$inner-padding: 10px 10px 10px 10px;
+
+@mixin center-screen {
+}
+
+.modal {
+  margin: 0% 35% 0% 35%;
+  position: absolute;
+  background-color: $background-color;
+  z-index: 1;
+}
+
+.modal-outer-box {
+  height: 500px;
+  display: grid;
+  grid-template-rows: 80% 20%;
+  border: $primary-border-style;
+  border-radius: $border-radius;
+  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
+
+  // everything inside the modal
+  .modal-inner-box {
+    // Remove focus outline from opened modal
+    outline: 0;
+    display: grid;
+    grid-template-rows: 20% 80%;
+
+    .modal-title {
+      font-size: 1.2rem;
+      border-bottom: $primary-border-style;
+      padding: $inner-padding;
+    }
+
+    .modal-body {
+      display: grid;
+      grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+      grid-template-columns: 3fr 1fr;
+      grid-gap: 10px;
+      padding: 10px;
+    }
+
+    .food-name-input {
+      width: 100%;
+      height: fill;
+      font-size: 2rem;
+      padding-left: 20px;
+
+      // Even though the font-size is larger, keep the placeholder standard size
+      &::placeholder {
+        font-size: $input-font-size;
+      }
+    }
+  }
+
+  .next-btn {
+    background-color: $google-blue;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    .next-btn-text {
+      color: white;
+      font-size: 1.7rem;
+    }
+  }
+}
+
+input {
+  border: none;
+  border-radius: 4px;
+  background: $input-background-color;
+  font-size: $input-font-size;
+  min-width: 0px;
+}
+
+.macro-label {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  margin-left: 10%;
+}
+
+.macro-input {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 10%;
+  text-align: end;
+}
