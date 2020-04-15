@@ -1,16 +1,24 @@
-$primary-border-style: 0px solid rgba(0, 0, 0, 0.123);
-$input-background-color: rgba(0, 0, 0, 0.027);
+$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+$input-background-color: rgba(146, 146, 146, 0.5);
 $google-blue: #4285f4;
 $google-red: #db4437;
 $google-yellow: #f4b400;
 $google-green: #0f9d58;
 $background-color: white;
-$border-radius: 0.2rem;
+$border-radius: 0.5rem;
 $input-font-size: 1rem;
-$inner-padding: 10px 10px 10px 10px;
-
-@mixin center-screen {
-}
+$input-large-font-size: 1.1rem;
+$section-inner-padding: 10px 10px 0px 10px;
+$sunrise-gradient: linear-gradient(
+  90deg,
+  rgba(255, 147, 64, 1) 0%,
+  rgba(227, 28, 116, 1) 94%
+);
+$seafoam-gradient: linear-gradient(
+  90deg,
+  rgba(64, 168, 255, 1) 0%,
+  rgba(28, 227, 174, 1) 94%
+);
 
 .modal {
   margin: 0% 35% 0% 35%;
@@ -20,10 +28,9 @@ $inner-padding: 10px 10px 10px 10px;
 }
 
 .modal-outer-box {
-  height: 500px;
+  height: 600px;
   display: grid;
-  grid-template-rows: 80% 20%;
-  border: $primary-border-style;
+  grid-template-rows: 85% 15%;
   border-radius: $border-radius;
   box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
 
@@ -32,70 +39,159 @@ $inner-padding: 10px 10px 10px 10px;
     // Remove focus outline from opened modal
     outline: 0;
     display: grid;
-    grid-template-rows: 20% 80%;
+    grid-template-rows: 15% 15% 70%;
 
-    .modal-title {
-      font-size: 1.2rem;
-      border-bottom: $primary-border-style;
-      padding: $inner-padding;
+    .reset-fields-btn {
+      position: absolute;
+      margin-top: 5px;
+      margin-right: 5px;
+      top: 0;
+      right: 0;
+      color: $google-red;
+      cursor: pointer;
+
+      & i {
+        font-size: 1.2rem;
+      }
+
+      &:hover {
+        animation: blinking-icon 1.2s linear infinite;
+      }
+      @keyframes blinking-icon {
+        50% {
+          opacity: 0;
+          -moz-transform: scale(0.9);
+          -webkit-transform: scale(0.9);
+          -o-transform: scale(0.9);
+          -ms-transform: scale(0.9);
+          transform: scale(0.9);
+        }
+      }
     }
 
-    .modal-body {
+    .title-section {
+      display: grid;
+      font-size: $input-large-font-size;
+      padding: $section-inner-padding;
+      z-index: -1px;
+
+      &:hover ::placeholder {
+        transition: 0.5s;
+        -moz-transform: scale(0.8) translate(-55px, -20px);
+        -webkit-transform: scale(0.8) translate(-55px, -20px);
+        -o-transform: scale(0.8) translate(-55px, -20px);
+        -ms-transform: scale(0.8) translate(-55px, -20px);
+        transform: scale(0.8) translate(-55px, -20px);
+        z-index: 2;
+      }
+
+      .food-name-input {
+        font-size: $input-large-font-size;
+        width: 100%;
+        height: stretch;
+        padding-left: 20px;
+        border-radius: $border-radius;
+
+        &:focus::placeholder {
+          color: transparent;
+        }
+      }
+    }
+
+    .description-section {
+      padding: $section-inner-padding;
+
+      .description-area {
+        resize: none;
+        height: stretch;
+        width: 100%;
+        outline: 0;
+        border: none;
+        font-family: 'Roboto', sans-serif;
+        font-size: $input-large-font-size;
+        font-weight: 400;
+        padding: 20px 0px 0px 20px;
+        border-bottom: $primary-border-style;
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      &:hover ::placeholder {
+        transition: 0.5s;
+        -moz-transform: scale(0.8) translate(-55px, -20px);
+        -webkit-transform: scale(0.8) translate(-55px, -20px);
+        -o-transform: scale(0.8) translate(-55px, -20px);
+        -ms-transform: scale(0.8) translate(-55px, -20px);
+        transform: scale(0.8) translate(-55px, -20px);
+        z-index: 2;
+      }
+    }
+
+    .macro-section {
       display: grid;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-      grid-template-columns: 3fr 1fr;
-      grid-gap: 10px;
+      grid-template-columns: 7fr 2fr 1fr;
+      gap: 20px 0px;
       padding: 10px;
     }
 
-    .food-name-input {
-      width: 100%;
-      height: fill;
-      font-size: 2rem;
-      padding-left: 20px;
+    .macro-label {
+      text-align: center;
+      display: flex;
+      align-items: center;
+      padding-left: 10%;
+    }
 
-      // Even though the font-size is larger, keep the placeholder standard size
-      &::placeholder {
-        font-size: $input-font-size;
-      }
+    .macro-input {
+      padding-right: 10px;
+      text-align: end;
+      display: flex;
+      align-items: center;
+      font-size: 1.3rem;
+    }
+
+    .macro-unit {
+      display: flex;
+      align-items: center;
+      padding: 0px;
     }
   }
 
   .next-btn {
-    background-color: $google-blue;
+    display: flex;
+    background: $sunrise-gradient;
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     border: none;
-    display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
 
+    i {
+      margin-left: 10px;
+    }
+
     .next-btn-text {
       color: white;
-      font-size: 1.7rem;
+      font-size: 1.4rem;
     }
   }
 }
 
 input {
   border: none;
-  border-radius: 4px;
-  background: $input-background-color;
+  // background: $input-background-color;
   font-size: $input-font-size;
   min-width: 0px;
+  // border-bottom: $primary-border-style;
+
+  &:focus {
+    outline: none;
+  }
 }
 
-.macro-label {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  margin-left: 10%;
-}
-
-.macro-input {
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-right: 10%;
-  text-align: end;
+textarea:focus::placeholder {
+  color: transparent;
 }

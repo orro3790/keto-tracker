@@ -1,3 +1,11 @@
+$sunrise-gradient: linear-gradient(
+  90deg,
+  rgba(255, 147, 64, 1) 0%,
+  rgba(227, 28, 116, 1) 94%
+);
+
+$google-blue: #4285f4;
+
 .outer-container {
   width: 600px;
   margin: auto;
@@ -6,4 +14,13 @@
 .food-row {
   display: grid;
   grid-template-columns: 20% 20% 20% 20% 20%;
+}
+
+.add-food-btn {
+  font-size: 2rem;
+
+  i {
+    color: $google-blue;
+    cursor: pointer;
+  }
 }

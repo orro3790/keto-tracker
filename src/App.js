@@ -8,7 +8,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from 'react-router-dom';
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';

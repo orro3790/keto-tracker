@@ -17,7 +17,7 @@ const FoodItem = () => {
 };
 
 const mapStateToProps = (state) => ({
-  foodItem: state.foodItem.foodItems,
+  foods: state.foods.foodItems,
 });
 
 export default connect(mapStateToProps)(FoodItem);

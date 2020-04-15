@@ -4,5 +4,5 @@ import foodItemReducer from './food-item/food-item.reducer';
 
 export default combineReducers({
   user: userReducer,
-  foodItem: foodItemReducer,
+  foods: foodItemReducer,
 });

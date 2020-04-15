@@ -11,8 +11,8 @@ export const Diary = () => {
   const [foodItemInput, setFoodItemInput] = useState('');
   const outside = useRef();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
     // toggle modal popup
     setIsOpen(true);
   };
@@ -34,8 +34,6 @@ export const Diary = () => {
     const getClick = function () {
       document.addEventListener('click', handleClick);
     };
-    console.log(foodItemInput);
-    console.log(isOpen);
     return () => {
       getClick();
     };
@@ -44,6 +42,9 @@ export const Diary = () => {
   return (
     <div className='diary-container' ref={outside}>
       <Modal isOpen={isOpen} />
+      <div className='add-food-btn'>
+        <i class='fas fa-plus-square' onClick={handleSubmit}></i>
+      </div>
       <div className='food-item-input'>
         <form onSubmit={handleSubmit}>
           <FormInput
@@ -63,7 +64,7 @@ export const Diary = () => {
   );
 };
 
-const mapStateToProps = (state) => ({});
+// const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
   addFoodItem: (foodItem) => dispatch(addFoodItem(foodItem)),
