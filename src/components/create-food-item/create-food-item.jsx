@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { createFoodItem } from '../../redux/create-food-item/create-food-item.actions.js';
+import {
+  createFoodItem,
+  changeModalStatus,
+} from '../../redux/create-food-item/create-food-item.actions.js';
 import './create-food-item.styles.scss';
 
-const CreateFood = ({ isOpen, createFoodItem, foodItems }) => {
+const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
   const [foodName, setFoodName] = useState('');
   const [foodDescription, setFoodDescription] = useState('');
   const [grams, setGrams] = useState(0);
@@ -55,7 +58,7 @@ const CreateFood = ({ isOpen, createFoodItem, foodItems }) => {
     console.log('submitted!');
   };
 
-  const handleReset = () => {
+  const handleClose = () => {
     setFoodName('');
     setFoodDescription('');
     setGrams(0);
@@ -63,16 +66,22 @@ const CreateFood = ({ isOpen, createFoodItem, foodItems }) => {
     setCarbs(0);
     setProtein(0);
     setCalories(0);
+
+    if (modalStatus === 'closed') {
+      changeModalStatus('open');
+    } else {
+      changeModalStatus('closed');
+    }
   };
 
-  return isOpen === true ? (
+  return (
     <div>
       <form className='modal'>
         <div className='modal-outer-box'>
           <div className='modal-inner-box'>
             <span className='reset-fields-btn'>
               {/* <i className='fas fa-eraser' onClick={handleReset}></i> */}
-              <i class='fas fa-times-circle'></i>
+              <i className='fas fa-times-circle' onClick={handleClose}></i>
             </span>
             <div className='title-section'>
               <input
@@ -156,15 +165,17 @@ const CreateFood = ({ isOpen, createFoodItem, foodItems }) => {
         </div>
       </form>
     </div>
-  ) : null;
+  );
 };
 
-const mapStateToProps = ({ createdFoods }) => ({
-  createdFoods: createdFoods.createdFoods,
+const mapStateToProps = (state) => ({
+  createdFoods: state.createdFoods.createdFoods,
+  modalStatus: state.createdFoods.modalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   createFoodItem: (newFoodItem) => dispatch(createFoodItem(newFoodItem)),
+  changeModalStatus: (status) => dispatch(changeModalStatus(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);

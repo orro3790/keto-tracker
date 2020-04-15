@@ -2,49 +2,44 @@ import React, { useEffect, useState, useRef } from 'react';
 import './food-diary.styles.scss';
 import FormInput from './../form-input/form-input.component';
 import CreateFood from '../create-food-item/create-food-item';
+import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { connect } from 'react-redux';
 
-export const Diary = () => {
+export const Diary = ({ changeModalStatus, modalStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [foodItemInput, setFoodItemInput] = useState('');
   const outside = useRef();
 
-  const handleSubmit = (e) => {
+  const handleClick = (e) => {
     e.preventDefault();
     // toggle modal popup
-    setIsOpen(true);
+    if (modalStatus === 'closed') {
+      changeModalStatus('open');
+    } else {
+      changeModalStatus('closed');
+    }
   };
 
   const handleFoodItemInput = (e) => {
     setFoodItemInput(e.target.value);
   };
 
-  const handleClick = (e) => {
-    // if the click occurs within the modal, don't do anything, else ==> change isOpen to false
-    if (outside.current.contains(e.target)) {
-      return;
-    }
-    setIsOpen(false);
-  };
-
-  useEffect(() => {
-    // Listen for click events, and call the handleClick function
-    const getClick = function () {
-      document.addEventListener('click', handleClick);
-    };
-    return () => {
-      getClick();
-    };
-  });
+  // conditionally render the modal based on modal status
+  let modal;
+  if (modalStatus === 'open') {
+    modal = <CreateFood />;
+  } else {
+    modal = null;
+  }
 
   return (
     <div className='diary-container' ref={outside}>
-      <CreateFood isOpen={isOpen} />
       <div className='add-food-btn'>
-        <i class='fas fa-plus-square' onClick={handleSubmit}></i>
+        <i className='fas fa-plus-square' onClick={handleClick}></i>
       </div>
+      {modal}
       <div className='food-item-input'>
-        <form onSubmit={handleSubmit}>
+        <form>
           <FormInput
             name='foodItemInput'
             type='text'
@@ -60,10 +55,13 @@ export const Diary = () => {
   );
 };
 
-// const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  modalStatus: state.createdFoods.modalStatus,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   CreateFood: (newFoodItem) => dispatch(CreateFood(newFoodItem)),
+  changeModalStatus: (status) => dispatch(changeModalStatus(status)),
 });
 
-export default connect(null, mapDispatchToProps)(Diary);
+export default connect(mapStateToProps, mapDispatchToProps)(Diary);

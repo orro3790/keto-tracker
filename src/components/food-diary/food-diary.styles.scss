@@ -1,10 +1,12 @@
+$google-blue: #4285f4;
+$google-red: #db4437;
+$google-green: #0f9d58;
+
 $sunrise-gradient: linear-gradient(
   90deg,
   rgba(255, 147, 64, 1) 0%,
   rgba(227, 28, 116, 1) 94%
 );
-
-$google-blue: #4285f4;
 
 .outer-container {
   width: 600px;
@@ -22,5 +24,10 @@ $google-blue: #4285f4;
   i {
     color: $google-blue;
     cursor: pointer;
+
+    &:active {
+      transition: 0.1s;
+      transform: scale(0.7);
+    }
   }
 }
