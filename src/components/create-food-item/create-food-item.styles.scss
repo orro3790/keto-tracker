@@ -6,8 +6,9 @@ $google-yellow: #f4b400;
 $google-green: #0f9d58;
 $background-color: white;
 $border-radius: 0.5rem;
-$input-font-size: 1rem;
-$input-large-font-size: 1.1rem;
+$font-size-small: 1rem;
+$font-size-medium: 1.1rem;
+$font-size-large: 2.3rem;
 $section-inner-padding: 10px 10px 0px 10px;
 $sunrise-gradient: linear-gradient(
   90deg,
@@ -22,9 +23,12 @@ $seafoam-gradient: linear-gradient(
 
 .modal {
   margin: 0% 35% 0% 35%;
-  position: absolute;
+  // for testing UI in side window
+  // margin: 0% 15% 0% 15%;
+  position: fixed;
   background-color: $background-color;
-  z-index: 1;
+  z-index: 100;
+  margin-top: -75px;
 }
 
 .modal-outer-box {
@@ -71,9 +75,12 @@ $seafoam-gradient: linear-gradient(
 
     .title-section {
       display: grid;
-      font-size: $input-large-font-size;
       padding: $section-inner-padding;
       z-index: -1px;
+
+      ::placeholder {
+        font-size: $font-size-medium;
+      }
 
       &:hover ::placeholder {
         transition: 0.5s;
@@ -86,7 +93,7 @@ $seafoam-gradient: linear-gradient(
       }
 
       .food-name-input {
-        font-size: $input-large-font-size;
+        font-size: $font-size-large;
         width: 100%;
         height: stretch;
         padding-left: 20px;
@@ -108,10 +115,14 @@ $seafoam-gradient: linear-gradient(
         outline: 0;
         border: none;
         font-family: 'Roboto', sans-serif;
-        font-size: $input-large-font-size;
+        font-size: $font-size-medium;
         font-weight: 400;
         padding: 20px 0px 0px 20px;
         border-bottom: $primary-border-style;
+      }
+
+      ::placeholder {
+        font-size: $font-size-medium;
       }
 
       ::-webkit-scrollbar {
@@ -132,24 +143,24 @@ $seafoam-gradient: linear-gradient(
     .macro-section {
       display: grid;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-      grid-template-columns: 7fr 2fr 1fr;
-      gap: 20px 0px;
+      grid-template-columns: 2fr 1fr 2fr;
+      gap: 10px 6px;
       padding: 10px;
     }
 
     .macro-label {
-      text-align: center;
       display: flex;
       align-items: center;
-      padding-left: 10%;
+      justify-content: flex-end;
+      font-size: 1rem;
     }
 
     .macro-input {
-      padding-right: 10px;
-      text-align: end;
       display: flex;
-      align-items: center;
-      font-size: 1.3rem;
+      text-align: center;
+      align-items: flex-end;
+      font-size: 2.5rem;
+      border-bottom: $primary-border-style;
     }
 
     .macro-unit {
@@ -183,7 +194,7 @@ $seafoam-gradient: linear-gradient(
 input {
   border: none;
   // background: $input-background-color;
-  font-size: $input-font-size;
+  font-size: $font-size-small;
   min-width: 0px;
   // border-bottom: $primary-border-style;
 

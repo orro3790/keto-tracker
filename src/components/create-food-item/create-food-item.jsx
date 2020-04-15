@@ -9,11 +9,11 @@ import './create-food-item.styles.scss';
 const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
   const [foodName, setFoodName] = useState('');
   const [foodDescription, setFoodDescription] = useState('');
-  const [grams, setGrams] = useState(0);
-  const [fats, setFats] = useState(0);
-  const [carbs, setCarbs] = useState(0);
-  const [protein, setProtein] = useState(0);
-  const [calories, setCalories] = useState(0);
+  const [grams, setGrams] = useState('');
+  const [fats, setFats] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [protein, setProtein] = useState('');
+  const [calories, setCalories] = useState('');
 
   const handleFoodName = (e) => {
     setFoodName(e.target.value);
@@ -61,11 +61,11 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
   const handleClose = () => {
     setFoodName('');
     setFoodDescription('');
-    setGrams(0);
-    setFats(0);
-    setCarbs(0);
-    setProtein(0);
-    setCalories(0);
+    setGrams('');
+    setFats('');
+    setCarbs('');
+    setProtein('');
+    setCalories('');
 
     if (modalStatus === 'closed') {
       changeModalStatus('open');
@@ -112,6 +112,7 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 value={grams}
                 onChange={handleGrams}
                 placeholder='0'
+                maxLength='5'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Fats</span>
@@ -122,6 +123,7 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 value={fats}
                 onChange={handleFats}
                 placeholder='0'
+                maxLength='5'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Carbs</span>
@@ -132,6 +134,7 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 value={carbs}
                 onChange={handleCarbs}
                 placeholder='0'
+                maxLength='5'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Protein</span>
@@ -142,6 +145,7 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 value={protein}
                 onChange={handleProtein}
                 placeholder='0'
+                maxLength='5'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Calories</span>
@@ -152,6 +156,7 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 value={calories}
                 onChange={handleCalories}
                 placeholder='0'
+                maxLength='5'
               />
               <span className='macro-unit'></span>
             </div>

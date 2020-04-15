@@ -8,7 +8,6 @@ import { connect } from 'react-redux';
 export const Diary = ({ changeModalStatus, modalStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [foodItemInput, setFoodItemInput] = useState('');
-  const outside = useRef();
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -33,7 +32,7 @@ export const Diary = ({ changeModalStatus, modalStatus }) => {
   }
 
   return (
-    <div className='diary-container' ref={outside}>
+    <div className='diary-container'>
       <div className='add-food-btn'>
         <i className='fas fa-plus-square' onClick={handleClick}></i>
       </div>
