@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './food-diary.styles.scss';
-import FoodItem from './../food-item/food-item.component';
 import FormInput from './../form-input/form-input.component';
-import Modal from './../modal/modal.component';
+import CreateFood from '../create-food-item/create-food-item';
 import { connect } from 'react-redux';
-import { addFoodItem } from './../../redux/food-item/food-item.actions';
 
 export const Diary = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -41,7 +39,7 @@ export const Diary = () => {
 
   return (
     <div className='diary-container' ref={outside}>
-      <Modal isOpen={isOpen} />
+      <CreateFood isOpen={isOpen} />
       <div className='add-food-btn'>
         <i class='fas fa-plus-square' onClick={handleSubmit}></i>
       </div>
@@ -57,9 +55,7 @@ export const Diary = () => {
           />
         </form>
       </div>
-      <div className='outer-container'>
-        <FoodItem />
-      </div>
+      <div className='outer-container'></div>
     </div>
   );
 };
@@ -67,7 +63,7 @@ export const Diary = () => {
 // const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
-  addFoodItem: (foodItem) => dispatch(addFoodItem(foodItem)),
+  CreateFood: (newFoodItem) => dispatch(CreateFood(newFoodItem)),
 });
 
 export default connect(null, mapDispatchToProps)(Diary);

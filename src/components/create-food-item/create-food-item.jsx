@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { addFoodItem } from './../../redux/food-item/food-item.actions';
-import './modal.styles.scss';
+import { createFoodItem } from '../../redux/create-food-item/create-food-item.actions.js';
+import './create-food-item.styles.scss';
 
-const Modal = ({ isOpen, addFoodItem, foodItems }) => {
+const CreateFood = ({ isOpen, createFoodItem, foodItems }) => {
   const [foodName, setFoodName] = useState('');
   const [foodDescription, setFoodDescription] = useState('');
   const [grams, setGrams] = useState(0);
@@ -51,7 +51,7 @@ const Modal = ({ isOpen, addFoodItem, foodItems }) => {
       protein: protein,
       calories: calories,
     };
-    addFoodItem(newFoodItem);
+    createFoodItem(newFoodItem);
     console.log('submitted!');
   };
 
@@ -71,7 +71,8 @@ const Modal = ({ isOpen, addFoodItem, foodItems }) => {
         <div className='modal-outer-box'>
           <div className='modal-inner-box'>
             <span className='reset-fields-btn'>
-              <i className='fas fa-eraser' onClick={handleReset}></i>
+              {/* <i className='fas fa-eraser' onClick={handleReset}></i> */}
+              <i class='fas fa-times-circle'></i>
             </span>
             <div className='title-section'>
               <input
@@ -158,12 +159,12 @@ const Modal = ({ isOpen, addFoodItem, foodItems }) => {
   ) : null;
 };
 
-const mapStateToProps = ({ foods }) => ({
-  foodItems: foods.foodItems,
+const mapStateToProps = ({ createdFoods }) => ({
+  createdFoods: createdFoods.createdFoods,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addFoodItem: (newFoodItem) => dispatch(addFoodItem(newFoodItem)),
+  createFoodItem: (newFoodItem) => dispatch(createFoodItem(newFoodItem)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Modal);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);

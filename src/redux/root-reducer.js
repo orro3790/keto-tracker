@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import userReducer from './user/user.reducer';
-import foodItemReducer from './food-item/food-item.reducer';
+import createFoodItemReducer from './create-food-item/create-food-item.reducer';
 
 export default combineReducers({
   user: userReducer,
-  foods: foodItemReducer,
+  createdFoods: createFoodItemReducer,
 });
