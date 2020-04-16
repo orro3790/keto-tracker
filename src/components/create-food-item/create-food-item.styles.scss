@@ -7,8 +7,9 @@ $google-green: #0f9d58;
 $background-color: white;
 $border-radius: 0.5rem;
 $font-size-small: 1rem;
-$font-size-medium: 1.1rem;
+$font-size-medium: 1.2rem;
 $font-size-large: 2.3rem;
+$font-size-macro: 1.5;
 $section-inner-padding: 10px 10px 0px 10px;
 $sunrise-gradient: linear-gradient(
   90deg,
@@ -22,7 +23,7 @@ $seafoam-gradient: linear-gradient(
 );
 
 .modal {
-  margin: 0% 35% 0% 35%;
+  margin: 0% 15% 0% 15%;
   // for testing UI in side window
   // margin: 0% 15% 0% 15%;
   position: fixed;
@@ -143,7 +144,7 @@ $seafoam-gradient: linear-gradient(
     .macro-section {
       display: grid;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-      grid-template-columns: 2fr 1fr 2fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 10px 6px;
       padding: 10px;
     }
@@ -152,14 +153,14 @@ $seafoam-gradient: linear-gradient(
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      font-size: 1rem;
+      font-size: $font-size-small;
     }
 
     .macro-input {
       display: flex;
       text-align: center;
       align-items: flex-end;
-      font-size: 2.5rem;
+      font-size: $font-size-macro;
       border-bottom: $primary-border-style;
     }
 
@@ -193,10 +194,20 @@ $seafoam-gradient: linear-gradient(
 
 input {
   border: none;
-  // background: $input-background-color;
   font-size: $font-size-small;
   min-width: 0px;
-  // border-bottom: $primary-border-style;
+  overflow: hidden;
+  /* Chrome, Safari, Edge, Opera */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
 
   &:focus {
     outline: none;

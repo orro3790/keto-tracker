@@ -4,69 +4,60 @@ import {
   createFoodItem,
   changeModalStatus,
 } from '../../redux/create-food-item/create-food-item.actions.js';
+import FormHandler from './../../formHandler.js';
 import './create-food-item.styles.scss';
 
 const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
-  const [foodName, setFoodName] = useState('');
-  const [foodDescription, setFoodDescription] = useState('');
-  const [grams, setGrams] = useState('');
-  const [fats, setFats] = useState('');
-  const [carbs, setCarbs] = useState('');
-  const [protein, setProtein] = useState('');
-  const [calories, setCalories] = useState('');
-
-  const handleFoodName = (e) => {
-    setFoodName(e.target.value);
+  const FIELDS = {
+    name: {
+      value: '',
+    },
+    description: {
+      value: '',
+    },
+    grams: {
+      value: '',
+    },
+    fats: {
+      value: '',
+    },
+    carbs: {
+      value: '',
+    },
+    protein: {
+      value: '',
+    },
+    calories: {
+      value: '',
+    },
   };
 
-  const handleFoodDescription = (e) => {
-    setFoodDescription(e.target.value);
-  };
+  const { fields, isSubmitting, handleChange, handleSubmit } = FormHandler(
+    FIELDS
+  );
 
-  const handleGrams = (e) => {
-    setGrams(e.target.value);
-  };
+  // useEffect(() => {
 
-  const handleFats = (e) => {
-    setFats(e.target.value);
-  };
+  // });
 
-  const handleCarbs = (e) => {
-    setCarbs(e.target.value);
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
 
-  const handleProtein = (e) => {
-    setProtein(e.target.value);
-  };
-
-  const handleCalories = (e) => {
-    setCalories(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newFoodItem = {
-      name: foodName,
-      description: foodDescription,
-      grams: grams,
-      fats: fats,
-      carbs: carbs,
-      protein: protein,
-      calories: calories,
-    };
-    createFoodItem(newFoodItem);
-    console.log('submitted!');
-  };
+  //   const newFoodItem = {
+  //     name: foodName,
+  //     description: foodDescription,
+  //     grams: grams,
+  //     fats: fats,
+  //     carbs: carbs,
+  //     protein: protein,
+  //     calories: calories,
+  //   };
+  //   createFoodItem(newFoodItem);
+  //   console.log('submitted!');
+  // };
 
   const handleClose = () => {
-    setFoodName('');
-    setFoodDescription('');
-    setGrams('');
-    setFats('');
-    setCarbs('');
-    setProtein('');
-    setCalories('');
-
+    // control the modal window
     if (modalStatus === 'closed') {
       changeModalStatus('open');
     } else {
@@ -86,10 +77,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
             <div className='title-section'>
               <input
                 className='food-name-input'
-                name='food-name-input'
+                name='name'
                 type='text'
-                value={foodName}
-                onChange={handleFoodName}
+                value={fields.name.value}
+                onChange={handleChange}
                 placeholder='Add a name...'
                 maxLength='35'
               />
@@ -97,9 +88,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
             <div className='description-section'>
               <textarea
                 className='description-area'
+                name='description'
+                value={fields.description.value}
+                onChange={handleChange}
                 placeholder='Add a description...'
-                value={foodDescription}
-                onChange={handleFoodDescription}
                 maxLength='200'
               ></textarea>
             </div>
@@ -109,10 +101,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 className={'macro-input'}
                 name='grams'
                 type='text'
-                value={grams}
-                onChange={handleGrams}
+                value={fields.grams.value}
+                onChange={handleChange}
                 placeholder='0'
-                maxLength='5'
+                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Fats</span>
@@ -120,10 +112,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 className={'macro-input'}
                 name='fats'
                 type='text'
-                value={fats}
-                onChange={handleFats}
+                value={fields.fats.value}
+                onChange={handleChange}
                 placeholder='0'
-                maxLength='5'
+                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Carbs</span>
@@ -131,10 +123,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 className={'macro-input'}
                 name='carbs'
                 type='text'
-                value={carbs}
-                onChange={handleCarbs}
+                value={fields.carbs.value}
+                onChange={handleChange}
                 placeholder='0'
-                maxLength='5'
+                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Protein</span>
@@ -142,10 +134,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 className={'macro-input'}
                 name='protein'
                 type='text'
-                value={protein}
-                onChange={handleProtein}
+                value={fields.protein.value}
+                onChange={handleChange}
                 placeholder='0'
-                maxLength='5'
+                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Calories</span>
@@ -153,10 +145,10 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 className={'macro-input'}
                 name='calories'
                 type='text'
-                value={calories}
-                onChange={handleCalories}
+                value={fields.calories.value}
+                onChange={handleChange}
                 placeholder='0'
-                maxLength='5'
+                maxLength='7'
               />
               <span className='macro-unit'></span>
             </div>
