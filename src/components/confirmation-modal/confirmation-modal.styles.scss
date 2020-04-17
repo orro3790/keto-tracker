@@ -1,0 +1,44 @@
+$background-color: white;
+$google-blue: #4285f4;
+$google-red: #db4437;
+$google-yellow: #f4b400;
+$google-green: #0f9d58;
+$border-radius: 0.5rem;
+$large-icon: 2rem;
+
+@mixin centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.confirmation-modal-outer-box {
+  z-index: 200;
+  @include centered;
+  background-color: $background-color;
+  border-radius: $border-radius;
+  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  padding: 15px;
+
+  .confirmation-modal-header-section {
+    text-align: center;
+
+    & i {
+      color: $google-green;
+      font-size: $large-icon;
+    }
+  }
+
+  .confirmation-modal-button-section {
+    text-align: center;
+
+    & i {
+      color: $google-blue;
+      font-size: $large-icon;
+    }
+  }
+}

@@ -1,60 +1,68 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import {
   createFoodItem,
   changeModalStatus,
+  toggleConfirmation,
 } from '../../redux/create-food-item/create-food-item.actions.js';
 import FormHandler from './../../formHandler.js';
+import { requiredValidation } from './../../validators.js';
 import './create-food-item.styles.scss';
 
-const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
+const CreateFood = ({
+  createFoodItem,
+  changeModalStatus,
+  modalStatus,
+  createdFoods,
+  toggleConfirmation,
+}) => {
   const FIELDS = {
     name: {
       value: '',
+      validations: [requiredValidation],
     },
     description: {
       value: '',
+      validations: [],
     },
     grams: {
       value: '',
+      validations: [requiredValidation],
     },
     fats: {
       value: '',
+      validations: [requiredValidation],
     },
     carbs: {
       value: '',
+      validations: [requiredValidation],
     },
     protein: {
       value: '',
+      validations: [requiredValidation],
     },
     calories: {
       value: '',
+      validations: [requiredValidation],
     },
   };
 
-  const { fields, isSubmitting, handleChange, handleSubmit } = FormHandler(
-    FIELDS
+  const onSubmitDispatcher = () => {
+    // errors and validations do not need to be stored in item creation
+    Object.keys(fields).map((key) => delete fields[key].errors);
+    Object.keys(fields).map((key) => delete fields[key].validations);
+    createFoodItem(fields);
+    toggleConfirmation('true');
+    setTimeout(function () {
+      toggleConfirmation('false');
+    }, 2000);
+    changeModalStatus('closed');
+  };
+
+  const { fields, handleChange, handleSubmit, isSubmittable } = FormHandler(
+    FIELDS,
+    onSubmitDispatcher
   );
-
-  // useEffect(() => {
-
-  // });
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-
-  //   const newFoodItem = {
-  //     name: foodName,
-  //     description: foodDescription,
-  //     grams: grams,
-  //     fats: fats,
-  //     carbs: carbs,
-  //     protein: protein,
-  //     calories: calories,
-  //   };
-  //   createFoodItem(newFoodItem);
-  //   console.log('submitted!');
-  // };
 
   const handleClose = () => {
     // control the modal window
@@ -71,7 +79,6 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
         <div className='modal-outer-box'>
           <div className='modal-inner-box'>
             <span className='reset-fields-btn'>
-              {/* <i className='fas fa-eraser' onClick={handleReset}></i> */}
               <i className='fas fa-times-circle' onClick={handleClose}></i>
             </span>
             <div className='title-section'>
@@ -83,6 +90,7 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
                 onChange={handleChange}
                 placeholder='Add a name...'
                 maxLength='35'
+                required
               />
             </div>
             <div className='description-section'>
@@ -153,12 +161,17 @@ const CreateFood = ({ createFoodItem, changeModalStatus, modalStatus }) => {
               <span className='macro-unit'></span>
             </div>
           </div>
-          <div className='next-btn' type='submit' onClick={handleSubmit}>
-            <div className='next-btn-text'>
+          <button
+            className='add-to-diary-btn'
+            disabled={!isSubmittable}
+            type='submit'
+            onClick={handleSubmit}
+          >
+            <div className='add-to-diary-btn-text'>
               Add to Diary
               <i className='fas fa-plus'></i>
             </div>
-          </div>
+          </button>
         </div>
       </form>
     </div>
@@ -173,6 +186,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   createFoodItem: (newFoodItem) => dispatch(createFoodItem(newFoodItem)),
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
+  toggleConfirmation: (status) => dispatch(toggleConfirmation(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);

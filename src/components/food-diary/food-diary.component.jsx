@@ -1,13 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import './food-diary.styles.scss';
 import FormInput from './../form-input/form-input.component';
 import CreateFood from '../create-food-item/create-food-item';
+import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { connect } from 'react-redux';
 
-export const Diary = ({ changeModalStatus, modalStatus }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [foodItemInput, setFoodItemInput] = useState('');
+export const Diary = ({
+  changeModalStatus,
+  modalStatus,
+  toggleConfirmation,
+}) => {
+  const [searchInput, setSearchInput] = useState('');
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -19,8 +23,8 @@ export const Diary = ({ changeModalStatus, modalStatus }) => {
     }
   };
 
-  const handleFoodItemInput = (e) => {
-    setFoodItemInput(e.target.value);
+  const handleChange = (e) => {
+    setSearchInput(e.target.value);
   };
 
   // conditionally render the modal based on modal status
@@ -31,19 +35,28 @@ export const Diary = ({ changeModalStatus, modalStatus }) => {
     modal = null;
   }
 
+  // render confirmation modal after a new food item has been created
+  let confirmationModal;
+  if (toggleConfirmation === 'true') {
+    confirmationModal = <ConfirmationModal />;
+  } else {
+    confirmationModal = null;
+  }
+
   return (
     <div className='diary-container'>
       <div className='add-food-btn'>
         <i className='fas fa-plus-square' onClick={handleClick}></i>
       </div>
       {modal}
+      {confirmationModal}
       <div className='food-item-input'>
         <form>
           <FormInput
-            name='foodItemInput'
+            name='search-input'
             type='text'
-            onChange={handleFoodItemInput}
-            value={foodItemInput}
+            onChange={handleChange}
+            value={searchInput}
             label='Add a food item'
             required
           />
@@ -56,6 +69,7 @@ export const Diary = ({ changeModalStatus, modalStatus }) => {
 
 const mapStateToProps = (state) => ({
   modalStatus: state.createdFoods.modalStatus,
+  toggleConfirmation: state.createdFoods.toggleConfirmation,
 });
 
 const mapDispatchToProps = (dispatch) => ({

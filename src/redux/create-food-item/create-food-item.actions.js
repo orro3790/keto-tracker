@@ -9,3 +9,8 @@ export const changeModalStatus = (status) => ({
   type: CreateFoodItemTypes.CHANGE_MODAL_STATUS,
   payload: status,
 });
+
+export const toggleConfirmation = (status) => ({
+  type: CreateFoodItemTypes.TOGGLE_CONFIRMATION,
+  payload: status,
+});

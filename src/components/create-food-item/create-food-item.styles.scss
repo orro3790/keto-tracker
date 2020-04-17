@@ -22,14 +22,18 @@ $seafoam-gradient: linear-gradient(
   rgba(28, 227, 174, 1) 94%
 );
 
-.modal {
-  margin: 0% 15% 0% 15%;
-  // for testing UI in side window
-  // margin: 0% 15% 0% 15%;
+@mixin centered {
   position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.modal {
   background-color: $background-color;
+  @include centered;
   z-index: 100;
-  margin-top: -75px;
 }
 
 .modal-outer-box {
@@ -171,7 +175,7 @@ $seafoam-gradient: linear-gradient(
     }
   }
 
-  .next-btn {
+  .add-to-diary-btn {
     display: flex;
     background: $sunrise-gradient;
     border-bottom-left-radius: $border-radius;
@@ -181,11 +185,21 @@ $seafoam-gradient: linear-gradient(
     justify-content: center;
     cursor: pointer;
 
+    &:disabled {
+      transition: 0.4s;
+      opacity: 0.3;
+    }
+
+    &:enabled {
+      transition: 0.4s;
+      opacity: 1;
+    }
+
     i {
       margin-left: 10px;
     }
 
-    .next-btn-text {
+    .add-to-diary-btn-text {
       color: white;
       font-size: 1.4rem;
     }
