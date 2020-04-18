@@ -5,6 +5,8 @@ $google-yellow: #f4b400;
 $google-green: #0f9d58;
 $border-radius: 0.5rem;
 $large-icon: 2rem;
+$font-size-small: 1rem;
+$font-size-medium: 1.2rem;
 
 @mixin centered {
   position: fixed;
@@ -12,6 +14,7 @@ $large-icon: 2rem;
   left: 50%;
   /* bring your own prefixes */
   transform: translate(-50%, -50%);
+  width: 300px;
 }
 
 .confirmation-modal-outer-box {
@@ -27,10 +30,47 @@ $large-icon: 2rem;
   .confirmation-modal-header-section {
     text-align: center;
 
-    & i {
+    & i.success {
       color: $google-green;
       font-size: $large-icon;
     }
+
+    & i.error {
+      color: $google-red;
+      font-size: $large-icon;
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      margin-top: 5px;
+      margin-right: 5px;
+      top: 0;
+      right: 0;
+      color: $google-red;
+      cursor: pointer;
+
+      & i {
+        font-size: $font-size-medium;
+      }
+
+      &:hover {
+        animation: blinking-icon 1.2s linear infinite;
+      }
+      @keyframes blinking-icon {
+        50% {
+          opacity: 0;
+          -moz-transform: scale(0.9);
+          -webkit-transform: scale(0.9);
+          -o-transform: scale(0.9);
+          -ms-transform: scale(0.9);
+          transform: scale(0.9);
+        }
+      }
+    }
+  }
+
+  .confirmation-modal-message-section {
+    font-size: $font-size-small;
   }
 
   .confirmation-modal-button-section {

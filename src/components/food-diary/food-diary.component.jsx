@@ -17,7 +17,7 @@ export const Diary = ({
     e.preventDefault();
     // toggle modal popup
     if (modalStatus === 'closed') {
-      changeModalStatus('open');
+      changeModalStatus('opened');
     } else {
       changeModalStatus('closed');
     }
@@ -29,7 +29,7 @@ export const Diary = ({
 
   // conditionally render the modal based on modal status
   let modal;
-  if (modalStatus === 'open') {
+  if (modalStatus === 'opened') {
     modal = <CreateFood />;
   } else {
     modal = null;
@@ -37,10 +37,10 @@ export const Diary = ({
 
   // render confirmation modal after a new food item has been created
   let confirmationModal;
-  if (toggleConfirmation === 'true') {
-    confirmationModal = <ConfirmationModal />;
-  } else {
-    confirmationModal = null;
+  if (toggleConfirmation === 'opened-success') {
+    confirmationModal = <ConfirmationModal messageType={'success'} />;
+  } else if (toggleConfirmation === 'opened-error') {
+    confirmationModal = <ConfirmationModal messageType={'error'} />;
   }
 
   return (

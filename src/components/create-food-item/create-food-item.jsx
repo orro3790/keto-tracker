@@ -8,6 +8,7 @@ import {
 import FormHandler from './../../formHandler.js';
 import { requiredValidation } from './../../validators.js';
 import './create-food-item.styles.scss';
+import { createCreateFoodDocument } from './../../firebase/firebase.utils.js';
 
 const CreateFood = ({
   createFoodItem,
@@ -15,6 +16,7 @@ const CreateFood = ({
   modalStatus,
   createdFoods,
   toggleConfirmation,
+  currentUser,
 }) => {
   const FIELDS = {
     name: {
@@ -48,15 +50,10 @@ const CreateFood = ({
   };
 
   const onSubmitDispatcher = () => {
-    // errors and validations do not need to be stored in item creation
-    Object.keys(fields).map((key) => delete fields[key].errors);
-    Object.keys(fields).map((key) => delete fields[key].validations);
+    // create the new item
     createFoodItem(fields);
-    toggleConfirmation('true');
-    setTimeout(function () {
-      toggleConfirmation('false');
-    }, 2000);
-    changeModalStatus('closed');
+    // try to push to firebase
+    pushToFirebase();
   };
 
   const { fields, handleChange, handleSubmit, isSubmittable } = FormHandler(
@@ -67,9 +64,23 @@ const CreateFood = ({
   const handleClose = () => {
     // control the modal window
     if (modalStatus === 'closed') {
-      changeModalStatus('open');
+      changeModalStatus('opened');
     } else {
       changeModalStatus('closed');
+    }
+  };
+
+  const pushToFirebase = async () => {
+    const results = await createCreateFoodDocument(currentUser, fields);
+    if (results === 'successful') {
+      // close the createFood modal
+      changeModalStatus('closed');
+      toggleConfirmation('opened-success');
+      setTimeout(function () {
+        toggleConfirmation('closed');
+      }, 2000);
+    } else {
+      toggleConfirmation('opened-error');
     }
   };
 
@@ -78,7 +89,7 @@ const CreateFood = ({
       <form className='modal'>
         <div className='modal-outer-box'>
           <div className='modal-inner-box'>
-            <span className='reset-fields-btn'>
+            <span className='close-modal-btn'>
               <i className='fas fa-times-circle' onClick={handleClose}></i>
             </span>
             <div className='title-section'>
@@ -108,55 +119,50 @@ const CreateFood = ({
               <input
                 className={'macro-input'}
                 name='grams'
-                type='text'
+                type='number'
                 value={fields.grams.value}
                 onChange={handleChange}
                 placeholder='0'
-                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Fats</span>
               <input
                 className={'macro-input'}
                 name='fats'
-                type='text'
+                type='number'
                 value={fields.fats.value}
                 onChange={handleChange}
                 placeholder='0'
-                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Carbs</span>
               <input
                 className={'macro-input'}
                 name='carbs'
-                type='text'
+                type='number'
                 value={fields.carbs.value}
                 onChange={handleChange}
                 placeholder='0'
-                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Protein</span>
               <input
                 className={'macro-input'}
                 name='protein'
-                type='text'
+                type='number'
                 value={fields.protein.value}
                 onChange={handleChange}
                 placeholder='0'
-                maxLength='7'
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Calories</span>
               <input
                 className={'macro-input'}
                 name='calories'
-                type='text'
+                type='number'
                 value={fields.calories.value}
                 onChange={handleChange}
                 placeholder='0'
-                maxLength='7'
               />
               <span className='macro-unit'></span>
             </div>
@@ -179,6 +185,8 @@ const CreateFood = ({
 };
 
 const mapStateToProps = (state) => ({
+  // createdFoods is only used here to check the state after adding an item. It's not really necessary
+  currentUser: state.user.currentUser,
   createdFoods: state.createdFoods.createdFoods,
   modalStatus: state.createdFoods.modalStatus,
 });

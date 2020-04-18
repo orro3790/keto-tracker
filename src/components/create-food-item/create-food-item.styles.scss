@@ -50,7 +50,7 @@ $seafoam-gradient: linear-gradient(
     display: grid;
     grid-template-rows: 15% 15% 70%;
 
-    .reset-fields-btn {
+    .close-modal-btn {
       position: absolute;
       margin-top: 5px;
       margin-right: 5px;
@@ -151,6 +151,7 @@ $seafoam-gradient: linear-gradient(
       grid-template-columns: 1fr 1fr 1fr;
       gap: 10px 6px;
       padding: 10px;
+      overflow: clip;
     }
 
     .macro-label {
@@ -181,6 +182,7 @@ $seafoam-gradient: linear-gradient(
     border-bottom-left-radius: $border-radius;
     border-bottom-right-radius: $border-radius;
     border: none;
+    outline: none;
     align-items: center;
     justify-content: center;
     cursor: pointer;
