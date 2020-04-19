@@ -5,17 +5,19 @@ import { toggleConfirmation } from '../../redux/create-food-item/create-food-ite
 
 import './confirmation-modal.styles.scss';
 
-const ConfirmationModal = ({ messageType, toggleConfirmation }) => {
-  let message;
+const ConfirmationModal = ({
+  successMessage,
+  errorMessage,
+  toggleConfirmation,
+}) => {
   let classStyle;
-
-  if (messageType === 'success') {
-    message = 'Successfully added!';
+  let message;
+  if (successMessage) {
     classStyle = 'far fa-check-circle success';
-  } else {
-    message =
-      'That food already exists in your database. Provide a different name.';
-    classStyle = 'fas fa-exclamation-circle error';
+    message = successMessage;
+  } else if (errorMessage) {
+    classStyle = 'fas fa-exclamation-triangle error';
+    message = errorMessage;
   }
 
   const handleClose = () => {

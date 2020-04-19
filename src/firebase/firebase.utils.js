@@ -53,43 +53,43 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 };
 
 export const createCreateFoodDocument = async (currentUser, fields) => {
-  const createdFoodRef = firestore.doc(
-    `users/${currentUser.id}/createdFoods/${fields.name.value}`
+  // grab the collection and instantiate an empty doc so it is assigned a random ID
+  const collectionRef = firestore.collection(
+    `users/${currentUser.id}/createdFoods/`
   );
+  const newDocRef = collectionRef.doc();
 
-  // try to retrieve the data if it exists
-  const snapShot = await createdFoodRef.get();
+  // prep the fields
+  const name = fields.name.value;
+  const description = fields.description.value;
+  const grams = parseFloat(fields.grams.value);
+  const fats = parseFloat(fields.fats.value);
+  const carbs = parseFloat(fields.carbs.value);
+  const protein = parseFloat(fields.protein.value);
+  const calories = parseFloat(fields.calories.value);
+  const createdAt = new Date();
 
-  // if the createFood item doesn't already exist in the database, create it
-  if (!snapShot.exists) {
-    const name = fields.name.value;
-    const description = fields.description.value;
-    const grams = parseFloat(fields.grams.value);
-    const fats = parseFloat(fields.fats.value);
-    const carbs = parseFloat(fields.carbs.value);
-    const protein = parseFloat(fields.protein.value);
-    const calories = parseFloat(fields.calories.value);
-    const createdAt = new Date();
-
-    try {
-      // .set() is the create method
-      await createdFoodRef.set({
-        name,
-        description,
-        grams,
-        fats,
-        carbs,
-        protein,
-        calories,
-        createdAt,
-      });
-      return 'successful';
-    } catch (error) {
-      console.log('error creating new food item', error.message);
-    }
-  } else {
-    return 'unsuccessful';
+  try {
+    // .set() is the create method
+    await newDocRef.set({
+      name,
+      description,
+      grams,
+      fats,
+      carbs,
+      protein,
+      calories,
+      createdAt,
+    });
+    return 'successful';
+  } catch (error) {
+    console.log('error creating new food item', error.message);
   }
 };
+
+// get standard catalogue of foods to display in the food diary
+// export const getFoodsCollection = async () => {
+//   return
+// }
 
 export default firebase;

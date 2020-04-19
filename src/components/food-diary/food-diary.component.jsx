@@ -35,12 +35,18 @@ export const Diary = ({
     modal = null;
   }
 
-  // render confirmation modal after a new food item has been created
+  // define confirmation modal that renders after submit
   let confirmationModal;
+  const messages = {
+    success: 'Successfully added!',
+    error:
+      'That food already exists in your database. Provide a different name.',
+  };
+
   if (toggleConfirmation === 'opened-success') {
-    confirmationModal = <ConfirmationModal messageType={'success'} />;
+    confirmationModal = <ConfirmationModal successMessage={messages.error} />;
   } else if (toggleConfirmation === 'opened-error') {
-    confirmationModal = <ConfirmationModal messageType={'error'} />;
+    confirmationModal = <ConfirmationModal errorMessage={messages.error} />;
   }
 
   return (
