@@ -15,7 +15,11 @@ const Search = () => {
 
   const myFunc = (item) => {
     if (item.name.includes(searchInput) && searchInput !== '') {
-      return <li key={item.name}>{item.name}</li>;
+      return (
+        <li className='search-result-li' key={item.name}>
+          {item.name}
+        </li>
+      );
     }
   };
 
@@ -33,7 +37,7 @@ const Search = () => {
           />
         </form>
       </div>
-      <div className='search-results-container'>
+      <div className='wrapper'>
         <ul className='search-results-list'>
           {DATA.foods.map((item) => myFunc(item))}
         </ul>

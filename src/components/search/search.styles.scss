@@ -1,7 +1,27 @@
 $font-size-small: 1rem;
 $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+$border-radius: 0rem 0rem 0.5rem 0.5rem;
+$background-color: white;
 
-.search-results-container {
-  width: 400px;
-  border: $primary-border-style;
+.wrapper {
+  position: relative;
+
+  .search-results-list {
+    border: $primary-border-style;
+    border-radius: $border-radius;
+    box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
+    background-color: $background-color;
+    position: absolute;
+    margin: 0px;
+    width: 100%;
+
+    &:empty {
+      display: none;
+    }
+
+    .search-result-li {
+      padding: 7.5px 0px 7.5px 0px;
+      list-style-type: none;
+    }
+  }
 }
