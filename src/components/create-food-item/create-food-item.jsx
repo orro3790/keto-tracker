@@ -76,9 +76,6 @@ const CreateFood = ({
       // close the createFood modal
       changeModalStatus('closed');
       toggleConfirmation('opened-success');
-      setTimeout(function () {
-        toggleConfirmation('closed');
-      }, 2000);
     } else {
       toggleConfirmation('opened-error');
     }

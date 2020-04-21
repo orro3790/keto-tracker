@@ -1,6 +1,8 @@
 $google-blue: #4285f4;
 $google-red: #db4437;
 $google-green: #0f9d58;
+$font-size-small: 0.75rem;
+$font-size-medium: 1.1rem;
 
 $sunrise-gradient: linear-gradient(
   90deg,
@@ -8,15 +10,27 @@ $sunrise-gradient: linear-gradient(
   rgba(227, 28, 116, 1) 94%
 );
 
-.outer-container {
-  width: 600px;
-  margin: auto;
-  height: 1000px;
-}
+.diary-outer-container {
+  margin: 0% 10% 0% 10%;
 
-.food-row {
-  display: grid;
-  grid-template-columns: 20% 20% 20% 20% 20%;
+  .diary-inner-container {
+    display: grid;
+    grid-template-rows: 0.25fr 1fr 1fr 1fr 1fr 0.25fr;
+
+    .header-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      text-align: right;
+      font-size: $font-size-medium;
+    }
+
+    .totals-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      text-align: right;
+      margin-top: 25px;
+    }
+  }
 }
 
 .add-food-btn {

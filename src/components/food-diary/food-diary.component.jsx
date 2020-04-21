@@ -2,15 +2,12 @@ import React, { useState } from 'react';
 import './food-diary.styles.scss';
 import FormInput from './../form-input/form-input.component';
 import CreateFood from '../create-food-item/create-food-item';
+import Meal from './../meal/meal.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { connect } from 'react-redux';
 
-export const Diary = ({
-  changeModalStatus,
-  modalStatus,
-  toggleConfirmation,
-}) => {
+const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
   const [searchInput, setSearchInput] = useState('');
 
   const handleClick = (e) => {
@@ -44,7 +41,7 @@ export const Diary = ({
   };
 
   if (toggleConfirmation === 'opened-success') {
-    confirmationModal = <ConfirmationModal successMessage={messages.error} />;
+    confirmationModal = <ConfirmationModal successMessage={messages.success} />;
   } else if (toggleConfirmation === 'opened-error') {
     confirmationModal = <ConfirmationModal errorMessage={messages.error} />;
   }
@@ -68,7 +65,36 @@ export const Diary = ({
           />
         </form>
       </div>
-      <div className='outer-container'></div>
+      <div className='diary-outer-container'>
+        <div className='diary-inner-container'>
+          <div className='header-row'>
+            <div className='header-name-col'></div>
+            <div className='header-fats-col'>Fats</div>
+            <div className='header-carbs-col'>Carbs</div>
+            <div className='header-protein-col'>Protein</div>
+            <div className='header-calories-col'>Calories</div>
+          </div>
+          <div className='breakfast-section'>
+            <Meal meal={'Breakfast'} />
+          </div>
+          <div className='lunch-section'>
+            <Meal meal={'Lunch'} />
+          </div>
+          <div className='dinner-section'>
+            <Meal meal={'Dinner'} />
+          </div>
+          <div className='snacks-section'>
+            <Meal meal={'Snacks'} />
+          </div>
+          <div className='totals-row'>
+            <div className='header-name-col'></div>
+            <div className='header-fats-col'>10</div>
+            <div className='header-carbs-col'>1.8</div>
+            <div className='header-protein-col'>1.3</div>
+            <div className='header-calories-col'>120</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
