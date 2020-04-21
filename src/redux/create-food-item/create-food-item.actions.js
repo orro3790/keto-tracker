@@ -1,16 +1,16 @@
-import { CreateFoodItemTypes } from './create-food-item.types';
+import { CreateFoodItemActionTypes } from './create-food-item.types';
 
 export const createFoodItem = (newFoodItem) => ({
-  type: CreateFoodItemTypes.CREATE_FOOD_ITEM,
+  type: CreateFoodItemActionTypes.CREATE_FOOD_ITEM,
   payload: newFoodItem,
 });
 
 export const changeModalStatus = (status) => ({
-  type: CreateFoodItemTypes.CHANGE_MODAL_STATUS,
+  type: CreateFoodItemActionTypes.CHANGE_MODAL_STATUS,
   payload: status,
 });
 
 export const toggleConfirmation = (status) => ({
-  type: CreateFoodItemTypes.TOGGLE_CONFIRMATION,
+  type: CreateFoodItemActionTypes.TOGGLE_CONFIRMATION,
   payload: status,
 });

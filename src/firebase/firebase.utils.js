@@ -88,8 +88,41 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
 };
 
 // get standard catalogue of foods to display in the food diary
-// export const getFoodsCollection = async () => {
-//   return
-// }
+export const getFoodsCollection = async () => {
+  const collectionRef = firestore.collection('foods');
+
+  collectionRef.onSnapshot(async (snapshot) =>
+    convertCollectionSnapshotToMap(snapshot)
+  );
+
+  return collectionRef;
+};
+
+export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
+  const transformedCollection = collectionSnapshot.docs.map((docSnapshot) => {
+    const {
+      name,
+      description,
+      grams,
+      fats,
+      carbs,
+      protein,
+      calories,
+    } = docSnapshot.data();
+
+    return {
+      id: docSnapshot.id,
+      name: name,
+      description: description,
+      grams: grams,
+      fats: fats,
+      carbs: carbs,
+      protein: protein,
+      calories: calories,
+    };
+  });
+
+  return transformedCollection;
+};
 
 export default firebase;

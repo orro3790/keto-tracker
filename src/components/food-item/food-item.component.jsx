@@ -28,7 +28,7 @@ const FoodItem = () => {
 };
 
 const mapStateToProps = (state) => ({
-  // foods: state.foods.foodItems,
+  // foodDatabase: state.foodDiary.foods,
 });
 
 export default connect(mapStateToProps)(FoodItem);

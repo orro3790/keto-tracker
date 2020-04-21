@@ -1,4 +1,4 @@
-import { CreateFoodItemTypes } from './create-food-item.types';
+import { CreateFoodItemActionTypes } from './create-food-item.types';
 
 const INITIAL_STATE = {
   createdFoods: [],
@@ -8,17 +8,17 @@ const INITIAL_STATE = {
 
 const createFoodItemReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case CreateFoodItemTypes.CREATE_FOOD_ITEM:
+    case CreateFoodItemActionTypes.CREATE_FOOD_ITEM:
       return {
         ...state,
         createdFoods: action.payload,
       };
-    case CreateFoodItemTypes.CHANGE_MODAL_STATUS:
+    case CreateFoodItemActionTypes.CHANGE_MODAL_STATUS:
       return {
         ...state,
         modalStatus: action.payload,
       };
-    case CreateFoodItemTypes.TOGGLE_CONFIRMATION:
+    case CreateFoodItemActionTypes.TOGGLE_CONFIRMATION:
       return {
         ...state,
         toggleConfirmation: action.payload,

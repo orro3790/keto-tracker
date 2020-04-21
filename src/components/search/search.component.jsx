@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import './search.styles.scss';
+// import FoodItem from './../food-item/food-item.component'
 
 import DATA from './fake-data';
 
@@ -10,8 +11,6 @@ const Search = () => {
   const handleChange = (e) => {
     setSearchInput(e.target.value);
   };
-
-  useEffect(() => {});
 
   const myFunc = (item) => {
     if (item.name.includes(searchInput) && searchInput !== '') {

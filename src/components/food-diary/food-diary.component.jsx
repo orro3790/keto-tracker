@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './food-diary.styles.scss';
 import CreateFood from '../create-food-item/create-food-item';
 import Meal from './../meal/meal.component';
 import Search from './../search/search.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
+import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
+import {
+  firestore,
+  convertCollectionSnapshotToMap,
+} from './../../firebase/firebase.utils';
 
-const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
+const Diary = ({
+  changeModalStatus,
+  modalStatus,
+  toggleConfirmation,
+  updateFoodDatabase,
+}) => {
   const handleClick = (e) => {
     e.preventDefault();
     // toggle modal popup
@@ -18,7 +28,7 @@ const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
     }
   };
 
-  // conditionally render the modal based on modal status
+  // conditionally render the CreateFood modal
   let modal;
   if (modalStatus === 'opened') {
     modal = <CreateFood />;
@@ -39,6 +49,19 @@ const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
   } else if (toggleConfirmation === 'opened-error') {
     confirmationModal = <ConfirmationModal errorMessage={messages.error} />;
   }
+
+  useEffect(() => {
+    // grab the food database collection from firestore
+    const collectionRef = firestore.collection('foods');
+
+    // onSnapshot listens for a snapshot ==> convert function maps through the docs in the collection snapshot, pulls the data from the snapshot and returns the transformed object , then add it to redux store through updateFoodDatabase dispatch
+    collectionRef.onSnapshot(async (snapshot) => {
+      const transformedCollection = convertCollectionSnapshotToMap(snapshot);
+      updateFoodDatabase(transformedCollection);
+    });
+
+    return () => console.log('unmounting...');
+  });
 
   return (
     <div className='diary-container'>
@@ -90,6 +113,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   CreateFood: (newFoodItem) => dispatch(CreateFood(newFoodItem)),
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
+  updateFoodDatabase: (transformedCollection) =>
+    dispatch(updateFoodDatabase(transformedCollection)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);
