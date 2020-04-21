@@ -1,1 +1,7 @@
 $font-size-small: 1rem;
+$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+
+.search-results-container {
+  width: 400px;
+  border: $primary-border-style;
+}

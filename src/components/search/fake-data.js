@@ -1,4 +1,4 @@
-const FOOD_DATA = {
+const DATA = {
   foods: [
     {
       name: 'avocado',
@@ -24,7 +24,15 @@ const FOOD_DATA = {
       protein: '8',
       calories: '180',
     },
+    {
+      name: 'egg',
+      description: 'fried',
+      fats: '6',
+      carbs: '1',
+      protein: '7',
+      calories: '90',
+    },
   ],
 };
 
-export default FOOD_DATA;
+export default DATA;
