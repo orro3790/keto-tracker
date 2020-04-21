@@ -1,15 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './food-diary.styles.scss';
-import FormInput from './../form-input/form-input.component';
 import CreateFood from '../create-food-item/create-food-item';
 import Meal from './../meal/meal.component';
+import Search from './../search/search.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { connect } from 'react-redux';
 
 const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
-  const [searchInput, setSearchInput] = useState('');
-
   const handleClick = (e) => {
     e.preventDefault();
     // toggle modal popup
@@ -18,10 +16,6 @@ const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
     } else {
       changeModalStatus('closed');
     }
-  };
-
-  const handleChange = (e) => {
-    setSearchInput(e.target.value);
   };
 
   // conditionally render the modal based on modal status
@@ -53,18 +47,7 @@ const Diary = ({ changeModalStatus, modalStatus, toggleConfirmation }) => {
       </div>
       {modal}
       {confirmationModal}
-      <div className='food-item-input'>
-        <form>
-          <FormInput
-            name='search-input'
-            type='text'
-            onChange={handleChange}
-            value={searchInput}
-            label='Add a food item'
-            required
-          />
-        </form>
-      </div>
+      <Search />
       <div className='diary-outer-container'>
         <div className='diary-inner-container'>
           <div className='header-row'>

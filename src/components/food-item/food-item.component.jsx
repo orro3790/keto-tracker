@@ -11,7 +11,7 @@ const FoodItem = () => {
     protein: '1.3',
     calories: '120',
   };
-  const [fields, setFields] = useState(FIELDS);
+  const [fields] = useState(FIELDS);
 
   return (
     <div className='meal-outer-container'>
