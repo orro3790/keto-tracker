@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import './search.styles.scss';
-// import FoodItem from './../food-item/food-item.component'
+import { connect } from 'react-redux';
 
-import DATA from './fake-data';
-
-const Search = () => {
+const Search = ({ foodDatabase }) => {
   const [searchInput, setSearchInput] = useState('');
 
   const handleChange = (e) => {
@@ -38,11 +36,15 @@ const Search = () => {
       </div>
       <div className='wrapper'>
         <ul className='search-results-list'>
-          {DATA.foods.map((item) => myFunc(item))}
+          {foodDatabase.map((item) => myFunc(item))}
         </ul>
       </div>
     </div>
   );
 };
 
-export default Search;
+const mapStateToProps = (state) => ({
+  foodDatabase: state.foodDiary.foods,
+});
+
+export default connect(mapStateToProps)(Search);
