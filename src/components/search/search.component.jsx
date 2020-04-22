@@ -10,7 +10,6 @@ const Search = ({ foodDatabase, ToggleSuggestionWindow, suggestionWindow }) => {
 
   const handleChange = async (e) => {
     setSearchInput(e.target.value);
-    ToggleSuggestionWindow('ready to be viewed');
   };
 
   // even if the suggestionWindow state is 'ready to be viewed', only show if the searchInput !== ''
@@ -21,7 +20,7 @@ const Search = ({ foodDatabase, ToggleSuggestionWindow, suggestionWindow }) => {
   };
 
   useEffect(() => {
-    // when suggestionWindow changes state, set search input field back to ''. By default, suggestionWindow will be 'ready to be viewed', so when a user first types in the field, there will be no change. Pressing the + button will change the state to 'hidden', causing useEffect to set the searchInput to '' again (clearing the input and causing the suggestion window to hide), and the addFoodToDiaryModal to popup. Closing or submitting the modal will toggle suggestionWindow back to 'ready to be viewed', and useEffect will kick in again and set searchInput back to ''.
+    // when suggestionWindow changes state --> clear searchInput --> hides window. Pressing the + btn in suggestion window changes suggestionWindow and triggers the reset. Submitting or closing the modal popup triggers the reset as well.
     setSearchInput('');
   }, [suggestionWindow]);
 

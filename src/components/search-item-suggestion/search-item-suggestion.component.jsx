@@ -13,7 +13,7 @@ const SearchItemSuggestion = ({
 }) => {
   const handleClick = () => {
     ToggleAddFoodToDiaryModal(food);
-    ToggleSuggestionWindow('hidden');
+    ToggleSuggestionWindow('hide window');
   };
 
   return (
