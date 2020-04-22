@@ -3,18 +3,17 @@ import './search-item-suggestion.styles.scss';
 import { connect } from 'react-redux';
 import {
   AddFoodItemToDiary,
-  CloseSuggestionWindow,
+  ToggleSuggestionWindow,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 
 const SearchItemSuggestion = ({
   food,
   AddFoodItemToDiary,
-  CloseSuggestionWindow,
+  ToggleSuggestionWindow,
 }) => {
   const handleClick = () => {
     AddFoodItemToDiary(food);
-    // dispatch empty values back to the search input to close the sugg window and reset
-    CloseSuggestionWindow('closed');
+    ToggleSuggestionWindow('hidden');
   };
 
   return (
@@ -30,7 +29,7 @@ const SearchItemSuggestion = ({
 
 const mapDispatchToProps = (dispatch) => ({
   AddFoodItemToDiary: (foodItem) => dispatch(AddFoodItemToDiary(foodItem)),
-  CloseSuggestionWindow: (status) => dispatch(CloseSuggestionWindow(status)),
+  ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });
 
 export default connect(null, mapDispatchToProps)(SearchItemSuggestion);

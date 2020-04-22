@@ -5,7 +5,7 @@ export const AddFoodItemToDiary = (foodItem) => ({
   payload: foodItem,
 });
 
-export const CloseSuggestionWindow = (status) => ({
-  type: SearchItemSuggestionActionTypes.CLOSE_SUGGESTION_WINDOW,
+export const ToggleSuggestionWindow = (status) => ({
+  type: SearchItemSuggestionActionTypes.TOGGLE_SUGGESTION_WINDOW,
   payload: status,
 });

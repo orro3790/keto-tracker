@@ -3,8 +3,13 @@ import './add-food-to-diary.styles.scss';
 
 import { connect } from 'react-redux';
 import { AddFoodItemToDiary } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { ToggleSuggestionWindow } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 
-const AddFoodToDiary = ({ foodItemToAdd, AddFoodItemToDiary }) => {
+const AddFoodToDiary = ({
+  foodItemToAdd,
+  AddFoodItemToDiary,
+  ToggleSuggestionWindow,
+}) => {
   const INITIAL_STATE = {
     name: 'default name',
     description: 'default description',
@@ -16,6 +21,12 @@ const AddFoodToDiary = ({ foodItemToAdd, AddFoodItemToDiary }) => {
   };
 
   const handleClose = () => {
+    AddFoodItemToDiary(INITIAL_STATE);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    ToggleSuggestionWindow('visible');
     AddFoodItemToDiary(INITIAL_STATE);
   };
 
@@ -95,8 +106,8 @@ const AddFoodToDiary = ({ foodItemToAdd, AddFoodItemToDiary }) => {
           <button
             className='add-to-diary-btn'
             // disabled={!isSubmittable}
-            // type='submit'
-            // onClick={handleSubmit}
+            type='submit'
+            onClick={handleSubmit}
           >
             <div className='add-to-diary-btn-text'>
               Add to Diary
@@ -115,6 +126,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   AddFoodItemToDiary: (foodItem) => dispatch(AddFoodItemToDiary(foodItem)),
+  ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddFoodToDiary);

@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     protein: 0,
     calories: 0,
   },
-  suggestionWindow: 'closed',
+  suggestionWindow: 'visible',
 };
 
 const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {
@@ -20,7 +20,7 @@ const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {
         ...state,
         foodItemToAdd: action.payload,
       };
-    case SearchItemSuggestionActionTypes.CLOSE_SUGGESTION_WINDOW:
+    case SearchItemSuggestionActionTypes.TOGGLE_SUGGESTION_WINDOW:
       return {
         ...state,
         suggestionWindow: action.payload,

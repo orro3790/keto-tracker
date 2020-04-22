@@ -1,20 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FormInput from '../form-input/form-input.component';
 import SearchItemSuggestion from './../search-item-suggestion/search-item-suggestion.component';
-import { CloseSuggestionWindow } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { ToggleSuggestionWindow } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import './search.styles.scss';
 import { connect } from 'react-redux';
 
-const Search = ({ foodDatabase, CloseSuggestionWindow, suggestionWindow }) => {
+const Search = ({ foodDatabase, ToggleSuggestionWindow, suggestionWindow }) => {
   const [searchInput, setSearchInput] = useState('');
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     setSearchInput(e.target.value);
-    if (e.target.value !== '') {
-      CloseSuggestionWindow('visible');
-    } else {
-      CloseSuggestionWindow('hidden');
-    }
+    ToggleSuggestionWindow('visible');
   };
 
   const myFunc = (food) => {
@@ -36,11 +32,19 @@ const Search = ({ foodDatabase, CloseSuggestionWindow, suggestionWindow }) => {
     }
   };
 
+  useEffect(() => {
+    setSearchInput('');
+    return () => {
+      //pass
+    };
+  }, [suggestionWindow]);
+
   return (
     <div>
       <div className='food-item-input'>
-        <form>
+        <form id='name'>
           <FormInput
+            id='name'
             name='search-input'
             type='text'
             onChange={handleChange}
@@ -65,7 +69,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  CloseSuggestionWindow: (status) => dispatch(CloseSuggestionWindow(status)),
+  ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);
