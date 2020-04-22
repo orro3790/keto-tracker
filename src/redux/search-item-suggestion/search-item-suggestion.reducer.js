@@ -10,12 +10,12 @@ const INITIAL_STATE = {
     protein: 0,
     calories: 0,
   },
-  suggestionWindow: 'visible',
+  suggestionWindow: 'ready to be viewed',
 };
 
 const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SearchItemSuggestionActionTypes.ADD_FOOD_TO_DIARY:
+    case SearchItemSuggestionActionTypes.TOGGLE_ADD_FOOD_TO_DIARY_MODAL:
       return {
         ...state,
         foodItemToAdd: action.payload,

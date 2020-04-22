@@ -2,17 +2,17 @@ import React from 'react';
 import './search-item-suggestion.styles.scss';
 import { connect } from 'react-redux';
 import {
-  AddFoodItemToDiary,
+  ToggleAddFoodToDiaryModal,
   ToggleSuggestionWindow,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 
 const SearchItemSuggestion = ({
   food,
-  AddFoodItemToDiary,
+  ToggleAddFoodToDiaryModal,
   ToggleSuggestionWindow,
 }) => {
   const handleClick = () => {
-    AddFoodItemToDiary(food);
+    ToggleAddFoodToDiaryModal(food);
     ToggleSuggestionWindow('hidden');
   };
 
@@ -28,7 +28,8 @@ const SearchItemSuggestion = ({
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  AddFoodItemToDiary: (foodItem) => dispatch(AddFoodItemToDiary(foodItem)),
+  ToggleAddFoodToDiaryModal: (food) =>
+    dispatch(ToggleAddFoodToDiaryModal(food)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });
 

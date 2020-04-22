@@ -10,33 +10,19 @@ const Search = ({ foodDatabase, ToggleSuggestionWindow, suggestionWindow }) => {
 
   const handleChange = async (e) => {
     setSearchInput(e.target.value);
-    ToggleSuggestionWindow('visible');
+    ToggleSuggestionWindow('ready to be viewed');
   };
 
-  const myFunc = (food) => {
+  // even if the suggestionWindow state is 'ready to be viewed', only show if the searchInput !== ''
+  const displaySuggestionWindow = (food) => {
     if (food.name.includes(searchInput) && searchInput !== '') {
-      return (
-        // <li className='search-result-li' key={food.name}>
-        //   {food.name}
-        // </li>
-        <SearchItemSuggestion key={food.id} food={food} />
-      );
-    }
-  };
-
-  const toggleSearchResults = () => {
-    if (suggestionWindow === 'hidden') {
-      return 'search-results-list hidden';
-    } else if (suggestionWindow === 'visible') {
-      return 'search-results-list';
+      return <SearchItemSuggestion key={food.id} food={food} />;
     }
   };
 
   useEffect(() => {
+    // when suggestionWindow changes state, set search input field back to ''. By default, suggestionWindow will be 'ready to be viewed', so when a user first types in the field, there will be no change. Pressing the + button will change the state to 'hidden', causing useEffect to set the searchInput to '' again (clearing the input and causing the suggestion window to hide), and the addFoodToDiaryModal to popup. Closing or submitting the modal will toggle suggestionWindow back to 'ready to be viewed', and useEffect will kick in again and set searchInput back to ''.
     setSearchInput('');
-    return () => {
-      //pass
-    };
   }, [suggestionWindow]);
 
   return (
@@ -55,8 +41,8 @@ const Search = ({ foodDatabase, ToggleSuggestionWindow, suggestionWindow }) => {
         </form>
       </div>
       <div className='wrapper'>
-        <div className={toggleSearchResults()}>
-          {foodDatabase.map((food) => myFunc(food))}
+        <div className='search-results-list'>
+          {foodDatabase.map((food) => displaySuggestionWindow(food))}
         </div>
       </div>
     </div>
