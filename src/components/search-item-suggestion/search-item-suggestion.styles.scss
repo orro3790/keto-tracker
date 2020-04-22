@@ -1,0 +1,33 @@
+$google-blue: #4285f4;
+$font-size-small: 0.75rem;
+$font-size-medium: 1.1rem;
+$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+$border-radius: 0.5rem;
+
+.search-item-container {
+  display: grid;
+  grid-template-columns: 1fr 10fr 10fr;
+  gap: 5px;
+  margin: 3px 0px 3px 0px;
+  font-size: $font-size-medium;
+  border-bottom: $primary-border-style;
+  padding: 5px;
+
+  &:hover {
+    color: rgba(1, 1, 1, 0.5);
+  }
+}
+
+.search-item-add-btn {
+  font-size: 1.2rem;
+
+  i {
+    color: $google-blue;
+    cursor: pointer;
+
+    &:active {
+      transition: 0.1s;
+      transform: scale(0.7);
+    }
+  }
+}

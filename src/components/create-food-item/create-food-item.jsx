@@ -171,7 +171,7 @@ const CreateFood = ({
             onClick={handleSubmit}
           >
             <div className='add-to-diary-btn-text'>
-              Add to Diary
+              Add to Database
               <i className='fas fa-plus'></i>
             </div>
           </button>
@@ -184,8 +184,8 @@ const CreateFood = ({
 const mapStateToProps = (state) => ({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   currentUser: state.user.currentUser,
-  createdFoods: state.createdFoods.createdFoods,
-  modalStatus: state.createdFoods.modalStatus,
+  createdFoods: state.createFoodItem.createdFoods,
+  modalStatus: state.createFoodItem.modalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({

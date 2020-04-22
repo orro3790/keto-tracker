@@ -4,6 +4,7 @@ import CreateFood from '../create-food-item/create-food-item';
 import Meal from './../meal/meal.component';
 import Search from './../search/search.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
+import AddFoodToDiary from './../add-food-to-diary/add-food-to-diary.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
@@ -17,6 +18,7 @@ const Diary = ({
   modalStatus,
   toggleConfirmation,
   updateFoodDatabase,
+  foodItemToAdd,
 }) => {
   const handleClick = (e) => {
     e.preventDefault();
@@ -50,6 +52,11 @@ const Diary = ({
     confirmationModal = <ConfirmationModal errorMessage={messages.error} />;
   }
 
+  let addFoodItemModal;
+  if (foodItemToAdd.name !== 'default name') {
+    addFoodItemModal = <AddFoodToDiary foodItemToAdd={foodItemToAdd} />;
+  }
+
   useEffect(() => {
     // grab the food database collection from firestore
     const collectionRef = firestore.collection('foods');
@@ -70,6 +77,7 @@ const Diary = ({
       </div>
       {modal}
       {confirmationModal}
+      {addFoodItemModal}
       <Search />
       <div className='diary-outer-container'>
         <div className='diary-inner-container'>
@@ -106,8 +114,9 @@ const Diary = ({
 };
 
 const mapStateToProps = (state) => ({
-  modalStatus: state.createdFoods.modalStatus,
-  toggleConfirmation: state.createdFoods.toggleConfirmation,
+  modalStatus: state.createFoodItem.modalStatus,
+  toggleConfirmation: state.createFoodItem.toggleConfirmation,
+  foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
 });
 
 const mapDispatchToProps = (dispatch) => ({

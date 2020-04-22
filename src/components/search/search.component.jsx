@@ -1,22 +1,38 @@
 import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
+import SearchItemSuggestion from './../search-item-suggestion/search-item-suggestion.component';
+import { CloseSuggestionWindow } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import './search.styles.scss';
 import { connect } from 'react-redux';
 
-const Search = ({ foodDatabase }) => {
+const Search = ({ foodDatabase, CloseSuggestionWindow, suggestionWindow }) => {
   const [searchInput, setSearchInput] = useState('');
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
+    if (e.target.value !== '') {
+      CloseSuggestionWindow('visible');
+    } else {
+      CloseSuggestionWindow('hidden');
+    }
   };
 
-  const myFunc = (item) => {
-    if (item.name.includes(searchInput) && searchInput !== '') {
+  const myFunc = (food) => {
+    if (food.name.includes(searchInput) && searchInput !== '') {
       return (
-        <li className='search-result-li' key={item.name}>
-          {item.name}
-        </li>
+        // <li className='search-result-li' key={food.name}>
+        //   {food.name}
+        // </li>
+        <SearchItemSuggestion key={food.id} food={food} />
       );
+    }
+  };
+
+  const toggleSearchResults = () => {
+    if (suggestionWindow === 'hidden') {
+      return 'search-results-list hidden';
+    } else if (suggestionWindow === 'visible') {
+      return 'search-results-list';
     }
   };
 
@@ -35,9 +51,9 @@ const Search = ({ foodDatabase }) => {
         </form>
       </div>
       <div className='wrapper'>
-        <ul className='search-results-list'>
-          {foodDatabase.map((item) => myFunc(item))}
-        </ul>
+        <div className={toggleSearchResults()}>
+          {foodDatabase.map((food) => myFunc(food))}
+        </div>
       </div>
     </div>
   );
@@ -45,6 +61,11 @@ const Search = ({ foodDatabase }) => {
 
 const mapStateToProps = (state) => ({
   foodDatabase: state.foodDiary.foods,
+  suggestionWindow: state.searchItemSuggestion.suggestionWindow,
 });
 
-export default connect(mapStateToProps)(Search);
+const mapDispatchToProps = (dispatch) => ({
+  CloseSuggestionWindow: (status) => dispatch(CloseSuggestionWindow(status)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
