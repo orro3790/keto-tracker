@@ -97,7 +97,7 @@ const CreateFood = ({
                 value={fields.name.value}
                 onChange={handleChange}
                 placeholder='Add a name...'
-                maxLength='35'
+                maxLength='40'
                 required
               />
             </div>
@@ -165,12 +165,12 @@ const CreateFood = ({
             </div>
           </div>
           <button
-            className='add-to-diary-btn'
+            className='submit-btn'
             disabled={!isSubmittable}
             type='submit'
             onClick={handleSubmit}
           >
-            <div className='add-to-diary-btn-text'>
+            <div className='submit-btn-text'>
               Add to Database
               <i className='fas fa-plus'></i>
             </div>

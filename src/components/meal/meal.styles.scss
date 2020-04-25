@@ -1,0 +1,22 @@
+$font-size-large: 1.3rem;
+$google-blue: #4285f4;
+
+.meal-title {
+  font-size: $font-size-large;
+  margin-right: 10px;
+}
+
+.add-food-to-meal-btn {
+  font-size: $font-size-large;
+  color: $google-blue;
+
+  i {
+    color: $google-blue;
+    cursor: pointer;
+
+    &:active {
+      transition: 0.1s;
+      transform: scale(0.7);
+    }
+  }
+}

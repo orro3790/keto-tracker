@@ -36,7 +36,8 @@ $seafoam-gradient: linear-gradient(
 }
 
 .modal-outer-box {
-  height: 600px;
+  height: 500px;
+  width: 30vw;
   display: grid;
   grid-template-rows: 85% 15%;
   border-radius: $border-radius;
@@ -148,7 +149,6 @@ $seafoam-gradient: linear-gradient(
       display: grid;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px 6px;
       padding: 10px;
       overflow: clip;
     }
@@ -175,7 +175,7 @@ $seafoam-gradient: linear-gradient(
     }
   }
 
-  .add-to-diary-btn {
+  .submit-btn {
     display: flex;
     background: $sunrise-gradient;
     border-bottom-left-radius: $border-radius;
@@ -200,7 +200,7 @@ $seafoam-gradient: linear-gradient(
       margin-left: 10px;
     }
 
-    .add-to-diary-btn-text {
+    .submit-btn-text {
       color: white;
       font-size: 1.4rem;
     }

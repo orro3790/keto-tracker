@@ -31,4 +31,8 @@ const mapStateToProps = (state) => ({
   // foodDatabase: state.foodDiary.foods,
 });
 
-export default connect(mapStateToProps)(FoodItem);
+const mapDispatchToProps = (dispatch) => ({
+  // CreateFood: (newFoodItem) => dispatch(CreateFood(newFoodItem)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FoodItem);

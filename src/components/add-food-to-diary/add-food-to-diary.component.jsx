@@ -107,12 +107,12 @@ const AddFoodToDiary = ({
             </div>
           </div>
           <button
-            className='add-to-diary-btn'
+            className='submit-btn'
             // disabled={!isSubmittable}
             type='submit'
             onClick={handleSubmit}
           >
-            <div className='add-to-diary-btn-text'>
+            <div className='submit-btn-text'>
               Add to Diary
               <i className='fas fa-plus'></i>
             </div>
