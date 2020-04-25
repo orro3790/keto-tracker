@@ -1,3 +1,3 @@
 export const MealActionTypes = {
-  ADD_FOOD_TO_MEAL: 'ADD_FOOD_TO_MEAL',
+  TOGGLE_SEARCH_MODAL: 'TOGGLE_SEARCH_MODAL',
 };

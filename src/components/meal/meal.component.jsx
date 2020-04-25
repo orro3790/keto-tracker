@@ -2,10 +2,21 @@ import React from 'react';
 import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
+import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 
-const Meal = ({ meal }) => {
+const Meal = ({ meal, toggleSearchModal, searchModal }) => {
   const handleClick = () => {
-    console.log(meal);
+    if (searchModal.status === 'hidden') {
+      toggleSearchModal({
+        status: 'visible',
+        meal: meal,
+      });
+    } else {
+      toggleSearchModal({
+        status: 'hidden',
+        meal: meal,
+      });
+    }
   };
 
   return (
@@ -21,6 +32,12 @@ const Meal = ({ meal }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapStateToProps = (state) => ({
+  searchModal: state.meal.searchModal,
+});
 
-export default connect(null, mapDispatchToProps)(Meal);
+const mapDispatchToProps = (dispatch) => ({
+  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Meal);

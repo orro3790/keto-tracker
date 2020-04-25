@@ -63,10 +63,8 @@ const CreateFood = ({
 
   const handleClose = () => {
     // control the modal window
-    if (modalStatus === 'closed') {
-      changeModalStatus('opened');
-    } else {
-      changeModalStatus('closed');
+    if (modalStatus === 'visible') {
+      changeModalStatus('hidden');
     }
   };
 
@@ -74,7 +72,7 @@ const CreateFood = ({
     const results = await createCreateFoodDocument(currentUser, fields);
     if (results === 'successful') {
       // close the createFood modal
-      changeModalStatus('closed');
+      changeModalStatus('hidden');
       toggleConfirmation('opened-success');
     } else {
       toggleConfirmation('opened-error');

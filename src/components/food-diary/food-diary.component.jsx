@@ -2,9 +2,9 @@ import React, { useEffect } from 'react';
 import './food-diary.styles.scss';
 import CreateFood from '../create-food-item/create-food-item';
 import Meal from './../meal/meal.component';
-import Search from './../search/search.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import AddFoodToDiary from './../add-food-to-diary/add-food-to-diary.component';
+import SearchFoodModal from './../search-food-modal/search-food-modal.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
@@ -15,27 +15,18 @@ import {
 
 const Diary = ({
   changeModalStatus,
-  modalStatus,
+  createFoodModalStatus,
   toggleConfirmation,
   updateFoodDatabase,
   foodItemToAdd,
+  searchModal,
 }) => {
-  const handleClick = (e) => {
-    e.preventDefault();
-    // toggle modal popup
-    if (modalStatus === 'closed') {
-      changeModalStatus('opened');
-    } else {
-      changeModalStatus('closed');
-    }
-  };
-
   // conditionally render the CreateFood modal
-  let modal;
-  if (modalStatus === 'opened') {
-    modal = <CreateFood />;
+  let createFoodModal;
+  if (createFoodModalStatus === 'visible') {
+    createFoodModal = <CreateFood />;
   } else {
-    modal = null;
+    createFoodModal = null;
   }
 
   // define confirmation modal that renders after submit
@@ -57,6 +48,14 @@ const Diary = ({
     addFoodItemModal = <AddFoodToDiary foodItemToAdd={foodItemToAdd} />;
   }
 
+  // conditionally render the CreateFood modal
+  let searchFoodModal;
+  if (searchModal.status === 'visible') {
+    searchFoodModal = <SearchFoodModal />;
+  } else {
+    searchFoodModal = null;
+  }
+
   useEffect(() => {
     // grab the food database collection from firestore
     const collectionRef = firestore.collection('foods');
@@ -66,19 +65,14 @@ const Diary = ({
       const transformedCollection = convertCollectionSnapshotToMap(snapshot);
       updateFoodDatabase(transformedCollection);
     });
-
-    return () => console.log('unmounting...');
   });
 
   return (
     <div className='diary-container'>
-      <div className='add-food-btn'>
-        <i className='fas fa-plus-square' onClick={handleClick}></i>
-      </div>
-      {modal}
+      {createFoodModal}
       {confirmationModal}
       {addFoodItemModal}
-      <Search />
+      {searchFoodModal}
       <div className='diary-outer-container'>
         <div className='diary-inner-container'>
           <div className='header-row'>
@@ -114,8 +108,9 @@ const Diary = ({
 };
 
 const mapStateToProps = (state) => ({
-  modalStatus: state.createFoodItem.modalStatus,
+  createFoodModalStatus: state.createFoodItem.modalStatus,
   toggleConfirmation: state.createFoodItem.toggleConfirmation,
+  searchModal: state.meal.searchModal,
   foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
 });
 

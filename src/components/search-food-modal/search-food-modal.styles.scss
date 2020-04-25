@@ -1,0 +1,60 @@
+$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+$border-radius: 0.5rem;
+
+$font-size-small: 1rem;
+$font-size-medium: 1.2rem;
+$font-size-large: 2.3rem;
+$background-color: white;
+$google-red: #db4437;
+
+@mixin centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.search-food-modal {
+  @include centered;
+  height: 500px;
+  width: 40vw;
+  display: grid;
+  grid-template-rows: 15% 85%;
+  border-radius: $border-radius;
+  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
+  background-color: $background-color;
+  z-index: 100;
+
+  .search-section {
+    padding: 30px 10px 0px 10px;
+  }
+
+  .close-search-modal-btn {
+    position: absolute;
+    margin-top: 5px;
+    margin-right: 5px;
+    top: 0;
+    right: 0;
+    color: $google-red;
+    cursor: pointer;
+
+    & i {
+      font-size: 1.2rem;
+    }
+
+    &:hover {
+      animation: blinking-icon 1.2s linear infinite;
+    }
+    @keyframes blinking-icon {
+      50% {
+        opacity: 0;
+        -moz-transform: scale(0.9);
+        -webkit-transform: scale(0.9);
+        -o-transform: scale(0.9);
+        -ms-transform: scale(0.9);
+        transform: scale(0.9);
+      }
+    }
+  }
+}

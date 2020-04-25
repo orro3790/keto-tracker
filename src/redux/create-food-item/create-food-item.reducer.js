@@ -2,7 +2,7 @@ import { CreateFoodItemActionTypes } from './create-food-item.types';
 
 const INITIAL_STATE = {
   createdFoods: [],
-  modalStatus: 'closed',
+  modalStatus: 'hidden',
   toggleConfirmation: 'close',
 };
 
