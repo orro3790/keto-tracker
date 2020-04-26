@@ -6,12 +6,16 @@ const FoodItem = ({ food }) => {
   return (
     <div className='meal-outer-container'>
       <div className='macro-row'>
-        <div className='food-item-name'>{food.name}</div>
-        <div>{food.fats}</div>
-        <div>{food.carbs}</div>
-        <div>{food.protein}</div>
-        <div>{food.calories}</div>
-        <div className='food-item-description'>{food.description}</div>
+        <div className='name-description-container'>
+          <div className='food-name'>{food.name}</div>
+          <div className='food-item-description'>{food.description}</div>
+        </div>
+        <div className='macro-container'>
+          <div className='macro'>{food.fats}</div>
+          <div className='macro'>{food.carbs}</div>
+          <div className='macro'>{food.protein}</div>
+          <div className='macro'>{food.calories}</div>
+        </div>
       </div>
     </div>
   );

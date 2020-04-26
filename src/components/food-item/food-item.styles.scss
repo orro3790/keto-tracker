@@ -2,22 +2,35 @@ $font-size-small: 0.75rem;
 $font-size-medium: 1.1rem;
 $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
 
-.macro-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  text-align: right;
-  border-bottom: $primary-border-style;
+.meal-outer-container {
+  margin: 5px 0px 0px 0px;
 
-  .food-item-name {
-    font-size: $font-size-medium;
-    padding-left: 10px;
-    text-align: left;
-  }
+  .macro-row {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    border-bottom: $primary-border-style;
 
-  .food-item-description {
-    font-size: $font-size-small;
-    text-align: left;
-    padding-left: 10px;
-    padding-top: 5px;
+    .name-description-container {
+      padding-left: 10px;
+      text-align: left;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+
+      .food-name {
+        font-size: $font-size-medium;
+      }
+
+      .food-item-description {
+        font-size: $font-size-small;
+        padding: 0px 0px 5px 10px;
+      }
+    }
+
+    .macro-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      text-align: right;
+      align-content: center;
+    }
   }
 }
