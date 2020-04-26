@@ -54,8 +54,6 @@ const AddFoodToDiary = ({
     mealsObj[currentDate][searchModal.meal].push(foodItemToAdd);
 
     createDailyMealsObj(mealsObj);
-
-    console.log(mealsObj[currentDate]);
   };
 
   return (

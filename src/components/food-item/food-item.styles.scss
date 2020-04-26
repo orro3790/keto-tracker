@@ -3,7 +3,11 @@ $font-size-medium: 1.1rem;
 $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
 
 .meal-outer-container {
-  margin: 5px 0px 0px 0px;
+  padding: 5px 0px 0px 0px;
+  margin: 0px 0px 0px 10px;
+  &:nth-child(odd) {
+    background-color: rgba(1, 1, 1, 0.02);
+  }
 
   .macro-row {
     display: grid;
@@ -22,7 +26,7 @@ $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
 
       .food-item-description {
         font-size: $font-size-small;
-        padding: 0px 0px 5px 10px;
+        padding: 0px 0px 0px 10px;
       }
     }
 

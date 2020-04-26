@@ -35,6 +35,28 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
     return <FoodItem key={keygen} food={food} />;
   };
 
+  const totalFats = mealsObj[currentDate][meal].reduce((accumulator, food) => {
+    return (accumulator += food.fats);
+  }, 0);
+
+  const totalCarbs = mealsObj[currentDate][meal].reduce((accumulator, food) => {
+    return (accumulator += food.carbs);
+  }, 0);
+
+  const totalProtein = mealsObj[currentDate][meal].reduce(
+    (accumulator, food) => {
+      return (accumulator += food.protein);
+    },
+    0
+  );
+
+  const totalCalories = mealsObj[currentDate][meal].reduce(
+    (accumulator, food) => {
+      return (accumulator += food.calories);
+    },
+    0
+  );
+
   return (
     <div>
       <div className='meal-header-container'>
@@ -44,6 +66,13 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
         </span>
       </div>
       {mealsObj[currentDate][meal].map((food) => renderFoodItems(food))}
+      <div className='totals-row'>
+        <div></div>
+        <div>{totalFats}</div>
+        <div>{totalCarbs}</div>
+        <div>{totalProtein}</div>
+        <div>{totalCalories}</div>
+      </div>
     </div>
   );
 };

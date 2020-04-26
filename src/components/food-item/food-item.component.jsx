@@ -1,6 +1,5 @@
 import React from 'react';
 import './food-item.styles.scss';
-import { connect } from 'react-redux';
 
 const FoodItem = ({ food }) => {
   return (
@@ -21,8 +20,4 @@ const FoodItem = ({ food }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  // foodDatabase: state.foodDiary.foods,
-});
-
-export default connect(mapStateToProps)(FoodItem);
+export default FoodItem;

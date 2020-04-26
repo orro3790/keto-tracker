@@ -1,7 +1,11 @@
 $font-size-large: 1.3rem;
 $google-blue: #4285f4;
+$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
 
 .meal-header-container {
+  border-bottom: $primary-border-style;
+  padding: 0px 0px 5px 0px;
+
   .meal-title {
     font-size: $font-size-large;
     margin-right: 10px;
@@ -21,4 +25,12 @@ $google-blue: #4285f4;
       }
     }
   }
+}
+
+.totals-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  margin: 10px 0px 0px 10px;
+  text-align: right;
+  font-weight: bold;
 }
