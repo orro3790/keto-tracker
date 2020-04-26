@@ -24,6 +24,13 @@ $sunrise-gradient: linear-gradient(
       font-size: $font-size-medium;
       margin-top: 25px;
     }
+
+    .combined-totals-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      text-align: right;
+      margin: 0px 0px 0px 10px;
+    }
   }
 }
 

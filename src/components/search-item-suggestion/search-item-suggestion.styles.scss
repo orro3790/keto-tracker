@@ -12,6 +12,7 @@ $border-radius: 0.5rem;
   font-size: $font-size-medium;
   border-bottom: $primary-border-style;
   padding: 5px;
+  cursor: pointer;
 
   &:hover {
     color: rgba(1, 1, 1, 0.5);

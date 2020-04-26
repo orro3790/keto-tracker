@@ -120,12 +120,12 @@ const Diary = ({
           <div className='snacks-section'>
             <Meal meal={'Snacks'} />
           </div>
-          <div className='totals-row'>
-            <div className='header-name-col'></div>
-            <div className='header-fats-col'>10</div>
-            <div className='header-carbs-col'>1.8</div>
-            <div className='header-protein-col'>1.3</div>
-            <div className='header-calories-col'>120</div>
+          <div className='combined-totals-row'>
+            <div></div>
+            <div>fats</div>
+            <div>carbs</div>
+            <div>protein</div>
+            <div>calories</div>
           </div>
         </div>
       </div>

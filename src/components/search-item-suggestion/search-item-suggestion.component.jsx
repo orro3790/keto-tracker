@@ -18,9 +18,9 @@ const SearchItemSuggestion = ({
   };
 
   return (
-    <div className='search-item-container'>
+    <div className='search-item-container' onClick={handleClick}>
       <div className='search-item-add-btn'>
-        <i className='fas fa-plus-square' onClick={handleClick}></i>
+        <i className='fas fa-plus-square'></i>
       </div>
       <div className='search-item-name'>{food.name}</div>
       <div className='search-item-macros'>macros per 100g</div>

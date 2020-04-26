@@ -35,22 +35,28 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
     return <FoodItem key={keygen} food={food} />;
   };
 
-  const totalFats = mealsObj[currentDate][meal].reduce((accumulator, food) => {
-    return (accumulator += food.fats);
-  }, 0);
+  const subtotalFats = mealsObj[currentDate][meal].reduce(
+    (accumulator, food) => {
+      return (accumulator += food.fats);
+    },
+    0
+  );
 
-  const totalCarbs = mealsObj[currentDate][meal].reduce((accumulator, food) => {
-    return (accumulator += food.carbs);
-  }, 0);
+  const subtotalCarbs = mealsObj[currentDate][meal].reduce(
+    (accumulator, food) => {
+      return (accumulator += food.carbs);
+    },
+    0
+  );
 
-  const totalProtein = mealsObj[currentDate][meal].reduce(
+  const subtotalProtein = mealsObj[currentDate][meal].reduce(
     (accumulator, food) => {
       return (accumulator += food.protein);
     },
     0
   );
 
-  const totalCalories = mealsObj[currentDate][meal].reduce(
+  const subtotalCalories = mealsObj[currentDate][meal].reduce(
     (accumulator, food) => {
       return (accumulator += food.calories);
     },
@@ -61,17 +67,17 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
     <div>
       <div className='meal-header-container'>
         <span className='meal-title'>{meal}</span>
-        <span className='add-food-to-meal-btn'>
-          <i className='fas fa-plus-square' onClick={handleClick}></i>
+        <span className='add-food-to-meal-btn' onClick={handleClick}>
+          <i className='fas fa-plus-square'></i>
         </span>
       </div>
       {mealsObj[currentDate][meal].map((food) => renderFoodItems(food))}
       <div className='totals-row'>
         <div></div>
-        <div>{totalFats}</div>
-        <div>{totalCarbs}</div>
-        <div>{totalProtein}</div>
-        <div>{totalCalories}</div>
+        <div>{subtotalFats}</div>
+        <div>{subtotalCarbs}</div>
+        <div>{subtotalProtein}</div>
+        <div>{subtotalCalories}</div>
       </div>
     </div>
   );
