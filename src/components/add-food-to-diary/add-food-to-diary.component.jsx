@@ -36,7 +36,10 @@ const AddFoodToDiary = ({
     e.preventDefault();
     ToggleSuggestionWindow('ready to be viewed');
     ToggleAddFoodToDiaryModal(INITIAL_STATE);
-    toggleSearchModal('hidden');
+    toggleSearchModal({
+      status: 'hidden',
+      meal: 'none',
+    });
 
     let currentDate = new Date();
 

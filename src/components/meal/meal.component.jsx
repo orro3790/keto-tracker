@@ -29,6 +29,12 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
     }
   };
 
+  let keygen = 0;
+  const renderFoodItems = (food) => {
+    keygen++;
+    return <FoodItem key={keygen} food={food} />;
+  };
+
   return (
     <div>
       <div className='meal-header-container'>
@@ -37,9 +43,7 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
           <i className='fas fa-plus-square' onClick={handleClick}></i>
         </span>
       </div>
-      {mealsObj[currentDate][meal].map((food) => (
-        <FoodItem key={food.id} food={food} />
-      ))}
+      {mealsObj[currentDate][meal].map((food) => renderFoodItems(food))}
     </div>
   );
 };
