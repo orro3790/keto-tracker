@@ -4,7 +4,17 @@ import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 
-const Meal = ({ meal, toggleSearchModal, searchModal }) => {
+const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
+  let currentDate = new Date();
+
+  const [date, month, year] = [
+    currentDate.getUTCDate(),
+    currentDate.getUTCMonth(),
+    currentDate.getUTCFullYear(),
+  ];
+
+  currentDate = `${month}-${date}-${year}`;
+
   const handleClick = () => {
     if (searchModal.status === 'hidden') {
       toggleSearchModal({
@@ -27,13 +37,16 @@ const Meal = ({ meal, toggleSearchModal, searchModal }) => {
           <i className='fas fa-plus-square' onClick={handleClick}></i>
         </span>
       </div>
-      <FoodItem />
+      {mealsObj[currentDate][meal].map((food) => (
+        <FoodItem key={food.id} food={food} />
+      ))}
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   searchModal: state.meal.searchModal,
+  mealsObj: state.foodDiary.meals,
 });
 
 const mapDispatchToProps = (dispatch) => ({

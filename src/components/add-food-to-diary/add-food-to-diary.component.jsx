@@ -6,11 +6,16 @@ import {
   ToggleSuggestionWindow,
   ToggleAddFoodToDiaryModal,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { createDailyMealsObj } from '../../redux/food-diary/food-diary.actions';
+import { toggleSearchModal } from '../../redux/meal/meal.actions';
 
 const AddFoodToDiary = ({
   foodItemToAdd,
   ToggleAddFoodToDiaryModal,
   ToggleSuggestionWindow,
+  toggleSearchModal,
+  mealsObj,
+  searchModal,
 }) => {
   const INITIAL_STATE = {
     name: 'default name',
@@ -31,6 +36,23 @@ const AddFoodToDiary = ({
     e.preventDefault();
     ToggleSuggestionWindow('ready to be viewed');
     ToggleAddFoodToDiaryModal(INITIAL_STATE);
+    toggleSearchModal('hidden');
+
+    let currentDate = new Date();
+
+    const [date, month, year] = [
+      currentDate.getUTCDate(),
+      currentDate.getUTCMonth(),
+      currentDate.getUTCFullYear(),
+    ];
+
+    currentDate = `${month}-${date}-${year}`;
+
+    mealsObj[currentDate][searchModal.meal].push(foodItemToAdd);
+
+    createDailyMealsObj(mealsObj);
+
+    console.log(mealsObj[currentDate]);
   };
 
   return (
@@ -125,12 +147,16 @@ const AddFoodToDiary = ({
 
 const mapStateToProps = (state) => ({
   foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
+  searchModal: state.meal.searchModal,
+  mealsObj: state.foodDiary.meals,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   ToggleAddFoodToDiaryModal: (food) =>
     dispatch(ToggleAddFoodToDiaryModal(food)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
+  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+  createDailyMealsObj: (mealsObj) => dispatch(createDailyMealsObj(mealsObj)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddFoodToDiary);

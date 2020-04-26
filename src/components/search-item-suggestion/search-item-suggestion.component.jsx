@@ -5,6 +5,7 @@ import {
   ToggleAddFoodToDiaryModal,
   ToggleSuggestionWindow,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 
 const SearchItemSuggestion = ({
   food,
@@ -27,10 +28,18 @@ const SearchItemSuggestion = ({
   );
 };
 
+const mapStateToProps = (state) => ({
+  searchModal: state.meal.searchModal,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   ToggleAddFoodToDiaryModal: (food) =>
     dispatch(ToggleAddFoodToDiaryModal(food)),
+  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });
 
-export default connect(null, mapDispatchToProps)(SearchItemSuggestion);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SearchItemSuggestion);

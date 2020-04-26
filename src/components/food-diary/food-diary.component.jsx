@@ -6,7 +6,10 @@ import ConfirmationModal from '../confirmation-modal/confirmation-modal.componen
 import AddFoodToDiary from './../add-food-to-diary/add-food-to-diary.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
-import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
+import {
+  updateFoodDatabase,
+  createDailyMealsObj,
+} from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
 import {
   firestore,
@@ -18,9 +21,32 @@ const Diary = ({
   createFoodModalStatus,
   toggleConfirmation,
   updateFoodDatabase,
+  createDailyMealsObj,
   foodItemToAdd,
   searchModal,
+  mealsObj,
 }) => {
+  // get current date and instantiate a meals obj for today if one doesn't already exist
+  let currentDate = new Date();
+
+  const [date, month, year] = [
+    currentDate.getUTCDate(),
+    currentDate.getUTCMonth(),
+    currentDate.getUTCFullYear(),
+  ];
+
+  currentDate = `${month}-${date}-${year}`;
+
+  if (!mealsObj.hasOwnProperty(currentDate)) {
+    mealsObj[currentDate] = {
+      Breakfast: [],
+      Lunch: [],
+      Dinner: [],
+      Snacks: [],
+    };
+    createDailyMealsObj(mealsObj);
+  }
+
   // conditionally render the CreateFood modal
   let createFoodModal;
   if (createFoodModalStatus === 'visible') {
@@ -65,7 +91,7 @@ const Diary = ({
       const transformedCollection = convertCollectionSnapshotToMap(snapshot);
       updateFoodDatabase(transformedCollection);
     });
-  });
+  }, [updateFoodDatabase]);
 
   return (
     <div className='diary-container'>
@@ -112,6 +138,7 @@ const mapStateToProps = (state) => ({
   toggleConfirmation: state.createFoodItem.toggleConfirmation,
   searchModal: state.meal.searchModal,
   foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
+  mealsObj: state.foodDiary.meals,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -119,6 +146,7 @@ const mapDispatchToProps = (dispatch) => ({
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
   updateFoodDatabase: (transformedCollection) =>
     dispatch(updateFoodDatabase(transformedCollection)),
+  createDailyMealsObj: (mealsObj) => dispatch(createDailyMealsObj(mealsObj)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);

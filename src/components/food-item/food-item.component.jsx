@@ -1,27 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './food-item.styles.scss';
 import { connect } from 'react-redux';
 
-const FoodItem = () => {
-  const FIELDS = {
-    name: 'avocado',
-    description: 'Kirkland 6pc',
-    fats: '10',
-    carbs: '1.8',
-    protein: '1.3',
-    calories: '120',
-  };
-  const [fields] = useState(FIELDS);
-
+const FoodItem = ({ food }) => {
   return (
     <div className='meal-outer-container'>
       <div className='macro-row'>
-        <div className='food-item-name'>{fields.name}</div>
-        <div>{fields.fats}</div>
-        <div>{fields.carbs}</div>
-        <div>{fields.protein}</div>
-        <div>{fields.calories}</div>
-        <div className='food-item-description'>{fields.description}</div>
+        <div className='food-item-name'>{food.name}</div>
+        <div>{food.fats}</div>
+        <div>{food.carbs}</div>
+        <div>{food.protein}</div>
+        <div>{food.calories}</div>
+        <div className='food-item-description'>{food.description}</div>
       </div>
     </div>
   );
@@ -31,8 +21,4 @@ const mapStateToProps = (state) => ({
   // foodDatabase: state.foodDiary.foods,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  // CreateFood: (newFoodItem) => dispatch(CreateFood(newFoodItem)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(FoodItem);
+export default connect(mapStateToProps)(FoodItem);
