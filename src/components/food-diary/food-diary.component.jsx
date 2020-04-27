@@ -122,10 +122,10 @@ const Diary = ({
           </div>
           <div className='combined-totals-row'>
             <div></div>
-            <div>fats</div>
-            <div>carbs</div>
-            <div>protein</div>
-            <div>calories</div>
+            <div>total fats</div>
+            <div>total carbs</div>
+            <div>total protein</div>
+            <div>total calories</div>
           </div>
         </div>
       </div>

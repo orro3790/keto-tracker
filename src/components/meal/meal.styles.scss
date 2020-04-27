@@ -32,5 +32,11 @@ $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   margin: 10px 0px 0px 10px;
   text-align: right;
+  align-items: center;
   font-weight: bold;
+}
+
+.chart {
+  position: relative;
+  width: 100px;
 }
