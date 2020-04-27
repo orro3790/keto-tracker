@@ -17,14 +17,13 @@ import {
 } from './../../firebase/firebase.utils';
 
 const Diary = ({
-  changeModalStatus,
   createFoodModalStatus,
   toggleConfirmation,
   updateFoodDatabase,
   createDailyMealsObj,
   foodItemToAdd,
   searchModal,
-  mealsObj,
+  entries,
 }) => {
   // get current date and instantiate a meals obj for today if one doesn't already exist
   let currentDate = new Date();
@@ -37,14 +36,14 @@ const Diary = ({
 
   currentDate = `${month}-${date}-${year}`;
 
-  if (!mealsObj.hasOwnProperty(currentDate)) {
-    mealsObj[currentDate] = {
+  if (!entries.hasOwnProperty(currentDate)) {
+    entries[currentDate] = {
       Breakfast: [],
       Lunch: [],
       Dinner: [],
       Snacks: [],
     };
-    createDailyMealsObj(mealsObj);
+    createDailyMealsObj(entries);
   }
 
   // conditionally render the CreateFood modal
@@ -138,7 +137,7 @@ const mapStateToProps = (state) => ({
   toggleConfirmation: state.createFoodItem.toggleConfirmation,
   searchModal: state.meal.searchModal,
   foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
-  mealsObj: state.foodDiary.meals,
+  entries: state.foodDiary.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -146,7 +145,7 @@ const mapDispatchToProps = (dispatch) => ({
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
   updateFoodDatabase: (transformedCollection) =>
     dispatch(updateFoodDatabase(transformedCollection)),
-  createDailyMealsObj: (mealsObj) => dispatch(createDailyMealsObj(mealsObj)),
+  createDailyMealsObj: (entries) => dispatch(createDailyMealsObj(entries)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);

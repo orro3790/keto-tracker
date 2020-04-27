@@ -14,7 +14,7 @@ const AddFoodToDiary = ({
   ToggleAddFoodToDiaryModal,
   ToggleSuggestionWindow,
   toggleSearchModal,
-  mealsObj,
+  entries,
   searchModal,
 }) => {
   const INITIAL_STATE = {
@@ -51,9 +51,9 @@ const AddFoodToDiary = ({
 
     currentDate = `${month}-${date}-${year}`;
 
-    mealsObj[currentDate][searchModal.meal].push(foodItemToAdd);
+    entries[currentDate][searchModal.meal].push(foodItemToAdd);
 
-    createDailyMealsObj(mealsObj);
+    createDailyMealsObj(entries);
   };
 
   return (
@@ -149,7 +149,7 @@ const AddFoodToDiary = ({
 const mapStateToProps = (state) => ({
   foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
   searchModal: state.meal.searchModal,
-  mealsObj: state.foodDiary.meals,
+  entries: state.foodDiary.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(ToggleAddFoodToDiaryModal(food)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createDailyMealsObj: (mealsObj) => dispatch(createDailyMealsObj(mealsObj)),
+  createDailyMealsObj: (entries) => dispatch(createDailyMealsObj(entries)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddFoodToDiary);

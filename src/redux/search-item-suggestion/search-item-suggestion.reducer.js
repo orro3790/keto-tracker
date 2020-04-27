@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 
 const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SearchItemSuggestionActionTypes.TOGGLE_ADD_FOOD_TO_DIARY_MODAL:
+    case SearchItemSuggestionActionTypes.ADD_FOOD_TO_DIARY:
       return {
         ...state,
         foodItemToAdd: action.payload,

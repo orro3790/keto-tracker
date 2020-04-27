@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
-import { Doughnut } from 'react-chartjs-2';
 
-const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
-  const [chartData, setChartData] = useState({});
-
+const Meal = ({ meal, toggleSearchModal, searchModal, entries }) => {
   let currentDate = new Date();
 
   const [date, month, year] = [
@@ -38,62 +35,33 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
     return <FoodItem key={keygen} food={food} />;
   };
 
-  const subtotalFats = mealsObj[currentDate][meal].reduce(
+  const subtotalFats = entries[currentDate][meal].reduce(
     (accumulator, food) => {
       return (accumulator += food.fats);
     },
     0
   );
 
-  const subtotalCarbs = mealsObj[currentDate][meal].reduce(
+  const subtotalCarbs = entries[currentDate][meal].reduce(
     (accumulator, food) => {
       return (accumulator += food.carbs);
     },
     0
   );
 
-  const subtotalProtein = mealsObj[currentDate][meal].reduce(
+  const subtotalProtein = entries[currentDate][meal].reduce(
     (accumulator, food) => {
       return (accumulator += food.protein);
     },
     0
   );
 
-  const subtotalCalories = mealsObj[currentDate][meal].reduce(
+  const subtotalCalories = entries[currentDate][meal].reduce(
     (accumulator, food) => {
       return (accumulator += food.calories);
     },
     0
   );
-
-  const chart = () => {
-    setChartData({
-      labels: ['fats', 'carbs', 'protein'],
-      datasets: [
-        {
-          label: 'macro ratios',
-          data: [subtotalFats, subtotalCarbs, subtotalProtein],
-          backgroundColor: [
-            'rgba(255, 147, 64, 1)',
-            'rgba(227, 28, 116, 1)',
-            'rgba(64, 168, 255, 1)',
-          ],
-          borderWidth: 1,
-        },
-      ],
-    });
-  };
-
-  const options = {
-    responsive: true,
-    legend: {
-      display: false,
-    },
-  };
-
-  useEffect(() => {
-    chart();
-  }, [subtotalCalories]);
 
   return (
     <div>
@@ -103,11 +71,9 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
           <i className='fas fa-plus-square'></i>
         </span>
       </div>
-      {mealsObj[currentDate][meal].map((food) => renderFoodItems(food))}
+      {entries[currentDate][meal].map((food) => renderFoodItems(food))}
       <div className='totals-row'>
-        <div className='chart'>
-          <Doughnut data={chartData} options={options} />
-        </div>
+        <div></div>
         <div>{subtotalFats}</div>
         <div>{subtotalCarbs}</div>
         <div>{subtotalProtein}</div>
@@ -119,7 +85,7 @@ const Meal = ({ meal, toggleSearchModal, searchModal, mealsObj }) => {
 
 const mapStateToProps = (state) => ({
   searchModal: state.meal.searchModal,
-  mealsObj: state.foodDiary.meals,
+  entries: state.foodDiary.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({

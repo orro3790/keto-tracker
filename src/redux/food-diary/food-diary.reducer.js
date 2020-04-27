@@ -1,8 +1,8 @@
 import { FoodDiaryActionTypes } from './food-diary.types';
 
 const INITIAL_STATE = {
-  foods: [],
-  meals: {
+  foodDatabase: [],
+  entries: {
     initialDay: {
       breakfast: [],
       lunch: [],
@@ -17,12 +17,12 @@ const foodDiaryReducer = (state = INITIAL_STATE, action) => {
     case FoodDiaryActionTypes.UPDATE_FOOD_DATABASE:
       return {
         ...state,
-        foods: action.payload,
+        foodDatabase: action.payload,
       };
     case FoodDiaryActionTypes.CREATE_DAILY_MEALS_OBJ:
       return {
         ...state,
-        meals: action.payload,
+        entries: action.payload,
       };
     default:
       return state;

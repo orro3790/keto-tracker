@@ -54,7 +54,7 @@ const Search = ({
 };
 
 const mapStateToProps = (state) => ({
-  foodDatabase: state.foodDiary.foods,
+  foodDatabase: state.foodDiary.foodDatabase,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
   searchModal: state.meal.searchModal,
 });

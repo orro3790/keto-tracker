@@ -15,24 +15,6 @@ const SearchItemSuggestion = ({
 }) => {
   const [chartData, setChartData] = useState({});
 
-  const chart = () => {
-    setChartData({
-      labels: ['fats', 'carbs', 'protein'],
-      datasets: [
-        {
-          label: 'macro ratios',
-          data: [food.fats, food.carbs, food.protein],
-          backgroundColor: [
-            'rgba(255, 147, 64, 1)',
-            'rgba(227, 28, 116, 1)',
-            'rgba(64, 168, 255, 1)',
-          ],
-          borderWidth: 4,
-        },
-      ],
-    });
-  };
-
   const options = {
     responsive: true,
     legend: {
@@ -41,8 +23,26 @@ const SearchItemSuggestion = ({
   };
 
   useEffect(() => {
+    const chart = () => {
+      setChartData({
+        labels: ['fats', 'carbs', 'protein'],
+        datasets: [
+          {
+            label: 'macro ratios',
+            data: [food.fats, food.carbs, food.protein],
+            backgroundColor: [
+              'rgba(255, 147, 64, 1)',
+              'rgba(227, 28, 116, 1)',
+              'rgba(64, 168, 255, 1)',
+            ],
+            borderWidth: 4,
+          },
+        ],
+      });
+    };
+
     chart();
-  }, []);
+  }, [food.fats, food.carbs, food.protein]);
 
   const handleClick = () => {
     ToggleAddFoodToDiaryModal(food);
