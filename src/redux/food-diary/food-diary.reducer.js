@@ -4,10 +4,42 @@ const INITIAL_STATE = {
   foodDatabase: [],
   entries: {
     initialDay: {
-      breakfast: [],
-      lunch: [],
-      dinner: [],
-      snacks: [],
+      Breakfast: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Lunch: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Dinner: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Snacks: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
     },
   },
 };

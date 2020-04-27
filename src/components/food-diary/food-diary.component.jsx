@@ -8,7 +8,7 @@ import SearchFoodModal from './../search-food-modal/search-food-modal.component'
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import {
   updateFoodDatabase,
-  createDailyMealsObj,
+  createEntry,
 } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
 import {
@@ -20,7 +20,7 @@ const Diary = ({
   createFoodModalStatus,
   toggleConfirmation,
   updateFoodDatabase,
-  createDailyMealsObj,
+  createEntry,
   foodItemToAdd,
   searchModal,
   entries,
@@ -38,12 +38,44 @@ const Diary = ({
 
   if (!entries.hasOwnProperty(currentDate)) {
     entries[currentDate] = {
-      Breakfast: [],
-      Lunch: [],
-      Dinner: [],
-      Snacks: [],
+      Breakfast: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Lunch: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Dinner: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Snacks: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
     };
-    createDailyMealsObj(entries);
+    createEntry(entries);
   }
 
   // conditionally render the CreateFood modal
@@ -145,7 +177,7 @@ const mapDispatchToProps = (dispatch) => ({
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
   updateFoodDatabase: (transformedCollection) =>
     dispatch(updateFoodDatabase(transformedCollection)),
-  createDailyMealsObj: (entries) => dispatch(createDailyMealsObj(entries)),
+  createEntry: (entries) => dispatch(createEntry(entries)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);

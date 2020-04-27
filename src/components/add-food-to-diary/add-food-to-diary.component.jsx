@@ -6,7 +6,7 @@ import {
   ToggleSuggestionWindow,
   ToggleAddFoodToDiaryModal,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
-import { createDailyMealsObj } from '../../redux/food-diary/food-diary.actions';
+import { createEntry } from '../../redux/food-diary/food-diary.actions';
 import { toggleSearchModal } from '../../redux/meal/meal.actions';
 
 const AddFoodToDiary = ({
@@ -51,9 +51,9 @@ const AddFoodToDiary = ({
 
     currentDate = `${month}-${date}-${year}`;
 
-    entries[currentDate][searchModal.meal].push(foodItemToAdd);
+    entries[currentDate][searchModal.meal]['foods'].push(foodItemToAdd);
 
-    createDailyMealsObj(entries);
+    createEntry(entries);
   };
 
   return (
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(ToggleAddFoodToDiaryModal(food)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createDailyMealsObj: (entries) => dispatch(createDailyMealsObj(entries)),
+  createEntry: (entries) => dispatch(createEntry(entries)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddFoodToDiary);

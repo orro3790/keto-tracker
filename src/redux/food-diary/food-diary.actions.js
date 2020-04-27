@@ -5,7 +5,7 @@ export const updateFoodDatabase = (collectionMap) => ({
   payload: collectionMap,
 });
 
-export const createDailyMealsObj = (entries) => ({
+export const createEntry = (entries) => ({
   type: FoodDiaryActionTypes.CREATE_DAILY_MEALS_OBJ,
   payload: entries,
 });

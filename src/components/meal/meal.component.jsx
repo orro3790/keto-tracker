@@ -3,8 +3,15 @@ import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
+import { createEntry } from '../../redux/food-diary/food-diary.actions';
 
-const Meal = ({ meal, toggleSearchModal, searchModal, entries }) => {
+const Meal = ({
+  meal,
+  toggleSearchModal,
+  searchModal,
+  entries,
+  createEntry,
+}) => {
   let currentDate = new Date();
 
   const [date, month, year] = [
@@ -35,33 +42,42 @@ const Meal = ({ meal, toggleSearchModal, searchModal, entries }) => {
     return <FoodItem key={keygen} food={food} />;
   };
 
-  const subtotalFats = entries[currentDate][meal].reduce(
+  const subtotalFats = entries[currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.fats);
     },
     0
   );
 
-  const subtotalCarbs = entries[currentDate][meal].reduce(
+  const subtotalCarbs = entries[currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.carbs);
     },
     0
   );
 
-  const subtotalProtein = entries[currentDate][meal].reduce(
+  const subtotalProtein = entries[currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.protein);
     },
     0
   );
 
-  const subtotalCalories = entries[currentDate][meal].reduce(
+  const subtotalCalories = entries[currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.calories);
     },
     0
   );
+
+  // add totals to the entry obj
+
+  entries[currentDate][meal]['totals']['fats'] = subtotalFats;
+  entries[currentDate][meal]['totals']['carbs'] = subtotalCarbs;
+  entries[currentDate][meal]['totals']['protein'] = subtotalProtein;
+  entries[currentDate][meal]['totals']['calories'] = subtotalCalories;
+
+  createEntry(entries);
 
   return (
     <div>
@@ -71,7 +87,7 @@ const Meal = ({ meal, toggleSearchModal, searchModal, entries }) => {
           <i className='fas fa-plus-square'></i>
         </span>
       </div>
-      {entries[currentDate][meal].map((food) => renderFoodItems(food))}
+      {entries[currentDate][meal]['foods'].map((food) => renderFoodItems(food))}
       <div className='totals-row'>
         <div></div>
         <div>{subtotalFats}</div>
@@ -90,6 +106,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+  createEntry: (entry) => dispatch(createEntry(entry)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Meal);
