@@ -75,12 +75,16 @@ const Meal = ({
   copy[currentDate][meal]['totals']['fats'] = subtotalFats;
   copy[currentDate][meal]['totals']['carbs'] = subtotalCarbs;
   copy[currentDate][meal]['totals']['protein'] = subtotalProtein;
-  copy[currentDate][meal]['totals']['calories'] = subtotalCalories;
+  // copy[currentDate][meal]['totals']['calories'] = subtotalCalories;
 
   // add totals to the entry obj
-  useEffect(() => {
-    createEntry(copy);
-  }, [subtotalCalories]);
+  useEffect(
+    () => {
+      createEntry(copy);
+    },
+    [subtotalCalories],
+    copy
+  );
 
   return (
     <div>
