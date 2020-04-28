@@ -96,11 +96,19 @@ const Meal = ({
       </div>
       {entries[currentDate][meal]['foods'].map((food) => renderFoodItems(food))}
       <div className='totals-row'>
-        <div></div>
-        <div>{entries[currentDate][meal]['totals']['fats']}</div>
-        <div>{entries[currentDate][meal]['totals']['carbs']}</div>
-        <div>{entries[currentDate][meal]['totals']['protein']}</div>
-        <div>{subtotalCalories}</div>
+        <div className='total-label'>totals</div>
+        <div className='totals-container'>
+          <div className='total-fats'>
+            {entries[currentDate][meal]['totals']['fats']}
+          </div>
+          <div className='total-carbs'>
+            {entries[currentDate][meal]['totals']['carbs']}
+          </div>
+          <div className='total-protein'>
+            {entries[currentDate][meal]['totals']['protein']}
+          </div>
+          <div className='total-calories'>{subtotalCalories}</div>
+        </div>
       </div>
     </div>
   );

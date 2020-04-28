@@ -1,32 +1,44 @@
-$font-size-small: 0.75rem;
-$font-size-medium: 1.1rem;
-$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+$google-blue: #4285f4;
+$google-blue-faded: rgba(66, 133, 244, 0.1);
+$small-weight: 300;
+$medium-weight: 400;
+$large-weight: 700;
+$small-font: 12px;
+$extra-light-grey: #727378;
+$light-grey: #434250;
+$mid-grey: #373741;
+$dark-grey: #33333d;
 
 .meal-outer-container {
-  padding: 5px 0px 0px 0px;
   margin: 0px 0px 0px 10px;
-  &:nth-child(odd) {
-    background-color: rgba(1, 1, 1, 0.02);
-  }
+  background: $dark-grey;
+  // &:nth-child(odd) {
+  //   background: $dark-grey;
+  // }
 
   .macro-row {
+    margin: 2px 0px 2px 0px;
+    padding: 5px 0px 5px 0px;
     display: grid;
     grid-template-columns: 1fr 4fr;
-    border-bottom: $primary-border-style;
+    // border-bottom: $primary-border-style;
 
     .name-description-container {
-      padding-left: 10px;
+      // padding: 5px 0px 0px 10px;
       text-align: left;
       display: grid;
       grid-template-rows: 1fr 1fr;
 
       .food-name {
-        font-size: $font-size-medium;
+        padding: 0px 0px 0px 10px;
+        font-weight: $medium-weight;
       }
 
       .food-item-description {
-        font-size: $font-size-small;
-        padding: 0px 0px 0px 10px;
+        font-size: $small-font;
+        font-weight: $small-weight;
+        padding: 0px 0px 0px 15px;
+        color: $extra-light-grey;
       }
     }
 
@@ -36,5 +48,21 @@ $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
       text-align: right;
       align-content: center;
     }
+  }
+
+  .fats {
+    color: rgba(255, 147, 64, 1);
+  }
+
+  .carbs {
+    color: rgba(227, 28, 116, 1);
+  }
+
+  .protein {
+    color: rgba(64, 168, 255, 1);
+  }
+
+  .calories {
+    padding: 0px 10px 0px 0px;
   }
 }

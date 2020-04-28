@@ -134,8 +134,9 @@ const Diary = ({
       {confirmationModal}
       {addFoodItemModal}
       {searchFoodModal}
-      <div className='diary-outer-container'>
-        <div className='diary-inner-container'>
+      <div className='header-container'>
+        <div className='left-container'></div>
+        <div className='right-container'>
           <div className='header-row'>
             <div className='header-name-col'></div>
             <div className='header-fats-col'>Fats</div>
@@ -143,29 +144,48 @@ const Diary = ({
             <div className='header-protein-col'>Protein</div>
             <div className='header-calories-col'>Calories</div>
           </div>
-          <div className='breakfast-section'>
-            <Meal meal={'Breakfast'} />
-          </div>
-          <div className='lunch-section'>
-            <Meal meal={'Lunch'} />
-          </div>
-          <div className='dinner-section'>
-            <Meal meal={'Dinner'} />
-          </div>
-          <div className='snacks-section'>
-            <Meal meal={'Snacks'} />
-          </div>
-          <div className='combined-totals-row'>
-            {/* <div></div>
-            <div>total fats</div>
-            <div>total carbs</div>
-            <div>total protein</div>
-            <div>total calories</div> */}
-          </div>
-          <div className='chart-container'>
+        </div>
+      </div>
+      <div className='diary-outer-container'>
+        <div className='left-container'></div>
+        <div className='right-container'>
+          <div className='diary-inner-container'>
+            <div className='breakfast-section'>
+              <Meal meal={'Breakfast'} />
+            </div>
             <TotalsChart meal={'Breakfast'} />
+          </div>
+        </div>
+      </div>
+      <div className='diary-outer-container'>
+        <div className='left-container'></div>
+        <div className='right-container'>
+          <div className='diary-inner-container'>
+            <div className='breakfast-section'>
+              <Meal meal={'Lunch'} />
+            </div>
             <TotalsChart meal={'Lunch'} />
+          </div>
+        </div>
+      </div>
+      <div className='diary-outer-container'>
+        <div className='left-container'></div>
+        <div className='right-container'>
+          <div className='diary-inner-container'>
+            <div className='breakfast-section'>
+              <Meal meal={'Dinner'} />
+            </div>
             <TotalsChart meal={'Dinner'} />
+          </div>
+        </div>
+      </div>
+      <div className='diary-outer-container'>
+        <div className='left-container'></div>
+        <div className='right-container'>
+          <div className='diary-inner-container'>
+            <div className='breakfast-section'>
+              <Meal meal={'Snacks'} />
+            </div>
             <TotalsChart meal={'Snacks'} />
           </div>
         </div>
@@ -173,6 +193,15 @@ const Diary = ({
     </div>
   );
 };
+
+{
+  /* <div className='chart-container'>
+  <TotalsChart meal={'Breakfast'} />
+  <TotalsChart meal={'Lunch'} />
+  <TotalsChart meal={'Dinner'} />
+  <TotalsChart meal={'Snacks'} />
+</div> */
+}
 
 const mapStateToProps = (state) => ({
   createFoodModalStatus: state.createFoodItem.modalStatus,

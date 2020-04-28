@@ -10,10 +10,10 @@ const FoodItem = ({ food }) => {
           <div className='food-item-description'>{food.description}</div>
         </div>
         <div className='macro-container'>
-          <div className='macro'>{food.fats}</div>
-          <div className='macro'>{food.carbs}</div>
-          <div className='macro'>{food.protein}</div>
-          <div className='macro'>{food.calories}</div>
+          <div className='fats'>{food.fats}</div>
+          <div className='carbs'>{food.carbs}</div>
+          <div className='protein'>{food.protein}</div>
+          <div className='calories'>{food.calories}</div>
         </div>
       </div>
     </div>

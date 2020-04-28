@@ -27,10 +27,10 @@ const TotalsChart = ({ entries, meal }) => {
     legend: {
       display: false,
     },
-    title: {
-      display: true,
-      text: [meal],
-    },
+    // title: {
+    //   display: true,
+    //   text: [meal],
+    // },
   };
 
   useEffect(() => {
@@ -47,6 +47,7 @@ const TotalsChart = ({ entries, meal }) => {
               'rgba(64, 168, 255, 1)',
             ],
             borderWidth: 4,
+            borderColor: '#434250',
           },
         ],
       });
