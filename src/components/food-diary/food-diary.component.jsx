@@ -5,6 +5,7 @@ import Meal from './../meal/meal.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import AddFoodToDiary from './../add-food-to-diary/add-food-to-diary.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
+import TotalsChart from '../totals-chart/totals-chart.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import {
   updateFoodDatabase,
@@ -36,46 +37,49 @@ const Diary = ({
 
   currentDate = `${month}-${date}-${year}`;
 
-  if (!entries.hasOwnProperty(currentDate)) {
-    entries[currentDate] = {
-      Breakfast: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+  if (!Object.keys(entries).includes(currentDate)) {
+    const newEntry = {
+      [currentDate]: {
+        Breakfast: {
+          foods: [],
+          totals: {
+            fats: '',
+            carbs: '',
+            protein: '',
+            calories: '',
+          },
         },
-      },
-      Lunch: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+        Lunch: {
+          foods: [],
+          totals: {
+            fats: '',
+            carbs: '',
+            protein: '',
+            calories: '',
+          },
         },
-      },
-      Dinner: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+        Dinner: {
+          foods: [],
+          totals: {
+            fats: '',
+            carbs: '',
+            protein: '',
+            calories: '',
+          },
         },
-      },
-      Snacks: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+        Snacks: {
+          foods: [],
+          totals: {
+            fats: '',
+            carbs: '',
+            protein: '',
+            calories: '',
+          },
         },
       },
     };
-    createEntry(entries);
+    const copy = Object.assign({}, entries, newEntry);
+    createEntry(copy);
   }
 
   // conditionally render the CreateFood modal
@@ -158,6 +162,7 @@ const Diary = ({
             <div>total protein</div>
             <div>total calories</div>
           </div>
+          <TotalsChart />
         </div>
       </div>
     </div>

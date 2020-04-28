@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
@@ -70,14 +70,17 @@ const Meal = ({
     0
   );
 
+  const copy = Object.assign({}, entries);
+
+  copy[currentDate][meal]['totals']['fats'] = subtotalFats;
+  copy[currentDate][meal]['totals']['carbs'] = subtotalCarbs;
+  copy[currentDate][meal]['totals']['protein'] = subtotalProtein;
+  copy[currentDate][meal]['totals']['calories'] = subtotalCalories;
+
   // add totals to the entry obj
-
-  entries[currentDate][meal]['totals']['fats'] = subtotalFats;
-  entries[currentDate][meal]['totals']['carbs'] = subtotalCarbs;
-  entries[currentDate][meal]['totals']['protein'] = subtotalProtein;
-  entries[currentDate][meal]['totals']['calories'] = subtotalCalories;
-
-  createEntry(entries);
+  useEffect(() => {
+    createEntry(copy);
+  }, [subtotalCalories]);
 
   return (
     <div>
@@ -90,9 +93,9 @@ const Meal = ({
       {entries[currentDate][meal]['foods'].map((food) => renderFoodItems(food))}
       <div className='totals-row'>
         <div></div>
-        <div>{subtotalFats}</div>
-        <div>{subtotalCarbs}</div>
-        <div>{subtotalProtein}</div>
+        <div>{entries[currentDate][meal]['totals']['fats']}</div>
+        <div>{entries[currentDate][meal]['totals']['carbs']}</div>
+        <div>{entries[currentDate][meal]['totals']['protein']}</div>
         <div>{subtotalCalories}</div>
       </div>
     </div>

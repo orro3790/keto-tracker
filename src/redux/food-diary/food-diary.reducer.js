@@ -3,7 +3,7 @@ import { FoodDiaryActionTypes } from './food-diary.types';
 const INITIAL_STATE = {
   foodDatabase: [],
   entries: {
-    initialDay: {
+    '0-00-0000': {
       Breakfast: {
         foods: [],
         totals: {
