@@ -4,14 +4,5 @@ $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
   position: relative;
   text-align: center;
   z-index: -1;
-}
-
-.outer-chart-container {
-  border: $primary-border-style;
-  margin: 40px 0px 0px 0px;
-
-  .inner-chart-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
+  width: 20vw;
 }

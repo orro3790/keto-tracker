@@ -31,19 +31,11 @@ $sunrise-gradient: linear-gradient(
       text-align: right;
       margin: 0px 0px 0px 10px;
     }
-  }
-}
 
-.add-food-btn {
-  font-size: 2rem;
-
-  i {
-    color: $google-blue;
-    cursor: pointer;
-
-    &:active {
-      transition: 0.1s;
-      transform: scale(0.7);
+    .chart-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      margin: 50px 0px 0px 0px;
     }
   }
 }

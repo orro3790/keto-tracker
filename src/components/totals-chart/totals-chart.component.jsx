@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { createEntry } from './../../redux/food-diary/food-diary.actions.js';
 import { Doughnut } from 'react-chartjs-2';
 
-const TotalsChart = ({ entries }) => {
+const TotalsChart = ({ entries, meal }) => {
   const [chartData, setChartData] = useState({});
 
   let currentDate = new Date();
@@ -17,10 +17,10 @@ const TotalsChart = ({ entries }) => {
 
   currentDate = `${month}-${date}-${year}`;
 
-  const totalFats = entries[currentDate]['Breakfast']['totals']['fats'];
-  const totalCarbs = entries[currentDate]['Breakfast']['totals']['carbs'];
-  const totalProtein = entries[currentDate]['Breakfast']['totals']['protein'];
-  const totalCalories = entries[currentDate]['Breakfast']['totals']['calories'];
+  const totalFats = entries[currentDate][meal]['totals']['fats'];
+  const totalCarbs = entries[currentDate][meal]['totals']['carbs'];
+  const totalProtein = entries[currentDate][meal]['totals']['protein'];
+  const totalCalories = entries[currentDate][meal]['totals']['calories'];
 
   const options = {
     responsive: true,
@@ -29,7 +29,7 @@ const TotalsChart = ({ entries }) => {
     },
     title: {
       display: true,
-      text: 'Breakfast',
+      text: [meal],
     },
   };
 
@@ -56,20 +56,9 @@ const TotalsChart = ({ entries }) => {
   }, [totalFats, totalCarbs, totalProtein]);
 
   return (
-    <div className='outer-chart-container'>
-      <div className='inner-chart-container'>
-        <div className='meal-chart'>
-          <Doughnut data={chartData} options={options} />
-        </div>
-        <div className='meal-chart'>
-          <Doughnut data={chartData} options={options} />
-        </div>
-        <div className='meal-chart'>
-          <Doughnut data={chartData} options={options} />
-        </div>
-        <div className='meal-chart'>
-          <Doughnut data={chartData} options={options} />
-        </div>
+    <div>
+      <div className='meal-chart'>
+        <Doughnut data={chartData} options={options} />
       </div>
     </div>
   );

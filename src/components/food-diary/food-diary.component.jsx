@@ -156,13 +156,18 @@ const Diary = ({
             <Meal meal={'Snacks'} />
           </div>
           <div className='combined-totals-row'>
-            <div></div>
+            {/* <div></div>
             <div>total fats</div>
             <div>total carbs</div>
             <div>total protein</div>
-            <div>total calories</div>
+            <div>total calories</div> */}
           </div>
-          <TotalsChart />
+          <div className='chart-container'>
+            <TotalsChart meal={'Breakfast'} />
+            <TotalsChart meal={'Lunch'} />
+            <TotalsChart meal={'Dinner'} />
+            <TotalsChart meal={'Snacks'} />
+          </div>
         </div>
       </div>
     </div>

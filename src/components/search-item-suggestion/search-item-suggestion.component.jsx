@@ -55,9 +55,9 @@ const SearchItemSuggestion = ({
         <i className='fas fa-plus-square'></i>
       </div>
       <div className='search-item-name'>{food.name}</div>
-      <div className='search-item-macros'>
+      {/* <div className='search-item-macros'>
         <Doughnut data={chartData} options={options} />
-      </div>
+      </div> */}
     </div>
   );
 };
