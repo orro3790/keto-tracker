@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     protein: 0,
     calories: 0,
   },
-  suggestionWindow: 'ready to be viewed',
+  suggestionWindow: false,
 };
 
 const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {

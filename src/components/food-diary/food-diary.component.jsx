@@ -3,7 +3,7 @@ import './food-diary.styles.scss';
 import CreateFood from '../create-food-item/create-food-item';
 import Meal from './../meal/meal.component';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
-import AddFoodToDiary from './../add-food-to-diary/add-food-to-diary.component';
+
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
 import TotalsChart from '../totals-chart/totals-chart.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
@@ -22,7 +22,6 @@ const Diary = ({
   toggleConfirmation,
   updateFoodDatabase,
   createEntry,
-  foodItemToAdd,
   searchModal,
   entries,
 }) => {
@@ -104,11 +103,6 @@ const Diary = ({
     confirmationModal = <ConfirmationModal errorMessage={messages.error} />;
   }
 
-  let addFoodItemModal;
-  if (foodItemToAdd.name !== 'default name') {
-    addFoodItemModal = <AddFoodToDiary foodItemToAdd={foodItemToAdd} />;
-  }
-
   // conditionally render the CreateFood modal
   let searchFoodModal;
   if (searchModal.status === 'visible') {
@@ -132,20 +126,8 @@ const Diary = ({
     <div className='diary-container'>
       {createFoodModal}
       {confirmationModal}
-      {addFoodItemModal}
       {searchFoodModal}
-      <div className='header-container'>
-        <div className='left-container'></div>
-        <div className='right-container'>
-          <div className='header-row'>
-            <div className='header-name-col'></div>
-            <div className='header-fats-col'>Fats</div>
-            <div className='header-carbs-col'>Carbs</div>
-            <div className='header-protein-col'>Protein</div>
-            <div className='header-calories-col'>Calories</div>
-          </div>
-        </div>
-      </div>
+
       <div className='diary-outer-container'>
         <div className='left-container'></div>
         <div className='right-container'>
@@ -193,15 +175,6 @@ const Diary = ({
     </div>
   );
 };
-
-{
-  /* <div className='chart-container'>
-  <TotalsChart meal={'Breakfast'} />
-  <TotalsChart meal={'Lunch'} />
-  <TotalsChart meal={'Dinner'} />
-  <TotalsChart meal={'Snacks'} />
-</div> */
-}
 
 const mapStateToProps = (state) => ({
   createFoodModalStatus: state.createFoodItem.modalStatus,

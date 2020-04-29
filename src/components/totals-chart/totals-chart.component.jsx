@@ -22,6 +22,24 @@ const TotalsChart = ({ entries, meal }) => {
   const totalProtein = entries[currentDate][meal]['totals']['protein'];
   const totalCalories = entries[currentDate][meal]['totals']['calories'];
 
+  let totalsData;
+  if (totalCalories === 0) {
+    totalsData = [1];
+  } else {
+    totalsData = [totalFats, totalCarbs, totalProtein];
+  }
+
+  let colors;
+  if (totalCalories === 0) {
+    colors = '#727378';
+  } else {
+    colors = [
+      'rgba(255, 147, 64, 1)',
+      'rgba(227, 28, 116, 1)',
+      'rgba(64, 168, 255, 1)',
+    ];
+  }
+
   const options = {
     responsive: true,
     legend: {
@@ -40,12 +58,8 @@ const TotalsChart = ({ entries, meal }) => {
         datasets: [
           {
             label: 'macro ratios',
-            data: [totalFats, totalCarbs, totalProtein],
-            backgroundColor: [
-              'rgba(255, 147, 64, 1)',
-              'rgba(227, 28, 116, 1)',
-              'rgba(64, 168, 255, 1)',
-            ],
+            data: totalsData,
+            backgroundColor: colors,
             borderWidth: 4,
             borderColor: '#434250',
           },

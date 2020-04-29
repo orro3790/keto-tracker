@@ -106,7 +106,7 @@ const CreateFood = ({
                 value={fields.description.value}
                 onChange={handleChange}
                 placeholder='Add a description...'
-                maxLength='200'
+                maxLength='90'
               ></textarea>
             </div>
             <div className='macro-section'>

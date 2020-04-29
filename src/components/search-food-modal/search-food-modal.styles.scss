@@ -1,11 +1,22 @@
 $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
-$border-radius: 0.5rem;
-
-$font-size-small: 1rem;
-$font-size-medium: 1.2rem;
-$font-size-large: 2.3rem;
-$background-color: white;
 $google-red: #db4437;
+
+$font-size-small: 12px;
+$font-size-medium: 16px;
+$font-size-large: 18px;
+$font-size-display-3: 28px;
+$font-size-display-2: 40px;
+$small-weight: 300;
+$medium-weight: 400;
+$large-weight: 700;
+$extra-light-grey: #727378;
+$light-grey: #434250;
+$mid-grey: #373741;
+$dark-grey: #33333d;
+
+$keto-orange: rgba(255, 147, 64, 1);
+$keto-pink: rgba(227, 28, 116, 1);
+$keto-blue: rgba(64, 168, 255, 1);
 
 @mixin centered {
   position: fixed;
@@ -21,9 +32,8 @@ $google-red: #db4437;
   width: 40vw;
   display: grid;
   grid-template-rows: 15% 85%;
-  border-radius: $border-radius;
-  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
-  background-color: $background-color;
+  box-shadow: (0px 3px 6px rgba(0, 0, 0, 0.3));
+  background-color: $mid-grey;
   z-index: 1;
 
   .search-section {
@@ -55,6 +65,60 @@ $google-red: #db4437;
         -ms-transform: scale(0.9);
         transform: scale(0.9);
       }
+    }
+  }
+
+  .results-container {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 2fr 4fr;
+    padding: 20px;
+    text-align: center;
+    align-items: center;
+
+    .portion-input-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+    }
+
+    .macro-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+
+      .fats {
+        display: grid;
+        grid-row: 2fr 1fr;
+        font-size: $font-size-display-3;
+        color: $keto-orange;
+
+        .label {
+          font-size: $font-size-medium;
+        }
+      }
+
+      .carbs {
+        display: grid;
+        grid-row: 2fr 1fr;
+        font-size: $font-size-display-2;
+        color: $keto-pink;
+
+        .label {
+          font-size: $font-size-large;
+        }
+      }
+
+      .protein {
+        display: grid;
+        grid-row: 2fr 1fr;
+        font-size: $font-size-display-3;
+        color: $keto-blue;
+
+        .label {
+          font-size: $font-size-medium;
+        }
+      }
+    }
+
+    .graph-row {
     }
   }
 }

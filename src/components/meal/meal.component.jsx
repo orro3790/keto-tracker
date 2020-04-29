@@ -89,9 +89,11 @@ const Meal = ({
   return (
     <div>
       <div className='meal-header-container'>
-        <span className='meal-title'>{meal}</span>
-        <span className='add-food-to-meal-btn' onClick={handleClick}>
-          <i className='fas fa-plus-square'></i>
+        <span className='meal-title'>
+          {meal}
+          <span className='add-food-to-meal-btn' onClick={handleClick}>
+            <i className='fas fa-plus-square'></i>
+          </span>
         </span>
       </div>
       {entries[currentDate][meal]['foods'].map((food) => renderFoodItems(food))}
