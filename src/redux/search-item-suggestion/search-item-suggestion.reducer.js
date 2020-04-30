@@ -6,9 +6,13 @@ const INITIAL_STATE = {
     description: 'default description',
     grams: 0,
     fats: 0,
+    fatsPer: 0,
     carbs: 0,
+    carbsPer: 0,
     protein: 0,
+    proteinPer: 0,
     calories: 0,
+    caloriesPer: 0,
   },
   suggestionWindow: false,
 };

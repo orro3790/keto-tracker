@@ -3,9 +3,9 @@ $google-red: #db4437;
 
 $font-size-small: 12px;
 $font-size-medium: 16px;
-$font-size-large: 18px;
-$font-size-display-3: 28px;
-$font-size-display-2: 40px;
+$font-size-large: 22px;
+$font-size-display-3: 24px;
+$font-size-display-2: 36px;
 $small-weight: 300;
 $medium-weight: 400;
 $large-weight: 700;
@@ -71,13 +71,22 @@ $keto-blue: rgba(64, 168, 255, 1);
   .results-container {
     display: grid;
     grid-template-rows: 1fr 1fr 1fr 2fr 4fr;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
-    align-items: center;
+    // align-items: center;
+
+    .name {
+      font-size: $font-size-large;
+    }
+
+    .description {
+      font-size: $font-size-medium;
+    }
 
     .portion-input-row {
       display: grid;
       grid-template-columns: 1fr 2fr 1fr;
+      font-size: $font-size-large;
     }
 
     .macro-row {
@@ -85,8 +94,6 @@ $keto-blue: rgba(64, 168, 255, 1);
       grid-template-columns: 1fr 1fr 1fr;
 
       .fats {
-        display: grid;
-        grid-row: 2fr 1fr;
         font-size: $font-size-display-3;
         color: $keto-orange;
 
@@ -96,8 +103,6 @@ $keto-blue: rgba(64, 168, 255, 1);
       }
 
       .carbs {
-        display: grid;
-        grid-row: 2fr 1fr;
         font-size: $font-size-display-2;
         color: $keto-pink;
 
@@ -107,8 +112,6 @@ $keto-blue: rgba(64, 168, 255, 1);
       }
 
       .protein {
-        display: grid;
-        grid-row: 2fr 1fr;
         font-size: $font-size-display-3;
         color: $keto-blue;
 
@@ -121,4 +124,8 @@ $keto-blue: rgba(64, 168, 255, 1);
     .graph-row {
     }
   }
+}
+
+.value {
+  align-items: end;
 }

@@ -64,9 +64,13 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
   const description = fields.description.value;
   const grams = parseFloat(fields.grams.value);
   const fats = parseFloat(fields.fats.value);
+  const fatsPer = parseFloat(fields.fatsPer.value);
   const carbs = parseFloat(fields.carbs.value);
+  const carbsPer = parseFloat(fields.carbsPer.value);
   const protein = parseFloat(fields.protein.value);
+  const proteinPer = parseFloat(fields.proteinPer.value);
   const calories = parseFloat(fields.calories.value);
+  const caloriesPer = parseFloat(fields.caloriesPer.value);
   const createdAt = new Date();
 
   try {
@@ -76,9 +80,13 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
       description,
       grams,
       fats,
+      fatsPer,
       carbs,
+      carbsPer,
       protein,
+      proteinPer,
       calories,
+      caloriesPer,
       createdAt,
     });
     return 'successful';
@@ -105,9 +113,13 @@ export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
       description,
       grams,
       fats,
+      fatsPer,
       carbs,
+      carbsPer,
       protein,
+      proteinPer,
       calories,
+      caloriesPer,
     } = docSnapshot.data();
 
     return {
@@ -116,9 +128,13 @@ export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
       description: description,
       grams: grams,
       fats: fats,
+      fatsPer: fatsPer,
       carbs: carbs,
+      carbsPer: carbsPer,
       protein: protein,
+      proteinPer: proteinPer,
       calories: calories,
+      caloriesPer: caloriesPer,
     };
   });
 

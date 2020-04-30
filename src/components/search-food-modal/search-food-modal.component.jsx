@@ -16,6 +16,7 @@ const SearchFoodModal = ({
       meal: 'none',
     });
   };
+
   return (
     <div>
       <div className='search-food-modal'>
@@ -31,23 +32,24 @@ const SearchFoodModal = ({
 
           <div className='portion-input-row'>
             <div></div>
-            <div className='portion-input'>{foodItemToAdd.grams}</div>
+            <div className='portion-input'>size: {foodItemToAdd.grams}g</div>
             <div></div>
           </div>
           <div className='macro-row'>
             <div className='fats'>
-              <div>{foodItemToAdd.fats}</div>
+              <div className='fats value'>{foodItemToAdd.fats}g</div>
               <div className='label'>fats</div>
             </div>
             <div className='carbs'>
-              <div>{foodItemToAdd.carbs}</div>
+              <div>{foodItemToAdd.carbs}g</div>
               <div className='label'>carbs</div>
             </div>
             <div className='protein'>
-              <div>{foodItemToAdd.protein}</div>
+              <div>{foodItemToAdd.protein}g</div>
               <div className='label'>protein</div>
             </div>
           </div>
+          <div className='graph-area'></div>
           {/* 
           <div>{foodItemToAdd.calories}</div> */}
         </div>
