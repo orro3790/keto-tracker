@@ -32,7 +32,7 @@ const Search = ({
   return (
     <div>
       <div className='food-item-input'>
-        <form id='name'>
+        <form>
           <FormInput
             id='name'
             name='search-input'

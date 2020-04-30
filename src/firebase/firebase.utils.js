@@ -62,7 +62,8 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
   // prep the fields
   const name = fields.name.value;
   const description = fields.description.value;
-  const grams = parseFloat(fields.grams.value);
+  const size = parseFloat(fields.size.value);
+  const unit = fields.unit.value;
   const fats = parseFloat(fields.fats.value);
   const fatsPer = parseFloat(fields.fatsPer.value);
   const carbs = parseFloat(fields.carbs.value);
@@ -78,7 +79,8 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
     await newDocRef.set({
       name,
       description,
-      grams,
+      size,
+      unit,
       fats,
       fatsPer,
       carbs,
@@ -111,7 +113,8 @@ export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
     const {
       name,
       description,
-      grams,
+      size,
+      unit,
       fats,
       fatsPer,
       carbs,
@@ -126,7 +129,8 @@ export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
       id: docSnapshot.id,
       name: name,
       description: description,
-      grams: grams,
+      size: size,
+      unit: unit,
       fats: fats,
       fatsPer: fatsPer,
       carbs: carbs,
