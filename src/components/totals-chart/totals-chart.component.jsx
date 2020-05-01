@@ -27,9 +27,9 @@ const TotalsChart = ({ entries, meal }) => {
     totalsData = [1];
   } else {
     totalsData = [
-      totalFats.toFixed(2),
-      totalCarbs.toFixed(2),
-      totalProtein.toFixed(2),
+      totalFats.toFixed(1),
+      totalCarbs.toFixed(1),
+      totalProtein.toFixed(1),
     ];
   }
 

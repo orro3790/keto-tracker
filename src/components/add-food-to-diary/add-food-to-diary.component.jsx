@@ -4,14 +4,14 @@ import './add-food-to-diary.styles.scss';
 import { connect } from 'react-redux';
 import {
   ToggleSuggestionWindow,
-  ToggleAddFoodToDiaryModal,
+  createFoodReference,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { createEntry } from '../../redux/food-diary/food-diary.actions';
 import { toggleSearchModal } from '../../redux/meal/meal.actions';
 
 const AddFoodToDiary = ({
   foodReference,
-  ToggleAddFoodToDiaryModal,
+  createFoodReference,
   ToggleSuggestionWindow,
   toggleSearchModal,
   entries,
@@ -28,14 +28,14 @@ const AddFoodToDiary = ({
   };
 
   const handleClose = () => {
-    ToggleAddFoodToDiaryModal(INITIAL_STATE);
+    createFoodReference(INITIAL_STATE);
     ToggleSuggestionWindow('ready to be viewed');
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     ToggleSuggestionWindow('ready to be viewed');
-    ToggleAddFoodToDiaryModal(INITIAL_STATE);
+    createFoodReference(INITIAL_STATE);
     toggleSearchModal({
       status: 'hidden',
       meal: 'none',
@@ -153,8 +153,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ToggleAddFoodToDiaryModal: (food) =>
-    dispatch(ToggleAddFoodToDiaryModal(food)),
+  createFoodReference: (food) => dispatch(createFoodReference(food)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   createEntry: (entries) => dispatch(createEntry(entries)),

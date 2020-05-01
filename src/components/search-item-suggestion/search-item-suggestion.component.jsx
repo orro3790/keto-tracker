@@ -2,19 +2,19 @@ import React from 'react';
 import './search-item-suggestion.styles.scss';
 import { connect } from 'react-redux';
 import {
-  ToggleAddFoodToDiaryModal,
+  createFoodReference,
   ToggleSuggestionWindow,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 
 const SearchItemSuggestion = ({
   food,
-  ToggleAddFoodToDiaryModal,
+  createFoodReference,
   ToggleSuggestionWindow,
   suggestionWindow,
 }) => {
   const handleClick = () => {
-    ToggleAddFoodToDiaryModal(food);
+    createFoodReference(food);
     ToggleSuggestionWindow(!suggestionWindow);
   };
 
@@ -40,8 +40,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  ToggleAddFoodToDiaryModal: (food) =>
-    dispatch(ToggleAddFoodToDiaryModal(food)),
+  createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });

@@ -20,7 +20,7 @@ const INITIAL_STATE = {
 
 const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case SearchItemSuggestionActionTypes.ADD_FOOD_TO_DIARY:
+    case SearchItemSuggestionActionTypes.CREATE_FOOD_REFERENCE:
       return {
         ...state,
         foodReference: action.payload,

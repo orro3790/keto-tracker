@@ -1,7 +1,7 @@
 import { SearchItemSuggestionActionTypes } from './../search-item-suggestion/search-item-suggestion.types';
 
-export const ToggleAddFoodToDiaryModal = (food) => ({
-  type: SearchItemSuggestionActionTypes.ADD_FOOD_TO_DIARY,
+export const createFoodReference = (food) => ({
+  type: SearchItemSuggestionActionTypes.CREATE_FOOD_REFERENCE,
   payload: food,
 });
 

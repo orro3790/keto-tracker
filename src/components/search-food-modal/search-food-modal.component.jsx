@@ -19,6 +19,16 @@ const SearchFoodModal = ({
   const [sizeInput, setSizeInput] = useState('');
   const [foodToAdd, setFoodToAdd] = useState({});
 
+  let currentDate = new Date();
+
+  const [date, month, year] = [
+    currentDate.getUTCDate(),
+    currentDate.getUTCMonth(),
+    currentDate.getUTCFullYear(),
+  ];
+
+  currentDate = `${month}-${date}-${year}`;
+
   const handleChange = (e) => {
     setSizeInput(e.target.value);
   };
@@ -32,41 +42,107 @@ const SearchFoodModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (sizeInput !== '') {
-      let currentDate = new Date();
 
-      const [date, month, year] = [
-        currentDate.getUTCDate(),
-        currentDate.getUTCMonth(),
-        currentDate.getUTCFullYear(),
-      ];
+    switch (searchModal.editMode) {
+      case false:
+        if (sizeInput !== '') {
+          // copy the foodReference obj but alter macro fields based off portion size
+          const foodCopy = Object.assign({}, foodReference);
 
-      currentDate = `${month}-${date}-${year}`;
+          foodCopy.fats = parseFloat(fats);
+          foodCopy.carbs = parseFloat(carbs);
+          foodCopy.protein = parseFloat(protein);
+          foodCopy.calories = parseFloat(calories);
+          foodCopy.size = parseFloat(sizeInput);
 
-      // copy the foodReference obj but alter macro fields based off portion size
-      const foodCopy = Object.assign({}, foodReference);
+          // add foodCopy to the entries obj
+          entries[currentDate][searchModal.meal]['foods'].push(foodCopy);
 
-      foodCopy.fats = parseFloat(fats);
-      foodCopy.carbs = parseFloat(carbs);
-      foodCopy.protein = parseFloat(protein);
-      foodCopy.calories = parseFloat(calories);
-      foodCopy.size = parseFloat(sizeInput);
+          // dispatch the new entry obj to state then close the window
+          createEntry(entries);
+          handleClose();
+        }
+        break;
+      case true:
+        if (sizeInput !== '') {
+          // copy the foodReference obj but alter macro fields based off portion size
+          const foodCopy = Object.assign({}, foodReference);
 
-      // add foodCopy to the entries obj
-      entries[currentDate][searchModal.meal]['foods'].push(foodCopy);
+          foodCopy.fats = parseFloat(fats);
+          foodCopy.carbs = parseFloat(carbs);
+          foodCopy.protein = parseFloat(protein);
+          foodCopy.calories = parseFloat(calories);
+          foodCopy.size = parseFloat(sizeInput);
 
-      // dispatch the new entry obj to state
-      createEntry(entries);
-      handleClose();
+          // remove the edited food from the entries obj
+          entries[currentDate][searchModal.meal]['foods'].splice(
+            searchModal.listId,
+            1
+          );
+
+          // add the updated food to the entries obj back where it used to be
+          entries[currentDate][searchModal.meal]['foods'].splice(
+            searchModal.listId,
+            0,
+            foodCopy
+          );
+
+          // dispatch the new entry obj to state
+          createEntry(entries);
+
+          toggleSearchModal({
+            status: 'hidden',
+            meal: 'none',
+          });
+        }
+        break;
+      default:
+        break;
     }
   };
 
+  const handleDelete = () => {
+    // remove the edited food from the entries obj
+    entries[currentDate][searchModal.meal]['foods'].splice(
+      searchModal.listId,
+      1
+    );
+
+    // dispatch the new entry obj to state
+    createEntry(entries);
+
+    toggleSearchModal({
+      status: 'hidden',
+      meal: 'none',
+    });
+  };
+
+  // hardcoded user profile settings for now, used to calculate daily %'s
   const dietLimits = {
     carbs: 30,
-    fats: 150,
-    protein: 100,
-    calories: 1870,
+    fats: 100,
+    protein: 60,
+    calories: 1170,
   };
+
+  let calories;
+  let fats;
+  let carbs;
+  let protein;
+
+  if (sizeInput !== '') {
+    // renders macros based on user's size input
+    calories = (foodReference.caloriesPer * sizeInput).toFixed(1);
+    fats = (foodReference.fatsPer * sizeInput).toFixed(1);
+    carbs = (foodReference.carbsPer * sizeInput).toFixed(1);
+    protein = (foodReference.proteinPer * sizeInput).toFixed(1);
+  } else {
+    //pulls and renders macros from the item that was clicked on in the meal component
+    fats = foodReference.fats;
+    carbs = foodReference.carbs;
+    protein = foodReference.protein;
+    calories = foodReference.calories;
+  }
 
   const options = {
     responsive: true,
@@ -116,16 +192,48 @@ const SearchFoodModal = ({
     let proteinRemaining;
     let caloriesRemaining;
 
-    if (sizeInput !== '') {
-      fatsRemaining = (fats / dietLimits.fats).toFixed(2) * 100;
-      carbsRemaining = (carbs / dietLimits.carbs).toFixed(2) * 100;
-      proteinRemaining = (protein / dietLimits.protein).toFixed(2) * 100;
-      caloriesRemaining = (calories / dietLimits.calories).toFixed(2) * 100;
-    } else {
-      fatsRemaining = foodReference.fats;
-      carbsRemaining = foodReference.carbs;
-      proteinRemaining = foodReference.protein;
-      caloriesRemaining = (calories / dietLimits.calories).toFixed(2) * 100;
+    // switch block controls all of the chart rendering logic
+    switch (searchModal.editMode) {
+      case true:
+        if (sizeInput !== '') {
+          // render chart data based on user input
+          fatsRemaining = (fats / dietLimits.fats).toFixed(1) * 100;
+          carbsRemaining = (carbs / dietLimits.carbs).toFixed(1) * 100;
+          proteinRemaining = (protein / dietLimits.protein).toFixed(1) * 100;
+          caloriesRemaining = (calories / dietLimits.calories).toFixed(1) * 100;
+        } else {
+          // render chart data based on foodToEdit's existing macro data
+          fatsRemaining =
+            (foodReference.fats / dietLimits.fats).toFixed(1) * 100;
+          carbsRemaining =
+            (foodReference.carbs / dietLimits.carbs).toFixed(1) * 100;
+          proteinRemaining =
+            (foodReference.protein / dietLimits.protein).toFixed(1) * 100;
+          caloriesRemaining =
+            (foodReference.calories / dietLimits.calories).toFixed(1) * 100;
+        }
+        break;
+      case false:
+        if (sizeInput !== '') {
+          // render chart data based on user input
+          fatsRemaining = (fats / dietLimits.fats).toFixed(1) * 100;
+          carbsRemaining = (carbs / dietLimits.carbs).toFixed(1) * 100;
+          proteinRemaining = (protein / dietLimits.protein).toFixed(1) * 100;
+          caloriesRemaining = (calories / dietLimits.calories).toFixed(1) * 100;
+        } else {
+          // render chart data based on default macro data
+          fatsRemaining =
+            (foodReference.fats / dietLimits.fats).toFixed(1) * 100;
+          carbsRemaining =
+            (foodReference.carbs / dietLimits.carbs).toFixed(1) * 100;
+          proteinRemaining =
+            (foodReference.protein / dietLimits.protein).toFixed(1) * 100;
+          caloriesRemaining =
+            (foodReference.calories / dietLimits.calories).toFixed(1) * 100;
+        }
+        break;
+      default:
+        break;
     }
 
     setFoodToAdd({
@@ -134,7 +242,6 @@ const SearchFoodModal = ({
       protein: proteinRemaining,
       calories: caloriesRemaining,
     });
-    // console.log(`${fatsRemaining} fats remaining`);
 
     const chart = () => {
       setChartData({
@@ -162,23 +269,20 @@ const SearchFoodModal = ({
     };
 
     chart();
-  }, [suggestionWindow, sizeInput]);
-
-  let calories;
-  let fats;
-  let carbs;
-  let protein;
-  if (sizeInput === '') {
-    calories = foodReference.calories;
-    fats = foodReference.fats;
-    carbs = foodReference.carbs;
-    protein = foodReference.protein;
-  } else {
-    calories = (foodReference.caloriesPer * sizeInput).toFixed(2);
-    fats = (foodReference.fatsPer * sizeInput).toFixed(2);
-    carbs = (foodReference.carbsPer * sizeInput).toFixed(2);
-    protein = (foodReference.proteinPer * sizeInput).toFixed(2);
-  }
+  }, [
+    suggestionWindow,
+    sizeInput,
+    searchModal,
+    dietLimits.calories,
+    dietLimits.carbs,
+    dietLimits.fats,
+    dietLimits.protein,
+    foodReference.calories,
+    foodReference.carbs,
+    foodReference.fats,
+    foodReference.protein,
+    calories,
+  ]);
 
   const getBtnStyle = () => {
     if (sizeInput !== '') {
@@ -190,11 +294,36 @@ const SearchFoodModal = ({
 
   const getIconStyle = () => {
     if (sizeInput !== '') {
-      return 'fas fa-check add-btn enabled';
+      return 'fas fa-check add-icon enabled';
     } else {
-      return 'fas fa-check add-btn';
+      return 'fas fa-check add-icon';
     }
   };
+
+  let submitRow;
+
+  if (searchModal.editMode === false) {
+    submitRow = (
+      <div className='submit-row'>
+        <div></div>
+        <div className={getBtnStyle()} onClick={handleSubmit}>
+          <i className={getIconStyle()}></i>
+        </div>
+        <div></div>
+      </div>
+    );
+  } else {
+    submitRow = (
+      <div className='submit-row-edit-mode'>
+        <div className={getBtnStyle()} onClick={handleSubmit}>
+          <i className={getIconStyle()}></i>
+        </div>
+        <div className='delete-btn' onClick={handleDelete}>
+          <i className='fas fa-trash delete-icon'></i>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -246,13 +375,7 @@ const SearchFoodModal = ({
           <div className='graph-area'>
             <Bar data={chartData} options={options} />
           </div>
-          <div className='submit-row'>
-            <div></div>
-            <div className={getBtnStyle()} onClick={handleSubmit}>
-              <i className={getIconStyle()}></i>
-            </div>
-            <div></div>
-          </div>
+          {submitRow}
         </div>
       </div>
     </div>

@@ -27,6 +27,7 @@ const Meal = ({
       toggleSearchModal({
         status: 'visible',
         meal: meal,
+        editMode: false,
       });
     } else {
       toggleSearchModal({
@@ -36,10 +37,11 @@ const Meal = ({
     }
   };
 
-  let keygen = 0;
+  // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0
+  let keygen = -1;
   const renderFoodItems = (food) => {
     keygen++;
-    return <FoodItem key={keygen} food={food} />;
+    return <FoodItem key={keygen} listId={keygen} food={food} meal={meal} />;
   };
 
   const subtotalFats = entries[currentDate][meal]['foods'].reduce(
@@ -102,15 +104,15 @@ const Meal = ({
         <div className='totals-container'>
           <div className='total-size'></div>
           <div className='total-fats'>
-            {entries[currentDate][meal]['totals']['fats'].toFixed(2)}
+            {entries[currentDate][meal]['totals']['fats'].toFixed(1)}
           </div>
           <div className='total-carbs'>
-            {entries[currentDate][meal]['totals']['carbs'].toFixed(2)}
+            {entries[currentDate][meal]['totals']['carbs'].toFixed(1)}
           </div>
           <div className='total-protein'>
-            {entries[currentDate][meal]['totals']['protein'].toFixed(2)}
+            {entries[currentDate][meal]['totals']['protein'].toFixed(1)}
           </div>
-          <div className='total-calories'>{subtotalCalories.toFixed(2)}</div>
+          <div className='total-calories'>{subtotalCalories.toFixed(1)}</div>
         </div>
       </div>
     </div>

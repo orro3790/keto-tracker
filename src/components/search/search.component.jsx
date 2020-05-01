@@ -10,11 +10,16 @@ const Search = ({
   ToggleSuggestionWindow,
   suggestionWindow,
   searchModal,
+  foodReference,
 }) => {
   const [searchInput, setSearchInput] = useState('');
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
   };
 
   // even if the suggestionWindow state is 'ready to be viewed', only show if the searchInput !== ''
@@ -29,17 +34,25 @@ const Search = ({
     setSearchInput('');
   }, [suggestionWindow]);
 
+  let labelMsg;
+
+  if (searchModal.editMode === true) {
+    labelMsg = `replace ${foodReference.name} with ...`;
+  } else {
+    labelMsg = `add an entry to ${searchModal.meal} ...`;
+  }
+
   return (
     <div>
       <div className='food-item-input'>
-        <form>
+        <form onSubmit={handleSubmit}>
           <FormInput
             id='name'
             name='search-input'
             type='text'
             onChange={handleChange}
             value={searchInput}
-            label={`add an entry to ${searchModal.meal}`}
+            label={labelMsg}
             required
           />
         </form>
@@ -57,6 +70,7 @@ const mapStateToProps = (state) => ({
   foodDatabase: state.foodDiary.foodDatabase,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
   searchModal: state.meal.searchModal,
+  foodReference: state.searchItemSuggestion.foodReference,
 });
 
 const mapDispatchToProps = (dispatch) => ({
