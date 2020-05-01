@@ -47,14 +47,29 @@ const SearchFoodModal = ({
     title: {
       display: true,
       text: '% of daily allowance',
+      fontColor: 'rgba(255, 255, 255, 1)',
     },
     scales: {
       yAxes: [
         {
+          gridLines: {
+            color: '#373737',
+          },
           ticks: {
             max: 100,
             min: 0,
             stepSize: 25,
+            fontColor: 'rgba(255, 255, 255, 1)',
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            color: '#373737',
+          },
+          ticks: {
+            fontColor: 'rgba(255, 255, 255, 1)',
           },
         },
       ],

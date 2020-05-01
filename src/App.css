@@ -1,7 +1,8 @@
 body {
   font-family: 'Roboto Condensed', sans-serif;
-  background-color: #434250;
+  background-color: #222222;
   color: white;
+  position: relative;
 }
 
 a {
