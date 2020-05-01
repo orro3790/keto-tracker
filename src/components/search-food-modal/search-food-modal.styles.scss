@@ -4,8 +4,8 @@ $google-red: #db4437;
 $font-size-small: 12px;
 $font-size-medium: 16px;
 $font-size-large: 22px;
-$font-size-display-3: 24px;
-$font-size-display-2: 36px;
+$font-size-display-3: 20px;
+$font-size-display-2: 40px;
 $small-weight: 300;
 $medium-weight: 400;
 $large-weight: 700;
@@ -15,8 +15,9 @@ $mid-grey: #373741;
 $dark-grey: #33333d;
 
 $keto-orange: rgba(255, 147, 64, 1);
-$keto-pink: rgba(227, 28, 116, 1);
+$keto-pink: rgb(226, 28, 117);
 $keto-blue: rgba(64, 168, 255, 1);
+$keto-green: #1eb980;
 
 @mixin centered {
   position: fixed;
@@ -28,15 +29,15 @@ $keto-blue: rgba(64, 168, 255, 1);
 
 .search-food-modal {
   @include centered;
-  height: 500px;
-  width: 400px;
+  height: 600px;
+  width: 450px;
   display: grid;
   grid-template-rows: 15% 85%;
   box-shadow: (0px 3px 6px rgba(0, 0, 0, 0.3));
   background-color: $mid-grey;
 
   .search-section {
-    padding: 30px 10px 0px 10px;
+    padding: 30px 20px 0px 20px;
   }
 
   .close-search-modal-btn {
@@ -69,13 +70,13 @@ $keto-blue: rgba(64, 168, 255, 1);
 
   .results-container {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 2fr 4fr;
-    padding: 10px;
+    grid-template-rows: 1fr 1fr 1fr 2fr 2fr 4fr 2fr;
+    padding: 0px 20px 20px 20px;
     text-align: center;
     // align-items: center;
 
     .name {
-      font-size: $font-size-large;
+      font-size: $font-size-display-2;
     }
 
     .description {
@@ -85,15 +86,14 @@ $keto-blue: rgba(64, 168, 255, 1);
     .portion-input-row {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
+      align-self: center;
       font-size: $font-size-large;
-      margin: 0px 0px 10px 0px;
 
       .portion-input {
         background-color: $light-grey;
         color: white;
-        font-size: $font-size-medium;
-        padding: 10px 10px 10px 10px;
-        display: block;
+        font-size: $font-size-large;
+        padding: 5px;
         width: 100%;
         border: none;
         border-bottom: 1px solid $extra-light-grey;
@@ -105,31 +105,41 @@ $keto-blue: rgba(64, 168, 255, 1);
       }
     }
 
+    .calories-column {
+      font-size: $font-size-display-2;
+      color: white;
+      align-self: end;
+    }
+
     .macro-row {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
+      font-weight: 600;
 
-      .fats {
+      .fats-column {
         font-size: $font-size-display-3;
-        color: $keto-orange;
+        color: $keto-green;
+        align-self: center;
 
         .label {
           font-size: $font-size-medium;
         }
       }
 
-      .carbs {
-        font-size: $font-size-display-2;
+      .carbs-column {
+        font-size: $font-size-display-3;
         color: $keto-pink;
+        align-self: center;
 
         .label {
-          font-size: $font-size-large;
+          font-size: $font-size-medium;
         }
       }
 
-      .protein {
+      .protein-column {
         font-size: $font-size-display-3;
         color: $keto-blue;
+        align-self: center;
 
         .label {
           font-size: $font-size-medium;
@@ -137,10 +147,48 @@ $keto-blue: rgba(64, 168, 255, 1);
       }
     }
 
-    .graph-row {
-      margin: auto;
+    .calories-column {
+      .calories-value {
+        padding: 0px 5px 0px 0px;
+      }
+    }
+
+    .graph-area {
+      position: relative;
       width: 100%;
-      height: 100%;
+      height: 200px;
+    }
+  }
+  .submit-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding-top: 20px;
+
+    .submit-btn {
+      background-color: $light-grey;
+      font-size: $font-size-display-3;
+      align-self: center;
+      padding: 10px;
+      transition: 0.5s;
+
+      &.enabled {
+        background-color: $keto-green;
+        transition: 0.5s;
+        cursor: pointer;
+      }
+
+      .add-btn {
+        padding: 0px 0px 0px 5px;
+        font-size: $font-size-display-3;
+        color: $mid-grey;
+        transition: 0.5s;
+
+        &.enabled {
+          color: white;
+          transition: 0.5s;
+          cursor: pointer;
+        }
+      }
     }
   }
 }

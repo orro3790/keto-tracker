@@ -180,7 +180,7 @@ const mapStateToProps = (state) => ({
   createFoodModalStatus: state.createFoodItem.modalStatus,
   toggleConfirmation: state.createFoodItem.toggleConfirmation,
   searchModal: state.meal.searchModal,
-  foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
+  foodReference: state.searchItemSuggestion.foodReference,
   entries: state.foodDiary.entries,
 });
 

@@ -1,10 +1,11 @@
 import { SearchItemSuggestionActionTypes } from './search-item-suggestion.types';
 
 const INITIAL_STATE = {
-  foodItemToAdd: {
+  foodReference: {
     name: 'default name',
     description: 'default description',
-    grams: 0,
+    size: 0,
+    unit: 'g',
     fats: 0,
     fatsPer: 0,
     carbs: 0,
@@ -22,7 +23,7 @@ const searchItemSuggestionReducer = (state = INITIAL_STATE, action) => {
     case SearchItemSuggestionActionTypes.ADD_FOOD_TO_DIARY:
       return {
         ...state,
-        foodItemToAdd: action.payload,
+        foodReference: action.payload,
       };
     case SearchItemSuggestionActionTypes.TOGGLE_SUGGESTION_WINDOW:
       return {

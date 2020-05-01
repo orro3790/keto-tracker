@@ -10,7 +10,7 @@ import { createEntry } from '../../redux/food-diary/food-diary.actions';
 import { toggleSearchModal } from '../../redux/meal/meal.actions';
 
 const AddFoodToDiary = ({
-  foodItemToAdd,
+  foodReference,
   ToggleAddFoodToDiaryModal,
   ToggleSuggestionWindow,
   toggleSearchModal,
@@ -51,7 +51,7 @@ const AddFoodToDiary = ({
 
     currentDate = `${month}-${date}-${year}`;
 
-    entries[currentDate][searchModal.meal]['foods'].push(foodItemToAdd);
+    entries[currentDate][searchModal.meal]['foods'].push(foodReference);
 
     createEntry(entries);
   };
@@ -69,7 +69,7 @@ const AddFoodToDiary = ({
                 className='food-name-input'
                 name='name'
                 type='text'
-                value={foodItemToAdd.name}
+                value={foodReference.name}
                 readOnly
               />
             </div>
@@ -77,7 +77,7 @@ const AddFoodToDiary = ({
               <textarea
                 className='description-area'
                 name='description'
-                value={foodItemToAdd.description}
+                value={foodReference.description}
                 readOnly
               ></textarea>
             </div>
@@ -87,7 +87,7 @@ const AddFoodToDiary = ({
                 className={'macro-input'}
                 name='grams'
                 type='number'
-                value={foodItemToAdd.grams}
+                value={foodReference.grams}
                 readOnly
               />
               <span className='macro-unit'>(g)</span>
@@ -96,7 +96,7 @@ const AddFoodToDiary = ({
                 className={'macro-input'}
                 name='fats'
                 type='number'
-                value={foodItemToAdd.fats}
+                value={foodReference.fats}
                 readOnly
               />
               <span className='macro-unit'>(g)</span>
@@ -105,7 +105,7 @@ const AddFoodToDiary = ({
                 className={'macro-input'}
                 name='carbs'
                 type='number'
-                value={foodItemToAdd.carbs}
+                value={foodReference.carbs}
                 readOnly
               />
               <span className='macro-unit'>(g)</span>
@@ -114,7 +114,7 @@ const AddFoodToDiary = ({
                 className={'macro-input'}
                 name='protein'
                 type='number'
-                value={foodItemToAdd.protein}
+                value={foodReference.protein}
                 readOnly
               />
               <span className='macro-unit'>(g)</span>
@@ -123,7 +123,7 @@ const AddFoodToDiary = ({
                 className={'macro-input'}
                 name='calories'
                 type='number'
-                value={foodItemToAdd.calories}
+                value={foodReference.calories}
                 readOnly
               />
               <span className='macro-unit'></span>
@@ -147,7 +147,7 @@ const AddFoodToDiary = ({
 };
 
 const mapStateToProps = (state) => ({
-  foodItemToAdd: state.searchItemSuggestion.foodItemToAdd,
+  foodReference: state.searchItemSuggestion.foodReference,
   searchModal: state.meal.searchModal,
   entries: state.foodDiary.entries,
 });

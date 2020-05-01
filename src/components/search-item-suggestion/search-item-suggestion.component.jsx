@@ -18,12 +18,19 @@ const SearchItemSuggestion = ({
     ToggleSuggestionWindow(!suggestionWindow);
   };
 
+  const truncate = (string) => {
+    if (string !== '') {
+      return `(${string.slice(0, 24)}...)`;
+    }
+  };
+
   return (
     <div className='search-item-container' onClick={handleClick}>
       <div className='search-item-add-btn'>
         <i className='fas fa-plus-square'></i>
       </div>
       <div className='search-item-name'>{food.name}</div>
+      {/* <div>{truncate(food.description)}</div> */}
     </div>
   );
 };

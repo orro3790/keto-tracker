@@ -13,7 +13,7 @@ const Search = ({
 }) => {
   const [searchInput, setSearchInput] = useState('');
 
-  const handleChange = async (e) => {
+  const handleChange = (e) => {
     setSearchInput(e.target.value);
   };
 
