@@ -84,35 +84,45 @@ const SearchFoodModal = ({
     let fatsRemaining;
     let carbsRemaining;
     let proteinRemaining;
+    let caloriesRemaining;
 
     if (sizeInput !== '') {
       fatsRemaining = (fats / dietLimits.fats).toFixed(2) * 100;
       carbsRemaining = (carbs / dietLimits.carbs).toFixed(2) * 100;
       proteinRemaining = (protein / dietLimits.protein).toFixed(2) * 100;
+      caloriesRemaining = (calories / dietLimits.calories).toFixed(2) * 100;
     } else {
       fatsRemaining = foodReference.fats;
       carbsRemaining = foodReference.carbs;
       proteinRemaining = foodReference.protein;
+      caloriesRemaining = (calories / dietLimits.calories).toFixed(2) * 100;
     }
 
     setFoodToAdd({
       fats: fatsRemaining,
       carbs: carbsRemaining,
       protein: proteinRemaining,
+      calories: caloriesRemaining,
     });
     // console.log(`${fatsRemaining} fats remaining`);
 
     const chart = () => {
       setChartData({
-        labels: ['fats', 'carbs', 'protein'],
+        labels: ['fats', 'carbs', 'protein', 'calories'],
         datasets: [
           {
             label: 'macro ratios',
-            data: [fatsRemaining, carbsRemaining, proteinRemaining],
+            data: [
+              fatsRemaining,
+              carbsRemaining,
+              proteinRemaining,
+              caloriesRemaining,
+            ],
             backgroundColor: [
               'rgba(255, 147, 64, 1)',
               'rgba(227, 28, 116, 1)',
               'rgba(64, 168, 255, 1)',
+              'rgba(255, 255, 255, 1)',
             ],
             borderWidth: 2,
             borderColor: '#434250',
@@ -168,7 +178,6 @@ const SearchFoodModal = ({
         <div className='results-container'>
           <div className='name'>{foodReference.name}</div>
           <div className='description'>{foodReference.description}</div>
-
           <div className='portion-input-row'>
             <div></div>
             <div>
@@ -185,10 +194,7 @@ const SearchFoodModal = ({
             </div>
             <div></div>
           </div>
-          <div className='calories-column'>
-            <span className='calories-value'>{calories}</span>
-            cal
-          </div>
+
           <div className='macro-row'>
             <div className='fats-column'>
               <span className='fats-value'>{fats}</span>g
@@ -201,6 +207,10 @@ const SearchFoodModal = ({
             <div className='protein-column'>
               <span className='protein-value'>{protein}</span>g
               <div className='label'>protein</div>
+            </div>
+            <div className='calories-column'>
+              <span className='calories-value'>{calories}</span>
+              <div className='label'>calories</div>
             </div>
           </div>
           <div className='graph-area'>

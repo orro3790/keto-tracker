@@ -95,7 +95,7 @@ const CreateFood = ({
                 value={fields.name.value}
                 onChange={handleChange}
                 placeholder='Add a name...'
-                maxLength='40'
+                maxLength='35'
                 required
               />
             </div>

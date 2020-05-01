@@ -1,11 +1,11 @@
 $primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
-$google-red: #db4437;
+$error-red-500: #f44336;
 
 $font-size-small: 12px;
 $font-size-medium: 16px;
 $font-size-large: 22px;
 $font-size-display-3: 20px;
-$font-size-display-2: 40px;
+$font-size-display-2: 26px;
 $small-weight: 300;
 $medium-weight: 400;
 $large-weight: 700;
@@ -21,9 +21,9 @@ $dp-12: #323232;
 $dp-16: #353535;
 $dp-24: #373737;
 
-$keto-orange: rgba(255, 147, 64, 1);
-$keto-pink: rgb(226, 28, 117);
-$keto-blue: rgba(64, 168, 255, 1);
+$keto-orange: #ffc894;
+$keto-pink: #ff94cb;
+$keto-blue: #94cbff;
 $keto-green: #1eb980;
 
 @mixin centered {
@@ -53,7 +53,7 @@ $keto-green: #1eb980;
     margin-right: 5px;
     top: 0;
     right: 0;
-    color: $google-red;
+    color: $error-red-500;
     cursor: pointer;
 
     & i {
@@ -77,7 +77,7 @@ $keto-green: #1eb980;
 
   .results-container {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 2fr 2fr 4fr 2fr;
+    grid-template-rows: 1fr 1fr 2fr 4fr 2fr;
     padding: 0px 20px 20px 20px;
     text-align: center;
     // align-items: center;
@@ -88,11 +88,12 @@ $keto-green: #1eb980;
 
     .description {
       font-size: $font-size-medium;
+      margin: 10px 0px 10px 0px;
     }
 
     .portion-input-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr 2fr;
       align-self: center;
       font-size: $font-size-large;
 
@@ -112,15 +113,9 @@ $keto-green: #1eb980;
       }
     }
 
-    .calories-column {
-      font-size: $font-size-display-2;
-      color: white;
-      align-self: end;
-    }
-
     .macro-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       font-weight: 600;
 
       .fats-column {
@@ -146,6 +141,16 @@ $keto-green: #1eb980;
       .protein-column {
         font-size: $font-size-display-3;
         color: $keto-blue;
+        align-self: center;
+
+        .label {
+          font-size: $font-size-medium;
+        }
+      }
+
+      .calories-column {
+        font-size: $font-size-display-3;
+        color: white;
         align-self: center;
 
         .label {

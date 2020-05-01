@@ -61,7 +61,7 @@ const TotalsChart = ({ entries, meal }) => {
             data: totalsData,
             backgroundColor: colors,
             borderWidth: 4,
-            borderColor: '#434250',
+            borderColor: '#222222',
           },
         ],
       });
