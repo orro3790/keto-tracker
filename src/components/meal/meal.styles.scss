@@ -45,9 +45,13 @@ $dp-24: #373737;
   display: grid;
   grid-template-columns: 1fr 2fr;
 
+  &:hover {
+    background: $dp-12;
+  }
+
   .totals-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     text-align: right;
     align-content: center;
   }

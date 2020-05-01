@@ -18,11 +18,11 @@ const SearchItemSuggestion = ({
     ToggleSuggestionWindow(!suggestionWindow);
   };
 
-  const truncate = (string) => {
-    if (string !== '') {
-      return `(${string.slice(0, 24)}...)`;
-    }
-  };
+  // const truncate = (string) => {
+  //   if (string !== '') {
+  //     return `(${string.slice(0, 24)}...)`;
+  //   }
+  // };
 
   return (
     <div className='search-item-container' onClick={handleClick}>

@@ -5,12 +5,15 @@ import Search from './../search/search.component';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 import { ToggleSuggestionWindow } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
+import { createEntry } from '../../redux/food-diary/food-diary.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
   foodReference,
   ToggleSuggestionWindow,
   suggestionWindow,
+  entries,
+  searchModal,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -29,6 +32,33 @@ const SearchFoodModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (sizeInput !== '') {
+      let currentDate = new Date();
+
+      const [date, month, year] = [
+        currentDate.getUTCDate(),
+        currentDate.getUTCMonth(),
+        currentDate.getUTCFullYear(),
+      ];
+
+      currentDate = `${month}-${date}-${year}`;
+
+      // copy the foodReference obj but alter macro fields based off portion size
+      const foodCopy = Object.assign({}, foodReference);
+
+      foodCopy.fats = parseFloat(fats);
+      foodCopy.carbs = parseFloat(carbs);
+      foodCopy.protein = parseFloat(protein);
+      foodCopy.calories = parseFloat(calories);
+      foodCopy.size = parseFloat(sizeInput);
+
+      // add foodCopy to the entries obj
+      entries[currentDate][searchModal.meal]['foods'].push(foodCopy);
+
+      // dispatch the new entry obj to state
+      createEntry(entries);
+      handleClose();
+    }
   };
 
   const dietLimits = {
@@ -218,7 +248,7 @@ const SearchFoodModal = ({
           </div>
           <div className='submit-row'>
             <div></div>
-            <div className={getBtnStyle()}>
+            <div className={getBtnStyle()} onClick={handleSubmit}>
               <i className={getIconStyle()}></i>
             </div>
             <div></div>
@@ -232,11 +262,14 @@ const SearchFoodModal = ({
 const mapStateToProps = (state) => ({
   foodReference: state.searchItemSuggestion.foodReference,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
+  entries: state.foodDiary.entries,
+  searchModal: state.meal.searchModal,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
+  createEntry: (entries) => dispatch(createEntry(entries)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchFoodModal);

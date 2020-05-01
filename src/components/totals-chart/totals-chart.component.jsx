@@ -26,7 +26,11 @@ const TotalsChart = ({ entries, meal }) => {
   if (totalCalories === 0) {
     totalsData = [1];
   } else {
-    totalsData = [totalFats, totalCarbs, totalProtein];
+    totalsData = [
+      totalFats.toFixed(2),
+      totalCarbs.toFixed(2),
+      totalProtein.toFixed(2),
+    ];
   }
 
   let colors;

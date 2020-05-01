@@ -100,16 +100,17 @@ const Meal = ({
       <div className='totals-row'>
         <div className='total-label'>totals</div>
         <div className='totals-container'>
+          <div className='total-size'></div>
           <div className='total-fats'>
-            {entries[currentDate][meal]['totals']['fats']}
+            {entries[currentDate][meal]['totals']['fats'].toFixed(2)}
           </div>
           <div className='total-carbs'>
-            {entries[currentDate][meal]['totals']['carbs']}
+            {entries[currentDate][meal]['totals']['carbs'].toFixed(2)}
           </div>
           <div className='total-protein'>
-            {entries[currentDate][meal]['totals']['protein']}
+            {entries[currentDate][meal]['totals']['protein'].toFixed(2)}
           </div>
-          <div className='total-calories'>{subtotalCalories}</div>
+          <div className='total-calories'>{subtotalCalories.toFixed(2)}</div>
         </div>
       </div>
     </div>
