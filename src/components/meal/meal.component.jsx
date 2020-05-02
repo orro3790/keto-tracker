@@ -14,13 +14,7 @@ const Meal = ({
 }) => {
   let currentDate = new Date();
 
-  const [date, month, year] = [
-    currentDate.getUTCDate(),
-    currentDate.getUTCMonth(),
-    currentDate.getUTCFullYear(),
-  ];
-
-  currentDate = `${month}-${date}-${year}`;
+  currentDate = currentDate.toLocaleDateString();
 
   const handleClick = () => {
     if (searchModal.status === 'hidden') {
@@ -88,7 +82,13 @@ const Meal = ({
     copy
   );
 
-  const inStorage = JSON.parse(localStorage.getItem('entries'));
+  // if entries obj in localStorage, use it for rendering, else use the default entries object instantiated by food diary
+  let entriesObj;
+  if (entriesObj !== undefined) {
+    entriesObj = JSON.parse(localStorage.getItem('entries'));
+  } else {
+    entriesObj = entries;
+  }
 
   return (
     <div>
@@ -100,8 +100,7 @@ const Meal = ({
           </span>
         </span>
       </div>
-
-      {inStorage[currentDate][meal]['foods'].map((food) =>
+      {entriesObj[currentDate][meal]['foods'].map((food) =>
         renderFoodItems(food)
       )}
       <div className='totals-row'>

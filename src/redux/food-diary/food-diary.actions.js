@@ -9,3 +9,8 @@ export const createEntry = (entries) => ({
   type: FoodDiaryActionTypes.CREATE_DAILY_MEALS_OBJ,
   payload: entries,
 });
+
+export const setCurrentDate = (date) => ({
+  type: FoodDiaryActionTypes.GET_CURRENT_DATE,
+  payload: date,
+});

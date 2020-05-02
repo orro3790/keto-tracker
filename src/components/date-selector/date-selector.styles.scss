@@ -1,0 +1,31 @@
+$font-size-small: 12px;
+$font-size-medium: 16px;
+$font-size-large: 22px;
+$font-size-display-3: 20px;
+$font-size-display-2: 26px;
+$small-weight: 300;
+$medium-weight: 400;
+$large-weight: 700;
+
+.date-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+  width: 50vw;
+  margin: auto;
+
+  .yesterday-container {
+    font-size: $font-size-large;
+    cursor: pointer;
+  }
+
+  .today-container {
+    font-size: $font-size-large;
+    cursor: pointer;
+  }
+
+  .tomorrow-container {
+    font-size: $font-size-large;
+    cursor: pointer;
+  }
+}

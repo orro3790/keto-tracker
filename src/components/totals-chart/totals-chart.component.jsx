@@ -9,13 +9,7 @@ const TotalsChart = ({ entries, meal }) => {
 
   let currentDate = new Date();
 
-  const [date, month, year] = [
-    currentDate.getUTCDate(),
-    currentDate.getUTCMonth(),
-    currentDate.getUTCFullYear(),
-  ];
-
-  currentDate = `${month}-${date}-${year}`;
+  currentDate = currentDate.toLocaleDateString();
 
   const totalFats = entries[currentDate][meal]['totals']['fats'];
   const totalCarbs = entries[currentDate][meal]['totals']['carbs'];

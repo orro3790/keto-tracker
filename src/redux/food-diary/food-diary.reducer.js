@@ -42,6 +42,7 @@ const INITIAL_STATE = {
       },
     },
   },
+  dates: '',
 };
 
 const foodDiaryReducer = (state = INITIAL_STATE, action) => {
@@ -55,6 +56,11 @@ const foodDiaryReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         entries: action.payload,
+      };
+    case FoodDiaryActionTypes.GET_CURRENT_DATE:
+      return {
+        ...state,
+        dates: action.payload,
       };
     default:
       return state;
