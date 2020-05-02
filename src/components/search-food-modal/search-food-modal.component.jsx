@@ -3,7 +3,10 @@ import './search-food-modal.styles.scss';
 import { connect } from 'react-redux';
 import Search from './../search/search.component';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
-import { ToggleSuggestionWindow } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import {
+  ToggleSuggestionWindow,
+  createFoodReference,
+} from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
 import { createEntry } from '../../redux/food-diary/food-diary.actions';
 
@@ -11,6 +14,7 @@ const SearchFoodModal = ({
   toggleSearchModal,
   foodReference,
   ToggleSuggestionWindow,
+  createFoodReference,
   suggestionWindow,
   entries,
   searchModal,
@@ -19,6 +23,16 @@ const SearchFoodModal = ({
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
   const [foodToAdd, setFoodToAdd] = useState({});
+
+  // if entries obj in localStorage, use it for rendering, else use the entries object in state
+  let entriesObj;
+  entriesObj = JSON.parse(localStorage.getItem('entries'));
+  if (entriesObj !== undefined && entriesObj !== null) {
+    console.log(entriesObj);
+  } else {
+    entriesObj = entries;
+    console.log('meal component could not retrieve entriesObj');
+  }
 
   const handleChange = (e) => {
     setSizeInput(e.target.value);
@@ -47,13 +61,15 @@ const SearchFoodModal = ({
           foodCopy.size = parseFloat(sizeInput);
 
           // add foodCopy to the entries obj
-          entries[dates.currentDate][searchModal.meal]['foods'].push(foodCopy);
+          entriesObj[dates.currentDate][searchModal.meal]['foods'].push(
+            foodCopy
+          );
 
           // dispatch the new entry obj to state then close the window
-          createEntry(entries);
+          createEntry(entriesObj);
 
           // set in localStorage
-          localStorage.setItem('entries', JSON.stringify(entries));
+          localStorage.setItem('entries', JSON.stringify(entriesObj));
 
           handleClose();
         }
@@ -70,24 +86,24 @@ const SearchFoodModal = ({
           foodCopy.size = parseFloat(sizeInput);
 
           // remove the edited food from the entries obj
-          entries[dates.currentDate][searchModal.meal]['foods'].splice(
+          entriesObj[dates.currentDate][searchModal.meal]['foods'].splice(
             searchModal.listId,
             1
           );
 
           // add the updated food to the entries obj back where it used to be
-          entries[dates.currentDate][searchModal.meal]['foods'].splice(
+          entriesObj[dates.currentDate][searchModal.meal]['foods'].splice(
             searchModal.listId,
             0,
             foodCopy
           );
 
           // dispatch the new entry obj to state
-          createEntry(entries);
+          createEntry(entriesObj);
 
           //remove the old entries obj from localStorage and replace it with the new one
-          localStorage.removeItem(entries);
-          localStorage.setItem('entries', JSON.stringify(entries));
+          localStorage.removeItem(entriesObj);
+          localStorage.setItem('entries', JSON.stringify(entriesObj));
 
           toggleSearchModal({
             status: 'hidden',
@@ -102,17 +118,20 @@ const SearchFoodModal = ({
 
   const handleDelete = () => {
     // remove the edited food from the entries obj
-    entries[dates.currentDate][searchModal.meal]['foods'].splice(
+    entriesObj[dates.currentDate][searchModal.meal]['foods'].splice(
       searchModal.listId,
       1
     );
 
     // dispatch the new entry obj to state
-    createEntry(entries);
+    createEntry(entriesObj);
 
     // remove from localStorage and replace it with the new one
-    localStorage.removeItem(entries);
-    localStorage.setItem('entries', JSON.stringify(entries));
+    localStorage.removeItem('entries');
+    localStorage.setItem('entries', JSON.stringify(entriesObj));
+
+    // reset foodReference
+    createFoodReference('');
 
     toggleSearchModal({
       status: 'hidden',
@@ -397,6 +416,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
   createEntry: (entries) => dispatch(createEntry(entries)),
+  createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchFoodModal);

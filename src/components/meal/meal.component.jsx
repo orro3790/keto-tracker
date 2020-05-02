@@ -4,6 +4,7 @@ import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 import { createEntry } from '../../redux/food-diary/food-diary.actions';
+import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 
 const Meal = ({
   meal,
@@ -12,6 +13,7 @@ const Meal = ({
   entries,
   createEntry,
   dates,
+  createFoodReference,
 }) => {
   const handleClick = () => {
     if (searchModal.status === 'hidden') {
@@ -20,6 +22,7 @@ const Meal = ({
         meal: meal,
         editMode: false,
       });
+      createFoodReference('');
     } else {
       toggleSearchModal({
         status: 'hidden',
@@ -28,6 +31,16 @@ const Meal = ({
     }
   };
 
+  // if entries obj in localStorage, use it for rendering, else use the entries object in state
+  let entriesObj;
+  entriesObj = JSON.parse(localStorage.getItem('entries'));
+  if (entriesObj !== undefined && entriesObj !== null) {
+    // console.log('meal component retrieved entriesObj');
+  } else {
+    entriesObj = entries;
+    console.log('meal component could not retrieve entriesObj');
+  }
+
   // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0
   let keygen = -1;
   const renderFoodItems = (food) => {
@@ -35,53 +48,49 @@ const Meal = ({
     return <FoodItem key={keygen} listId={keygen} food={food} meal={meal} />;
   };
 
-  const subtotalFats = entries[dates.currentDate][meal]['foods'].reduce(
+  const subtotalFats = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.fats);
     },
     0
   );
 
-  const subtotalCarbs = entries[dates.currentDate][meal]['foods'].reduce(
+  const subtotalCarbs = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.carbs);
     },
     0
   );
 
-  const subtotalProtein = entries[dates.currentDate][meal]['foods'].reduce(
+  const subtotalProtein = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.protein);
     },
     0
   );
 
-  const subtotalCalories = entries[dates.currentDate][meal]['foods'].reduce(
+  const subtotalCalories = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.calories);
     },
     0
   );
 
-  const copy = Object.assign({}, entries);
+  const copy = Object.assign({}, entriesObj);
 
   copy[dates.currentDate][meal]['totals']['fats'] = subtotalFats;
   copy[dates.currentDate][meal]['totals']['carbs'] = subtotalCarbs;
   copy[dates.currentDate][meal]['totals']['protein'] = subtotalProtein;
   copy[dates.currentDate][meal]['totals']['calories'] = subtotalCalories;
 
-  // add totals to the entry obj
-  useEffect(() => {
-    createEntry(copy);
-  }, [subtotalCalories]);
+  localStorage.setItem('entries', JSON.stringify(copy));
 
-  // if entries obj in localStorage, use it for rendering, else use the entries object in state
-  let entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj !== undefined) {
-  } else {
-    entriesObj = entries;
-    console.log('undefined');
-  }
+  useEffect(() => {
+    // remove from localStorage and replace it with the new one
+    localStorage.removeItem('entries');
+    localStorage.setItem('entries', JSON.stringify(copy));
+    // double refresh in browser clears the cache... why?
+  }, [copy]);
 
   return (
     <div>
@@ -101,13 +110,15 @@ const Meal = ({
         <div className='totals-container'>
           <div className='total-size'></div>
           <div className='total-fats'>
-            {entries[dates.currentDate][meal]['totals']['fats'].toFixed(1)}
+            {entriesObj[dates.currentDate][meal]['totals']['fats'].toFixed(1)}
           </div>
           <div className='total-carbs'>
-            {entries[dates.currentDate][meal]['totals']['carbs'].toFixed(1)}
+            {entriesObj[dates.currentDate][meal]['totals']['carbs'].toFixed(1)}
           </div>
           <div className='total-protein'>
-            {entries[dates.currentDate][meal]['totals']['protein'].toFixed(1)}
+            {entriesObj[dates.currentDate][meal]['totals']['protein'].toFixed(
+              1
+            )}
           </div>
           <div className='total-calories'>{subtotalCalories.toFixed(1)}</div>
         </div>
@@ -125,6 +136,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   createEntry: (entry) => dispatch(createEntry(entry)),
+  createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Meal);

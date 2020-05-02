@@ -6,89 +6,14 @@ import DateSelector from '../date-selector/date-selector.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
 import TotalsChart from '../totals-chart/totals-chart.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
-import {
-  updateFoodDatabase,
-  createEntry,
-  setCurrentDate,
-} from '../../redux/food-diary/food-diary.actions';
+import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
 import {
   firestore,
   convertCollectionSnapshotToMap,
 } from './../../firebase/firebase.utils';
 
-const Diary = ({
-  updateFoodDatabase,
-  createEntry,
-  setCurrentDate,
-  searchModal,
-  entries,
-}) => {
-  // instantiate currentDate obj and prevDay nextDay copies to prevent mutability when doing computations
-  let currentDate = new Date();
-  let prevDate = new Date(currentDate);
-  let nextDate = new Date(currentDate);
-
-  prevDate.setDate(currentDate.getDate() - 1);
-  nextDate.setDate(currentDate.getDate() + 1);
-
-  currentDate = currentDate.toLocaleDateString();
-  prevDate = prevDate.toLocaleDateString();
-  nextDate = nextDate.toLocaleDateString();
-
-  const dates = {
-    currentDate: currentDate,
-    prevDate: prevDate,
-    nextDate: nextDate,
-  };
-
-  // get current date and instantiate a meals obj for today if one doesn't already exist
-  if (!Object.keys(entries).includes(currentDate)) {
-    const newEntry = {
-      [currentDate]: {
-        Breakfast: {
-          foods: [],
-          totals: {
-            fats: '',
-            carbs: '',
-            protein: '',
-            calories: '',
-          },
-        },
-        Lunch: {
-          foods: [],
-          totals: {
-            fats: '',
-            carbs: '',
-            protein: '',
-            calories: '',
-          },
-        },
-        Dinner: {
-          foods: [],
-          totals: {
-            fats: '',
-            carbs: '',
-            protein: '',
-            calories: '',
-          },
-        },
-        Snacks: {
-          foods: [],
-          totals: {
-            fats: '',
-            carbs: '',
-            protein: '',
-            calories: '',
-          },
-        },
-      },
-    };
-    const copy = Object.assign({}, entries, newEntry);
-    createEntry(copy);
-    setCurrentDate(dates);
-  }
-
+const Diary = ({ updateFoodDatabase, searchModal }) => {
   // conditionally render the CreateFood modal
   // let createFoodModal;
   // if (createFoodModalStatus === 'visible') {
@@ -191,7 +116,6 @@ const mapStateToProps = (state) => ({
   toggleConfirmation: state.createFoodItem.toggleConfirmation,
   searchModal: state.meal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
-  entries: state.foodDiary.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -199,8 +123,6 @@ const mapDispatchToProps = (dispatch) => ({
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
   updateFoodDatabase: (transformedCollection) =>
     dispatch(updateFoodDatabase(transformedCollection)),
-  createEntry: (entries) => dispatch(createEntry(entries)),
-  setCurrentDate: (currentDate) => dispatch(setCurrentDate(currentDate)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);

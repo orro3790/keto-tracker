@@ -57,7 +57,7 @@ const foodDiaryReducer = (state = INITIAL_STATE, action) => {
         ...state,
         entries: action.payload,
       };
-    case FoodDiaryActionTypes.GET_CURRENT_DATE:
+    case FoodDiaryActionTypes.SET_CURRENT_DATE:
       return {
         ...state,
         dates: action.payload,
