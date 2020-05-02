@@ -14,20 +14,11 @@ const SearchFoodModal = ({
   suggestionWindow,
   entries,
   searchModal,
+  dates,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
   const [foodToAdd, setFoodToAdd] = useState({});
-
-  let currentDate = new Date();
-
-  const [date, month, year] = [
-    currentDate.getUTCDate(),
-    currentDate.getUTCMonth(),
-    currentDate.getUTCFullYear(),
-  ];
-
-  currentDate = `${month}-${date}-${year}`;
 
   const handleChange = (e) => {
     setSizeInput(e.target.value);
@@ -56,7 +47,7 @@ const SearchFoodModal = ({
           foodCopy.size = parseFloat(sizeInput);
 
           // add foodCopy to the entries obj
-          entries[currentDate][searchModal.meal]['foods'].push(foodCopy);
+          entries[dates.currentDate][searchModal.meal]['foods'].push(foodCopy);
 
           // dispatch the new entry obj to state then close the window
           createEntry(entries);
@@ -64,7 +55,6 @@ const SearchFoodModal = ({
           // set in localStorage
           localStorage.setItem('entries', JSON.stringify(entries));
 
-          console.log(entries);
           handleClose();
         }
         break;
@@ -80,13 +70,13 @@ const SearchFoodModal = ({
           foodCopy.size = parseFloat(sizeInput);
 
           // remove the edited food from the entries obj
-          entries[currentDate][searchModal.meal]['foods'].splice(
+          entries[dates.currentDate][searchModal.meal]['foods'].splice(
             searchModal.listId,
             1
           );
 
           // add the updated food to the entries obj back where it used to be
-          entries[currentDate][searchModal.meal]['foods'].splice(
+          entries[dates.currentDate][searchModal.meal]['foods'].splice(
             searchModal.listId,
             0,
             foodCopy
@@ -112,7 +102,7 @@ const SearchFoodModal = ({
 
   const handleDelete = () => {
     // remove the edited food from the entries obj
-    entries[currentDate][searchModal.meal]['foods'].splice(
+    entries[dates.currentDate][searchModal.meal]['foods'].splice(
       searchModal.listId,
       1
     );
@@ -400,6 +390,7 @@ const mapStateToProps = (state) => ({
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
   entries: state.foodDiary.entries,
   searchModal: state.meal.searchModal,
+  dates: state.foodDiary.dates,
 });
 
 const mapDispatchToProps = (dispatch) => ({

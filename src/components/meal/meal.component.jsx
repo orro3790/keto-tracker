@@ -11,11 +11,8 @@ const Meal = ({
   searchModal,
   entries,
   createEntry,
+  dates,
 }) => {
-  let currentDate = new Date();
-
-  currentDate = currentDate.toLocaleDateString();
-
   const handleClick = () => {
     if (searchModal.status === 'hidden') {
       toggleSearchModal({
@@ -38,28 +35,28 @@ const Meal = ({
     return <FoodItem key={keygen} listId={keygen} food={food} meal={meal} />;
   };
 
-  const subtotalFats = entries[currentDate][meal]['foods'].reduce(
+  const subtotalFats = entries[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.fats);
     },
     0
   );
 
-  const subtotalCarbs = entries[currentDate][meal]['foods'].reduce(
+  const subtotalCarbs = entries[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.carbs);
     },
     0
   );
 
-  const subtotalProtein = entries[currentDate][meal]['foods'].reduce(
+  const subtotalProtein = entries[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.protein);
     },
     0
   );
 
-  const subtotalCalories = entries[currentDate][meal]['foods'].reduce(
+  const subtotalCalories = entries[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
       return (accumulator += food.calories);
     },
@@ -68,26 +65,22 @@ const Meal = ({
 
   const copy = Object.assign({}, entries);
 
-  copy[currentDate][meal]['totals']['fats'] = subtotalFats;
-  copy[currentDate][meal]['totals']['carbs'] = subtotalCarbs;
-  copy[currentDate][meal]['totals']['protein'] = subtotalProtein;
-  copy[currentDate][meal]['totals']['calories'] = subtotalCalories;
+  copy[dates.currentDate][meal]['totals']['fats'] = subtotalFats;
+  copy[dates.currentDate][meal]['totals']['carbs'] = subtotalCarbs;
+  copy[dates.currentDate][meal]['totals']['protein'] = subtotalProtein;
+  copy[dates.currentDate][meal]['totals']['calories'] = subtotalCalories;
 
   // add totals to the entry obj
-  useEffect(
-    () => {
-      createEntry(copy);
-    },
-    [subtotalCalories],
-    copy
-  );
+  useEffect(() => {
+    createEntry(copy);
+  }, [subtotalCalories]);
 
-  // if entries obj in localStorage, use it for rendering, else use the default entries object instantiated by food diary
-  let entriesObj;
+  // if entries obj in localStorage, use it for rendering, else use the entries object in state
+  let entriesObj = JSON.parse(localStorage.getItem('entries'));
   if (entriesObj !== undefined) {
-    entriesObj = JSON.parse(localStorage.getItem('entries'));
   } else {
     entriesObj = entries;
+    console.log('undefined');
   }
 
   return (
@@ -100,7 +93,7 @@ const Meal = ({
           </span>
         </span>
       </div>
-      {entriesObj[currentDate][meal]['foods'].map((food) =>
+      {entriesObj[dates.currentDate][meal]['foods'].map((food) =>
         renderFoodItems(food)
       )}
       <div className='totals-row'>
@@ -108,13 +101,13 @@ const Meal = ({
         <div className='totals-container'>
           <div className='total-size'></div>
           <div className='total-fats'>
-            {entries[currentDate][meal]['totals']['fats'].toFixed(1)}
+            {entries[dates.currentDate][meal]['totals']['fats'].toFixed(1)}
           </div>
           <div className='total-carbs'>
-            {entries[currentDate][meal]['totals']['carbs'].toFixed(1)}
+            {entries[dates.currentDate][meal]['totals']['carbs'].toFixed(1)}
           </div>
           <div className='total-protein'>
-            {entries[currentDate][meal]['totals']['protein'].toFixed(1)}
+            {entries[dates.currentDate][meal]['totals']['protein'].toFixed(1)}
           </div>
           <div className='total-calories'>{subtotalCalories.toFixed(1)}</div>
         </div>
@@ -126,6 +119,7 @@ const Meal = ({
 const mapStateToProps = (state) => ({
   searchModal: state.meal.searchModal,
   entries: state.foodDiary.entries,
+  dates: state.foodDiary.dates,
 });
 
 const mapDispatchToProps = (dispatch) => ({
