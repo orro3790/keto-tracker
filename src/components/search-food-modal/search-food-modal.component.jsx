@@ -60,6 +60,11 @@ const SearchFoodModal = ({
 
           // dispatch the new entry obj to state then close the window
           createEntry(entries);
+
+          // set in localStorage
+          localStorage.setItem('entries', JSON.stringify(entries));
+
+          console.log(entries);
           handleClose();
         }
         break;
@@ -90,6 +95,10 @@ const SearchFoodModal = ({
           // dispatch the new entry obj to state
           createEntry(entries);
 
+          //remove the old entries obj from localStorage and replace it with the new one
+          localStorage.removeItem(entries);
+          localStorage.setItem('entries', JSON.stringify(entries));
+
           toggleSearchModal({
             status: 'hidden',
             meal: 'none',
@@ -110,6 +119,10 @@ const SearchFoodModal = ({
 
     // dispatch the new entry obj to state
     createEntry(entries);
+
+    // remove from localStorage and replace it with the new one
+    localStorage.removeItem(entries);
+    localStorage.setItem('entries', JSON.stringify(entries));
 
     toggleSearchModal({
       status: 'hidden',

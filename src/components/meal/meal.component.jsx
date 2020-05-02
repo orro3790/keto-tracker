@@ -88,6 +88,8 @@ const Meal = ({
     copy
   );
 
+  const inStorage = JSON.parse(localStorage.getItem('entries'));
+
   return (
     <div>
       <div className='meal-header-container'>
@@ -98,7 +100,10 @@ const Meal = ({
           </span>
         </span>
       </div>
-      {entries[currentDate][meal]['foods'].map((food) => renderFoodItems(food))}
+
+      {inStorage[currentDate][meal]['foods'].map((food) =>
+        renderFoodItems(food)
+      )}
       <div className='totals-row'>
         <div className='total-label'>totals</div>
         <div className='totals-container'>
