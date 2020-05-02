@@ -3,17 +3,13 @@ import './search-food-modal.styles.scss';
 import { connect } from 'react-redux';
 import Search from './../search/search.component';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
-import {
-  ToggleSuggestionWindow,
-  createFoodReference,
-} from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
 import { createEntry } from '../../redux/food-diary/food-diary.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
   foodReference,
-  ToggleSuggestionWindow,
   createFoodReference,
   suggestionWindow,
   entries,
@@ -22,16 +18,12 @@ const SearchFoodModal = ({
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
-  const [foodToAdd, setFoodToAdd] = useState({});
 
   // if entries obj in localStorage, use it for rendering, else use the entries object in state
   let entriesObj;
   entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj !== undefined && entriesObj !== null) {
-    console.log(entriesObj);
-  } else {
+  if (entriesObj === undefined || entriesObj === null) {
     entriesObj = entries;
-    console.log('meal component could not retrieve entriesObj');
   }
 
   const handleChange = (e) => {
@@ -258,13 +250,6 @@ const SearchFoodModal = ({
         break;
     }
 
-    setFoodToAdd({
-      fats: fatsRemaining,
-      carbs: carbsRemaining,
-      protein: proteinRemaining,
-      calories: caloriesRemaining,
-    });
-
     const chart = () => {
       setChartData({
         labels: ['fats', 'carbs', 'protein', 'calories'],
@@ -414,7 +399,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
   createEntry: (entries) => dispatch(createEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });

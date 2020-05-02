@@ -34,11 +34,8 @@ const Meal = ({
   // if entries obj in localStorage, use it for rendering, else use the entries object in state
   let entriesObj;
   entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj !== undefined && entriesObj !== null) {
-    // console.log('meal component retrieved entriesObj');
-  } else {
+  if (entriesObj === undefined || entriesObj === null) {
     entriesObj = entries;
-    console.log('meal component could not retrieve entriesObj');
   }
 
   // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0

@@ -31,8 +31,6 @@ const DateSelector = ({ entries, createEntry, setCurrentDate }) => {
   let entriesObj;
   entriesObj = JSON.parse(localStorage.getItem('entries'));
   if (entriesObj !== undefined && entriesObj !== null) {
-    // console.log('date selector retrieved entriesObj');
-    // console.log(entriesObj);
   } else {
     entriesObj = entries;
   }

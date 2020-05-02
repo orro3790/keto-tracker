@@ -3,16 +3,13 @@ import './totals-chart.styles.scss';
 import { connect } from 'react-redux';
 import { Doughnut } from 'react-chartjs-2';
 
-const TotalsChart = ({ entries, meal, dates }) => {
+const TotalsChart = ({ entries, meal, dates, searchModal }) => {
   const [chartData, setChartData] = useState({});
 
   // if entries obj in localStorage, use it for rendering, else use the entries object in state
   let entriesObj;
   entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj !== undefined && entriesObj !== null) {
-    // console.log('date selector retrieved entriesObj');
-    // console.log(entriesObj);
-  } else {
+  if (entriesObj === undefined || entriesObj === null) {
     entriesObj = entries;
   }
 
@@ -23,14 +20,18 @@ const TotalsChart = ({ entries, meal, dates }) => {
     entriesObj[dates.currentDate][meal]['totals']['calories'];
 
   let totalsData;
+  let tooltipStatus;
+
   if (totalCalories === 0) {
     totalsData = [1];
+    tooltipStatus = false;
   } else {
     totalsData = [
       totalFats.toFixed(1),
       totalCarbs.toFixed(1),
       totalProtein.toFixed(1),
     ];
+    tooltipStatus = true;
   }
 
   let colors;
@@ -49,10 +50,9 @@ const TotalsChart = ({ entries, meal, dates }) => {
     legend: {
       display: false,
     },
-    // title: {
-    //   display: true,
-    //   text: [meal],
-    // },
+    tooltips: {
+      enabled: tooltipStatus,
+    },
   };
 
   useEffect(() => {
@@ -72,7 +72,8 @@ const TotalsChart = ({ entries, meal, dates }) => {
     };
 
     chart();
-  }, [totalFats, totalCarbs, totalProtein]);
+    // use searchModal as useEffect trigger for updating charts because searchModal precedes all CRUD operations
+  }, [searchModal]);
 
   return (
     <div>
@@ -86,6 +87,7 @@ const TotalsChart = ({ entries, meal, dates }) => {
 const mapStateToProps = (state) => ({
   entries: state.foodDiary.entries,
   dates: state.foodDiary.dates,
+  searchModal: state.meal.searchModal,
 });
 
 export default connect(mapStateToProps)(TotalsChart);
