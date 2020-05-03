@@ -73,7 +73,7 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
 
     chart();
     // use searchModal as useEffect trigger for updating charts because searchModal precedes all CRUD operations
-  }, [searchModal]);
+  }, [searchModal, dates]);
 
   return (
     <div>
@@ -85,8 +85,8 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
 };
 
 const mapStateToProps = (state) => ({
-  entries: state.foodDiary.entries,
-  dates: state.foodDiary.dates,
+  entries: state.dateSelector.entries,
+  dates: state.dateSelector.dates,
   searchModal: state.meal.searchModal,
 });
 

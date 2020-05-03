@@ -5,7 +5,7 @@ import Search from './../search/search.component';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
-import { createEntry } from '../../redux/food-diary/food-diary.actions';
+import { createEntry } from '../../redux/date-selector/date-selector.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -392,9 +392,9 @@ const SearchFoodModal = ({
 const mapStateToProps = (state) => ({
   foodReference: state.searchItemSuggestion.foodReference,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
-  entries: state.foodDiary.entries,
+  entries: state.dateSelector.entries,
   searchModal: state.meal.searchModal,
-  dates: state.foodDiary.dates,
+  dates: state.dateSelector.dates,
 });
 
 const mapDispatchToProps = (dispatch) => ({

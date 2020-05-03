@@ -2,47 +2,6 @@ import { FoodDiaryActionTypes } from './food-diary.types';
 
 const INITIAL_STATE = {
   foodDatabase: [],
-  entries: {
-    '0-00-0000': {
-      Breakfast: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-      Lunch: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-      Dinner: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-      Snacks: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-    },
-  },
-  dates: '',
 };
 
 const foodDiaryReducer = (state = INITIAL_STATE, action) => {
@@ -51,16 +10,6 @@ const foodDiaryReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         foodDatabase: action.payload,
-      };
-    case FoodDiaryActionTypes.CREATE_DAILY_MEALS_OBJ:
-      return {
-        ...state,
-        entries: action.payload,
-      };
-    case FoodDiaryActionTypes.SET_CURRENT_DATE:
-      return {
-        ...state,
-        dates: action.payload,
       };
     default:
       return state;

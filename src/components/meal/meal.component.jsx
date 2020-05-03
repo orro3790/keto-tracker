@@ -3,7 +3,6 @@ import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
-import { createEntry } from '../../redux/food-diary/food-diary.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 
 const Meal = ({
@@ -11,7 +10,6 @@ const Meal = ({
   toggleSearchModal,
   searchModal,
   entries,
-  createEntry,
   dates,
   createFoodReference,
 }) => {
@@ -126,13 +124,12 @@ const Meal = ({
 
 const mapStateToProps = (state) => ({
   searchModal: state.meal.searchModal,
-  entries: state.foodDiary.entries,
-  dates: state.foodDiary.dates,
+  entries: state.dateSelector.entries,
+  dates: state.dateSelector.dates,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createEntry: (entry) => dispatch(createEntry(entry)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
