@@ -1,16 +1,17 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
+import './metrics.styles.scss';
 
-const Home = () => (
+const Metrics = () => (
   <div className='rail-body-separator'>
     <div>
       <Rail />
     </div>
 
     <div>
-      <h1>Home Page</h1>
+      <h1>Metrics</h1>
     </div>
   </div>
 );
 
-export default Home;
+export default Metrics;

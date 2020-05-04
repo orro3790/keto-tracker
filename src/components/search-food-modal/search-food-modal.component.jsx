@@ -26,6 +26,71 @@ const SearchFoodModal = ({
     entriesObj = entries;
   }
 
+  // hardcoded user profile settings for now, used to calculate daily %'s
+  const dietLimits = {
+    carbs: 30,
+    fats: 100,
+    protein: 60,
+    calories: 1170,
+  };
+
+  let calories;
+  let fats;
+  let carbs;
+  let protein;
+
+  if (sizeInput !== '') {
+    // renders macros based on user's size input
+    calories = (foodReference.caloriesPer * sizeInput).toFixed(1);
+    fats = (foodReference.fatsPer * sizeInput).toFixed(1);
+    carbs = (foodReference.carbsPer * sizeInput).toFixed(1);
+    protein = (foodReference.proteinPer * sizeInput).toFixed(1);
+  } else {
+    //pulls and renders macros from the item that was clicked on in the meal component
+    fats = foodReference.fats;
+    carbs = foodReference.carbs;
+    protein = foodReference.protein;
+    calories = foodReference.calories;
+  }
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    legend: {
+      display: false,
+    },
+    title: {
+      display: true,
+      text: '% of daily allowance',
+      fontColor: 'rgba(255, 255, 255, 1)',
+    },
+    scales: {
+      yAxes: [
+        {
+          gridLines: {
+            color: '#373737',
+          },
+          ticks: {
+            max: 100,
+            min: 0,
+            stepSize: 25,
+            fontColor: 'rgba(255, 255, 255, 1)',
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            color: '#373737',
+          },
+          ticks: {
+            fontColor: 'rgba(255, 255, 255, 1)',
+          },
+        },
+      ],
+    },
+  };
+
   const handleChange = (e) => {
     setSizeInput(e.target.value);
   };
@@ -131,75 +196,12 @@ const SearchFoodModal = ({
     });
   };
 
-  // hardcoded user profile settings for now, used to calculate daily %'s
-  const dietLimits = {
-    carbs: 30,
-    fats: 100,
-    protein: 60,
-    calories: 1170,
-  };
-
-  let calories;
-  let fats;
-  let carbs;
-  let protein;
-
-  if (sizeInput !== '') {
-    // renders macros based on user's size input
-    calories = (foodReference.caloriesPer * sizeInput).toFixed(1);
-    fats = (foodReference.fatsPer * sizeInput).toFixed(1);
-    carbs = (foodReference.carbsPer * sizeInput).toFixed(1);
-    protein = (foodReference.proteinPer * sizeInput).toFixed(1);
-  } else {
-    //pulls and renders macros from the item that was clicked on in the meal component
-    fats = foodReference.fats;
-    carbs = foodReference.carbs;
-    protein = foodReference.protein;
-    calories = foodReference.calories;
-  }
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: {
-      display: false,
-    },
-    title: {
-      display: true,
-      text: '% of daily allowance',
-      fontColor: 'rgba(255, 255, 255, 1)',
-    },
-    scales: {
-      yAxes: [
-        {
-          gridLines: {
-            color: '#373737',
-          },
-          ticks: {
-            max: 100,
-            min: 0,
-            stepSize: 25,
-            fontColor: 'rgba(255, 255, 255, 1)',
-          },
-        },
-      ],
-      xAxes: [
-        {
-          gridLines: {
-            color: '#373737',
-          },
-          ticks: {
-            fontColor: 'rgba(255, 255, 255, 1)',
-          },
-        },
-      ],
-    },
-  };
-
   useEffect(() => {
-    const fats = document.querySelector('.fats-value').innerHTML;
-    const carbs = document.querySelector('.carbs-value').innerHTML;
-    const protein = document.querySelector('.protein-value').innerHTML;
+    if (foodReference !== '') {
+      const fats = document.querySelector('.fats-value').innerHTML;
+      const carbs = document.querySelector('.carbs-value').innerHTML;
+      const protein = document.querySelector('.protein-value').innerHTML;
+    }
 
     let fatsRemaining;
     let carbsRemaining;
@@ -289,6 +291,10 @@ const SearchFoodModal = ({
     foodReference.fats,
     foodReference.protein,
     calories,
+    carbs,
+    fats,
+    protein,
+    foodReference,
   ]);
 
   const getBtnStyle = () => {
@@ -332,6 +338,57 @@ const SearchFoodModal = ({
     );
   }
 
+  let resultsContainer;
+  if (foodReference !== '') {
+    resultsContainer = (
+      <div className='results-container'>
+        <div className='name'>{foodReference.name}</div>
+        <div className='description'>{foodReference.description}</div>
+        <div className='portion-input-row'>
+          <div></div>
+          <div>
+            <form onSubmit={handleSubmit}>
+              <input
+                id='portion-input'
+                className='portion-input'
+                type='number'
+                placeholder={`${foodReference.size}${foodReference.unit}`}
+                onChange={handleChange}
+                value={sizeInput}
+              ></input>
+            </form>
+          </div>
+          <div></div>
+        </div>
+
+        <div className='macro-row'>
+          <div className='fats-column'>
+            <span className='fats-value'>{fats}</span>g
+            <div className='label'>fats</div>
+          </div>
+          <div className='carbs-column'>
+            <span className='carbs-value'>{carbs}</span>g
+            <div className='label'>carbs</div>
+          </div>
+          <div className='protein-column'>
+            <span className='protein-value'>{protein}</span>g
+            <div className='label'>protein</div>
+          </div>
+          <div className='calories-column'>
+            <span className='calories-value'>{calories}</span>
+            <div className='label'>calories</div>
+          </div>
+        </div>
+        <div className='graph-area'>
+          <Bar data={chartData} options={options} />
+        </div>
+        {submitRow}
+      </div>
+    );
+  } else {
+    resultsContainer = <div className='results-container'></div>;
+  }
+
   return (
     <div>
       <div className='search-food-modal'>
@@ -341,49 +398,7 @@ const SearchFoodModal = ({
         <div className='search-section'>
           <Search />
         </div>
-        <div className='results-container'>
-          <div className='name'>{foodReference.name}</div>
-          <div className='description'>{foodReference.description}</div>
-          <div className='portion-input-row'>
-            <div></div>
-            <div>
-              <form onSubmit={handleSubmit}>
-                <input
-                  id='portion-input'
-                  className='portion-input'
-                  type='number'
-                  placeholder={`${foodReference.size}${foodReference.unit}`}
-                  onChange={handleChange}
-                  value={sizeInput}
-                ></input>
-              </form>
-            </div>
-            <div></div>
-          </div>
-
-          <div className='macro-row'>
-            <div className='fats-column'>
-              <span className='fats-value'>{fats}</span>g
-              <div className='label'>fats</div>
-            </div>
-            <div className='carbs-column'>
-              <span className='carbs-value'>{carbs}</span>g
-              <div className='label'>carbs</div>
-            </div>
-            <div className='protein-column'>
-              <span className='protein-value'>{protein}</span>g
-              <div className='label'>protein</div>
-            </div>
-            <div className='calories-column'>
-              <span className='calories-value'>{calories}</span>
-              <div className='label'>calories</div>
-            </div>
-          </div>
-          <div className='graph-area'>
-            <Bar data={chartData} options={options} />
-          </div>
-          {submitRow}
-        </div>
+        {resultsContainer}
       </div>
     </div>
   );

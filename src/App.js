@@ -1,8 +1,10 @@
 import React from 'react';
 import './App.css';
-import Header from './components/header/header.component';
 import Home from './pages/home/home.component';
 import Diary from './components/food-diary/food-diary.component.jsx';
+import Exercises from './pages/exercises/exercises.component.jsx';
+import Metrics from './pages/metrics/metrics.component.jsx';
+import Settings from './pages/settings/settings.component.jsx';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
 import {
   BrowserRouter as Router,
@@ -47,10 +49,13 @@ class App extends React.Component {
   render() {
     return (
       <Router>
-        <Header />
+        {/* <Header /> */}
         <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/diary' component={Diary} />
+          <Route path='/exercises' component={Exercises} />
+          <Route path='/metrics' component={Metrics} />
+          <Route path='/settings' component={Settings} />
           <Route
             exact
             path='/signin'

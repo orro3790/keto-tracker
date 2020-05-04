@@ -5,6 +5,7 @@ import Meal from './../meal/meal.component';
 import DateSelector from '../date-selector/date-selector.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
 import TotalsChart from '../totals-chart/totals-chart.component';
+import Rail from '../rail/rail.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
@@ -56,16 +57,18 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
   }, [updateFoodDatabase]);
 
   return (
-    <div className='diary-container'>
-      {/* {createFoodModal}
-      {confirmationModal} */}
-      {searchFoodModal}
-      <div className='diary-outer-container'>
-        <DateSelector />
+    <div className='rail-body-separator'>
+      <div>
+        <Rail />
       </div>
-      <div className='diary-outer-container'>
-        <div className='left-container'></div>
-        <div className='right-container'>
+      <div className='diary-body'>
+        {/* {createFoodModal}
+      {confirmationModal} */}
+        {searchFoodModal}
+        <div className='diary-outer-container'>
+          <DateSelector />
+        </div>
+        <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
               <Meal meal={'Breakfast'} />
@@ -73,10 +76,7 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
             <TotalsChart meal={'Breakfast'} />
           </div>
         </div>
-      </div>
-      <div className='diary-outer-container'>
-        <div className='left-container'></div>
-        <div className='right-container'>
+        <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
               <Meal meal={'Lunch'} />
@@ -84,10 +84,7 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
             <TotalsChart meal={'Lunch'} />
           </div>
         </div>
-      </div>
-      <div className='diary-outer-container'>
-        <div className='left-container'></div>
-        <div className='right-container'>
+        <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
               <Meal meal={'Dinner'} />
@@ -95,10 +92,7 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
             <TotalsChart meal={'Dinner'} />
           </div>
         </div>
-      </div>
-      <div className='diary-outer-container'>
-        <div className='left-container'></div>
-        <div className='right-container'>
+        <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
               <Meal meal={'Snacks'} />

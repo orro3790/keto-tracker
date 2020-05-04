@@ -1,16 +1,17 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
+import './settings.styles.scss';
 
-const Home = () => (
+const Settings = () => (
   <div className='rail-body-separator'>
     <div>
       <Rail />
     </div>
 
     <div>
-      <h1>Home Page</h1>
+      <h1>Settings</h1>
     </div>
   </div>
 );
 
-export default Home;
+export default Settings;
