@@ -68,7 +68,7 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
         {searchFoodModal}
         <div className='diary-outer-container'>
           <DateSelector />
-          {/* <DailyChart /> */}
+          <DailyChart />
         </div>
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>

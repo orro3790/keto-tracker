@@ -1,24 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './daily-chart.styles.scss';
 
-const DailyChart = ({ dates }) => {
-  const [dailyMacros, setDailyMacros] = useState({});
-
-  useEffect(() => {}, []);
+const DailyChart = ({ dates, userMacros }) => {
+  // useEffect(() => {
+  //   effect
+  //   return () => {
+  //     cleanup
+  //   }
+  // }, [input])
 
   return (
-    <div className='daily-macros-container'>
-      <div className='daily-fats macro'>Fats: 43/120</div>
-      <div className='daily-carbs macro'>Carbs: 23/30</div>
-      <div className='daily-protein macro'>Protein: 17/90</div>
-      <div className='daily-calories macro'>Cal: 1120/2000</div>
+    <div className='daily-hud'>
+      <div className='daily-fats'>{userMacros.fats}g</div>
+      <div className='daily-carbs'>{userMacros.carbs}g</div>
+      <div className='daily-protein'>{userMacros.protein}g</div>
+      <div className='daily-calories'>{userMacros.calories} cal</div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   dates: state.dateSelector.dates,
+  userMacros: state.user.userMacros,
 });
 
 export default connect(mapStateToProps)(DailyChart);

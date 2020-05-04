@@ -1,4 +1,5 @@
-$font-size-large: 1.2rem;
+$font-size-medium: 14px;
+$font-size-large: 16px;
 $keto-green: #1eb980;
 $dp-01: #1e1e1e;
 $dp-02: #222222;
@@ -48,5 +49,9 @@ $brightest: #474747;
 
   .enabled {
     color: #ffffff;
+  }
+
+  .empty {
+    height: 50px;
   }
 }

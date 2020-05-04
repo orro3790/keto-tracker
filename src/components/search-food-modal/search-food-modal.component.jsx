@@ -15,6 +15,7 @@ const SearchFoodModal = ({
   entries,
   searchModal,
   dates,
+  userMacros,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -27,12 +28,6 @@ const SearchFoodModal = ({
   }
 
   // hardcoded user profile settings for now, used to calculate daily %'s
-  const dietLimits = {
-    carbs: 30,
-    fats: 100,
-    protein: 60,
-    calories: 1170,
-  };
 
   let calories;
   let fats;
@@ -213,39 +208,39 @@ const SearchFoodModal = ({
       case true:
         if (sizeInput !== '') {
           // render chart data based on user input
-          fatsRemaining = (fats / dietLimits.fats).toFixed(1) * 100;
-          carbsRemaining = (carbs / dietLimits.carbs).toFixed(1) * 100;
-          proteinRemaining = (protein / dietLimits.protein).toFixed(1) * 100;
-          caloriesRemaining = (calories / dietLimits.calories).toFixed(1) * 100;
+          fatsRemaining = (fats / userMacros.fats).toFixed(1) * 100;
+          carbsRemaining = (carbs / userMacros.carbs).toFixed(1) * 100;
+          proteinRemaining = (protein / userMacros.protein).toFixed(1) * 100;
+          caloriesRemaining = (calories / userMacros.calories).toFixed(1) * 100;
         } else {
           // render chart data based on foodToEdit's existing macro data
           fatsRemaining =
-            (foodReference.fats / dietLimits.fats).toFixed(1) * 100;
+            (foodReference.fats / userMacros.fats).toFixed(1) * 100;
           carbsRemaining =
-            (foodReference.carbs / dietLimits.carbs).toFixed(1) * 100;
+            (foodReference.carbs / userMacros.carbs).toFixed(1) * 100;
           proteinRemaining =
-            (foodReference.protein / dietLimits.protein).toFixed(1) * 100;
+            (foodReference.protein / userMacros.protein).toFixed(1) * 100;
           caloriesRemaining =
-            (foodReference.calories / dietLimits.calories).toFixed(1) * 100;
+            (foodReference.calories / userMacros.calories).toFixed(1) * 100;
         }
         break;
       case false:
         if (sizeInput !== '') {
           // render chart data based on user input
-          fatsRemaining = (fats / dietLimits.fats).toFixed(1) * 100;
-          carbsRemaining = (carbs / dietLimits.carbs).toFixed(1) * 100;
-          proteinRemaining = (protein / dietLimits.protein).toFixed(1) * 100;
-          caloriesRemaining = (calories / dietLimits.calories).toFixed(1) * 100;
+          fatsRemaining = (fats / userMacros.fats).toFixed(1) * 100;
+          carbsRemaining = (carbs / userMacros.carbs).toFixed(1) * 100;
+          proteinRemaining = (protein / userMacros.protein).toFixed(1) * 100;
+          caloriesRemaining = (calories / userMacros.calories).toFixed(1) * 100;
         } else {
           // render chart data based on default macro data
           fatsRemaining =
-            (foodReference.fats / dietLimits.fats).toFixed(1) * 100;
+            (foodReference.fats / userMacros.fats).toFixed(1) * 100;
           carbsRemaining =
-            (foodReference.carbs / dietLimits.carbs).toFixed(1) * 100;
+            (foodReference.carbs / userMacros.carbs).toFixed(1) * 100;
           proteinRemaining =
-            (foodReference.protein / dietLimits.protein).toFixed(1) * 100;
+            (foodReference.protein / userMacros.protein).toFixed(1) * 100;
           caloriesRemaining =
-            (foodReference.calories / dietLimits.calories).toFixed(1) * 100;
+            (foodReference.calories / userMacros.calories).toFixed(1) * 100;
         }
         break;
       default:
@@ -282,10 +277,10 @@ const SearchFoodModal = ({
     suggestionWindow,
     sizeInput,
     searchModal,
-    dietLimits.calories,
-    dietLimits.carbs,
-    dietLimits.fats,
-    dietLimits.protein,
+    userMacros.calories,
+    userMacros.carbs,
+    userMacros.fats,
+    userMacros.protein,
     foodReference.calories,
     foodReference.carbs,
     foodReference.fats,
@@ -410,6 +405,7 @@ const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
   searchModal: state.meal.searchModal,
   dates: state.dateSelector.dates,
+  userMacros: state.user.userMacros,
 });
 
 const mapDispatchToProps = (dispatch) => ({

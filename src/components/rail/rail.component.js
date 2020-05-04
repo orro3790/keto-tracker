@@ -1,9 +1,8 @@
 import React from 'react';
 // import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import './rail.styles.scss';
-
 import { useLocation } from 'react-router-dom';
+import './rail.styles.scss';
 
 const Rail = () => {
   let location = useLocation();
@@ -62,11 +61,8 @@ const Rail = () => {
           <i className={styles.settings}></i>
         </Link>
       </div>
-      {/* <div>
-        <i class='fas fa-sign-out-alt'></i>
-      </div> */}
-      <div></div>
-      <div></div>
+      <div className='empty'></div>
+      <div className='empty'></div>
     </div>
   );
 };

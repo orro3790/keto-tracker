@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import { setUserMacros } from '../redux/user/user.actions';
 
 const config = {
   apiKey: 'AIzaSyBPtcNfchAjmJLqsZBtk8G5wYScadGwhwg',
@@ -27,7 +28,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   // If the user isn't logged in, pass
   if (!userAuth) return;
 
-  // userRef if used for all CRUD operations
   const userRef = firestore.doc(`users/${userAuth.uid}`);
 
   const snapShot = await userRef.get();
@@ -143,6 +143,19 @@ export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
   });
 
   return transformedCollection;
+};
+
+export const getDietMacros = async (userAuth) => {
+  if (!userAuth) return;
+
+  // grab the collection and instantiate an empty doc so it is assigned a random ID
+  const macrosRef = firestore.doc(`users/${userAuth.uid}/diet/macros`);
+
+  const snapShot = await macrosRef.get();
+
+  const userMacros = snapShot.data();
+
+  return userMacros;
 };
 
 export default firebase;

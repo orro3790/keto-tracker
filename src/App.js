@@ -12,9 +12,13 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import {
+  auth,
+  createUserProfileDocument,
+  getDietMacros,
+} from './firebase/firebase.utils';
 import { connect } from 'react-redux';
-import { setCurrentUser } from './redux/user/user.actions';
+import { setCurrentUser, setUserMacros } from './redux/user/user.actions';
 
 class App extends React.Component {
   unsubscribeFromAuth = null;
@@ -22,11 +26,16 @@ class App extends React.Component {
   // call onAuthStateChanged from firebase.auth, so firebase can notify us about user state changes and we can change our state with the user object when a change occurs. The snapshots themselves don't show anything until we call .data() on them. The id value is always used to reference the location of data in the database, so it must be referenced
   componentDidMount() {
     const { setCurrentUser } = this.props;
+    const { setUserMacros } = this.props;
 
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
       if (userAuth) {
         // create user in database if they don't already exist --> eitherway, return userRef
         const userRef = await createUserProfileDocument(userAuth);
+
+        // also fetch the user's diet settings
+        const userMacros = await getDietMacros(userAuth);
+        setUserMacros(userMacros);
 
         // get a snapshot of the user from the database, and set our state to it
         userRef.onSnapshot((snapShot) => {
@@ -35,9 +44,10 @@ class App extends React.Component {
             ...snapShot.data(),
           });
         });
+      } else {
+        // If the current user logs out, set the state of currentUser to null (because userAuth will be null)
+        setCurrentUser(userAuth);
       }
-      // If the current user logs out, set the state of currentUser to null (because userAuth will be null)
-      setCurrentUser(userAuth);
     });
   }
 
@@ -79,6 +89,7 @@ const mapStateToProps = ({ user }) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  setUserMacros: (macros) => dispatch(setUserMacros(macros)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
