@@ -114,11 +114,11 @@ const DateSelector = ({ entries, setCurrentDate, dates }) => {
     <div>
       <div className='date-container'>
         <div className='yesterday-container' onClick={goToPrevDay}>
-          Prev Day
+          <i class='fas fa-chevron-left'></i>
         </div>
         <div className='today-container'>{dates.currentDate}</div>
         <div className='tomorrow-container' onClick={goToNextDay}>
-          Next Day
+          <i class='fas fa-chevron-right'></i>
         </div>
       </div>
     </div>

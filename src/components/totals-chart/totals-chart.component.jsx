@@ -64,7 +64,7 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
             label: 'macro ratios',
             data: totalsData,
             backgroundColor: colors,
-            borderWidth: 4,
+            borderWidth: 3,
             borderColor: '#222222',
           },
         ],
