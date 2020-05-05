@@ -105,21 +105,21 @@ const Meal = ({
           <div className='total-size'></div>
           <div className='total-fats'>
             {entriesObj[dates.currentDate][meal]['totals']['fats'].toFixed(1)}
-            <div className='macro-label'>FATS</div>
+            <div className='macro-label'>fats</div>
           </div>
           <div className='total-carbs'>
             {entriesObj[dates.currentDate][meal]['totals']['carbs'].toFixed(1)}
-            <div className='macro-label'>CARBS</div>
+            <div className='macro-label'>carbs</div>
           </div>
           <div className='total-protein'>
             {entriesObj[dates.currentDate][meal]['totals']['protein'].toFixed(
               1
             )}
-            <div className='macro-label'>PROTEIN</div>
+            <div className='macro-label'>protein</div>
           </div>
           <div className='total-calories'>
             {subtotalCalories.toFixed(1)}
-            <div className='macro-label'>CALORIES</div>
+            <div className='macro-label'>calories</div>
           </div>
         </div>
       </div>

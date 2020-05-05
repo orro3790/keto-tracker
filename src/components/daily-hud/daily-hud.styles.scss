@@ -10,18 +10,54 @@ $dp-12: #323232;
 $dp-16: #353535;
 $dp-24: #373737;
 
-.remaining {
+.calculation-model-container {
+  display: grid;
+  grid-template-columns: 3fr 2px 3fr;
+  gap: 0px 10px;
+  margin: auto;
   text-align: center;
+  width: 25vw;
+
+  .remaining {
+    text-align: right;
+    cursor: pointer;
+
+    &:hover:not(.enabled) {
+      color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .separator {
+    background-color: $dp-24;
+  }
+
+  .additive {
+    text-align: left;
+    cursor: pointer;
+
+    &:hover:not(.enabled) {
+      color: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .enabled {
+    color: $keto-green;
+  }
+
+  .disabled {
+    color: $dp-24;
+  }
 }
 
 .daily-hud {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 0px 5px;
   margin: 10px auto 10px auto;
   text-align: center;
   align-items: center;
   height: 50px;
-  width: 33vw;
+  width: 25vw;
 
   .label {
     font-size: $font-size-medium;
