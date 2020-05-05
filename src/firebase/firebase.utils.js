@@ -157,4 +157,17 @@ export const getDietMacros = async (userAuth) => {
   return userMacros;
 };
 
+export const updateDietMacros = async (userId, macros) => {
+  if (!userId) return;
+
+  // grab the collection and instantiate an empty doc so it is assigned a random ID
+  const macrosRef = firestore.doc(`users/${userId}/diet/macros`);
+
+  try {
+    await macrosRef.set(macros);
+  } catch (error) {
+    console.log('error updating user macros', error.message);
+  }
+};
+
 export default firebase;

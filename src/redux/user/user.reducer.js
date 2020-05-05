@@ -17,7 +17,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         currentUser: action.payload,
       };
-    case UserActionTypes.GET_USER_MACROS:
+    case UserActionTypes.SET_USER_MACROS:
       return {
         ...state,
         userMacros: action.payload,

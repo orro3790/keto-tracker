@@ -1,5 +1,6 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
+import ProfileSettings from '../../components/profile-settings/profile-settings.component';
 import './settings.styles.scss';
 
 const Settings = () => (
@@ -8,9 +9,12 @@ const Settings = () => (
       <Rail />
     </div>
 
-    <div>
-      <h1>Settings</h1>
+    <div className='outer-container'>
+      <div className='page-title'>Settings</div>
+      <ProfileSettings />
     </div>
+
+    <div></div>
   </div>
 );
 

@@ -6,6 +6,6 @@ export const setCurrentUser = (user) => ({
 });
 
 export const setUserMacros = (macros) => ({
-  type: UserActionTypes.GET_USER_MACROS,
+  type: UserActionTypes.SET_USER_MACROS,
   payload: macros,
 });
