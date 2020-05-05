@@ -9,6 +9,7 @@ import { createEntry } from '../../redux/date-selector/date-selector.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
+
   foodReference,
   createFoodReference,
   suggestionWindow,
@@ -16,6 +17,7 @@ const SearchFoodModal = ({
   searchModal,
   dates,
   userMacros,
+  createEntry,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');

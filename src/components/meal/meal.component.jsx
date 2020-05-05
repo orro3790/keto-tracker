@@ -84,7 +84,6 @@ const Meal = ({
     // remove from localStorage and replace it with the new one
     localStorage.removeItem('entries');
     localStorage.setItem('entries', JSON.stringify(copy));
-    // double refresh in browser clears the cache... why?
   }, [copy]);
 
   return (
@@ -124,7 +123,7 @@ const Meal = ({
 
 const mapStateToProps = (state) => ({
   searchModal: state.meal.searchModal,
-  entries: state.dateSelector.entries,
+  // entries: state.dateSelector.entries,
   dates: state.dateSelector.dates,
 });
 

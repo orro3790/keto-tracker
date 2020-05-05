@@ -1,7 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-import { setUserMacros } from '../redux/user/user.actions';
 
 const config = {
   apiKey: 'AIzaSyBPtcNfchAjmJLqsZBtk8G5wYScadGwhwg',

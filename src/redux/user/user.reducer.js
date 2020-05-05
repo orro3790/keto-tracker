@@ -3,10 +3,10 @@ import { UserActionTypes } from './user.types';
 const INITIAL_STATE = {
   currentUser: null,
   userMacros: {
-    fats: 165,
-    carbs: 30,
-    protein: 100,
-    calories: 2005,
+    fats: '',
+    carbs: '',
+    protein: '',
+    calories: '',
   },
 };
 

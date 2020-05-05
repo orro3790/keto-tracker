@@ -13,7 +13,7 @@ $dp-24: #373737;
 .daily-hud {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  margin: 25px auto 25px auto;
+  margin: 10px auto 10px auto;
   text-align: center;
   align-items: center;
   height: 50px;
@@ -35,4 +35,12 @@ $dp-24: #373737;
   .daily-calories {
     color: #ffffff;
   }
+}
+
+.daily-hud-loading {
+  display: grid;
+  align-items: center;
+  text-align: center;
+  height: 50px;
+  width: 100%;
 }
