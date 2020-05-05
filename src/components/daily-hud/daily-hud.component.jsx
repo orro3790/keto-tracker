@@ -68,10 +68,10 @@ const DailyChart = ({
     proteinValue = (userMacros.protein - dailyProtein).toFixed(1);
     caloriesValue = (userMacros.calories - dailyCalories).toFixed(1);
   } else if (hudModel === 'additive') {
-    fatsValue = dailyFats.toFixed(1);
-    carbsValue = dailyCarbs.toFixed(1);
-    proteinValue = dailyProtein.toFixed(1);
-    caloriesValue = dailyCalories.toFixed(1);
+    fatsValue = dailyFats;
+    carbsValue = dailyCarbs;
+    proteinValue = dailyProtein;
+    caloriesValue = dailyCalories;
   }
 
   const getStyle = (className) => {

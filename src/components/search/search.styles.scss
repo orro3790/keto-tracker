@@ -13,10 +13,13 @@ $dp-24: #373737;
   position: relative;
 
   .search-results-list {
+    display: grid;
     background-color: $dp-04;
     position: absolute;
     width: 100%;
     box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+    max-height: 100px;
+    overflow-y: auto;
 
     &.hidden {
       display: none;
@@ -24,6 +27,17 @@ $dp-24: #373737;
 
     &:empty {
       display: none;
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: $dp-04;
+    }
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: $dp-24;
     }
   }
 }
