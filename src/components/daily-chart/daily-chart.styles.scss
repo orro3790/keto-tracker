@@ -1,4 +1,4 @@
-$font-size-large: 1.2rem;
+$font-size-medium: 14px;
 $keto-green: #1eb980;
 $dp-01: #1e1e1e;
 $dp-02: #222222;
@@ -10,6 +10,10 @@ $dp-12: #323232;
 $dp-16: #353535;
 $dp-24: #373737;
 
+.remaining {
+  text-align: center;
+}
+
 .daily-hud {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -19,8 +23,13 @@ $dp-24: #373737;
   height: 50px;
   width: 33vw;
 
-  .macro {
-    margin: auto;
+  .label {
+    font-size: $font-size-medium;
+  }
+
+  .macro-container {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
   }
 
   .daily-fats {

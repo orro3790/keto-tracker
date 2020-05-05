@@ -1,4 +1,5 @@
-$font-size-large: 1.2rem;
+$font-size-small: 12px;
+$font-size-large: 22px;
 $keto-green: #1eb980;
 $dp-01: #1e1e1e;
 $dp-02: #222222;
@@ -49,6 +50,10 @@ $dp-24: #373737;
     background: $dp-12;
   }
 
+  .macro-label {
+    font-size: $font-size-small;
+  }
+
   .totals-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -68,6 +73,8 @@ $dp-24: #373737;
   }
 
   .total-carbs {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
     color: rgba(227, 28, 116, 1);
   }
 

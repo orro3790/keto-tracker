@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import './daily-chart.styles.scss';
+import { HorizontalBar } from 'react-chartjs-2';
 
 const DailyChart = ({ dates, userMacros, searchModal }) => {
   const [dailyFats, setDailyFats] = useState('');
@@ -39,18 +40,26 @@ const DailyChart = ({ dates, userMacros, searchModal }) => {
     macroHud = <div className='daily-hud-loading'>...Loading Macros</div>;
   } else {
     macroHud = (
-      <div className='daily-hud'>
-        <div className='daily-fats'>
-          {(userMacros.fats - dailyFats).toFixed(1)}g
-        </div>
-        <div className='daily-carbs'>
-          {(userMacros.carbs - dailyCarbs).toFixed(1)}g
-        </div>
-        <div className='daily-protein'>
-          {(userMacros.protein - dailyProtein).toFixed(1)}g
-        </div>
-        <div className='daily-calories'>
-          {(userMacros.calories - dailyCalories).toFixed(1)} cal
+      <div>
+        <div className='remaining'>REMAINING</div>
+
+        <div className='daily-hud'>
+          <div className='daily-fats macro-container'>
+            {(userMacros.fats - dailyFats).toFixed(1)}g
+            <div className='label'>FATS</div>
+          </div>
+          <div className='daily-carbs macro-container'>
+            {(userMacros.carbs - dailyCarbs).toFixed(1)}g
+            <div className='label'>CARBS</div>
+          </div>
+          <div className='daily-protein macro-container'>
+            {(userMacros.protein - dailyProtein).toFixed(1)}g
+            <div className='label'>PROTEIN</div>
+          </div>
+          <div className='daily-calories macro-container'>
+            {(userMacros.calories - dailyCalories).toFixed(1)}
+            <div className='label'>CALORIES</div>
+          </div>
         </div>
       </div>
     );

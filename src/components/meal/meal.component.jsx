@@ -105,16 +105,22 @@ const Meal = ({
           <div className='total-size'></div>
           <div className='total-fats'>
             {entriesObj[dates.currentDate][meal]['totals']['fats'].toFixed(1)}
+            <div className='macro-label'>FATS</div>
           </div>
           <div className='total-carbs'>
             {entriesObj[dates.currentDate][meal]['totals']['carbs'].toFixed(1)}
+            <div className='macro-label'>CARBS</div>
           </div>
           <div className='total-protein'>
             {entriesObj[dates.currentDate][meal]['totals']['protein'].toFixed(
               1
             )}
+            <div className='macro-label'>PROTEIN</div>
           </div>
-          <div className='total-calories'>{subtotalCalories.toFixed(1)}</div>
+          <div className='total-calories'>
+            {subtotalCalories.toFixed(1)}
+            <div className='macro-label'>CALORIES</div>
+          </div>
         </div>
       </div>
     </div>
@@ -123,7 +129,7 @@ const Meal = ({
 
 const mapStateToProps = (state) => ({
   searchModal: state.meal.searchModal,
-  // entries: state.dateSelector.entries,
+  entries: state.dateSelector.entries,
   dates: state.dateSelector.dates,
 });
 
