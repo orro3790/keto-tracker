@@ -15,12 +15,20 @@ const DailyChart = ({
   const [dailyProtein, setDailyProtein] = useState('');
   const [dailyCalories, setDailyCalories] = useState('');
 
+  // check in LS for hudModel settings
+  const hudSettings = localStorage.getItem('hudModel');
+  if (hudSettings) {
+    selectHudModel(hudSettings);
+  }
+
   const toggleRemaining = () => {
     selectHudModel('remaining');
+    localStorage.setItem('hudModel', 'remaining');
   };
 
   const toggleAdditive = () => {
     selectHudModel('additive');
+    localStorage.setItem('hudModel', 'additive');
   };
 
   useEffect(() => {
