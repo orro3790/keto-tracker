@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../../components/form-input/form-input.component';
 import { updateDietMacros } from '../../firebase/firebase.utils';
 import { setUserMacros } from '../../redux/user/user.actions';
+import Slider from '../../components/slider/slider.component';
 import './profile-settings.styles.scss';
 
 const ProfileSettings = ({ currentUser, setUserMacros }) => {
@@ -10,6 +11,7 @@ const ProfileSettings = ({ currentUser, setUserMacros }) => {
   const [carbLimit, setCarbLimit] = useState('');
   const [proteinLimit, setProteinLimit] = useState('');
   const [calorieLimit, setCalorieLimit] = useState('');
+  const [calorieSlider, setCalorieSlider] = useState('');
 
   const handleChange = (e) => {
     switch (e.target.name) {
@@ -39,9 +41,11 @@ const ProfileSettings = ({ currentUser, setUserMacros }) => {
       carbs: parseInt(carbLimit),
       protein: parseInt(proteinLimit),
       calories: parseInt(calorieLimit),
+      calorieSlider: calorieSlider,
     };
-    updateDietMacros(currentUser.id, macros);
-    setUserMacros(macros);
+    // updateDietMacros(currentUser.id, macros);
+    // setUserMacros(macros);
+    console.log(macros);
   };
 
   return (
@@ -78,6 +82,7 @@ const ProfileSettings = ({ currentUser, setUserMacros }) => {
         <button className='save-changes-btn' type='submit'>
           Save
         </button>
+        <Slider name='calories-slider' sliderData={setCalorieSlider} />
       </form>
     </div>
   );

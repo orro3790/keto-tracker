@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './slider.styles.scss';
 
-const Slider = ({ name }) => {
+const Slider = ({ name, ...props }) => {
   const [sliderContainer, setSliderContainer] = useState('');
   const [progressBar, setProgressBar] = useState('');
   const [thumb, setThumb] = useState('');
   const [sliderContainerWidth, setSliderContainerWidth] = useState('');
   const [sliderContainerLeft, setSliderContainerLeft] = useState('');
   const [thumbIndicator, setThumbIndicator] = useState('');
-  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderVal, setSliderVal] = useState('');
 
   let percentage = 50;
   let dragging = false;
@@ -55,6 +55,10 @@ const Slider = ({ name }) => {
 
       percentage = (translate / sliderContainerWidth) * 100;
       setPercentage();
+      setSliderVal(parseInt(percentage));
+
+      //pass the slider data to props --> access by parent component: <Slider sliderData={}/>
+      props.sliderData(percentage);
     }
   });
 
@@ -69,7 +73,7 @@ const Slider = ({ name }) => {
   useEffect(() => {
     setSliderContainer(document.querySelector(`.slider-container.${name}`));
     const progressBar = document.querySelector(`.progress.${name}`);
-    // progressBar.style = 'transform: scaleX(0)';
+    progressBar.style = 'transform: scaleX(0)';
     setProgressBar(progressBar);
     setThumb(document.querySelector(`.thumb.${name}`));
     setSliderContainerWidth(
@@ -82,17 +86,20 @@ const Slider = ({ name }) => {
   }, []);
 
   return (
-    <div className={`slider-container ${name}`}>
-      <div className={`track ${name}`} onClick={handleClickSet}>
-        <div className={`progress ${name}`}></div>
-        <div
-          className={`thumb ${name}`}
-          onMouseDown={handleDragging}
-          onMouseUp={handleRelease}
-        >
-          <div className={`thumb-indicator ${name}`}></div>
+    <div>
+      <div className={`slider-container ${name}`}>
+        <div className={`track ${name}`} onClick={handleClickSet}>
+          <div className={`progress ${name}`}></div>
+          <div
+            className={`thumb ${name}`}
+            onMouseDown={handleDragging}
+            onMouseUp={handleRelease}
+          >
+            <div className={`thumb-indicator ${name}`}></div>
+          </div>
         </div>
       </div>
+      {/* <input className='sliderVal' type='number' value={sliderVal} readOnly /> */}
     </div>
   );
 };
