@@ -40,6 +40,13 @@ const Slider = ({ name, ...props }) => {
     thumb.style.transform = `translate(-50%) translateX(${
       (percentage / 100) * sliderContainerWidth
     }px)`;
+
+    // set percentage, set sliderVal state
+    setPercentage();
+    setSliderVal(parseInt(percentage));
+    //pass the slider data to props --> access by parent component: <Slider sliderData={}/>
+    props.sliderData(percentage);
+
     handleRelease();
   };
 
@@ -53,6 +60,7 @@ const Slider = ({ name, ...props }) => {
         translate = e.clientX - sliderContainerLeft;
       }
 
+      // set percentage, set sliderVal state
       percentage = (translate / sliderContainerWidth) * 100;
       setPercentage();
       setSliderVal(parseInt(percentage));
@@ -99,7 +107,7 @@ const Slider = ({ name, ...props }) => {
           </div>
         </div>
       </div>
-      {/* <input className='sliderVal' type='number' value={sliderVal} readOnly /> */}
+      <input className='sliderVal' type='number' value={sliderVal} readOnly />
     </div>
   );
 };
