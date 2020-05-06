@@ -11,7 +11,7 @@ const ProfileSettings = ({ currentUser, setUserMacros }) => {
   const [carbLimit, setCarbLimit] = useState('');
   const [proteinLimit, setProteinLimit] = useState('');
   const [calorieLimit, setCalorieLimit] = useState('');
-  const [calorieSlider, setCalorieSlider] = useState('');
+  const [calorieSlider, setCalorieSlider] = useState(0);
 
   const handleChange = (e) => {
     switch (e.target.name) {
