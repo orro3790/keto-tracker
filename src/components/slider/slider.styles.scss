@@ -1,0 +1,55 @@
+$font-size-medium: 14px;
+$font-size-large: 16px;
+$keto-green: #1eb980;
+$dp-01: #1e1e1e;
+$dp-02: #222222;
+$dp-03: #242424;
+$dp-04: #272727;
+$dp-06: #2c2c2c;
+$dp-08: #2e2e2e;
+$dp-12: #323232;
+$dp-16: #353535;
+$dp-24: #373737;
+$brightest: #474747;
+
+.slider-container {
+  position: relative;
+  margin: 10px 0px 0px 0px;
+  width: 250px;
+
+  .track {
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    background: $brightest;
+  }
+
+  .progress {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: $keto-green;
+    transform-origin: 0;
+  }
+
+  .thumb {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: -7px;
+    transform: translate(-50%);
+    -webkit-user-select: none;
+
+    .thumb-indicator {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: $keto-green;
+      border-radius: 100%;
+
+      &.while-dragging {
+        transform: scale(1.3);
+      }
+    }
+  }
+}
