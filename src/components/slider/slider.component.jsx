@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import './slider.styles.scss';
 
 const Slider = ({ name, ...props }) => {
-  const [sliderContainer, setSliderContainer] = useState('');
   const [progressBar, setProgressBar] = useState('');
   const [thumb, setThumb] = useState('');
-  const [sliderContainerWidth, setSliderContainerWidth] = useState('');
-  const [sliderContainerLeft, setSliderContainerLeft] = useState('');
-  const [thumbIndicator, setThumbIndicator] = useState('');
   const [tooltip, setTooltip] = useState('');
+  const [thumbIndicator, setThumbIndicator] = useState('');
+  const [sliderContainerWidth, setSliderContainerWidth] = useState(0);
+  const [sliderContainerLeft, setSliderContainerLeft] = useState(0);
   const [sliderVal, setSliderVal] = useState(0);
 
   let percentage = 50;
@@ -49,10 +48,12 @@ const Slider = ({ name, ...props }) => {
     setPercentage();
     setSliderVal(parseInt(percentage));
     //pass the slider data to props --> access by parent component: <Slider sliderData={}/>
-    props.sliderData(percentage);
+    // props.sliderData(percentage);
 
     handleRelease();
   };
+
+  console.log('mounted');
 
   document.addEventListener('mousemove', function (e) {
     if (dragging) {
@@ -70,7 +71,7 @@ const Slider = ({ name, ...props }) => {
       setSliderVal(parseInt(percentage));
 
       //pass the slider data to props --> access by parent component: <Slider sliderData={}/>
-      props.sliderData(percentage);
+      // props.sliderData(percentage);
     }
   });
 
@@ -84,7 +85,6 @@ const Slider = ({ name, ...props }) => {
   });
 
   useEffect(() => {
-    setSliderContainer(document.querySelector(`.slider-container.${name}`));
     const progressBar = document.querySelector(`.progress.${name}`);
     progressBar.style = 'transform: scaleX(0)';
     setProgressBar(progressBar);
@@ -97,7 +97,7 @@ const Slider = ({ name, ...props }) => {
     );
     setThumbIndicator(document.querySelector(`.thumb-indicator.${name}`));
     setTooltip(document.querySelector(`.tooltip.${name}`));
-  }, []);
+  }, [name]);
 
   return (
     <div className={`slider-container ${name}`}>

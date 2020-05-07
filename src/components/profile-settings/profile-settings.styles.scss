@@ -5,6 +5,7 @@ $font-size-medium: 16px;
 $font-size-large: 22px;
 $font-size-display-3: 20px;
 $font-size-display-2: 26px;
+$font-size-hero: 72px;
 $small-weight: 300;
 $medium-weight: 400;
 $large-weight: 700;
@@ -25,8 +26,50 @@ $keto-pink: #ff94cb;
 $keto-blue: #94cbff;
 $keto-green: #1eb980;
 
+.page-separator {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  .macro-calculator-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    .left-half {
+      align-self: center;
+      margin: auto;
+    }
+
+    .right-half {
+      align-self: center;
+    }
+  }
+
+  .macro-calculator-output {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    text-align: center;
+
+    .fat-output {
+      color: $keto-green;
+      font-size: $font-size-hero;
+    }
+    .carb-output {
+      color: $keto-pink;
+      font-size: $font-size-hero;
+    }
+    .protein-output {
+      color: $keto-blue;
+      font-size: $font-size-hero;
+    }
+    .calorie-output {
+      font-size: $font-size-display-2;
+    }
+  }
+}
 .diet-input {
-  width: 100px;
+  width: 150px;
 }
 
 .save-changes-btn {
@@ -34,7 +77,7 @@ $keto-green: #1eb980;
   display: flex;
   justify-content: center;
   height: 40px;
-  width: 100px;
+  width: 100%;
   padding: 0 5px 0 5px;
   margin: 25px 0px 0px 0px;
   background-color: $keto-green;
@@ -42,8 +85,24 @@ $keto-green: #1eb980;
   font-family: 'Roboto Condensed', sans-serif;
   font-size: $font-size-medium;
   border: none;
+  box-sizing: border;
 
   &:focus {
     outline: none;
+  }
+
+  &:disabled {
+    cursor: auto;
+    background-color: $dp-04;
+    color: $dp-24;
+  }
+}
+
+.error-modal {
+  text-align: center;
+  width: 100%;
+
+  .error-message {
+    margin: 15px 0px 15px 0px;
   }
 }

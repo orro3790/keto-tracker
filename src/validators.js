@@ -14,3 +14,7 @@ export const minimumLengthValidation = (minimum) => {
     };
   };
 };
+
+// export const totalsEqual100 = ([percentages]) => {
+//   return ()
+// }
