@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import {
   createFoodItem,
   changeModalStatus,
-  toggleConfirmation,
 } from '../../redux/create-food-item/create-food-item.actions.js';
+import { toggleConfirmation } from '../../redux/confirmation-modal/confirmation-modal.actions';
 import FormHandler from './../../formHandler.js';
 import { requiredValidation } from './../../validators.js';
 import './create-food-item.styles.scss';

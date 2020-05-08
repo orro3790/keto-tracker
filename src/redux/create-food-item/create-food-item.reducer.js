@@ -3,7 +3,6 @@ import { CreateFoodItemActionTypes } from './create-food-item.types';
 const INITIAL_STATE = {
   createdFoods: [],
   modalStatus: 'hidden',
-  toggleConfirmation: 'close',
 };
 
 const createFoodItemReducer = (state = INITIAL_STATE, action) => {
@@ -17,11 +16,6 @@ const createFoodItemReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         modalStatus: action.payload,
-      };
-    case CreateFoodItemActionTypes.TOGGLE_CONFIRMATION:
-      return {
-        ...state,
-        toggleConfirmation: action.payload,
       };
     default:
       return state;

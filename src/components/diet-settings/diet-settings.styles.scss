@@ -29,6 +29,7 @@ $keto-green: #1eb980;
 
 .title {
   font-size: $font-size-display-2;
+  margin-top: 40px;
 }
 
 .macro-calculator-container {
@@ -138,7 +139,7 @@ $keto-green: #1eb980;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0px 5px;
-  margin: 10px auto 10px 0px;
+  margin: 20px auto 20px 0px;
   align-items: center;
   height: 50px;
   width: 300px;

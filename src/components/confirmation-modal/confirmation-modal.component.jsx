@@ -1,23 +1,21 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { toggleConfirmation } from '../../redux/create-food-item/create-food-item.actions.js';
+import { toggleConfirmation } from '../../redux/confirmation-modal/confirmation-modal.actions';
 
 import './confirmation-modal.styles.scss';
 
-const ConfirmationModal = ({
-  successMessage,
-  errorMessage,
-  toggleConfirmation,
-}) => {
+const ConfirmationModal = ({ messageObj, toggleConfirmation, modalStatus }) => {
   let classStyle;
+
   let message;
-  if (successMessage) {
+
+  if (messageObj.success) {
     classStyle = 'far fa-check-circle success';
-    message = successMessage;
-  } else if (errorMessage) {
+    message = messageObj.success;
+  } else if (messageObj.error) {
     classStyle = 'fas fa-exclamation-triangle error';
-    message = errorMessage;
+    message = messageObj.error;
   }
 
   const handleClose = () => {
@@ -25,12 +23,17 @@ const ConfirmationModal = ({
     toggleConfirmation('closed');
   };
 
+  if (modalStatus === 'closed') {
+    handleClose();
+    console.log('closed');
+  }
+
   return (
     <div className='confirmation-modal'>
       <div className='confirmation-modal-outer-box'>
         <div className='confirmation-modal-header-section'>
-          <span className='close-modal-btn'>
-            <i className='fas fa-times-circle' onClick={handleClose}></i>
+          <span className='close-modal-btn' onClick={handleClose}>
+            <i className='fas fa-times-circle'></i>
           </span>
           <h3>
             <i className={classStyle}></i>
@@ -42,8 +45,13 @@ const ConfirmationModal = ({
   );
 };
 
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
+  modalStatus: state.confirmationModal.modalStatus,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   toggleConfirmation: (status) => dispatch(toggleConfirmation(status)),
 });
 
-export default connect(null, mapDispatchToProps)(ConfirmationModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmationModal);

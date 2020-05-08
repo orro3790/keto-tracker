@@ -1,12 +1,30 @@
-$background-color: white;
-$google-blue: #4285f4;
-$google-red: #db4437;
-$google-yellow: #f4b400;
-$google-green: #0f9d58;
-$border-radius: 0.5rem;
-$large-icon: 2rem;
-$font-size-small: 1rem;
-$font-size-medium: 1.2rem;
+$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
+$error-red-600: #e53935;
+
+$font-size-small: 12px;
+$font-size-medium: 16px;
+$font-size-large: 22px;
+$font-size-display-3: 20px;
+$font-size-display-2: 26px;
+$small-weight: 300;
+$medium-weight: 400;
+$large-weight: 700;
+
+$base-grey: #121212;
+$dp-01: #1e1e1e;
+$dp-02: #222222;
+$dp-03: #242424;
+$dp-04: #272727;
+$dp-06: #2c2c2c;
+$dp-08: #2e2e2e;
+$dp-12: #323232;
+$dp-16: #353535;
+$dp-24: #373737;
+
+$keto-orange: #ffc894;
+$keto-pink: #ff94cb;
+$keto-blue: #94cbff;
+$keto-green: #1eb980;
 
 @mixin centered {
   position: fixed;
@@ -20,8 +38,7 @@ $font-size-medium: 1.2rem;
 .confirmation-modal-outer-box {
   z-index: 200;
   @include centered;
-  background-color: $background-color;
-  border-radius: $border-radius;
+  background-color: $dp-04;
   box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
   display: grid;
   grid-template-rows: 1fr 1fr;
@@ -31,13 +48,13 @@ $font-size-medium: 1.2rem;
     text-align: center;
 
     & i.success {
-      color: $google-green;
-      font-size: $large-icon;
+      color: $keto-green;
+      font-size: $font-size-large;
     }
 
     & i.error {
-      color: $google-red;
-      font-size: $large-icon;
+      color: $error-red-600;
+      font-size: $font-size-large;
     }
 
     .close-modal-btn {
@@ -46,7 +63,7 @@ $font-size-medium: 1.2rem;
       margin-right: 5px;
       top: 0;
       right: 0;
-      color: $google-red;
+      color: $error-red-600;
       cursor: pointer;
 
       & i {
@@ -70,7 +87,7 @@ $font-size-medium: 1.2rem;
   }
 
   .confirmation-modal-message-section {
-    font-size: $font-size-small;
+    font-size: $font-size-medium;
     text-align: center;
   }
 
@@ -78,8 +95,8 @@ $font-size-medium: 1.2rem;
     text-align: center;
 
     & i {
-      color: $google-blue;
-      font-size: $large-icon;
+      color: $keto-blue;
+      font-size: $font-size-large;
     }
   }
 }

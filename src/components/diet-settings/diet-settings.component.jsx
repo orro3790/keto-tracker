@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import { updateDietMacros } from '../../firebase/firebase.utils';
 import { setUserMacros } from '../../redux/user/user.actions';
 import FormHandler from '../../formHandler';
 import { requiredValidation, under100 } from '../../validators';
+import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
+import { toggleConfirmation } from '../../redux/confirmation-modal/confirmation-modal.actions';
 
 import './diet-settings.styles.scss';
 
-const DietSettings = ({ currentUser, setUserMacros, userMacros }) => {
+const DietSettings = ({
+  currentUser,
+  setUserMacros,
+  userMacros,
+  toggleConfirmation,
+  confirmationModalStatus,
+}) => {
+  const [confirmationMsg, setConfirmationMsg] = useState(null);
+
   const FIELDS = {
     fatLimit: {
       value: '',
@@ -29,19 +39,22 @@ const DietSettings = ({ currentUser, setUserMacros, userMacros }) => {
   };
 
   const onSubmitDispatcher = () => {
-    console.log('dispatched');
     const macros = {
-      fats: parseInt(fields.fatLimit.value),
-      carbs: parseInt(fields.carbLimit.value),
-      protein: parseInt(fields.proteinLimit.value),
+      fats: parseInt(fatsInGrams),
+      carbs: parseInt(carbsInGrams),
+      protein: parseInt(proteinInGrams),
       calories: parseInt(fields.calorieLimit.value),
     };
     updateDietMacros(currentUser.id, macros);
     setUserMacros(macros);
-    console.log('submitted');
+    setConfirmationMsg({
+      success: 'Diet settings successfully updated!',
+    });
+    toggleConfirmation('opened');
+    console.log(macros);
   };
 
-  const { fields, handleChange, handleSubmit, errors } = FormHandler(
+  const { fields, handleChange, handleSubmit } = FormHandler(
     FIELDS,
     onSubmitDispatcher
   );
@@ -53,8 +66,6 @@ const DietSettings = ({ currentUser, setUserMacros, userMacros }) => {
       parseInt(fields.carbLimit.value) +
       parseInt(fields.proteinLimit.value)
   );
-
-  console.log(fieldsFilled);
 
   const totalPercentage =
     parseInt(fields.fatLimit.value) +
@@ -119,9 +130,19 @@ const DietSettings = ({ currentUser, setUserMacros, userMacros }) => {
     }
   };
 
+  let confirmationModal = null;
+
+  if (confirmationModalStatus === 'opened') {
+    confirmationModal = <ConfirmationModal messageObj={confirmationMsg} />;
+  } else {
+    confirmationModal = null;
+  }
+
   return (
     <div>
-      {/* <div className='current-macros'>
+      <div className='title'>Current Diet</div>
+      {confirmationModal}
+      <div className='current-macros'>
         <div className='daily-fats macro-container'>
           {userMacros.fats}g<div className='label'>fats</div>
         </div>
@@ -135,7 +156,7 @@ const DietSettings = ({ currentUser, setUserMacros, userMacros }) => {
           {userMacros.calories}
           <div className='label'>calories</div>
         </div>
-      </div> */}
+      </div>
       <div className='title'>Update Diet Settings</div>
       <div className='macro-calculator-container'>
         <div className='left-col'>
@@ -220,10 +241,12 @@ const DietSettings = ({ currentUser, setUserMacros, userMacros }) => {
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
   userMacros: state.user.userMacros,
+  confirmationModalStatus: state.confirmationModal.modalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setUserMacros: (macros) => dispatch(setUserMacros(macros)),
+  toggleConfirmation: (status) => dispatch(toggleConfirmation(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DietSettings);
