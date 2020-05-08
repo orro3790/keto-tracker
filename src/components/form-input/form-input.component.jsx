@@ -2,9 +2,13 @@ import React from 'react';
 
 import './form-input.styles.scss';
 
-const FormInput = ({ handleChange, label, ...otherProps }) => (
+const FormInput = ({ handleChange, label, className, ...otherProps }) => (
   <div className='group'>
-    <input className='form-input' onChange={handleChange} {...otherProps} />
+    <input
+      className={`form-input ${className}`}
+      onChange={handleChange}
+      {...otherProps}
+    />
     {/* if there's a label, dynamically assign classname that checks if there's a label value and then applies shrink class to it, and form-input-label*/}
     {label ? (
       <label

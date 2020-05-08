@@ -1,4 +1,5 @@
-// if a value exists, it returns true, else return false (this is a double negation trick, NOT NOT something = something --> true! NOT NOT nothing = nothing ---> returns false)
+// These validators are used for single-field validations only. Return values can be combined to create meta-level validations within the component.
+
 export const requiredValidation = (field, value) => {
   return {
     isValid: !!value && value !== '',
@@ -15,6 +16,16 @@ export const minimumLengthValidation = (minimum) => {
   };
 };
 
-// export const totalsEqual100 = ([percentages]) => {
-//   return ()
-// }
+export const under100 = (field, value) => {
+  return {
+    isValid: value <= 100,
+    message: `${field} percentage cannot be greater than 100`,
+  };
+};
+
+// export const under100 = (field, value) => {
+//   return {
+//     isValid: value <= 100,
+//     message: `${field} percentage cannot be greater than 100`,
+//   };
+// };

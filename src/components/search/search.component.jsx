@@ -39,7 +39,7 @@ const Search = ({
   if (searchModal.editMode === true) {
     labelMsg = `replace ${foodReference.name} with ...`;
   } else {
-    labelMsg = `add an entry to ${searchModal.meal} ...`;
+    labelMsg = `Click to add an entry to ${searchModal.meal} ...`;
   }
 
   return (

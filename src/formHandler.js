@@ -29,9 +29,14 @@ export default function FormHandler(FIELDS, onSubmitDispatcher) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setIsSubmitting(true);
-    onSubmitDispatcher();
-    // prevent another submission for 3 seconds
+    if (isSubmitting === false) {
+      setIsSubmitting(true);
+      onSubmitDispatcher();
+      // prevent another submission for 3 seconds
+      setTimeout(function () {
+        setIsSubmitting(false);
+      }, 3000);
+    }
   };
 
   const handleChange = (event) => {
