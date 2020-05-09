@@ -6,18 +6,12 @@ import { setUserMacros } from '../../redux/user/user.actions';
 import FormHandler from '../../formHandler';
 import { requiredValidation, under100 } from '../../validators';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
-import { toggleConfirmation } from '../../redux/confirmation-modal/confirmation-modal.actions';
 
 import './diet-settings.styles.scss';
 
-const DietSettings = ({
-  currentUser,
-  setUserMacros,
-  userMacros,
-  toggleConfirmation,
-  confirmationModalStatus,
-}) => {
+const DietSettings = ({ currentUser, userMacros, setUserMacros }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
+  const [modalStatus, setModalStatus] = useState(null);
 
   const FIELDS = {
     fatLimit: {
@@ -50,8 +44,7 @@ const DietSettings = ({
     setConfirmationMsg({
       success: 'Diet settings successfully updated!',
     });
-    toggleConfirmation('opened');
-    console.log(macros);
+    setModalStatus('visible');
   };
 
   const { fields, handleChange, handleSubmit } = FormHandler(
@@ -130,10 +123,21 @@ const DietSettings = ({
     }
   };
 
-  let confirmationModal = null;
+  useEffect(() => {}, [userMacros]);
 
-  if (confirmationModalStatus === 'opened') {
-    confirmationModal = <ConfirmationModal messageObj={confirmationMsg} />;
+  const handleClose = () => {
+    setModalStatus(null);
+  };
+
+  let confirmationModal;
+
+  if (modalStatus === 'visible') {
+    confirmationModal = (
+      <ConfirmationModal
+        messageObj={confirmationMsg}
+        handleClose={handleClose}
+      />
+    );
   } else {
     confirmationModal = null;
   }
@@ -241,12 +245,10 @@ const DietSettings = ({
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
   userMacros: state.user.userMacros,
-  confirmationModalStatus: state.confirmationModal.modalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setUserMacros: (macros) => dispatch(setUserMacros(macros)),
-  toggleConfirmation: (status) => dispatch(toggleConfirmation(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DietSettings);

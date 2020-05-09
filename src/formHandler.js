@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /*
 Handles form validation with custom defined validators which can be assigned to any field. Takes in a fields object and onSubmitDispatcher, adds an errors property to each input field that will store any caught errors. If there are no errors, isSubmittable === true, and the onSubmitDispatcher function will be called. 
@@ -32,10 +32,6 @@ export default function FormHandler(FIELDS, onSubmitDispatcher) {
     if (isSubmitting === false) {
       setIsSubmitting(true);
       onSubmitDispatcher();
-      // prevent another submission for 3 seconds
-      setTimeout(function () {
-        setIsSubmitting(false);
-      }, 3000);
     }
   };
 
@@ -83,6 +79,18 @@ export default function FormHandler(FIELDS, onSubmitDispatcher) {
       })
       .filter((value) => value.length > 0);
   };
+
+  useEffect(() => {
+    // after a form submit, put a 3 second timeout on subsequent submit attempts
+    let preventSubmit = setTimeout(() => setIsSubmitting(false), 3000);
+    console.log('setting 3 second timeout on submits');
+
+    return () => {
+      // cleanup the timeout if a user clicks off the page before the timeout finishes, to prevent memory leaks
+      clearTimeout(preventSubmit);
+      console.log('cleaning up timeout');
+    };
+  }, [isSubmitting]);
 
   // isSubmittable state must be used in within component to enable/disable submit button
   // isSubmitting should also be used within component to create submit request timeouts --> enable/disable submit

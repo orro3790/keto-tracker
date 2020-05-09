@@ -1,11 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
-import { toggleConfirmation } from '../../redux/confirmation-modal/confirmation-modal.actions';
-
 import './confirmation-modal.styles.scss';
 
-const ConfirmationModal = ({ messageObj, toggleConfirmation, modalStatus }) => {
+const ConfirmationModal = ({ messageObj, handleClose }) => {
   let classStyle;
 
   let message;
@@ -16,16 +13,6 @@ const ConfirmationModal = ({ messageObj, toggleConfirmation, modalStatus }) => {
   } else if (messageObj.error) {
     classStyle = 'fas fa-exclamation-triangle error';
     message = messageObj.error;
-  }
-
-  const handleClose = () => {
-    // control the confirmation modal window
-    toggleConfirmation('closed');
-  };
-
-  if (modalStatus === 'closed') {
-    handleClose();
-    console.log('closed');
   }
 
   return (
@@ -47,11 +34,6 @@ const ConfirmationModal = ({ messageObj, toggleConfirmation, modalStatus }) => {
 
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
-  modalStatus: state.confirmationModal.modalStatus,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleConfirmation: (status) => dispatch(toggleConfirmation(status)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ConfirmationModal);
+export default connect(mapStateToProps)(ConfirmationModal);

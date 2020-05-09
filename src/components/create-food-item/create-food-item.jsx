@@ -4,7 +4,6 @@ import {
   createFoodItem,
   changeModalStatus,
 } from '../../redux/create-food-item/create-food-item.actions.js';
-import { toggleConfirmation } from '../../redux/confirmation-modal/confirmation-modal.actions';
 import FormHandler from './../../formHandler.js';
 import { requiredValidation } from './../../validators.js';
 import './create-food-item.styles.scss';
@@ -15,7 +14,6 @@ const CreateFood = ({
   changeModalStatus,
   modalStatus,
   createdFoods,
-  toggleConfirmation,
   currentUser,
 }) => {
   const FIELDS = {
@@ -70,13 +68,6 @@ const CreateFood = ({
 
   const pushToFirebase = async () => {
     const results = await createCreateFoodDocument(currentUser, fields);
-    if (results === 'successful') {
-      // close the createFood modal
-      changeModalStatus('hidden');
-      toggleConfirmation('opened-success');
-    } else {
-      toggleConfirmation('opened-error');
-    }
   };
 
   return (
@@ -189,7 +180,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   createFoodItem: (newFoodItem) => dispatch(createFoodItem(newFoodItem)),
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
-  toggleConfirmation: (status) => dispatch(toggleConfirmation(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);
