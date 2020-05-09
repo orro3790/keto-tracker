@@ -82,8 +82,11 @@ export default function FormHandler(FIELDS, onSubmitDispatcher) {
 
   useEffect(() => {
     // after a form submit, put a 3 second timeout on subsequent submit attempts
-    let preventSubmit = setTimeout(() => setIsSubmitting(false), 3000);
-    console.log('setting 3 second timeout on submits');
+    let preventSubmit;
+    if (isSubmitting === true) {
+      preventSubmit = setTimeout(() => setIsSubmitting(false), 3000);
+      console.log('setting 3 second timeout on submits');
+    }
 
     return () => {
       // cleanup the timeout if a user clicks off the page before the timeout finishes, to prevent memory leaks
