@@ -3,14 +3,14 @@ import 'firebase/firestore';
 import 'firebase/auth';
 
 const config = {
-  apiKey: 'AIzaSyBPtcNfchAjmJLqsZBtk8G5wYScadGwhwg',
-  authDomain: 'keto-tracker-5fafb.firebaseapp.com',
-  databaseURL: 'https://keto-tracker-5fafb.firebaseio.com',
-  projectId: 'keto-tracker-5fafb',
-  storageBucket: 'keto-tracker-5fafb.appspot.com',
-  messagingSenderId: '43088763001',
-  appId: '1:43088763001:web:96e1f78948a1c660ad9ca8',
-  measurementId: 'G-9CGXG3QMHK',
+  apiKey: 'AIzaSyBmRfC2bNeb6B-_PkOYqk393rH4ghrHGqk',
+  authDomain: 'keto-tracker-177a9.firebaseapp.com',
+  databaseURL: 'https://keto-tracker-177a9.firebaseio.com',
+  projectId: 'keto-tracker-177a9',
+  storageBucket: 'keto-tracker-177a9.appspot.com',
+  messagingSenderId: '89794598592',
+  appId: '1:89794598592:web:5e07c0d02dbe18fb753f25',
+  measurementId: 'G-8792LJSPTH',
 };
 
 firebase.initializeApp(config);
@@ -36,6 +36,9 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
 
+    // also create diet collection with default macros doc
+    const macrosRef = firestore.doc(`users/${userAuth.uid}/diet/macros`);
+
     try {
       // .set() is the create method
       await userRef.set({
@@ -43,6 +46,12 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         email,
         createdAt,
         ...additionalData,
+      });
+      await macrosRef.set({
+        calories: 2000,
+        fats: 166,
+        carbs: 25,
+        protein: 100,
       });
     } catch (error) {
       console.log('error creating user', error.message);
@@ -168,6 +177,37 @@ export const updateDietMacros = async (userId, macros) => {
   } catch (error) {
     console.log('error updating user macros', error.message);
   }
+};
+
+const scanner = (string) => {
+  var strSearch = string;
+  var strlength = strSearch.length;
+  var strFrontCode = strSearch.slice(0, strlength - 1);
+  var strEndCode = strSearch.slice(strlength - 1, strSearch.length);
+
+  var startcode = strSearch;
+  var endcode =
+    strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
+  return { startcode, endcode };
+};
+
+export const queryFoodByName = async (query) => {
+  var strSearch = query;
+  var strlength = strSearch.length;
+  var strFrontCode = strSearch.slice(0, strlength - 1);
+  var strEndCode = strSearch.slice(strlength - 1, strSearch.length);
+
+  var startcode = strSearch;
+  var endcode =
+    strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
+  firestore
+    .collection('foods')
+    .where('name', '>=', startcode)
+    .where('name', '<', endcode)
+    .get()
+    .then((snapshot) =>
+      snapshot.docs.forEach((doc) => console.log(doc.data()))
+    );
 };
 
 export default firebase;

@@ -15,12 +15,6 @@ const DailyChart = ({
   const [dailyProtein, setDailyProtein] = useState('');
   const [dailyCalories, setDailyCalories] = useState('');
 
-  // check in LS for hudModel settings
-  const hudSettings = localStorage.getItem('hudModel');
-  if (hudSettings) {
-    selectHudModel(hudSettings);
-  }
-
   const toggleRemaining = () => {
     selectHudModel('remaining');
     localStorage.setItem('hudModel', 'remaining');
@@ -30,6 +24,14 @@ const DailyChart = ({
     selectHudModel('additive');
     localStorage.setItem('hudModel', 'additive');
   };
+
+  useEffect(() => {
+    // check in LS for hudModel settings and update HUD settings only when a user changes the model
+    const hudSettings = localStorage.getItem('hudModel');
+    if (hudSettings) {
+      selectHudModel(hudSettings);
+    }
+  }, [selectHudModel]);
 
   useEffect(() => {
     let entriesObj;
@@ -55,7 +57,7 @@ const DailyChart = ({
         return (accumulator += meal[1]['totals'].calories);
       }, 0)
     );
-  }, [searchModal, dates]);
+  }, [searchModal, dates, selectHudModel]);
 
   let fatsValue;
   let carbsValue;
