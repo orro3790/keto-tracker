@@ -28,7 +28,7 @@ const SearchItemSuggestion = ({
     <div className='search-item-container' onClick={handleClick}>
       <i className='fas fa-plus-square search-item-add-btn'></i>
 
-      <span className='search-item-name'>{food.name}</span>
+      <span className='search-item-name'>{food.description}</span>
       {/* <div>{truncate(food.description)}</div> */}
     </div>
   );

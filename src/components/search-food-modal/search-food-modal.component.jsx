@@ -31,6 +31,8 @@ const SearchFoodModal = ({
 
   // hardcoded user profile settings for now, used to calculate daily %'s
 
+  console.log(foodReference.fat_g);
+
   let calories;
   let fats;
   let carbs;
@@ -39,7 +41,7 @@ const SearchFoodModal = ({
   if (sizeInput !== '') {
     // renders macros based on user's size input
     calories = (foodReference.caloriesPer * sizeInput).toFixed(1);
-    fats = (foodReference.fatsPer * sizeInput).toFixed(1);
+    fats = (foodReference.fats_g * sizeInput).toFixed(1);
     carbs = (foodReference.carbsPer * sizeInput).toFixed(1);
     protein = (foodReference.proteinPer * sizeInput).toFixed(1);
   } else {

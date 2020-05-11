@@ -105,48 +105,24 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
   }
 };
 
-// get standard catalogue of foods to display in the food diary
-export const getFoodsCollection = async () => {
-  const collectionRef = firestore.collection('foods');
+// // get standard catalogue of foods to display in the food diary
+// export const getFoodsCollection = async () => {
+//   const collectionRef = firestore.collection('foods');
 
-  collectionRef.onSnapshot(async (snapshot) =>
-    convertCollectionSnapshotToMap(snapshot)
-  );
+//   collectionRef.onSnapshot(async (snapshot) =>
+//     convertCollectionSnapshotToMap(snapshot)
+//   );
 
-  return collectionRef;
-};
+//   return collectionRef;
+// };
 
-export const convertCollectionSnapshotToMap = (collectionSnapshot) => {
+export const returnCollectionSnapshots = (collectionSnapshot) => {
   const transformedCollection = collectionSnapshot.docs.map((docSnapshot) => {
-    const {
-      name,
-      description,
-      size,
-      unit,
-      fats,
-      fatsPer,
-      carbs,
-      carbsPer,
-      protein,
-      proteinPer,
-      calories,
-      caloriesPer,
-    } = docSnapshot.data();
+    const { fdc_id, description } = docSnapshot.data();
 
     return {
-      id: docSnapshot.id,
-      name: name,
+      fdc_id: fdc_id,
       description: description,
-      size: size,
-      unit: unit,
-      fats: fats,
-      fatsPer: fatsPer,
-      carbs: carbs,
-      carbsPer: carbsPer,
-      protein: protein,
-      proteinPer: proteinPer,
-      calories: calories,
-      caloriesPer: caloriesPer,
     };
   });
 
@@ -179,35 +155,20 @@ export const updateDietMacros = async (userId, macros) => {
   }
 };
 
-const scanner = (string) => {
-  var strSearch = string;
-  var strlength = strSearch.length;
-  var strFrontCode = strSearch.slice(0, strlength - 1);
-  var strEndCode = strSearch.slice(strlength - 1, strSearch.length);
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey);
 
-  var startcode = strSearch;
-  var endcode =
-    strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
-  return { startcode, endcode };
-};
+  // rather than set each obj, wait for the batch to finish then set, just in case the code is interrupted midway through, we don't want it to be unpredictable
+  const batch = firestore.batch();
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
 
-export const queryFoodByName = async (query) => {
-  var strSearch = query;
-  var strlength = strSearch.length;
-  var strFrontCode = strSearch.slice(0, strlength - 1);
-  var strEndCode = strSearch.slice(strlength - 1, strSearch.length);
-
-  var startcode = strSearch;
-  var endcode =
-    strFrontCode + String.fromCharCode(strEndCode.charCodeAt(0) + 1);
-  firestore
-    .collection('foods')
-    .where('name', '>=', startcode)
-    .where('name', '<', endcode)
-    .get()
-    .then((snapshot) =>
-      snapshot.docs.forEach((doc) => console.log(doc.data()))
-    );
+  return await batch.commit();
 };
 
 export default firebase;

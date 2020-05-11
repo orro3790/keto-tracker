@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './food-diary.styles.scss';
-import CreateFood from '../create-food-item/create-food-item';
 import Meal from './../meal/meal.component';
 import DateSelector from '../date-selector/date-selector.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
@@ -8,14 +7,9 @@ import TotalsChart from '../totals-chart/totals-chart.component';
 import DailyChart from '../daily-hud/daily-hud.component';
 import Rail from '../rail/rail.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
-import { updateFoodDatabase } from '../../redux/food-diary/food-diary.actions';
 import { connect } from 'react-redux';
-import {
-  firestore,
-  convertCollectionSnapshotToMap,
-} from './../../firebase/firebase.utils';
 
-const Diary = ({ updateFoodDatabase, searchModal }) => {
+const Diary = ({ searchModal }) => {
   // conditionally render the CreateFood modal
   // let createFoodModal;
   // if (createFoodModalStatus === 'visible') {
@@ -46,25 +40,12 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
     searchFoodModal = null;
   }
 
-  useEffect(() => {
-    // grab the food database collection from firestore
-    const collectionRef = firestore.collection('foods');
-
-    // onSnapshot listens for a snapshot ==> convert function maps through the docs in the collection snapshot, pulls the data from the snapshot and returns the transformed object , then add it to redux store through updateFoodDatabase dispatch
-    collectionRef.onSnapshot(async (snapshot) => {
-      const transformedCollection = convertCollectionSnapshotToMap(snapshot);
-      updateFoodDatabase(transformedCollection);
-    });
-  }, [updateFoodDatabase]);
-
   return (
     <div className='rail-body-separator'>
       <div>
         <Rail />
       </div>
       <div className='diary-body'>
-        {/* {createFoodModal}
-      {confirmationModal} */}
         {searchFoodModal}
         <div className='diary-outer-container'>
           <DateSelector />
@@ -108,17 +89,12 @@ const Diary = ({ updateFoodDatabase, searchModal }) => {
 };
 
 const mapStateToProps = (state) => ({
-  createFoodModalStatus: state.createFoodItem.modalStatus,
-  toggleConfirmation: state.createFoodItem.toggleConfirmation,
   searchModal: state.meal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  CreateFood: (newFoodItem) => dispatch(CreateFood(newFoodItem)),
   changeModalStatus: (status) => dispatch(changeModalStatus(status)),
-  updateFoodDatabase: (transformedCollection) =>
-    dispatch(updateFoodDatabase(transformedCollection)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);
