@@ -29,10 +29,6 @@ const SearchFoodModal = ({
     entriesObj = entries;
   }
 
-  // hardcoded user profile settings for now, used to calculate daily %'s
-
-  console.log(foodReference.fat_g);
-
   let calories;
   let fats;
   let carbs;
@@ -40,16 +36,15 @@ const SearchFoodModal = ({
 
   if (sizeInput !== '') {
     // renders macros based on user's size input
-    calories = (foodReference.caloriesPer * sizeInput).toFixed(1);
-    fats = (foodReference.fats_g * sizeInput).toFixed(1);
-    carbs = (foodReference.carbsPer * sizeInput).toFixed(1);
-    protein = (foodReference.proteinPer * sizeInput).toFixed(1);
+    calories = ((foodReference.e / 100) * sizeInput).toFixed(1);
+    fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
+    carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
+    protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
   } else {
-    //pulls and renders macros from the item that was clicked on in the meal component
-    fats = foodReference.fats;
-    carbs = foodReference.carbs;
-    protein = foodReference.protein;
-    calories = foodReference.calories;
+    fats = (foodReference.f / 100).toFixed(1);
+    carbs = (foodReference.c / 100).toFixed(1);
+    protein = (foodReference.p / 100).toFixed(1);
+    calories = (foodReference.c / 100).toFixed(1);
   }
 
   const options = {
@@ -109,12 +104,6 @@ const SearchFoodModal = ({
         if (sizeInput !== '') {
           // copy the foodReference obj but alter macro fields based off portion size
           const foodCopy = Object.assign({}, foodReference);
-
-          foodCopy.fats = parseFloat(fats);
-          foodCopy.carbs = parseFloat(carbs);
-          foodCopy.protein = parseFloat(protein);
-          foodCopy.calories = parseFloat(calories);
-          foodCopy.size = parseFloat(sizeInput);
 
           // add foodCopy to the entries obj
           entriesObj[dates.currentDate][searchModal.meal]['foods'].push(
@@ -341,8 +330,8 @@ const SearchFoodModal = ({
   if (foodReference !== '') {
     resultsContainer = (
       <div className='results-container'>
-        <div className='name'>{foodReference.name}</div>
-        <div className='description'>{foodReference.description}</div>
+        <div className='name'>{foodReference.n}</div>
+        <div className='description'>{foodReference.b}</div>
         <div className='portion-input-row'>
           <div></div>
           <div>
@@ -350,8 +339,10 @@ const SearchFoodModal = ({
               <input
                 id='portion-input'
                 className='portion-input'
-                type='number'
-                placeholder={`${foodReference.size}${foodReference.unit}`}
+                type='text'
+                maxLength='4'
+                // placeholder={`${foodReference.size}${foodReference.unit}`}
+
                 onChange={handleChange}
                 value={sizeInput}
               ></input>
