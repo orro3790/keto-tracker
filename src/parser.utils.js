@@ -1,10 +1,10 @@
 const csv = require('csvtojson');
 const fs = require('fs');
 
-const foodRegistryPath = './usda-data/food_registry.csv';
+const batch = './usda-data/batch_0.csv';
 
 csv()
-  .fromFile(foodRegistryPath)
+  .fromFile(batch)
   .then((jsonObj) => {
     fs.writeFile(
       './usda-data/output.js',

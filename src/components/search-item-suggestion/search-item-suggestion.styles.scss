@@ -1,4 +1,13 @@
-$font-size-medium: 18px;
+$font-size-small: 12px;
+$font-size-medium: 16px;
+$font-size-large: 20px;
+$font-size-display-3: 22px;
+$font-size-display-2: 26px;
+
+$small-weight: 300;
+$medium-weight: 400;
+$large-weight: 700;
+
 $base-grey: #121212;
 $dp-01: #1e1e1e;
 $dp-02: #222222;
@@ -10,7 +19,15 @@ $dp-12: #323232;
 $dp-16: #353535;
 $dp-24: #373737;
 
+$error-red-600: #e53935;
+$keto-orange: #ffc894;
+$keto-pink: #ff94cb;
+$keto-blue: #94cbff;
+$keto-green: #1eb980;
+
 .search-item-container {
+  display: grid;
+  grid-template-columns: 20px auto;
   gap: 5px;
   font-size: $font-size-medium;
   color: #ffffff;
@@ -19,24 +36,31 @@ $dp-24: #373737;
 
   cursor: pointer;
 
-  // &:nth-child(odd) {
-  //   background-color: $dp-24;
-  // }
+  &:nth-child(odd) {
+    background-color: $dp-06;
+  }
 
   &:hover {
     background-color: $dp-12;
   }
 
   .search-item-add-btn {
-    font-size: 1.2rem;
-    padding-right: 5px;
+    font-size: $font-size-medium;
 
-    color: #1eb980;
+    color: $keto-green;
     cursor: pointer;
 
     &:active {
       transition: 0.1s;
       transform: scale(0.7);
     }
+  }
+
+  .search-item-name {
+    font-size: $font-size-medium;
+  }
+
+  .search-item-brand {
+    font-size: $font-size-small;
   }
 }

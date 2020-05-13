@@ -35,7 +35,7 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
     const fetchData = async () => {
       const response = await firestore
         .collection('usda')
-        .where('description', '==', query)
+        .where('n', '==', query.toUpperCase())
         .get();
 
       // update state with results, snapshot.data() doesn't include the doc id, so add it to the json obj to use as a key

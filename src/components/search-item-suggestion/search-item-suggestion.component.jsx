@@ -18,18 +18,23 @@ const SearchItemSuggestion = ({
     ToggleSuggestionWindow(!suggestionWindow);
   };
 
-  // const truncate = (string) => {
-  //   if (string !== '') {
-  //     return `(${string.slice(0, 24)}...)`;
-  //   }
-  // };
+  const truncate = (string) => {
+    if (string !== '') {
+      if (string.length > 50) {
+        return `${string.slice(0, 50)}...`;
+      } else {
+        return `${string}`;
+      }
+    }
+  };
 
   return (
     <div className='search-item-container' onClick={handleClick}>
       <i className='fas fa-plus-square search-item-add-btn'></i>
 
-      <span className='search-item-name'>{food.description}</span>
-      {/* <div>{truncate(food.description)}</div> */}
+      <span className='search-item-name'>{food.n}</span>
+      <div></div>
+      <div className='search-item-brand'>{truncate(food.b)}</div>
     </div>
   );
 };

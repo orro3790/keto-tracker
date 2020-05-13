@@ -105,17 +105,6 @@ export const createCreateFoodDocument = async (currentUser, fields) => {
   }
 };
 
-// // get standard catalogue of foods to display in the food diary
-// export const getFoodsCollection = async () => {
-//   const collectionRef = firestore.collection('foods');
-
-//   collectionRef.onSnapshot(async (snapshot) =>
-//     convertCollectionSnapshotToMap(snapshot)
-//   );
-
-//   return collectionRef;
-// };
-
 export const returnCollectionSnapshots = (collectionSnapshot) => {
   const transformedCollection = collectionSnapshot.docs.map((docSnapshot) => {
     const { fdc_id, description } = docSnapshot.data();
@@ -155,20 +144,72 @@ export const updateDietMacros = async (userId, macros) => {
   }
 };
 
+// export const addCollectionAndDocuments = async (
+//   collectionKey,
+//   objectsToAdd
+// ) => {
+//   const collectionRef = firestore.collection(collectionKey);
+
+//   // rather than set each obj, wait for the batch to finish then set, just in case the code is interrupted midway through, we don't want it to be unpredictable, but the limit is 500 docs per batch, so batches need to be chunked
+//   const batch = firestore.batch();
+//   objectsToAdd.forEach((obj) => {
+//     const newDocRef = collectionRef.doc();
+//     batch.set(newDocRef, obj);
+//   });
+
+//   return await batch.commit();
+// };
+
+// .add() assigns a new auto-generated id to the document, it's like .set() but it knows the doc didn't already exist
 export const addCollectionAndDocuments = async (
   collectionKey,
   objectsToAdd
 ) => {
   const collectionRef = firestore.collection(collectionKey);
+  let batch = firestore.batch();
+  let batchesArray = [];
+  let counter = 0;
+  let totalDocs = 0;
 
-  // rather than set each obj, wait for the batch to finish then set, just in case the code is interrupted midway through, we don't want it to be unpredictable
-  const batch = firestore.batch();
   objectsToAdd.forEach((obj) => {
-    const newDocRef = collectionRef.doc();
-    batch.set(newDocRef, obj);
+    if (counter === 500) {
+      batchesArray.push(batch);
+      batch = firestore.batch();
+      counter = 0;
+      const newDocRef = collectionRef.doc();
+      batch.set(newDocRef, obj);
+      counter++;
+      totalDocs++;
+      console.log('Batch complete!');
+    } else {
+      const newDocRef = collectionRef.doc();
+      batch.set(newDocRef, obj);
+      counter++;
+      totalDocs++;
+    }
   });
 
-  return await batch.commit();
+  // if anything remains, push it to batchesArray
+  if (batch.length !== 0) {
+    batchesArray.push(batch);
+    console.log(
+      `Last batch contained ${batch.length} docs, pushed to batchesArray.`
+    );
+  }
+
+  // console log the total batch and doc count
+  console.log(
+    `${totalDocs} documents being pushed in ${batchesArray} batches.`
+  );
+
+  // now push to firestore
+  const pushBatches = async (batch) => {
+    return await batch.commit();
+  };
+
+  batchesArray.forEach((batch) => pushBatches(batch));
+
+  console.log('Done!');
 };
 
 export default firebase;
