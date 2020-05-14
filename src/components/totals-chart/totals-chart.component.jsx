@@ -26,11 +26,7 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
     totalsData = [1];
     tooltipStatus = false;
   } else {
-    totalsData = [
-      totalFats.toFixed(1),
-      totalCarbs.toFixed(1),
-      totalProtein.toFixed(1),
-    ];
+    totalsData = [totalFats, totalCarbs, totalProtein];
     tooltipStatus = true;
   }
 

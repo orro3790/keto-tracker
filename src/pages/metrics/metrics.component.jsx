@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import Rail from '../../components/rail/rail.component';
 import './metrics.styles.scss';
-import { addCollectionAndDocuments } from '../../firebase/firebase.utils';
-import { foodRegistryArray } from '../../usda-data/output';
+// import { addCollectionAndDocuments } from '../../firebase/firebase.utils';
+// import { foodRegistryArray } from '../../usda-data/output';
 
 const Metrics = () => {
   useEffect(() => {
     // const parseFieldsToFloat = () => {
-    //   const stringFields = ['b', 'n'];
+    //   const stringFields = ['b', 'n', 'u'];
     //   // interate through the obj, changing all values not assigned to the designated string fields, to floats
     //   for (let obj in foodRegistryArray) {
     //     for (let key in foodRegistryArray[obj]) {

@@ -37,18 +37,18 @@ const FoodItem = ({
     <div className='food-outer-container' onClick={handleClick}>
       <div className='macro-row'>
         <div className='name-description-container'>
-          <div className='food-name'>{food.name}</div>
-          <div className='food-item-description'>{food.description}</div>
+          <div className='food-name'>{food.n}</div>
+          <div className='food-item-description'>{food.b}</div>
         </div>
         <div className='macro-container'>
           <div className='size'>
             {food.size}
-            {food.unit}
+            {food.u}
           </div>
-          <div className='fats'>{food.fats}</div>
-          <div className='carbs'>{food.carbs}</div>
-          <div className='protein'>{food.protein}</div>
-          <div className='calories'>{food.calories}</div>
+          <div className='fats'>{food.f}</div>
+          <div className='carbs'>{food.c}</div>
+          <div className='protein'>{food.p}</div>
+          <div className='calories'>{food.e}</div>
         </div>
       </div>
     </div>

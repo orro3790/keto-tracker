@@ -45,28 +45,28 @@ const Meal = ({
 
   const subtotalFats = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
-      return (accumulator += food.fats);
+      return (accumulator += food.f);
     },
     0
   );
 
   const subtotalCarbs = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
-      return (accumulator += food.carbs);
+      return (accumulator += food.c);
     },
     0
   );
 
   const subtotalProtein = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
-      return (accumulator += food.protein);
+      return (accumulator += food.p);
     },
     0
   );
 
   const subtotalCalories = entriesObj[dates.currentDate][meal]['foods'].reduce(
     (accumulator, food) => {
-      return (accumulator += food.calories);
+      return (accumulator += food.e);
     },
     0
   );
@@ -104,21 +104,19 @@ const Meal = ({
         <div className='totals-container'>
           <div className='total-size'></div>
           <div className='total-fats'>
-            {entriesObj[dates.currentDate][meal]['totals']['fats'].toFixed(1)}
+            {entriesObj[dates.currentDate][meal]['totals']['fats']}
             <div className='macro-label'>fats</div>
           </div>
           <div className='total-carbs'>
-            {entriesObj[dates.currentDate][meal]['totals']['carbs'].toFixed(1)}
+            {entriesObj[dates.currentDate][meal]['totals']['carbs']}
             <div className='macro-label'>carbs</div>
           </div>
           <div className='total-protein'>
-            {entriesObj[dates.currentDate][meal]['totals']['protein'].toFixed(
-              1
-            )}
+            {entriesObj[dates.currentDate][meal]['totals']['protein']}
             <div className='macro-label'>protein</div>
           </div>
           <div className='total-calories'>
-            {subtotalCalories.toFixed(1)}
+            {subtotalCalories}
             <div className='macro-label'>calories</div>
           </div>
         </div>

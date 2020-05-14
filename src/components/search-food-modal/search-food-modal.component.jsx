@@ -9,7 +9,6 @@ import { createEntry } from '../../redux/date-selector/date-selector.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
-
   foodReference,
   createFoodReference,
   suggestionWindow,
@@ -34,56 +33,20 @@ const SearchFoodModal = ({
   let carbs;
   let protein;
 
-  if (sizeInput !== '') {
-    // renders macros based on user's size input
-    calories = ((foodReference.e / 100) * sizeInput).toFixed(1);
-    fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
-    carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
-    protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
-  } else {
-    fats = (foodReference.f / 100).toFixed(1);
-    carbs = (foodReference.c / 100).toFixed(1);
-    protein = (foodReference.p / 100).toFixed(1);
-    calories = (foodReference.c / 100).toFixed(1);
+  if (foodReference !== '') {
+    if (sizeInput !== '') {
+      // renders macros based on user's size input
+      calories = ((foodReference.e / 100) * sizeInput).toFixed(1);
+      fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
+      carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
+      protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
+    } else {
+      fats = foodReference.f.toFixed(1);
+      carbs = foodReference.c.toFixed(1);
+      protein = foodReference.p.toFixed(1);
+      calories = foodReference.c.toFixed(1);
+    }
   }
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: {
-      display: false,
-    },
-    title: {
-      display: true,
-      text: '% of daily allowance',
-      fontColor: 'rgba(255, 255, 255, 1)',
-    },
-    scales: {
-      yAxes: [
-        {
-          gridLines: {
-            color: '#373737',
-          },
-          ticks: {
-            max: 100,
-            min: 0,
-            stepSize: 25,
-            fontColor: 'rgba(255, 255, 255, 1)',
-          },
-        },
-      ],
-      xAxes: [
-        {
-          gridLines: {
-            color: '#373737',
-          },
-          ticks: {
-            fontColor: 'rgba(255, 255, 255, 1)',
-          },
-        },
-      ],
-    },
-  };
 
   const handleChange = (e) => {
     setSizeInput(e.target.value);
@@ -105,16 +68,26 @@ const SearchFoodModal = ({
           // copy the foodReference obj but alter macro fields based off portion size
           const foodCopy = Object.assign({}, foodReference);
 
-          // add foodCopy to the entries obj
-          entriesObj[dates.currentDate][searchModal.meal]['foods'].push(
-            foodCopy
-          );
+          // adjust the food object based on user's input
+          foodCopy.e = ((foodReference.e / 100) * sizeInput).toFixed(1);
+          foodCopy.f = ((foodReference.f / 100) * sizeInput).toFixed(1);
+          foodCopy.c = ((foodReference.c / 100) * sizeInput).toFixed(1);
+          foodCopy.p = ((foodReference.p / 100) * sizeInput).toFixed(1);
+          foodCopy.d = ((foodReference.d / 100) * sizeInput).toFixed(1);
+          foodCopy.size = parseFloat(sizeInput);
 
-          // dispatch the new entry obj to state then close the window
-          createEntry(entriesObj);
+          console.log(foodCopy);
 
-          // set in localStorage
-          localStorage.setItem('entries', JSON.stringify(entriesObj));
+          // // add foodCopy to the entries obj
+          // entriesObj[dates.currentDate][searchModal.meal]['foods'].push(
+          //   foodCopy
+          // );
+
+          // // dispatch the new entry obj to state then close the window
+          // createEntry(entriesObj);
+
+          // // set in localStorage
+          // localStorage.setItem('entries', JSON.stringify(entriesObj));
 
           handleClose();
         }
@@ -124,10 +97,10 @@ const SearchFoodModal = ({
           // copy the foodReference obj but alter macro fields based off portion size
           const foodCopy = Object.assign({}, foodReference);
 
-          foodCopy.fats = parseFloat(fats);
-          foodCopy.carbs = parseFloat(carbs);
-          foodCopy.protein = parseFloat(protein);
-          foodCopy.calories = parseFloat(calories);
+          foodCopy.f = parseFloat(fats);
+          foodCopy.c = parseFloat(carbs);
+          foodCopy.p = parseFloat(protein);
+          foodCopy.e = parseFloat(calories);
           foodCopy.size = parseFloat(sizeInput);
 
           // remove the edited food from the entries obj
@@ -184,13 +157,47 @@ const SearchFoodModal = ({
     });
   };
 
-  useEffect(() => {
-    if (foodReference !== '') {
-      const fats = document.querySelector('.fats-value').innerHTML;
-      const carbs = document.querySelector('.carbs-value').innerHTML;
-      const protein = document.querySelector('.protein-value').innerHTML;
-    }
+  // chart options config
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    legend: {
+      display: false,
+    },
+    title: {
+      display: true,
+      text: '% of daily allowance',
+      fontColor: 'rgba(255, 255, 255, 1)',
+    },
+    scales: {
+      yAxes: [
+        {
+          gridLines: {
+            color: '#373737',
+          },
+          ticks: {
+            max: 100,
+            min: 0,
+            stepSize: 25,
+            fontColor: 'rgba(255, 255, 255, 1)',
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            color: '#373737',
+          },
+          ticks: {
+            fontColor: 'rgba(255, 255, 255, 1)',
+          },
+        },
+      ],
+    },
+  };
 
+  // render chart based on input values
+  useEffect(() => {
     let fatsRemaining;
     let carbsRemaining;
     let proteinRemaining;
@@ -301,6 +308,14 @@ const SearchFoodModal = ({
     }
   };
 
+  let placeholder;
+
+  if (searchModal.editMode === false) {
+    placeholder = `100${foodReference.u}`;
+  } else {
+    placeholder = `${foodReference.size}${foodReference.u}`;
+  }
+
   let submitRow;
 
   if (searchModal.editMode === false) {
@@ -327,6 +342,7 @@ const SearchFoodModal = ({
   }
 
   let resultsContainer;
+
   if (foodReference !== '') {
     resultsContainer = (
       <div className='results-container'>
@@ -341,8 +357,7 @@ const SearchFoodModal = ({
                 className='portion-input'
                 type='text'
                 maxLength='4'
-                // placeholder={`${foodReference.size}${foodReference.unit}`}
-
+                placeholder={placeholder}
                 onChange={handleChange}
                 value={sizeInput}
               ></input>

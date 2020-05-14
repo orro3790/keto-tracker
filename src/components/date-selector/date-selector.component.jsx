@@ -6,8 +6,19 @@ import {
   instantiateDatesObj,
   instantiateEntriesObj,
 } from './date-selector.utils.js';
+import { createDateSelector } from '../../firebase/firebase.utils';
 
-const DateSelector = ({ entries, setCurrentDate, dates }) => {
+const DateSelector = ({ entries, setCurrentDate, dates, currentUser }) => {
+  // When the user is not null, fetch the dateSelector obj from firebase
+  useEffect(() => {
+    if (currentUser !== null) {
+      createDateSelector(currentUser.id);
+    }
+    // return () => {
+    //   cleanup
+    // }
+  }, [currentUser]);
+
   // if entries obj in localStorage, use it for rendering, else use the initial state entries object
   let entriesObj = JSON.parse(localStorage.getItem('entries'));
   if (entriesObj !== undefined && entriesObj !== null) {
@@ -128,6 +139,7 @@ const DateSelector = ({ entries, setCurrentDate, dates }) => {
 const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
   dates: state.dateSelector.dates,
+  currentUser: state.user.currentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({

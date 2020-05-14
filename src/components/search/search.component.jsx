@@ -58,7 +58,7 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
   let labelMsg;
 
   if (searchModal.editMode === true) {
-    labelMsg = `replace ${foodReference.name} with ...`;
+    labelMsg = `Replace "${foodReference.n}" with ...`;
   } else {
     labelMsg = `Click to add an entry to ${searchModal.meal} ...`;
   }

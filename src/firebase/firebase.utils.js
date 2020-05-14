@@ -192,14 +192,11 @@ export const addCollectionAndDocuments = async (
   // if anything remains, push it to batchesArray
   if (batch.length !== 0) {
     batchesArray.push(batch);
-    console.log(
-      `Last batch contained ${batch.length} docs, pushed to batchesArray.`
-    );
   }
 
   // console log the total batch and doc count
   console.log(
-    `${totalDocs} documents being pushed in ${batchesArray} batches.`
+    `${totalDocs} documents being pushed in ${batchesArray.length} batches.`
   );
 
   // now push to firestore
@@ -210,6 +207,86 @@ export const addCollectionAndDocuments = async (
   batchesArray.forEach((batch) => pushBatches(batch));
 
   console.log('Done!');
+};
+
+export const getDateSelector = async (userId) => {
+  const dateSelectorRef = firestore.doc(
+    `users/${userId}/dateSelector/selector`
+  );
+  const snapShot = await dateSelectorRef.get();
+  return snapShot.data();
+};
+
+export const createDateSelector = async (userId) => {
+  // unix is in milliseconds, so convert seconds to milliseconds by * 1000
+
+  // const today = new Date(dateSelector.currentDate.seconds * 1000);
+  // const currentDate = new Date(dateSelector.currentDate.seconds * 1000);
+  // const prevDate = new Date(dateSelector.prevDate.seconds * 1000);
+  // const nextDate = new Date(dateSelector.nextDate.seconds * 1000);
+
+  let currentDatetime = new Date();
+  const month = currentDatetime.getMonth();
+  const date = currentDatetime.getDate();
+  const year = currentDatetime.getFullYear();
+
+  // javascript generates months starting from 0, so month +1 to properly format the string
+  let currentDate = new Date(`${month + 1}/${date}/${year}`);
+
+  // firestore stores timestamps in seconds in unix epoch time, but javascript uses milliseconds, so / 1000 first
+  currentDate = Date.parse(currentDate) / 1000;
+
+  // now check if this date exists in firestore
+  const entryRef = firestore.doc(`users/${userId}/foodDiary/${currentDate}`);
+
+  const snapShot = await entryRef.get();
+
+  // if this date doesn't exist in the foodDiary, create it
+  if (snapShot.exists === false) {
+    const entry = {
+      Breakfast: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Lunch: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Dinner: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+      Snacks: {
+        foods: [],
+        totals: {
+          fats: '',
+          carbs: '',
+          protein: '',
+          calories: '',
+        },
+      },
+    };
+    try {
+      await entryRef.set({ entry });
+    } catch (error) {
+      console.log('error creating foodDiary entry', error.message);
+    }
+  }
 };
 
 export default firebase;
