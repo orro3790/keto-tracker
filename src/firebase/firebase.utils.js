@@ -209,35 +209,40 @@ export const addCollectionAndDocuments = async (
   console.log('Done!');
 };
 
-export const getDateSelector = async (userId) => {
-  const dateSelectorRef = firestore.doc(
-    `users/${userId}/dateSelector/selector`
-  );
-  const snapShot = await dateSelectorRef.get();
-  return snapShot.data();
-};
+export const getEntry = async (userId, anchorDate, dateShift) => {
+  // currentDate refers to the date currently being viewed, not today's date
 
-export const createDateSelector = async (userId) => {
-  // unix is in milliseconds, so convert seconds to milliseconds by * 1000
+  let anchor = new Date();
 
-  // const today = new Date(dateSelector.currentDate.seconds * 1000);
-  // const currentDate = new Date(dateSelector.currentDate.seconds * 1000);
-  // const prevDate = new Date(dateSelector.prevDate.seconds * 1000);
-  // const nextDate = new Date(dateSelector.nextDate.seconds * 1000);
+  if (anchorDate) {
+    anchor = new Date(anchorDate);
+  }
 
-  let currentDatetime = new Date();
-  const month = currentDatetime.getMonth();
-  const date = currentDatetime.getDate();
-  const year = currentDatetime.getFullYear();
+  switch (dateShift) {
+    case -1:
+      anchor.setDate(anchor.getDate() - 1);
+      break;
+    case +1:
+      anchor.setDate(anchor.getDate() + 1);
+      break;
+    default:
+      break;
+  }
+
+  const month = anchor.getMonth();
+  const date = anchor.getDate();
+  const year = anchor.getFullYear();
 
   // javascript generates months starting from 0, so month +1 to properly format the string
-  let currentDate = new Date(`${month + 1}/${date}/${year}`);
+  anchor = new Date(`${month + 1}/${date}/${year}`);
 
   // firestore stores timestamps in seconds in unix epoch time, but javascript uses milliseconds, so / 1000 first
-  currentDate = Date.parse(currentDate) / 1000;
+  const anchorUtcSeconds = Date.parse(anchor) / 1000;
 
   // now check if this date exists in firestore
-  const entryRef = firestore.doc(`users/${userId}/foodDiary/${currentDate}`);
+  const entryRef = firestore.doc(
+    `users/${userId}/foodDiary/${anchorUtcSeconds}`
+  );
 
   const snapShot = await entryRef.get();
 
@@ -280,12 +285,16 @@ export const createDateSelector = async (userId) => {
           calories: '',
         },
       },
+      currentDate: firebase.firestore.Timestamp.fromDate(anchor),
     };
     try {
       await entryRef.set({ entry });
+      return entry;
     } catch (error) {
       console.log('error creating foodDiary entry', error.message);
     }
+  } else {
+    return snapShot.data().entry;
   }
 };
 

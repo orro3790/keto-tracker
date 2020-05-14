@@ -5,7 +5,7 @@ export const setCurrentDate = (date) => ({
   payload: date,
 });
 
-export const createEntry = (entries) => ({
-  type: DateSelectorActionTypes.CREATE_ENTRIES_OBJ,
+export const setEntry = (entries) => ({
+  type: DateSelectorActionTypes.SET_DIARY_ENTRY,
   payload: entries,
 });

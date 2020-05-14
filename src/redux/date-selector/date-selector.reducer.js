@@ -1,47 +1,7 @@
 import { DateSelectorActionTypes } from './date-selector.types';
 
 const INITIAL_STATE = {
-  dates: '',
-  entries: {
-    '0-00-0000': {
-      Breakfast: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-      Lunch: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-      Dinner: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-      Snacks: {
-        foods: [],
-        totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
-        },
-      },
-    },
-  },
+  entries: '',
 };
 
 const dateSelectorReducer = (state = INITIAL_STATE, action) => {
@@ -51,7 +11,7 @@ const dateSelectorReducer = (state = INITIAL_STATE, action) => {
         ...state,
         dates: action.payload,
       };
-    case DateSelectorActionTypes.CREATE_ENTRIES_OBJ:
+    case DateSelectorActionTypes.SET_DIARY_ENTRY:
       return {
         ...state,
         entries: action.payload,

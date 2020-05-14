@@ -54,7 +54,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              <Meal meal={'Breakfast'} />
+              {/* <Meal meal={'Breakfast'} /> */}
             </div>
             {/* <TotalsChart meal={'Breakfast'} /> */}
           </div>
@@ -62,7 +62,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              <Meal meal={'Lunch'} />
+              {/* <Meal meal={'Lunch'} /> */}
             </div>
             {/* <TotalsChart meal={'Lunch'} /> */}
           </div>
@@ -70,7 +70,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              <Meal meal={'Dinner'} />
+              {/* <Meal meal={'Dinner'} /> */}
             </div>
             {/* <TotalsChart meal={'Dinner'} /> */}
           </div>
@@ -78,7 +78,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              <Meal meal={'Snacks'} />
+              {/* <Meal meal={'Snacks'} /> */}
             </div>
             {/* <TotalsChart meal={'Snacks'} /> */}
           </div>

@@ -1,125 +1,75 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './date-selector.styles.scss';
 import { connect } from 'react-redux';
-import { setCurrentDate } from '../../redux/date-selector/date-selector.actions';
 import {
-  instantiateDatesObj,
-  instantiateEntriesObj,
-} from './date-selector.utils.js';
-import { createDateSelector } from '../../firebase/firebase.utils';
+  setCurrentDate,
+  setEntry,
+} from '../../redux/date-selector/date-selector.actions';
+import { getEntry } from '../../firebase/firebase.utils';
 
-const DateSelector = ({ entries, setCurrentDate, dates, currentUser }) => {
-  // When the user is not null, fetch the dateSelector obj from firebase
+const DateSelector = ({
+  entries,
+  setCurrentDate,
+  dates,
+  currentUser,
+  setEntry,
+}) => {
+  const [date, setDate] = useState('...loading');
+
+  // When the user is not null, get today's diary entry from firebase
   useEffect(() => {
-    if (currentUser !== null) {
-      createDateSelector(currentUser.id);
-    }
-    // return () => {
-    //   cleanup
-    // }
-  }, [currentUser]);
-
-  // if entries obj in localStorage, use it for rendering, else use the initial state entries object
-  let entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj !== undefined && entriesObj !== null) {
-  } else {
-    entriesObj = entries;
-  }
-
-  // check to see if a datesObj exists in cache, which can use its currentDate to anchor the date
-  let datesObj = JSON.parse(localStorage.getItem('dates'));
-  // if the datesObj is null, instantiate one using today's date
-  datesObj = instantiateDatesObj(datesObj);
-
-  // if currentDate not included in the entriesObj --> instantiate new entriesObj that includes it --> add to LS
-  instantiateEntriesObj(entriesObj, datesObj);
-
-  // update dates state only if difference in datesObj in LS and dates state, preventing infinite renders upon mount
-  if (datesObj.currentDate !== dates.currentDate) {
-    setCurrentDate(datesObj);
-  }
-
-  const goToPrevDay = () => {
-    // if entries obj in localStorage, use it for rendering, else use the entries object in state
-    entriesObj = JSON.parse(localStorage.getItem('entries'));
-    if (entriesObj !== undefined && entriesObj !== null) {
-    } else {
-      entriesObj = entries;
-    }
-
-    let dateShift;
-    dateShift = JSON.parse(localStorage.getItem('dates'));
-
-    let today = new Date();
-    let currentDate = new Date(dateShift.currentDate);
-    let prevDate = new Date(dateShift.currentDate);
-    let nextDate = new Date(dateShift.currentDate);
-
-    currentDate.setDate(currentDate.getDate() - 1);
-    prevDate.setDate(prevDate.getDate() - 2);
-    nextDate.setDate(nextDate.getDate());
-
-    today = today.toLocaleDateString();
-    currentDate = currentDate.toLocaleDateString();
-    prevDate = prevDate.toLocaleDateString();
-    nextDate = nextDate.toLocaleDateString();
-
-    dateShift = {
-      today: today,
-      currentDate: currentDate,
-      prevDate: prevDate,
-      nextDate: nextDate,
+    const loadEntry = async () => {
+      const entriesObj = await getEntry(currentUser.id, 0);
+      setEntry(entriesObj);
     };
 
-    instantiateEntriesObj(entriesObj, dateShift);
+    if (currentUser !== null) {
+      loadEntry();
+    }
+  }, [currentUser, setEntry]);
 
-    // get current date and instantiate a meals obj for today if one doesn't already exist
-
-    localStorage.setItem('dates', JSON.stringify(dateShift));
-    setCurrentDate(dateShift);
-  };
+  useEffect(() => {
+    if (entries !== '') {
+      let anchor = entries.currentDate.seconds * 1000;
+      anchor = new Date(anchor);
+      anchor = `${
+        anchor.getMonth() + 1
+      }/${anchor.getDate()}/${anchor.getFullYear()}`;
+      setDate(anchor);
+    }
+  }, [entries]);
 
   const goToNextDay = () => {
-    // if entries obj in localStorage, use it for rendering, else use the entries object in state
-    entriesObj = JSON.parse(localStorage.getItem('entries'));
-    if (entriesObj !== undefined && entriesObj !== null) {
-    } else {
-      entriesObj = entries;
-    }
-
-    let dateShift;
-    dateShift = JSON.parse(localStorage.getItem('dates'));
-
-    let today = new Date();
-    let currentDate = new Date(dateShift.currentDate);
-    let prevDate = new Date(dateShift.currentDate);
-    let nextDate = new Date(dateShift.currentDate);
-
-    currentDate.setDate(currentDate.getDate() + 1);
-    prevDate.setDate(prevDate.getDate());
-    nextDate.setDate(nextDate.getDate() + 2);
-
-    today = today.toLocaleDateString();
-    currentDate = currentDate.toLocaleDateString();
-    prevDate = prevDate.toLocaleDateString();
-    nextDate = nextDate.toLocaleDateString();
-
-    dateShift = {
-      today: today,
-      currentDate: currentDate,
-      prevDate: prevDate,
-      nextDate: nextDate,
+    const loadEntry = async () => {
+      const entriesObj = await getEntry(
+        currentUser.id,
+        entries.currentDate.seconds * 1000,
+        +1
+      );
+      setEntry(entriesObj);
     };
 
-    instantiateEntriesObj(entriesObj, dateShift);
-
-    localStorage.setItem('dates', JSON.stringify(dateShift));
-    setCurrentDate(dateShift);
+    if (currentUser !== null) {
+      loadEntry();
+    }
+    // console.log(entries.entry.currentDate.seconds);
   };
 
-  useEffect(() => {
-    // re-render component when dates state changes
-  }, [dates]);
+  const goToPrevDay = () => {
+    const loadEntry = async () => {
+      const entriesObj = await getEntry(
+        currentUser.id,
+        entries.currentDate.seconds * 1000,
+        -1
+      );
+      setEntry(entriesObj);
+    };
+
+    if (currentUser !== null) {
+      loadEntry();
+    }
+    // console.log(entries.entry.currentDate.seconds);
+  };
 
   return (
     <div>
@@ -127,7 +77,7 @@ const DateSelector = ({ entries, setCurrentDate, dates, currentUser }) => {
         <div className='yesterday-container' onClick={goToPrevDay}>
           <i className='fas fa-chevron-left'></i>
         </div>
-        <div className='today-container'>{dates.currentDate}</div>
+        <div className='today-container'>{date}</div>
         <div className='tomorrow-container' onClick={goToNextDay}>
           <i className='fas fa-chevron-right'></i>
         </div>
@@ -137,13 +87,13 @@ const DateSelector = ({ entries, setCurrentDate, dates, currentUser }) => {
 };
 
 const mapStateToProps = (state) => ({
-  entries: state.dateSelector.entries,
-  dates: state.dateSelector.dates,
   currentUser: state.user.currentUser,
+  entries: state.dateSelector.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentDate: (datesObj) => dispatch(setCurrentDate(datesObj)),
+  setEntry: (entriesObj) => dispatch(setEntry(entriesObj)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DateSelector);

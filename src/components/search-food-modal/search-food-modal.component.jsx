@@ -5,7 +5,7 @@ import Search from './../search/search.component';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
-import { createEntry } from '../../redux/date-selector/date-selector.actions';
+import { setEntry } from '../../redux/date-selector/date-selector.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -16,7 +16,7 @@ const SearchFoodModal = ({
   searchModal,
   dates,
   userMacros,
-  createEntry,
+  setEntry,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -84,7 +84,7 @@ const SearchFoodModal = ({
           // );
 
           // // dispatch the new entry obj to state then close the window
-          // createEntry(entriesObj);
+          // setEntry(entriesObj);
 
           // // set in localStorage
           // localStorage.setItem('entries', JSON.stringify(entriesObj));
@@ -117,7 +117,7 @@ const SearchFoodModal = ({
           );
 
           // dispatch the new entry obj to state
-          createEntry(entriesObj);
+          setEntry(entriesObj);
 
           //remove the old entries obj from localStorage and replace it with the new one
           localStorage.removeItem(entriesObj);
@@ -142,7 +142,7 @@ const SearchFoodModal = ({
     );
 
     // dispatch the new entry obj to state
-    createEntry(entriesObj);
+    setEntry(entriesObj);
 
     // remove from localStorage and replace it with the new one
     localStorage.removeItem('entries');
@@ -420,7 +420,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createEntry: (entries) => dispatch(createEntry(entries)),
+  setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
