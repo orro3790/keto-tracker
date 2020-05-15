@@ -108,18 +108,24 @@ const SearchFoodModal = ({
           foodCopy.e = parseFloat(calories);
           foodCopy.size = parseFloat(sizeInput);
 
+          // entry state is immutable so make a copy of it first because pushing the edited version
+          const entryCopy = Object.assign({}, entries);
+
           // remove the edited food from the entries obj
-          entries[searchModal.meal]['foods'].splice(searchModal.listId, 1);
+          entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
           // add the updated food to the entries obj back where it used to be
-          entries[searchModal.meal]['foods'].splice(
+          entryCopy[searchModal.meal]['foods'].splice(
             searchModal.listId,
             0,
             foodCopy
           );
 
+          // signal that I want to update the totals and push them to firestore
+          updateTotals(true);
+
           // dispatch the new entry obj to state
-          setEntry(entries);
+          setEntry(entryCopy);
 
           toggleSearchModal({
             status: 'hidden',
@@ -141,6 +147,7 @@ const SearchFoodModal = ({
 
     // signal that I want to update the totals and push them to firestore
     updateTotals(true);
+
     // dispatch the new entry obj to state
     setEntry(entryCopy);
 
