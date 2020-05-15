@@ -3,42 +3,29 @@ import './totals-chart.styles.scss';
 import { connect } from 'react-redux';
 import { Doughnut } from 'react-chartjs-2';
 
-const TotalsChart = ({ entries, meal, dates, searchModal }) => {
+const TotalsChart = ({ entries, meal, searchModal }) => {
   const [chartData, setChartData] = useState({});
+  const [totalsData, setTotalsData] = useState([1, 0, 0, 0]);
 
-  // if entries obj in localStorage, use it for rendering, else use the entries object in state
-  let entriesObj;
-  entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj === undefined || entriesObj === null) {
-    entriesObj = entries;
-  }
+  useEffect(() => {
+    // only try to chart once data has been loaded into state
+    if (entries !== '') {
+      // don't overwrite the default chart data unless there are actually calories present
+      if (entries[meal]['totals'].e !== 0) {
+        console.log(entries[meal]['totals']);
+        const totalFats = entries[meal]['totals']['f'];
+        const totalCarbs = entries[meal]['totals']['c'];
+        const totalProtein = entries[meal]['totals']['p'];
+        const totalCalories = entries[meal]['totals']['e'];
+        setTotalsData([totalFats, totalCarbs, totalProtein, totalCalories]);
+      }
+    }
+  }, [entries, meal]);
 
-  const totalFats = entriesObj[dates.currentDate][meal]['totals']['fats'];
-  const totalCarbs = entriesObj[dates.currentDate][meal]['totals']['carbs'];
-  const totalProtein = entriesObj[dates.currentDate][meal]['totals']['protein'];
-  const totalCalories =
-    entriesObj[dates.currentDate][meal]['totals']['calories'];
-
-  let totalsData;
-  let tooltipStatus;
-
-  if (totalCalories === 0) {
-    totalsData = [1];
-    tooltipStatus = false;
-  } else {
-    totalsData = [totalFats, totalCarbs, totalProtein];
+  // hide tooltip when no calories present (default state)
+  let tooltipStatus = false;
+  if (totalsData[3] !== 0) {
     tooltipStatus = true;
-  }
-
-  let colors;
-  if (totalCalories === 0) {
-    colors = '#727378';
-  } else {
-    colors = [
-      'rgba(255, 147, 64, 1)',
-      'rgba(227, 28, 116, 1)',
-      'rgba(64, 168, 255, 1)',
-    ];
   }
 
   const options = {
@@ -52,13 +39,23 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
   };
 
   useEffect(() => {
+    let colors;
+    if (totalsData[3] === 0) {
+      colors = '#727378';
+    } else {
+      colors = [
+        'rgba(255, 147, 64, 1)',
+        'rgba(227, 28, 116, 1)',
+        'rgba(64, 168, 255, 1)',
+      ];
+    }
     const chart = () => {
       setChartData({
         labels: ['fats', 'carbs', 'protein'],
         datasets: [
           {
             label: 'macro ratios',
-            data: totalsData,
+            data: [totalsData[0], totalsData[1], totalsData[2]],
             backgroundColor: colors,
             borderWidth: 3,
             borderColor: '#222222',
@@ -66,10 +63,9 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
         ],
       });
     };
-
     chart();
     // use searchModal as useEffect trigger for updating charts because searchModal precedes all CRUD operations
-  }, [searchModal, dates]);
+  }, [totalsData]);
 
   return (
     <div>
@@ -82,8 +78,7 @@ const TotalsChart = ({ entries, meal, dates, searchModal }) => {
 
 const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
-  dates: state.dateSelector.dates,
-  searchModal: state.meal.searchModal,
+  searchModal: state.searchModal.searchModal,
 });
 
 export default connect(mapStateToProps)(TotalsChart);

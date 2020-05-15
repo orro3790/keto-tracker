@@ -1,7 +1,7 @@
 const csv = require('csvtojson');
 const fs = require('fs');
 
-const batch = './usda-data/batch_0.csv';
+const batch = './usda-data/batch_1.csv';
 
 csv()
   .fromFile(batch)

@@ -3,7 +3,7 @@ import './food-diary.styles.scss';
 import Meal from './../meal/meal.component';
 import DateSelector from '../date-selector/date-selector.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
-// import TotalsChart from '../totals-chart/totals-chart.component';
+import TotalsChart from '../totals-chart/totals-chart.component';
 // import DailyChart from '../daily-hud/daily-hud.component';
 import Rail from '../rail/rail.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
@@ -33,7 +33,7 @@ const Diary = ({ searchModal }) => {
             <div className='breakfast-section'>
               <Meal meal={'Breakfast'} />
             </div>
-            {/* <TotalsChart meal={'Breakfast'} /> */}
+            <TotalsChart meal={'Breakfast'} />
           </div>
         </div>
         <div className='diary-outer-container'>
@@ -41,7 +41,7 @@ const Diary = ({ searchModal }) => {
             <div className='breakfast-section'>
               <Meal meal={'Lunch'} />
             </div>
-            {/* <TotalsChart meal={'Lunch'} /> */}
+            <TotalsChart meal={'Lunch'} />
           </div>
         </div>
         <div className='diary-outer-container'>
@@ -49,7 +49,7 @@ const Diary = ({ searchModal }) => {
             <div className='breakfast-section'>
               <Meal meal={'Dinner'} />
             </div>
-            {/* <TotalsChart meal={'Dinner'} /> */}
+            <TotalsChart meal={'Dinner'} />
           </div>
         </div>
         <div className='diary-outer-container'>
@@ -57,7 +57,7 @@ const Diary = ({ searchModal }) => {
             <div className='breakfast-section'>
               <Meal meal={'Snacks'} />
             </div>
-            {/* <TotalsChart meal={'Snacks'} /> */}
+            <TotalsChart meal={'Snacks'} />
           </div>
         </div>
       </div>
