@@ -46,8 +46,6 @@ const DateSelector = ({
     if (entries !== '' && currentUser !== null && update === true) {
       updateEntry(currentUser.id, entries);
       updateTotals(false);
-    } else {
-      console.log('not pushing update to firestore!');
     }
   }, [entries, currentUser, update, updateTotals]);
 

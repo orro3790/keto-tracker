@@ -45,6 +45,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         displayName,
         email,
         createdAt,
+        hudModel: 'remaining',
         ...additionalData,
       });
       await macrosRef.set({
@@ -309,7 +310,7 @@ export const updateEntry = async (userId, entry) => {
   );
   try {
     await entryRef.set({ entry });
-    console.log('entry updated!');
+    console.log('entry updated in firestore!');
   } catch (error) {
     console.log('error creating foodDiary entry', error.message);
   }

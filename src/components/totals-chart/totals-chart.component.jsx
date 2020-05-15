@@ -12,7 +12,6 @@ const TotalsChart = ({ entries, meal, searchModal }) => {
     if (entries !== '') {
       // don't overwrite the default chart data unless there are actually calories present
       if (entries[meal]['foods'].length !== 0) {
-        console.log(entries[meal]['totals']);
         const totalFats = entries[meal]['totals']['f'];
         const totalCarbs = entries[meal]['totals']['c'];
         const totalProtein = entries[meal]['totals']['p'];
@@ -22,7 +21,6 @@ const TotalsChart = ({ entries, meal, searchModal }) => {
       // when there are no foods in the meal array, set the chart data back to default values
       if (entries[meal]['foods'].length === 0) {
         setTotalsData([1, 0, 0, 0]);
-        console.log('reset');
       }
     }
   }, [entries, meal]);

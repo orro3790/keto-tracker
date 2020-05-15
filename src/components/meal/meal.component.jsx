@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
-import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
+import {
+  toggleSearchModal,
+  updateTotals,
+} from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 
@@ -13,6 +16,7 @@ const Meal = ({
   entries,
   createFoodReference,
   currentUser,
+  updateTotals,
 }) => {
   const [totalFats, setTotalFats] = useState([]);
   const [totalCarbs, setTotalCarbs] = useState([]);
@@ -79,7 +83,7 @@ const Meal = ({
 
       setEntry(copy);
     }
-  }, [entries, meal, currentUser]);
+  }, [entries, meal, currentUser, updateTotals]);
 
   // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0
   let keygen = -1;
@@ -102,7 +106,7 @@ const Meal = ({
     <div>
       <div className='meal-header-container'>
         <span className='meal-title'>
-          {/* {meal} */}
+          {meal}
           <span className='add-food-to-meal-btn' onClick={handleClick}>
             <i className='fas fa-plus-square'></i>
           </span>
@@ -114,16 +118,13 @@ const Meal = ({
         <div className='totals-container'>
           <div className='total-size'></div>
           <div className='total-fats'>
-            {totalFats}
-            <div className='macro-label'>fats</div>
+            {totalFats}g<div className='macro-label'>fats</div>
           </div>
           <div className='total-carbs'>
-            {totalCarbs}
-            <div className='macro-label'>carbs</div>
+            {totalCarbs}g<div className='macro-label'>carbs</div>
           </div>
           <div className='total-protein'>
-            {totalProtein}
-            <div className='macro-label'>protein</div>
+            {totalProtein}g<div className='macro-label'>protein</div>
           </div>
           <div className='total-calories'>
             {totalCalories}
@@ -137,7 +138,6 @@ const Meal = ({
 
 const mapStateToProps = (state) => ({
   searchModal: state.searchModal.searchModal,
-  update: state.searchModal.updateTotals,
   entries: state.dateSelector.entries,
   currentUser: state.user.currentUser,
 });
@@ -146,6 +146,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   setEntry: (entries) => dispatch(setEntry(entries)),
+  updateTotals: (status) => dispatch(updateTotals(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Meal);

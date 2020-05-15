@@ -20,6 +20,7 @@ const SearchFoodModal = ({
   searchModal,
   userMacros,
   setEntry,
+  currentUser,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -57,15 +58,66 @@ const SearchFoodModal = ({
     });
   };
 
+  const recalculateTotals = (entry) => {
+    if (entry !== '' && currentUser !== null) {
+      // total fats in meal
+      const fats = entry[searchModal.meal]['foods'].reduce(
+        (accumulator, food) => {
+          return (accumulator += food.f);
+        },
+        0
+      );
+      // total carbs in meal
+      const carbs = entry[searchModal.meal]['foods'].reduce(
+        (accumulator, food) => {
+          return (accumulator += food.c);
+        },
+        0
+      );
+      // total protein in meal
+      const protein = entry[searchModal.meal]['foods'].reduce(
+        (accumulator, food) => {
+          return (accumulator += food.p);
+        },
+        0
+      );
+      // total calories in meal
+      const calories = entry[searchModal.meal]['foods'].reduce(
+        (accumulator, food) => {
+          return (accumulator += food.e);
+        },
+        0
+      );
+      // total fiber in meal
+      const fiber = entry[searchModal.meal]['foods'].reduce(
+        (accumulator, food) => {
+          return (accumulator += food.d);
+        },
+        0
+      );
+
+      const copy = Object.assign({}, entry);
+
+      copy[searchModal.meal]['totals']['f'] = fats;
+      copy[searchModal.meal]['totals']['c'] = carbs;
+      copy[searchModal.meal]['totals']['p'] = protein;
+      copy[searchModal.meal]['totals']['e'] = calories;
+      copy[searchModal.meal]['totals']['d'] = fiber;
+
+      return copy;
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let foodCopy = Object.assign({}, foodReference);
+    // entry state is immutable so make a copy of it first because pushing the edited version
+    let entryCopy = Object.assign({}, entries);
 
     switch (searchModal.editMode) {
       case false:
         if (sizeInput !== '') {
-          // copy the foodReference obj but alter macro fields based off portion size
-          const foodCopy = Object.assign({}, foodReference);
-
           // adjust the food object based on user's input
           foodCopy.e = parseFloat(
             ((foodReference.e / 100) * sizeInput).toFixed(1)
@@ -84,32 +136,16 @@ const SearchFoodModal = ({
           );
           foodCopy.size = parseFloat(sizeInput);
 
-          // add foodCopy to the entry, state is immutable so make a copy of it first because pushing the copy
-          const entryCopy = Object.assign({}, entries);
-
           entryCopy[searchModal.meal]['foods'].push(foodCopy);
-
-          // before changing the entry state, we want to signal that we want to update the totals
-          updateTotals(true);
-
-          setEntry(entryCopy);
-
-          handleClose();
         }
         break;
       case true:
         if (sizeInput !== '') {
-          // copy the foodReference obj but alter macro fields based off portion size
-          const foodCopy = Object.assign({}, foodReference);
-
           foodCopy.f = parseFloat(fats);
           foodCopy.c = parseFloat(carbs);
           foodCopy.p = parseFloat(protein);
           foodCopy.e = parseFloat(calories);
           foodCopy.size = parseFloat(sizeInput);
-
-          // entry state is immutable so make a copy of it first because pushing the edited version
-          const entryCopy = Object.assign({}, entries);
 
           // remove the edited food from the entries obj
           entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
@@ -120,22 +156,22 @@ const SearchFoodModal = ({
             0,
             foodCopy
           );
-
-          // signal that I want to update the totals and push them to firestore
-          updateTotals(true);
-
-          // dispatch the new entry obj to state
-          setEntry(entryCopy);
-
-          toggleSearchModal({
-            status: 'hidden',
-            meal: 'none',
-          });
         }
         break;
       default:
         break;
     }
+
+    // recalculate totals before updating the entry state
+    const updatedEntry = recalculateTotals(entryCopy);
+
+    // before changing the entry state, we want to signal that we want to update the totals
+    updateTotals(true);
+
+    // dispatch the new entry obj to state
+    setEntry(updatedEntry);
+
+    handleClose();
   };
 
   const handleDelete = () => {
@@ -145,11 +181,14 @@ const SearchFoodModal = ({
     // remove the edited food from the entries obj
     entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
+    // recalculate totals before updating the entry state
+    const updatedEntry = recalculateTotals(entryCopy);
+
     // signal that I want to update the totals and push them to firestore
     updateTotals(true);
 
     // dispatch the new entry obj to state
-    setEntry(entryCopy);
+    setEntry(updatedEntry);
 
     // reset foodReference
     createFoodReference('');
@@ -418,6 +457,7 @@ const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
   searchModal: state.searchModal.searchModal,
   userMacros: state.user.userMacros,
+  currentUser: state.user.currentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
