@@ -252,37 +252,41 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
       Breakfast: {
         foods: [],
         totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+          f: '',
+          c: '',
+          p: '',
+          e: '',
+          d: '',
         },
       },
       Lunch: {
         foods: [],
         totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+          f: '',
+          c: '',
+          p: '',
+          e: '',
+          d: '',
         },
       },
       Dinner: {
         foods: [],
         totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+          f: '',
+          c: '',
+          p: '',
+          e: '',
+          d: '',
         },
       },
       Snacks: {
         foods: [],
         totals: {
-          fats: '',
-          carbs: '',
-          protein: '',
-          calories: '',
+          f: '',
+          c: '',
+          p: '',
+          e: '',
+          d: '',
         },
       },
       currentDate: firebase.firestore.Timestamp.fromDate(anchor),
@@ -295,6 +299,19 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
     }
   } else {
     return snapShot.data().entry;
+  }
+};
+
+export const updateEntry = async (userId, entry) => {
+  // Check if this date exists in firestore
+  const entryRef = firestore.doc(
+    `users/${userId}/foodDiary/${entry.currentDate.seconds}`
+  );
+  try {
+    await entryRef.set({ entry });
+    console.log('entry updated!');
+  } catch (error) {
+    console.log('error creating foodDiary entry', error.message);
   }
 };
 

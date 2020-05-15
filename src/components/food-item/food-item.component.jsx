@@ -56,9 +56,8 @@ const FoodItem = ({
 };
 
 const mapStateToProps = (state) => ({
-  searchModal: state.meal.searchModal,
+  searchModal: state.searchModal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
-  entries: state.foodDiary.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({

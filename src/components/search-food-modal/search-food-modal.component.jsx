@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import './search-food-modal.styles.scss';
 import { connect } from 'react-redux';
 import Search from './../search/search.component';
-import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
+import {
+  toggleSearchModal,
+  updateTotals,
+} from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
+  updateTotals,
   foodReference,
   createFoodReference,
   suggestionWindow,
   entries,
   searchModal,
-  dates,
   userMacros,
   setEntry,
 }) => {
@@ -22,11 +25,6 @@ const SearchFoodModal = ({
   const [sizeInput, setSizeInput] = useState('');
 
   // if entries obj in localStorage, use it for rendering, else use the entries object in state
-  let entriesObj;
-  entriesObj = JSON.parse(localStorage.getItem('entries'));
-  if (entriesObj === undefined || entriesObj === null) {
-    entriesObj = entries;
-  }
 
   let calories;
   let fats;
@@ -69,25 +67,32 @@ const SearchFoodModal = ({
           const foodCopy = Object.assign({}, foodReference);
 
           // adjust the food object based on user's input
-          foodCopy.e = ((foodReference.e / 100) * sizeInput).toFixed(1);
-          foodCopy.f = ((foodReference.f / 100) * sizeInput).toFixed(1);
-          foodCopy.c = ((foodReference.c / 100) * sizeInput).toFixed(1);
-          foodCopy.p = ((foodReference.p / 100) * sizeInput).toFixed(1);
-          foodCopy.d = ((foodReference.d / 100) * sizeInput).toFixed(1);
+          foodCopy.e = parseFloat(
+            ((foodReference.e / 100) * sizeInput).toFixed(1)
+          );
+          foodCopy.f = parseFloat(
+            ((foodReference.f / 100) * sizeInput).toFixed(1)
+          );
+          foodCopy.c = parseFloat(
+            ((foodReference.c / 100) * sizeInput).toFixed(1)
+          );
+          foodCopy.p = parseFloat(
+            ((foodReference.p / 100) * sizeInput).toFixed(1)
+          );
+          foodCopy.d = parseFloat(
+            ((foodReference.d / 100) * sizeInput).toFixed(1)
+          );
           foodCopy.size = parseFloat(sizeInput);
 
-          console.log(foodCopy);
+          // add foodCopy to the entry, state is immutable so make a copy of it first because pushing the copy
+          const entryCopy = Object.assign({}, entries);
 
-          // // add foodCopy to the entries obj
-          // entriesObj[dates.currentDate][searchModal.meal]['foods'].push(
-          //   foodCopy
-          // );
+          entryCopy[searchModal.meal]['foods'].push(foodCopy);
 
-          // // dispatch the new entry obj to state then close the window
-          // setEntry(entriesObj);
+          // before changing the entry state, we want to signal that we want to update the totals
+          updateTotals(true);
 
-          // // set in localStorage
-          // localStorage.setItem('entries', JSON.stringify(entriesObj));
+          setEntry(entryCopy);
 
           handleClose();
         }
@@ -104,24 +109,17 @@ const SearchFoodModal = ({
           foodCopy.size = parseFloat(sizeInput);
 
           // remove the edited food from the entries obj
-          entriesObj[dates.currentDate][searchModal.meal]['foods'].splice(
-            searchModal.listId,
-            1
-          );
+          entries[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
           // add the updated food to the entries obj back where it used to be
-          entriesObj[dates.currentDate][searchModal.meal]['foods'].splice(
+          entries[searchModal.meal]['foods'].splice(
             searchModal.listId,
             0,
             foodCopy
           );
 
           // dispatch the new entry obj to state
-          setEntry(entriesObj);
-
-          //remove the old entries obj from localStorage and replace it with the new one
-          localStorage.removeItem(entriesObj);
-          localStorage.setItem('entries', JSON.stringify(entriesObj));
+          setEntry(entries);
 
           toggleSearchModal({
             status: 'hidden',
@@ -135,18 +133,16 @@ const SearchFoodModal = ({
   };
 
   const handleDelete = () => {
+    // entry state is immutable so make a copy of it first because pushing the edited version
+    const entryCopy = Object.assign({}, entries);
+
     // remove the edited food from the entries obj
-    entriesObj[dates.currentDate][searchModal.meal]['foods'].splice(
-      searchModal.listId,
-      1
-    );
+    entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
+    // signal that I want to update the totals and push them to firestore
+    updateTotals(true);
     // dispatch the new entry obj to state
-    setEntry(entriesObj);
-
-    // remove from localStorage and replace it with the new one
-    localStorage.removeItem('entries');
-    localStorage.setItem('entries', JSON.stringify(entriesObj));
+    setEntry(entryCopy);
 
     // reset foodReference
     createFoodReference('');
@@ -413,13 +409,13 @@ const mapStateToProps = (state) => ({
   foodReference: state.searchItemSuggestion.foodReference,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
   entries: state.dateSelector.entries,
-  searchModal: state.meal.searchModal,
-  dates: state.dateSelector.dates,
+  searchModal: state.searchModal.searchModal,
   userMacros: state.user.userMacros,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+  updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });

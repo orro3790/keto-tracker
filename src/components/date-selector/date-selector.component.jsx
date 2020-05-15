@@ -5,14 +5,15 @@ import {
   setCurrentDate,
   setEntry,
 } from '../../redux/date-selector/date-selector.actions';
-import { getEntry } from '../../firebase/firebase.utils';
+import { updateTotals } from '../../redux/search-food-modal/search-food-modal.actions';
+import { getEntry, updateEntry } from '../../firebase/firebase.utils';
 
 const DateSelector = ({
   entries,
-  setCurrentDate,
-  dates,
   currentUser,
   setEntry,
+  update,
+  updateTotals,
 }) => {
   const [date, setDate] = useState('...loading');
 
@@ -28,6 +29,7 @@ const DateSelector = ({
     }
   }, [currentUser, setEntry]);
 
+  // handles rendering updates to the date in UI
   useEffect(() => {
     if (entries !== '') {
       let anchor = entries.currentDate.seconds * 1000;
@@ -38,6 +40,16 @@ const DateSelector = ({
       setDate(anchor);
     }
   }, [entries]);
+
+  // handles pushing updates to firestore when a change happens to entry state
+  useEffect(() => {
+    if (entries !== '' && currentUser !== null && update === true) {
+      updateEntry(currentUser.id, entries);
+      updateTotals(false);
+    } else {
+      console.log('not pushing update to firestore!');
+    }
+  }, [entries, currentUser, update, updateTotals]);
 
   const goToNextDay = () => {
     const loadEntry = async () => {
@@ -52,7 +64,6 @@ const DateSelector = ({
     if (currentUser !== null) {
       loadEntry();
     }
-    // console.log(entries.entry.currentDate.seconds);
   };
 
   const goToPrevDay = () => {
@@ -68,7 +79,6 @@ const DateSelector = ({
     if (currentUser !== null) {
       loadEntry();
     }
-    // console.log(entries.entry.currentDate.seconds);
   };
 
   return (
@@ -89,11 +99,13 @@ const DateSelector = ({
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
   entries: state.dateSelector.entries,
+  update: state.searchModal.updateTotals,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentDate: (datesObj) => dispatch(setCurrentDate(datesObj)),
   setEntry: (entriesObj) => dispatch(setEntry(entriesObj)),
+  updateTotals: (status) => dispatch(updateTotals(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DateSelector);

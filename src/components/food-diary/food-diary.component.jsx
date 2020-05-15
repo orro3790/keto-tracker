@@ -10,29 +10,6 @@ import { changeModalStatus } from '../../redux/create-food-item/create-food-item
 import { connect } from 'react-redux';
 
 const Diary = ({ searchModal }) => {
-  // conditionally render the CreateFood modal
-  // let createFoodModal;
-  // if (createFoodModalStatus === 'visible') {
-  //   createFoodModal = <CreateFood />;
-  // } else {
-  //   createFoodModal = null;
-  // }
-
-  // define confirmation modal that renders after submit
-  // let confirmationModal;
-  // const messages = {
-  //   success: 'Successfully added!',
-  //   error:
-  //     'That food already exists in your database. Provide a different name.',
-  // };
-
-  // if (toggleConfirmation === 'opened-success') {
-  //   confirmationModal = <ConfirmationModal successMessage={messages.success} />;
-  // } else if (toggleConfirmation === 'opened-error') {
-  //   confirmationModal = <ConfirmationModal errorMessage={messages.error} />;
-  // }
-
-  // conditionally render the CreateFood modal
   let searchFoodModal;
   if (searchModal.status === 'visible') {
     searchFoodModal = <SearchFoodModal />;
@@ -54,7 +31,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              {/* <Meal meal={'Breakfast'} /> */}
+              <Meal meal={'Breakfast'} />
             </div>
             {/* <TotalsChart meal={'Breakfast'} /> */}
           </div>
@@ -62,7 +39,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              {/* <Meal meal={'Lunch'} /> */}
+              <Meal meal={'Lunch'} />
             </div>
             {/* <TotalsChart meal={'Lunch'} /> */}
           </div>
@@ -70,7 +47,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              {/* <Meal meal={'Dinner'} /> */}
+              <Meal meal={'Dinner'} />
             </div>
             {/* <TotalsChart meal={'Dinner'} /> */}
           </div>
@@ -78,7 +55,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
             <div className='breakfast-section'>
-              {/* <Meal meal={'Snacks'} /> */}
+              <Meal meal={'Snacks'} />
             </div>
             {/* <TotalsChart meal={'Snacks'} /> */}
           </div>
@@ -89,7 +66,7 @@ const Diary = ({ searchModal }) => {
 };
 
 const mapStateToProps = (state) => ({
-  searchModal: state.meal.searchModal,
+  searchModal: state.searchModal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
 });
 

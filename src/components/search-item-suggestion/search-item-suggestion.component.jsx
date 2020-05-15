@@ -40,7 +40,7 @@ const SearchItemSuggestion = ({
 };
 
 const mapStateToProps = (state) => ({
-  searchModal: state.meal.searchModal,
+  searchModal: state.searchModal.searchModal,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
 });
 

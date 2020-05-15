@@ -1,0 +1,4 @@
+export const SearchModalActionTypes = {
+  TOGGLE_SEARCH_MODAL: 'TOGGLE_SEARCH_MODAL',
+  UPDATE_TOTALS: 'UPDATE_TOTALS',
+};

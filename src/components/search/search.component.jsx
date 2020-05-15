@@ -19,13 +19,6 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
     setQuery(searchInput);
   };
 
-  // even if the suggestionWindow state is 'ready to be viewed', only show if the searchInput !== ''
-  // const displaySuggestionWindow = (food) => {
-  //   if (food.name.includes(searchInput.toLowerCase()) && searchInput !== '') {
-  //     return <SearchItemSuggestion key={food.id} food={food} />;
-  //   }
-  // };
-
   useEffect(() => {
     // when suggestionWindow changes state --> clear searchInput --> hides window. Pressing the + btn in suggestion window changes suggestionWindow and triggers the reset. Submitting or closing the modal popup triggers the reset as well.
     setSearchInput('');
@@ -67,7 +60,7 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
 
   if (searchInput !== '') {
     rendered = results.map((food) => (
-      <SearchItemSuggestion key={food.id} food={food} />
+      <SearchItemSuggestion key={food.i} food={food} />
     ));
   } else {
     rendered = null;
@@ -97,7 +90,7 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
 
 const mapStateToProps = (state) => ({
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
-  searchModal: state.meal.searchModal,
+  searchModal: state.searchModal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
 });
 
