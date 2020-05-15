@@ -18,11 +18,10 @@ const Meal = ({
   currentUser,
   updateTotals,
 }) => {
-  const [totalFats, setTotalFats] = useState([]);
-  const [totalCarbs, setTotalCarbs] = useState([]);
-  const [totalProtein, setTotalProtein] = useState([]);
-  const [totalCalories, setTotalCalories] = useState([]);
-  const [totalFiber, setTotalFiber] = useState([]);
+  const [totalFats, setTotalFats] = useState(0);
+  const [totalCarbs, setTotalCarbs] = useState(0);
+  const [totalProtein, setTotalProtein] = useState(0);
+  const [totalCalories, setTotalCalories] = useState(0);
 
   const handleClick = () => {
     if (searchModal.status === 'hidden') {
@@ -40,50 +39,15 @@ const Meal = ({
     }
   };
 
-  // handles the rendering of totals in the UI
+  // handles the displaying of totals in the UI, but searchModal handles the calculations
   useEffect(() => {
-    if (entries !== '' && currentUser !== null) {
-      // total fats in meal
-      const fats = entries[meal]['foods'].reduce((accumulator, food) => {
-        return (accumulator += food.f);
-      }, 0);
-      setTotalFats(parseFloat(fats.toFixed(1)));
-
-      // total carbs in meal
-      const carbs = entries[meal]['foods'].reduce((accumulator, food) => {
-        return (accumulator += food.c);
-      }, 0);
-      setTotalCarbs(parseFloat(carbs.toFixed(1)));
-
-      // total protein in meal
-      const protein = entries[meal]['foods'].reduce((accumulator, food) => {
-        return (accumulator += food.p);
-      }, 0);
-      setTotalProtein(parseFloat(protein.toFixed(1)));
-
-      // total calories in meal
-      const calories = entries[meal]['foods'].reduce((accumulator, food) => {
-        return (accumulator += food.e);
-      }, 0);
-      setTotalCalories(parseFloat(calories.toFixed(1)));
-
-      // total fiber in meal
-      const fiber = entries[meal]['foods'].reduce((accumulator, food) => {
-        return (accumulator += food.d);
-      }, 0);
-      setTotalFiber(parseFloat(fiber.toFixed(1)));
-
-      const copy = Object.assign({}, entries);
-
-      copy[meal]['totals']['f'] = fats;
-      copy[meal]['totals']['c'] = carbs;
-      copy[meal]['totals']['p'] = protein;
-      copy[meal]['totals']['e'] = calories;
-      copy[meal]['totals']['d'] = fiber;
-
-      setEntry(copy);
+    if (entries !== '') {
+      setTotalFats(entries[meal].totals.f);
+      setTotalCarbs(entries[meal].totals.c);
+      setTotalProtein(entries[meal].totals.p);
+      setTotalCalories(entries[meal].totals.e);
     }
-  }, [entries, meal, currentUser, updateTotals]);
+  }, [entries, meal]);
 
   // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0
   let keygen = -1;

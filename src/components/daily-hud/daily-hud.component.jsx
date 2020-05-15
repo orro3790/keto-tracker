@@ -4,11 +4,11 @@ import { selectHudModel } from '../../redux/daily-hud/daily-hud-actions';
 import './daily-hud.styles.scss';
 
 const DailyChart = ({
-  dates,
   userMacros,
-  searchModal,
   selectHudModel,
   hudModel,
+  currentUser,
+  entries,
 }) => {
   const [dailyFats, setDailyFats] = useState('');
   const [dailyCarbs, setDailyCarbs] = useState('');
@@ -17,48 +17,23 @@ const DailyChart = ({
 
   const toggleRemaining = () => {
     selectHudModel('remaining');
-    localStorage.setItem('hudModel', 'remaining');
+    // need to update user settings in firestore next
   };
 
   const toggleAdditive = () => {
     selectHudModel('additive');
-    localStorage.setItem('hudModel', 'additive');
   };
 
   useEffect(() => {
-    // check in LS for hudModel settings and update HUD settings only when a user changes the model
-    const hudSettings = localStorage.getItem('hudModel');
-    if (hudSettings) {
-      selectHudModel(hudSettings);
+    if (entries !== '') {
+      setDailyFats(entries.dailyMacros.f);
+      setDailyProtein(entries.dailyMacros.p);
+      setDailyCarbs(entries.dailyMacros.c);
+      setDailyCalories(entries.dailyMacros.e);
     }
-  }, [selectHudModel]);
+  }, [entries]);
 
-  useEffect(() => {
-    let entriesObj;
-    entriesObj = JSON.parse(localStorage.getItem('entries'));
-    const todaysMeals = Object.entries(entriesObj[dates.currentDate]);
-    setDailyFats(
-      todaysMeals.reduce((accumulator, meal) => {
-        return (accumulator += meal[1]['totals'].fats);
-      }, 0)
-    );
-    setDailyProtein(
-      todaysMeals.reduce((accumulator, meal) => {
-        return (accumulator += meal[1]['totals'].protein);
-      }, 0)
-    );
-    setDailyCarbs(
-      todaysMeals.reduce((accumulator, meal) => {
-        return (accumulator += meal[1]['totals'].carbs);
-      }, 0)
-    );
-    setDailyCalories(
-      todaysMeals.reduce((accumulator, meal) => {
-        return (accumulator += meal[1]['totals'].calories);
-      }, 0)
-    );
-  }, [searchModal, dates, selectHudModel]);
-
+  // handle how to display the values, searchModal actually calculates the totals before updating firestore
   let fatsValue;
   let carbsValue;
   let proteinValue;
@@ -130,8 +105,9 @@ const DailyChart = ({
 const mapStateToProps = (state) => ({
   dates: state.dateSelector.dates,
   userMacros: state.user.userMacros,
-  searchModal: state.meal.searchModal,
   hudModel: state.dailyHud.hudModel,
+  currentUser: state.user.currentUser,
+  entries: state.dateSelector.entries,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -25,8 +25,6 @@ const SearchFoodModal = ({
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
 
-  // if entries obj in localStorage, use it for rendering, else use the entries object in state
-
   let calories;
   let fats;
   let carbs;
@@ -98,11 +96,11 @@ const SearchFoodModal = ({
 
       const copy = Object.assign({}, entry);
 
-      copy[searchModal.meal]['totals']['f'] = fats;
-      copy[searchModal.meal]['totals']['c'] = carbs;
-      copy[searchModal.meal]['totals']['p'] = protein;
-      copy[searchModal.meal]['totals']['e'] = calories;
-      copy[searchModal.meal]['totals']['d'] = fiber;
+      copy[searchModal.meal]['totals']['f'] = parseFloat(fats.toFixed(1));
+      copy[searchModal.meal]['totals']['c'] = parseFloat(carbs.toFixed(1));
+      copy[searchModal.meal]['totals']['p'] = parseFloat(protein.toFixed(1));
+      copy[searchModal.meal]['totals']['e'] = parseFloat(calories.toFixed(1));
+      copy[searchModal.meal]['totals']['d'] = parseFloat(fiber.toFixed(1));
 
       return copy;
     }
@@ -162,8 +160,11 @@ const SearchFoodModal = ({
         break;
     }
 
-    // recalculate totals before updating the entry state
-    const updatedEntry = recalculateTotals(entryCopy);
+    // recalculate meal totals
+    let updatedEntry = recalculateTotals(entryCopy);
+
+    // recalculate daily totals
+    updatedEntry = recalculateDailyTotals(updatedEntry);
 
     // before changing the entry state, we want to signal that we want to update the totals
     updateTotals(true);
@@ -181,8 +182,11 @@ const SearchFoodModal = ({
     // remove the edited food from the entries obj
     entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
-    // recalculate totals before updating the entry state
-    const updatedEntry = recalculateTotals(entryCopy);
+    // recalculate meal totals
+    let updatedEntry = recalculateTotals(entryCopy);
+
+    // recalculate daily totals
+    updatedEntry = recalculateDailyTotals(updatedEntry);
 
     // signal that I want to update the totals and push them to firestore
     updateTotals(true);
@@ -333,6 +337,39 @@ const SearchFoodModal = ({
     protein,
     foodReference,
   ]);
+
+  // update daily totals
+  const recalculateDailyTotals = (entry) => {
+    const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+
+    let dailyFats = 0;
+    let dailyProtein = 0;
+    let dailyCarbs = 0;
+    let dailyFiber = 0;
+    let dailyCalories = 0;
+
+    if (entries !== '') {
+      meals.forEach((meal) => {
+        dailyFats += entries[meal].totals.f;
+        dailyProtein += entries[meal].totals.p;
+        dailyCarbs += entries[meal].totals.c;
+        dailyFiber += entries[meal].totals.d;
+        dailyCalories += entries[meal].totals.e;
+      });
+    }
+
+    const copy = Object.assign({}, entry);
+
+    copy.dailyMacros = {
+      f: parseFloat(dailyFats.toFixed(1)),
+      p: parseFloat(dailyProtein.toFixed(1)),
+      c: parseFloat(dailyCarbs.toFixed(1)),
+      d: parseFloat(dailyFiber.toFixed(1)),
+      e: parseFloat(dailyCalories.toFixed(1)),
+    };
+
+    return copy;
+  };
 
   const getBtnStyle = () => {
     if (sizeInput !== '') {

@@ -4,7 +4,7 @@ import Meal from './../meal/meal.component';
 import DateSelector from '../date-selector/date-selector.component';
 import SearchFoodModal from './../search-food-modal/search-food-modal.component';
 import TotalsChart from '../totals-chart/totals-chart.component';
-// import DailyChart from '../daily-hud/daily-hud.component';
+import DailyChart from '../daily-hud/daily-hud.component';
 import Rail from '../rail/rail.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { connect } from 'react-redux';
@@ -26,7 +26,7 @@ const Diary = ({ searchModal }) => {
         {searchFoodModal}
         <div className='diary-outer-container'>
           <DateSelector />
-          {/* <DailyChart /> */}
+          <DailyChart />
         </div>
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
