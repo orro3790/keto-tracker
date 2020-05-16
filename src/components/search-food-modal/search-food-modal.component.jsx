@@ -267,15 +267,13 @@ const SearchFoodModal = ({
           } else {
             // render chart data based on foodToEdit's existing macro data
             fatsRemaining =
-              (foodReference.fats / currentUser.diet.fats).toFixed(1) * 100;
+              (foodReference.f / currentUser.diet.fats).toFixed(1) * 100;
             carbsRemaining =
-              (foodReference.carbs / currentUser.diet.carbs).toFixed(1) * 100;
+              (foodReference.c / currentUser.diet.carbs).toFixed(1) * 100;
             proteinRemaining =
-              (foodReference.protein / currentUser.diet.protein).toFixed(1) *
-              100;
+              (foodReference.p / currentUser.diet.protein).toFixed(1) * 100;
             caloriesRemaining =
-              (foodReference.calories / currentUser.diet.calories).toFixed(1) *
-              100;
+              (foodReference.e / currentUser.diet.calories).toFixed(1) * 100;
           }
           break;
         case false:
@@ -290,15 +288,13 @@ const SearchFoodModal = ({
           } else {
             // render chart data based on default macro data
             fatsRemaining =
-              (foodReference.fats / currentUser.diet.fats).toFixed(1) * 100;
+              (foodReference.f / currentUser.diet.fats).toFixed(1) * 100;
             carbsRemaining =
-              (foodReference.carbs / currentUser.diet.carbs).toFixed(1) * 100;
+              (foodReference.c / currentUser.diet.carbs).toFixed(1) * 100;
             proteinRemaining =
-              (foodReference.protein / currentUser.diet.protein).toFixed(1) *
-              100;
+              (foodReference.p / currentUser.diet.protein).toFixed(1) * 100;
             caloriesRemaining =
-              (foodReference.calories / currentUser.diet.calories).toFixed(1) *
-              100;
+              (foodReference.e / currentUser.diet.calories).toFixed(1) * 100;
           }
           break;
         default:
