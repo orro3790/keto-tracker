@@ -64,7 +64,7 @@ const Rail = ({ currentUser }) => {
 
   let confirmationModal;
 
-  let onConfirm;
+  let onConfirm = confirmSignOut;
 
   if (confirmationMsg.question) {
     // first click triggers the signout confirmation modal
@@ -86,17 +86,12 @@ const Rail = ({ currentUser }) => {
     confirmationModal = null;
   }
 
-  let signInSignOut;
-  let signInSignOutIcon;
+  let icon = <i className={styles.signin}></i>;
+  let signInSignOut = <Link to='/signin'>{icon}</Link>;
 
-  if (currentUser === null) {
-    signInSignOut = '/signin';
-    signInSignOutIcon = <i className={styles.signin}></i>;
-  } else {
-    signInSignOut = '/';
-    signInSignOutIcon = (
-      <i className={styles.signout} onClick={handleSignOut}></i>
-    );
+  if (currentUser !== null) {
+    icon = <i className={styles.signout} onClick={handleSignOut}></i>;
+    signInSignOut = <div>{icon}</div>;
   }
 
   return (
@@ -126,9 +121,7 @@ const Rail = ({ currentUser }) => {
             <i className={styles.settings}></i>
           </Link>
         </div>
-        <div>
-          <Link to={signInSignOut}>{signInSignOutIcon}</Link>
-        </div>
+        <div>{signInSignOut}</div>
         <div className='empty'></div>
       </div>
     </div>
