@@ -7,12 +7,11 @@ import { createFoodReference } from './../../redux/search-item-suggestion/search
 const FoodItem = ({
   food,
   toggleSearchModal,
-  foodReference,
-  entries,
   searchModal,
   listId,
   meal,
   createFoodReference,
+  currentUser,
 }) => {
   const handleClick = () => {
     if (searchModal.status === 'hidden') {
@@ -33,6 +32,16 @@ const FoodItem = ({
     createFoodReference(food);
   };
 
+  let carbValue = 0;
+
+  if (currentUser !== null) {
+    if (currentUser.carbSettings === 'net') {
+      carbValue = food.k;
+    } else {
+      carbValue = food.c;
+    }
+  }
+
   return (
     <div className='food-outer-container' onClick={handleClick}>
       <div className='macro-row'>
@@ -46,7 +55,7 @@ const FoodItem = ({
             {food.u}
           </div>
           <div className='fats'>{food.f}</div>
-          <div className='carbs'>{food.c}</div>
+          <div className='carbs'>{carbValue}</div>
           <div className='protein'>{food.p}</div>
           <div className='calories'>{food.e}</div>
         </div>
@@ -58,6 +67,7 @@ const FoodItem = ({
 const mapStateToProps = (state) => ({
   searchModal: state.searchModal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
+  currentUser: state.user.currentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({
