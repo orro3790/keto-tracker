@@ -45,7 +45,11 @@ const SearchFoodModal = ({
   }
 
   const handleChange = (e) => {
-    setSizeInput(e.target.value);
+    // regEx, allow empty string, or values from 0-9 and 0-4 digits
+    const permitted = /^[ 0-9]{0,4}$/;
+    if (e.target.value.match(permitted)) {
+      setSizeInput(e.target.value);
+    }
   };
 
   const handleClose = () => {
@@ -436,8 +440,7 @@ const SearchFoodModal = ({
               <input
                 id='portion-input'
                 className='portion-input'
-                type='text'
-                maxLength='4'
+                type='number'
                 placeholder={placeholder}
                 onChange={handleChange}
                 value={sizeInput}
