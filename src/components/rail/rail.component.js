@@ -1,10 +1,10 @@
 import React from 'react';
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import './rail.styles.scss';
 
-const Rail = () => {
+const Rail = ({ currentUser }) => {
   let location = useLocation();
 
   let styles = {
@@ -13,6 +13,8 @@ const Rail = () => {
     exercise: 'fas fa-dumbbell',
     metrics: 'far fa-chart-bar',
     settings: 'fas fa-cog',
+    signin: 'fas fa-sign-in-alt',
+    signout: 'fas fa-sign-out-alt',
   };
 
   // illuminate icon based on where the user is within the app
@@ -34,6 +36,17 @@ const Rail = () => {
       break;
     default:
       break;
+  }
+
+  let signInSignOut;
+  let signInSignOutIcon;
+
+  if (currentUser === null) {
+    signInSignOut = '/signin';
+    signInSignOutIcon = <i className={styles.signin}></i>;
+  } else {
+    signInSignOut = '/signout';
+    signInSignOutIcon = <i className={styles.signout}></i>;
   }
 
   return (
@@ -61,10 +74,16 @@ const Rail = () => {
           <i className={styles.settings}></i>
         </Link>
       </div>
-      <div className='empty'></div>
+      <div>
+        <Link to={signInSignOut}>{signInSignOutIcon}</Link>
+      </div>
       <div className='empty'></div>
     </div>
   );
 };
 
-export default Rail;
+const mapStateToProps = (state) => ({
+  currentUser: state.user.currentUser,
+});
+
+export default connect(mapStateToProps)(Rail);
