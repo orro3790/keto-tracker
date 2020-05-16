@@ -173,8 +173,6 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
     }
   };
 
-  useEffect(() => {}, [currentUser]);
-
   const handleClose = () => {
     setModalStatus(null);
   };
@@ -192,6 +190,14 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
     confirmationModal = null;
   }
 
+  let carbType = 'carbs';
+  let carbLabel = 'desired % carbs';
+
+  if (currentUser && currentUser.carbSettings === 'net') {
+    carbType = 'net carbs';
+    carbLabel = 'desired % net carbs';
+  }
+
   return (
     <div>
       <div className='title'>Current Diet</div>
@@ -201,7 +207,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
           {fats}g<div className='label'>fats</div>
         </div>
         <div className='daily-carbs macro-container'>
-          {carbs}g<div className='label'>carbs</div>
+          {carbs}g<div className='label'>{carbType}</div>
         </div>
         <div className='daily-protein macro-container'>
           {protein}g<div className='label'>protein</div>
@@ -236,7 +242,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
               type='number'
               value={carbLimit}
               onChange={handleChange}
-              label={'desired % carbs'}
+              label={carbLabel}
               className='diet-form-row'
             />
             <FormInput

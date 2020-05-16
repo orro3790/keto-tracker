@@ -2,12 +2,8 @@ import React, { useEffect, useState } from 'react';
 import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
-import {
-  toggleSearchModal,
-  updateTotals,
-} from './../../redux/search-food-modal/search-food-modal.actions';
+import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
-import { setEntry } from '../../redux/date-selector/date-selector.actions';
 
 const Meal = ({
   meal,
@@ -16,7 +12,6 @@ const Meal = ({
   entries,
   createFoodReference,
   currentUser,
-  updateTotals,
 }) => {
   const [totalFats, setTotalFats] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
@@ -76,7 +71,7 @@ const Meal = ({
       totalCarbsOrNetCarbs = 'net carbs';
       totalCarbsOrNetCarbsValue = totalNetCarbs;
     } else {
-      totalCarbsOrNetCarbs = totalCarbs;
+      totalCarbsOrNetCarbs = 'carbs';
       totalCarbsOrNetCarbsValue = totalCarbs;
     }
   }
@@ -125,8 +120,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
-  setEntry: (entries) => dispatch(setEntry(entries)),
-  updateTotals: (status) => dispatch(updateTotals(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Meal);
