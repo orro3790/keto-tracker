@@ -320,4 +320,9 @@ export const updateEntry = async (userId, entry) => {
   }
 };
 
+export const signOut = () => {
+  const auth = firebase.auth();
+  auth.signOut();
+};
+
 export default firebase;

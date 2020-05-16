@@ -12,7 +12,6 @@ import './diet-settings.styles.scss';
 const DietSettings = ({ currentUser, setCurrentUser }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
   const [modalStatus, setModalStatus] = useState(null);
-  const [dietSettings, setDietSettings] = useState(null);
 
   const FIELDS = {
     fatLimit: {

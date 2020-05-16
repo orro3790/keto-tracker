@@ -41,20 +41,27 @@ $keto-green: #1eb980;
   background-color: $dp-04;
   box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   padding: 15px;
 
   .confirmation-modal-header-section {
+    display: grid;
     text-align: center;
+    align-items: center;
 
     & i.success {
       color: $keto-green;
-      font-size: $font-size-large;
+      font-size: $font-size-display-2;
     }
 
     & i.error {
       color: $error-red-600;
-      font-size: $font-size-large;
+      font-size: $font-size-display-2;
+    }
+
+    & i.question {
+      color: $keto-orange;
+      font-size: $font-size-display-2;
     }
 
     .close-modal-btn {
@@ -87,16 +94,46 @@ $keto-green: #1eb980;
   }
 
   .confirmation-modal-message-section {
-    font-size: $font-size-medium;
+    display: grid;
     text-align: center;
+    align-items: center;
   }
 
-  .confirmation-modal-button-section {
+  .confirmation-modal-submit-section {
+    display: grid;
+    font-size: $font-size-medium;
     text-align: center;
 
-    & i {
-      color: $keto-blue;
-      font-size: $font-size-large;
+    .submit-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+
+      .submit-btn {
+        background-color: $dp-12;
+        font-size: $font-size-display-3;
+        align-self: flex-end;
+        padding: 10px;
+        transition: 0.3s;
+
+        &.enabled:hover {
+          background-color: $keto-green;
+          transition: 0.3s;
+          cursor: pointer;
+        }
+
+        .add-icon {
+          padding: 0px 0px 0px 5px;
+          font-size: $font-size-display-3;
+          color: $dp-08;
+          transition: 0.3s;
+
+          &.enabled {
+            color: white;
+            transition: 0.3s;
+            cursor: pointer;
+          }
+        }
+      }
     }
   }
 }

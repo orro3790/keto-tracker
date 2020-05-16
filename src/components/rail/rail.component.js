@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { signOut } from '../../firebase/firebase.utils';
+import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import './rail.styles.scss';
 
 const Rail = ({ currentUser }) => {
+  const [confirmationMsg, setConfirmationMsg] = useState('');
+  const [modalStatus, setModalStatus] = useState('');
+
   let location = useLocation();
 
   let styles = {
@@ -38,6 +43,49 @@ const Rail = ({ currentUser }) => {
       break;
   }
 
+  const handleClose = () => {
+    setModalStatus(null);
+  };
+
+  const handleSignOut = () => {
+    // double check that user wants to sign out
+    setConfirmationMsg({
+      question: 'Are you sure you want to sign out?',
+    });
+    setModalStatus('visible');
+  };
+
+  const confirmSignOut = () => {
+    signOut();
+    setConfirmationMsg({
+      success: 'You are now logged out.',
+    });
+  };
+
+  let confirmationModal;
+
+  let onConfirm;
+
+  if (confirmationMsg.question) {
+    // first click triggers the signout confirmation modal
+    onConfirm = confirmSignOut;
+  } else if (confirmationMsg.success) {
+    // if signed out, the handleClose function is reassigned to onConfirm
+    onConfirm = handleClose;
+  }
+
+  if (modalStatus === 'visible') {
+    confirmationModal = (
+      <ConfirmationModal
+        messageObj={confirmationMsg}
+        handleClose={handleClose}
+        onConfirm={onConfirm}
+      />
+    );
+  } else {
+    confirmationModal = null;
+  }
+
   let signInSignOut;
   let signInSignOutIcon;
 
@@ -45,39 +93,44 @@ const Rail = ({ currentUser }) => {
     signInSignOut = '/signin';
     signInSignOutIcon = <i className={styles.signin}></i>;
   } else {
-    signInSignOut = '/signout';
-    signInSignOutIcon = <i className={styles.signout}></i>;
+    signInSignOut = '/';
+    signInSignOutIcon = (
+      <i className={styles.signout} onClick={handleSignOut}></i>
+    );
   }
 
   return (
-    <div className='rail-outer-container'>
-      <Link to='/'>
-        <div className={styles.logo}>K</div>
-      </Link>
-      <div>
-        <Link to='/diary'>
-          <i className={styles.diary}></i>
+    <div>
+      {confirmationModal}
+      <div className='rail-outer-container'>
+        <Link to='/'>
+          <div className={styles.logo}>K</div>
         </Link>
+        <div>
+          <Link to='/diary'>
+            <i className={styles.diary}></i>
+          </Link>
+        </div>
+        <div>
+          <Link to='/exercises'>
+            <i className={styles.exercise}></i>
+          </Link>
+        </div>
+        <div>
+          <Link to='/metrics'>
+            <i className={styles.metrics}></i>
+          </Link>
+        </div>
+        <div>
+          <Link to='/settings'>
+            <i className={styles.settings}></i>
+          </Link>
+        </div>
+        <div>
+          <Link to={signInSignOut}>{signInSignOutIcon}</Link>
+        </div>
+        <div className='empty'></div>
       </div>
-      <div>
-        <Link to='/exercises'>
-          <i className={styles.exercise}></i>
-        </Link>
-      </div>
-      <div>
-        <Link to='/metrics'>
-          <i className={styles.metrics}></i>
-        </Link>
-      </div>
-      <div>
-        <Link to='/settings'>
-          <i className={styles.settings}></i>
-        </Link>
-      </div>
-      <div>
-        <Link to={signInSignOut}>{signInSignOutIcon}</Link>
-      </div>
-      <div className='empty'></div>
     </div>
   );
 };

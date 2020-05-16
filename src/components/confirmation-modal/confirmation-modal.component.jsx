@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import './confirmation-modal.styles.scss';
 
-const ConfirmationModal = ({ messageObj, handleClose }) => {
+const ConfirmationModal = ({ messageObj, handleClose, onConfirm }) => {
   let classStyle;
 
   let message;
@@ -13,7 +13,15 @@ const ConfirmationModal = ({ messageObj, handleClose }) => {
   } else if (messageObj.error) {
     classStyle = 'fas fa-exclamation-triangle error';
     message = messageObj.error;
+  } else if (messageObj.question) {
+    classStyle = 'far fa-question-circle question';
+    message = messageObj.question;
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onConfirm();
+  };
 
   return (
     <div className='confirmation-modal'>
@@ -27,6 +35,15 @@ const ConfirmationModal = ({ messageObj, handleClose }) => {
           </h3>
         </div>
         <div className='confirmation-modal-message-section'>{message}</div>
+        <div className='confirmation-modal-submit-section'>
+          <div className='submit-row'>
+            <div></div>
+            <div className='submit-btn enabled' onClick={handleSubmit}>
+              <i className='fas fa-check add-icon enabled'></i>
+            </div>
+            <div></div>
+          </div>
+        </div>
       </div>
     </div>
   );
