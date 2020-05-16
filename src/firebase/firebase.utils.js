@@ -255,6 +255,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
           p: 0,
           e: 0,
           d: 0,
+          k: 0,
         },
       },
       Lunch: {
@@ -265,6 +266,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
           p: 0,
           e: 0,
           d: 0,
+          k: 0,
         },
       },
       Dinner: {
@@ -275,6 +277,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
           p: 0,
           e: 0,
           d: 0,
+          k: 0,
         },
       },
       Snacks: {
@@ -285,6 +288,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
           p: 0,
           e: 0,
           d: 0,
+          k: 0,
         },
       },
       currentDate: firebase.firestore.Timestamp.fromDate(anchor),
@@ -294,6 +298,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
         p: 0,
         e: 0,
         d: 0,
+        k: 0,
       },
     };
     try {

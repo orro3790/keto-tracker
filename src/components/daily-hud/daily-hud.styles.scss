@@ -51,37 +51,52 @@ $dp-24: #373737;
   }
 }
 
-.daily-hud {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 0px 5px;
-  margin: 10px auto 10px auto;
-  text-align: center;
-  align-items: center;
-  height: 50px;
-  width: 25vw;
-
-  .label {
-    font-size: $font-size-medium;
-  }
-
-  .macro-container {
+@media only screen and (max-width: 768px) {
+  .daily-hud {
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0px 5px;
+    margin: 10px auto 10px auto;
+    text-align: center;
+    align-items: center;
+    height: 50px;
+    width: 50vw;
   }
+}
 
-  .daily-fats {
-    color: rgba(255, 147, 64, 1);
+@media only screen and (min-width: 769px) {
+  .daily-hud {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 0px 5px;
+    margin: 10px auto 10px auto;
+    text-align: center;
+    align-items: center;
+    height: 50px;
+    width: 33vw;
   }
-  .daily-carbs {
-    color: rgba(227, 28, 116, 1);
-  }
-  .daily-protein {
-    color: rgba(64, 168, 255, 1);
-  }
-  .daily-calories {
-    color: #ffffff;
-  }
+}
+
+.label {
+  font-size: $font-size-medium;
+}
+
+.macro-container {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.daily-fats {
+  color: rgba(255, 147, 64, 1);
+}
+.daily-carbs {
+  color: rgba(227, 28, 116, 1);
+}
+.daily-protein {
+  color: rgba(64, 168, 255, 1);
+}
+.daily-calories {
+  color: #ffffff;
 }
 
 .daily-hud-loading {

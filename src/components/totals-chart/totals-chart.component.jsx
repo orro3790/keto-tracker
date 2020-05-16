@@ -3,7 +3,7 @@ import './totals-chart.styles.scss';
 import { connect } from 'react-redux';
 import { Doughnut } from 'react-chartjs-2';
 
-const TotalsChart = ({ entries, meal, searchModal }) => {
+const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
   const [chartData, setChartData] = useState({});
   const [totalsData, setTotalsData] = useState([1, 0, 0, 0]);
 
@@ -14,16 +14,26 @@ const TotalsChart = ({ entries, meal, searchModal }) => {
       if (entries[meal]['foods'].length !== 0) {
         const totalFats = entries[meal]['totals']['f'];
         const totalCarbs = entries[meal]['totals']['c'];
+        const totalNetCarbs = entries[meal]['totals']['k'];
         const totalProtein = entries[meal]['totals']['p'];
         const totalCalories = entries[meal]['totals']['e'];
-        setTotalsData([totalFats, totalCarbs, totalProtein, totalCalories]);
+        if (currentUser.carbSettings === 'net') {
+          setTotalsData([
+            totalFats,
+            totalNetCarbs,
+            totalProtein,
+            totalCalories,
+          ]);
+        } else {
+          setTotalsData([totalFats, totalCarbs, totalProtein, totalCalories]);
+        }
       }
       // when there are no foods in the meal array, set the chart data back to default values
       if (entries[meal]['foods'].length === 0) {
         setTotalsData([1, 0, 0, 0]);
       }
     }
-  }, [entries, meal]);
+  }, [entries, meal, currentUser]);
 
   // hide tooltip when no calories present (default state)
   let tooltipStatus = false;
@@ -43,6 +53,12 @@ const TotalsChart = ({ entries, meal, searchModal }) => {
 
   useEffect(() => {
     let colors;
+    let labels;
+    if (currentUser !== null && currentUser.carbSettings === 'net') {
+      labels = ['fats', 'net carbs', 'protein'];
+    } else {
+      labels = ['fats', 'carbs', 'protein'];
+    }
     if (totalsData[3] === 0) {
       colors = '#727378';
     } else {
@@ -54,7 +70,7 @@ const TotalsChart = ({ entries, meal, searchModal }) => {
     }
     const chart = () => {
       setChartData({
-        labels: ['fats', 'carbs', 'protein'],
+        labels: labels,
         datasets: [
           {
             label: 'macro ratios',
@@ -82,6 +98,7 @@ const TotalsChart = ({ entries, meal, searchModal }) => {
 const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
   searchModal: state.searchModal.searchModal,
+  currentUser: state.user.currentUser,
 });
 
 export default connect(mapStateToProps)(TotalsChart);

@@ -20,6 +20,7 @@ const Meal = ({
 }) => {
   const [totalFats, setTotalFats] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
+  const [totalNetCarbs, setTotalNetCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
 
@@ -44,6 +45,7 @@ const Meal = ({
     if (entries !== '') {
       setTotalFats(entries[meal].totals.f);
       setTotalCarbs(entries[meal].totals.c);
+      setTotalNetCarbs(entries[meal].totals.k);
       setTotalProtein(entries[meal].totals.p);
       setTotalCalories(entries[meal].totals.e);
     }
@@ -66,6 +68,19 @@ const Meal = ({
     entryPlaceholder = entries;
   }
 
+  let totalCarbsOrNetCarbs = 'carbs';
+  let totalCarbsOrNetCarbsValue;
+
+  if (currentUser !== null) {
+    if (currentUser.carbSettings === 'net') {
+      totalCarbsOrNetCarbs = 'net carbs';
+      totalCarbsOrNetCarbsValue = totalNetCarbs;
+    } else {
+      totalCarbsOrNetCarbs = totalCarbs;
+      totalCarbsOrNetCarbsValue = totalCarbs;
+    }
+  }
+
   return (
     <div>
       <div className='meal-header-container'>
@@ -85,7 +100,8 @@ const Meal = ({
             {totalFats}g<div className='macro-label'>fats</div>
           </div>
           <div className='total-carbs'>
-            {totalCarbs}g<div className='macro-label'>carbs</div>
+            {totalCarbsOrNetCarbsValue}g
+            <div className='macro-label'>{totalCarbsOrNetCarbs}</div>
           </div>
           <div className='total-protein'>
             {totalProtein}g<div className='macro-label'>protein</div>

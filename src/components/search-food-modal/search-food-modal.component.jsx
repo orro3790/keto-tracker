@@ -28,6 +28,7 @@ const SearchFoodModal = ({
   let fats;
   let carbs;
   let protein;
+  let netCarbs;
 
   if (foodReference !== '') {
     if (sizeInput !== '') {
@@ -36,11 +37,13 @@ const SearchFoodModal = ({
       fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
       carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
       protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
+      netCarbs = ((foodReference.k / 100) * sizeInput).toFixed(1);
     } else {
       fats = foodReference.f.toFixed(1);
       carbs = foodReference.c.toFixed(1);
       protein = foodReference.p.toFixed(1);
-      calories = foodReference.c.toFixed(1);
+      calories = foodReference.e.toFixed(1);
+      netCarbs = foodReference.k.toFixed(1);
     }
   }
 
@@ -96,6 +99,13 @@ const SearchFoodModal = ({
         },
         0
       );
+      // total net carbs in meal
+      const netCarbs = entry[searchModal.meal]['foods'].reduce(
+        (accumulator, food) => {
+          return (accumulator += food.k);
+        },
+        0
+      );
 
       const copy = Object.assign({}, entry);
 
@@ -104,6 +114,7 @@ const SearchFoodModal = ({
       copy[searchModal.meal]['totals']['p'] = parseFloat(protein.toFixed(1));
       copy[searchModal.meal]['totals']['e'] = parseFloat(calories.toFixed(1));
       copy[searchModal.meal]['totals']['d'] = parseFloat(fiber.toFixed(1));
+      copy[searchModal.meal]['totals']['k'] = parseFloat(netCarbs.toFixed(1));
 
       return copy;
     }
@@ -135,6 +146,9 @@ const SearchFoodModal = ({
           foodCopy.d = parseFloat(
             ((foodReference.d / 100) * sizeInput).toFixed(1)
           );
+          foodCopy.k = parseFloat(
+            ((foodReference.k / 100) * sizeInput).toFixed(1)
+          );
           foodCopy.size = parseFloat(sizeInput);
 
           entryCopy[searchModal.meal]['foods'].push(foodCopy);
@@ -144,6 +158,7 @@ const SearchFoodModal = ({
         if (sizeInput !== '') {
           foodCopy.f = parseFloat(fats);
           foodCopy.c = parseFloat(carbs);
+          foodCopy.k = parseFloat(netCarbs);
           foodCopy.p = parseFloat(protein);
           foodCopy.e = parseFloat(calories);
           foodCopy.size = parseFloat(sizeInput);
@@ -247,10 +262,11 @@ const SearchFoodModal = ({
 
   // render chart based on input values
   useEffect(() => {
-    let fatsRemaining;
-    let carbsRemaining;
-    let proteinRemaining;
-    let caloriesRemaining;
+    let fatsRemaining = 0;
+    let carbsRemaining = 0;
+    let proteinRemaining = 0;
+    let caloriesRemaining = 0;
+    let netCarbsRemaining = 0;
 
     if (currentUser !== null) {
       // switch block controls all of the chart rendering logic
@@ -260,6 +276,8 @@ const SearchFoodModal = ({
             // render chart data based on user input
             fatsRemaining = (fats / currentUser.diet.fats).toFixed(1) * 100;
             carbsRemaining = (carbs / currentUser.diet.carbs).toFixed(1) * 100;
+            netCarbsRemaining =
+              (netCarbs / currentUser.diet.carbs).toFixed(1) * 100;
             proteinRemaining =
               (protein / currentUser.diet.protein).toFixed(1) * 100;
             caloriesRemaining =
@@ -270,6 +288,8 @@ const SearchFoodModal = ({
               (foodReference.f / currentUser.diet.fats).toFixed(1) * 100;
             carbsRemaining =
               (foodReference.c / currentUser.diet.carbs).toFixed(1) * 100;
+            netCarbsRemaining =
+              (foodReference.k / currentUser.diet.carbs).toFixed(1) * 100;
             proteinRemaining =
               (foodReference.p / currentUser.diet.protein).toFixed(1) * 100;
             caloriesRemaining =
@@ -279,22 +299,21 @@ const SearchFoodModal = ({
         case false:
           if (sizeInput !== '') {
             // render chart data based on user input
-            fatsRemaining = (fats / currentUser.diet.fats).toFixed(1) * 100;
-            carbsRemaining = (carbs / currentUser.diet.carbs).toFixed(1) * 100;
-            proteinRemaining =
-              (protein / currentUser.diet.protein).toFixed(1) * 100;
-            caloriesRemaining =
-              (calories / currentUser.diet.calories).toFixed(1) * 100;
+            fatsRemaining = (fats / currentUser.diet.fats) * 100;
+            carbsRemaining = (carbs / currentUser.diet.carbs) * 100;
+            netCarbsRemaining = (netCarbs / currentUser.diet.carbs) * 100;
+            proteinRemaining = (protein / currentUser.diet.protein) * 100;
+            caloriesRemaining = (calories / currentUser.diet.calories) * 100;
           } else {
             // render chart data based on default macro data
-            fatsRemaining =
-              (foodReference.f / currentUser.diet.fats).toFixed(1) * 100;
-            carbsRemaining =
-              (foodReference.c / currentUser.diet.carbs).toFixed(1) * 100;
+            fatsRemaining = (foodReference.f / currentUser.diet.fats) * 100;
+            carbsRemaining = (foodReference.c / currentUser.diet.carbs) * 100;
+            netCarbsRemaining =
+              (foodReference.k / currentUser.diet.carbs) * 100;
             proteinRemaining =
-              (foodReference.p / currentUser.diet.protein).toFixed(1) * 100;
+              (foodReference.p / currentUser.diet.protein) * 100;
             caloriesRemaining =
-              (foodReference.e / currentUser.diet.calories).toFixed(1) * 100;
+              (foodReference.e / currentUser.diet.calories) * 100;
           }
           break;
         default:
@@ -303,17 +322,36 @@ const SearchFoodModal = ({
     }
 
     const chart = () => {
+      let data;
+      if (currentUser.carbSettings === 'net') {
+        data = [
+          fatsRemaining.toPrecision(3),
+          netCarbsRemaining.toPrecision(3),
+          proteinRemaining.toPrecision(3),
+          caloriesRemaining.toPrecision(3),
+        ];
+      } else {
+        data = [
+          fatsRemaining.toPrecision(3),
+          carbsRemaining.toPrecision(3),
+          proteinRemaining.toPrecision(3),
+          caloriesRemaining.toPrecision(3),
+        ];
+      }
+
+      let labels;
+      if (currentUser.carbSettings === 'net') {
+        labels = ['fats', 'net carbs', 'protein', 'calories'];
+      } else {
+        labels = ['fats', 'carbs', 'protein', 'calories'];
+      }
+
       setChartData({
-        labels: ['fats', 'carbs', 'protein', 'calories'],
+        labels: labels,
         datasets: [
           {
             label: 'macro ratios',
-            data: [
-              fatsRemaining,
-              carbsRemaining,
-              proteinRemaining,
-              caloriesRemaining,
-            ],
+            data: data,
             backgroundColor: [
               'rgba(255, 147, 64, 1)',
               'rgba(227, 28, 116, 1)',
@@ -335,6 +373,7 @@ const SearchFoodModal = ({
     currentUser,
     calories,
     carbs,
+    netCarbs,
     fats,
     protein,
     foodReference,
@@ -348,6 +387,7 @@ const SearchFoodModal = ({
     let dailyProtein = 0;
     let dailyCarbs = 0;
     let dailyFiber = 0;
+    let dailyNetCarbs = 0;
     let dailyCalories = 0;
 
     if (entries !== '') {
@@ -356,6 +396,7 @@ const SearchFoodModal = ({
         dailyProtein += entries[meal].totals.p;
         dailyCarbs += entries[meal].totals.c;
         dailyFiber += entries[meal].totals.d;
+        dailyNetCarbs += entries[meal].totals.k;
         dailyCalories += entries[meal].totals.e;
       });
     }
@@ -368,6 +409,7 @@ const SearchFoodModal = ({
       c: parseFloat(dailyCarbs.toFixed(1)),
       d: parseFloat(dailyFiber.toFixed(1)),
       e: parseFloat(dailyCalories.toFixed(1)),
+      k: parseFloat(dailyNetCarbs.toFixed(1)),
     };
 
     return copy;
@@ -423,6 +465,16 @@ const SearchFoodModal = ({
   }
 
   let resultsContainer;
+  let carbsOrNetCarbs;
+  let carbsOrNetCarbsLabel;
+
+  if (currentUser.carbSettings === 'net') {
+    carbsOrNetCarbs = netCarbs;
+    carbsOrNetCarbsLabel = 'net carbs';
+  } else {
+    carbsOrNetCarbs = carbs;
+    carbsOrNetCarbsLabel = 'carbs';
+  }
 
   if (foodReference !== '') {
     resultsContainer = (
@@ -452,8 +504,8 @@ const SearchFoodModal = ({
             <div className='label'>fats</div>
           </div>
           <div className='carbs-column'>
-            <span className='carbs-value'>{carbs}</span>g
-            <div className='label'>carbs</div>
+            <span className='carbs-value'>{carbsOrNetCarbs}</span>g
+            <div className='label'>{carbsOrNetCarbsLabel}</div>
           </div>
           <div className='protein-column'>
             <span className='protein-value'>{protein}</span>g

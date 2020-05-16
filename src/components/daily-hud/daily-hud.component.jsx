@@ -22,27 +22,39 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
     if (entries !== '') {
       setDailyFats(entries.dailyMacros.f);
       setDailyProtein(entries.dailyMacros.p);
-      setDailyCarbs(entries.dailyMacros.c);
+      if (currentUser.carbSettings === 'net') {
+        setDailyCarbs(entries.dailyMacros.k);
+      } else {
+        setDailyCarbs(entries.dailyMacros.c);
+      }
       setDailyCalories(entries.dailyMacros.e);
     }
-  }, [entries]);
+  }, [entries, currentUser]);
 
   // handle how to display the values, searchModal actually calculates the totals before updating firestore
   let fatsValue = 0;
   let carbsValue = 0;
   let proteinValue = 0;
   let caloriesValue = 0;
+  let carbLabel = 'carbs';
 
-  if (hudModel === 'remaining' && currentUser !== null) {
-    fatsValue = (currentUser.diet.fats - dailyFats).toFixed(1);
-    carbsValue = (currentUser.diet.carbs - dailyCarbs).toFixed(1);
-    proteinValue = (currentUser.diet.protein - dailyProtein).toFixed(1);
-    caloriesValue = (currentUser.diet.calories - dailyCalories).toFixed(1);
-  } else if (hudModel === 'additive' && currentUser !== null) {
-    fatsValue = dailyFats;
-    carbsValue = dailyCarbs;
-    proteinValue = dailyProtein;
-    caloriesValue = dailyCalories;
+  if (currentUser !== null) {
+    if (currentUser.carbSettings === 'net') {
+      carbLabel = 'net carbs';
+    } else {
+      carbLabel = 'carbs';
+    }
+    if (hudModel === 'remaining') {
+      fatsValue = (currentUser.diet.fats - dailyFats).toFixed(1);
+      carbsValue = (currentUser.diet.carbs - dailyCarbs).toFixed(1);
+      proteinValue = (currentUser.diet.protein - dailyProtein).toFixed(1);
+      caloriesValue = (currentUser.diet.calories - dailyCalories).toFixed(1);
+    } else if (hudModel === 'additive') {
+      fatsValue = dailyFats;
+      carbsValue = dailyCarbs;
+      proteinValue = dailyProtein;
+      caloriesValue = dailyCalories;
+    }
   }
 
   const getStyle = (className) => {
@@ -79,7 +91,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
             {fatsValue}g<div className='label'>fats</div>
           </div>
           <div className='daily-carbs macro-container'>
-            {carbsValue}g<div className='label'>carbs</div>
+            {carbsValue}g<div className='label'>{carbLabel}</div>
           </div>
           <div className='daily-protein macro-container'>
             {proteinValue}g<div className='label'>protein</div>
