@@ -1,5 +1,9 @@
 $font-size-medium: 16px;
 $font-size-large: 20px;
+$error-red-600: #e53935;
+$keto-orange: #ffc894;
+$keto-pink: #ff94cb;
+$keto-blue: #94cbff;
 $keto-green: #1eb980;
 $dp-01: #1e1e1e;
 $dp-02: #222222;
@@ -31,6 +35,10 @@ $brightest: #474747;
     // height: 75px;
     // margin: auto;
     // border-radius: 100%;
+  }
+
+  .signin {
+    color: $keto-green;
   }
 
   i {

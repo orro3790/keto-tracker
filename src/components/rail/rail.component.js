@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
@@ -18,7 +18,7 @@ const Rail = ({ currentUser }) => {
     exercise: 'fas fa-dumbbell',
     metrics: 'far fa-chart-bar',
     settings: 'fas fa-cog',
-    signin: 'fas fa-sign-in-alt',
+    signin: 'fas fa-sign-in-alt signin',
     signout: 'fas fa-sign-out-alt',
   };
 
@@ -57,6 +57,7 @@ const Rail = ({ currentUser }) => {
 
   const confirmSignOut = () => {
     signOut();
+
     setConfirmationMsg({
       success: 'You are now logged out.',
     });
