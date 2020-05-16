@@ -3,13 +3,7 @@ import { connect } from 'react-redux';
 import { selectHudModel } from '../../redux/daily-hud/daily-hud-actions';
 import './daily-hud.styles.scss';
 
-const DailyChart = ({
-  userMacros,
-  selectHudModel,
-  hudModel,
-  currentUser,
-  entries,
-}) => {
+const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   const [dailyFats, setDailyFats] = useState('');
   const [dailyCarbs, setDailyCarbs] = useState('');
   const [dailyProtein, setDailyProtein] = useState('');
@@ -34,17 +28,17 @@ const DailyChart = ({
   }, [entries]);
 
   // handle how to display the values, searchModal actually calculates the totals before updating firestore
-  let fatsValue;
-  let carbsValue;
-  let proteinValue;
-  let caloriesValue;
+  let fatsValue = 0;
+  let carbsValue = 0;
+  let proteinValue = 0;
+  let caloriesValue = 0;
 
-  if (hudModel === 'remaining') {
-    fatsValue = (userMacros.fats - dailyFats).toFixed(1);
-    carbsValue = (userMacros.carbs - dailyCarbs).toFixed(1);
-    proteinValue = (userMacros.protein - dailyProtein).toFixed(1);
-    caloriesValue = (userMacros.calories - dailyCalories).toFixed(1);
-  } else if (hudModel === 'additive') {
+  if (hudModel === 'remaining' && currentUser !== null) {
+    fatsValue = (currentUser.diet.fats - dailyFats).toFixed(1);
+    carbsValue = (currentUser.diet.carbs - dailyCarbs).toFixed(1);
+    proteinValue = (currentUser.diet.protein - dailyProtein).toFixed(1);
+    caloriesValue = (currentUser.diet.calories - dailyCalories).toFixed(1);
+  } else if (hudModel === 'additive' && currentUser !== null) {
     fatsValue = dailyFats;
     carbsValue = dailyCarbs;
     proteinValue = dailyProtein;
@@ -60,7 +54,7 @@ const DailyChart = ({
   };
 
   let macroHud;
-  if (userMacros.calories === '') {
+  if (currentUser !== null && currentUser.diet.calories === '') {
     macroHud = <div className='daily-hud-loading'>...Loading Macros</div>;
   } else {
     macroHud = (
@@ -103,8 +97,6 @@ const DailyChart = ({
 };
 
 const mapStateToProps = (state) => ({
-  dates: state.dateSelector.dates,
-  userMacros: state.user.userMacros,
   hudModel: state.dailyHud.hudModel,
   currentUser: state.user.currentUser,
   entries: state.dateSelector.entries,

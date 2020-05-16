@@ -36,9 +36,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
 
-    // also create diet collection with default macros doc
-    const macrosRef = firestore.doc(`users/${userAuth.uid}/diet/macros`);
-
     try {
       // .set() is the create method
       await userRef.set({
@@ -46,13 +43,13 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
         email,
         createdAt,
         hudModel: 'remaining',
+        diet: {
+          calories: 2000,
+          protein: 100,
+          carbs: 25,
+          fats: 166,
+        },
         ...additionalData,
-      });
-      await macrosRef.set({
-        calories: 2000,
-        fats: 166,
-        carbs: 25,
-        protein: 100,
       });
     } catch (error) {
       console.log('error creating user', error.message);
@@ -119,17 +116,17 @@ export const returnCollectionSnapshots = (collectionSnapshot) => {
   return transformedCollection;
 };
 
-export const getDietMacros = async (userAuth) => {
-  if (!userAuth) return;
+export const updateDietSettings = async (userId, macros) => {
+  if (userId === null) return;
 
   // grab the collection and instantiate an empty doc so it is assigned a random ID
-  const macrosRef = firestore.doc(`users/${userAuth.uid}/diet/macros`);
+  const userRef = firestore.doc(`users/${userId}`);
 
-  const snapShot = await macrosRef.get();
+  userRef.update({
+    diet: macros,
+  });
 
-  const userMacros = snapShot.data();
-
-  return userMacros;
+  console.log('diet settings updated');
 };
 
 export const updateDietMacros = async (userId, macros) => {
@@ -253,44 +250,51 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
       Breakfast: {
         foods: [],
         totals: {
-          f: '',
-          c: '',
-          p: '',
-          e: '',
-          d: '',
+          f: 0,
+          c: 0,
+          p: 0,
+          e: 0,
+          d: 0,
         },
       },
       Lunch: {
         foods: [],
         totals: {
-          f: '',
-          c: '',
-          p: '',
-          e: '',
-          d: '',
+          f: 0,
+          c: 0,
+          p: 0,
+          e: 0,
+          d: 0,
         },
       },
       Dinner: {
         foods: [],
         totals: {
-          f: '',
-          c: '',
-          p: '',
-          e: '',
-          d: '',
+          f: 0,
+          c: 0,
+          p: 0,
+          e: 0,
+          d: 0,
         },
       },
       Snacks: {
         foods: [],
         totals: {
-          f: '',
-          c: '',
-          p: '',
-          e: '',
-          d: '',
+          f: 0,
+          c: 0,
+          p: 0,
+          e: 0,
+          d: 0,
         },
       },
       currentDate: firebase.firestore.Timestamp.fromDate(anchor),
+      dailyMacros: {
+        f: 0,
+        c: 0,
+        p: 0,
+        e: 0,
+        d: 0,
+      },
     };
     try {
       await entryRef.set({ entry });

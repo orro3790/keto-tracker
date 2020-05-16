@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
-import { updateDietMacros } from '../../firebase/firebase.utils';
-import { setUserMacros } from '../../redux/user/user.actions';
+import { updateDietSettings } from '../../firebase/firebase.utils';
+import { setCurrentUser } from '../../redux/user/user.actions';
 import FormHandler from '../../formHandler';
 import { requiredValidation, under100 } from '../../validators';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 
 import './diet-settings.styles.scss';
 
-const DietSettings = ({ currentUser, userMacros, setUserMacros }) => {
+const DietSettings = ({ currentUser, setCurrentUser }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
   const [modalStatus, setModalStatus] = useState(null);
+  const [dietSettings, setDietSettings] = useState(null);
 
   const FIELDS = {
     fatLimit: {
@@ -32,15 +33,35 @@ const DietSettings = ({ currentUser, userMacros, setUserMacros }) => {
     },
   };
 
+  let fats = 0;
+  let protein = 0;
+  let carbs = 0;
+  let calories = 0;
+
+  if (currentUser !== null) {
+    fats = currentUser.diet.fats;
+    protein = currentUser.diet.protein;
+    carbs = currentUser.diet.carbs;
+    calories = currentUser.diet.calories;
+  }
+
   const onSubmitDispatcher = () => {
-    const macros = {
+    const userCopy = Object.assign({}, currentUser);
+
+    userCopy.diet = {
       fats: parseInt(fatsInGrams),
       carbs: parseInt(carbsInGrams),
       protein: parseInt(proteinInGrams),
       calories: parseInt(fields.calorieLimit.value),
     };
-    updateDietMacros(currentUser.id, macros);
-    setUserMacros(macros);
+
+    setCurrentUser(userCopy);
+
+    // now update the data in firestore
+    updateDietSettings(currentUser.id, userCopy.diet);
+
+    setCurrentUser(userCopy);
+
     setConfirmationMsg({
       success: 'Diet settings successfully updated!',
     });
@@ -123,7 +144,7 @@ const DietSettings = ({ currentUser, userMacros, setUserMacros }) => {
     }
   };
 
-  useEffect(() => {}, [userMacros]);
+  useEffect(() => {}, [currentUser]);
 
   const handleClose = () => {
     setModalStatus(null);
@@ -148,16 +169,16 @@ const DietSettings = ({ currentUser, userMacros, setUserMacros }) => {
       {confirmationModal}
       <div className='current-macros'>
         <div className='daily-fats macro-container'>
-          {userMacros.fats}g<div className='label'>fats</div>
+          {fats}g<div className='label'>fats</div>
         </div>
         <div className='daily-carbs macro-container'>
-          {userMacros.carbs}g<div className='label'>carbs</div>
+          {carbs}g<div className='label'>carbs</div>
         </div>
         <div className='daily-protein macro-container'>
-          {userMacros.protein}g<div className='label'>protein</div>
+          {protein}g<div className='label'>protein</div>
         </div>
         <div className='daily-calories macro-container'>
-          {userMacros.calories}
+          {calories}
           <div className='label'>calories</div>
         </div>
       </div>
@@ -244,11 +265,10 @@ const DietSettings = ({ currentUser, userMacros, setUserMacros }) => {
 
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
-  userMacros: state.user.userMacros,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setUserMacros: (macros) => dispatch(setUserMacros(macros)),
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DietSettings);

@@ -91,7 +91,8 @@ $keto-green: #1eb980;
 .diet-form {
   height: 100%;
   display: grid;
-  grid-template-rows: 65px 65px 65px 65px 65px;
+  row-gap: 5px;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
 
 .save-changes-btn {

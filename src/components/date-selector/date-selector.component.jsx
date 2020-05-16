@@ -24,10 +24,11 @@ const DateSelector = ({
       setEntry(entriesObj);
     };
 
-    if (currentUser !== null) {
+    // if a user has already loaded entries into state, no need to re-load entries into state
+    if (currentUser !== null && entries === '') {
       loadEntry();
     }
-  }, [currentUser, setEntry]);
+  }, [currentUser, setEntry, entries]);
 
   // handles rendering updates to the date in UI
   useEffect(() => {
