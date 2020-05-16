@@ -6,7 +6,7 @@ import {
   ToggleSuggestionWindow,
   createFoodReference,
 } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
-import { setEntry } from '../../redux/food-diary/food-diary.actions';
+import { setEntry } from '../../redux/diary/diary.actions';
 import { toggleSearchModal } from '../../redux/meal/meal.actions';
 
 const AddFoodToDiary = ({

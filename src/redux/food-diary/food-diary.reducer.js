@@ -1,4 +1,4 @@
-import { FoodDiaryActionTypes } from './food-diary.types';
+import { FoodDiaryActionTypes } from './diary.types';
 
 const INITIAL_STATE = {
   foodDatabase: [],

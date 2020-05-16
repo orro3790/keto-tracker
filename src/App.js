@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Home from './pages/home/home.component';
-import Diary from './components/food-diary/food-diary.component.jsx';
+import Diary from './pages/diary/diary.component';
 import Exercises from './pages/exercises/exercises.component.jsx';
 import Metrics from './pages/metrics/metrics.component.jsx';
 import Settings from './pages/settings/settings.component.jsx';

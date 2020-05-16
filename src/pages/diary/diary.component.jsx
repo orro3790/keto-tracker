@@ -1,11 +1,11 @@
 import React from 'react';
-import './food-diary.styles.scss';
-import Meal from './../meal/meal.component';
-import DateSelector from '../date-selector/date-selector.component';
-import SearchFoodModal from './../search-food-modal/search-food-modal.component';
-import TotalsChart from '../totals-chart/totals-chart.component';
-import DailyChart from '../daily-hud/daily-hud.component';
-import Rail from '../rail/rail.component';
+import './diary.styles.scss';
+import Meal from '../../components/meal/meal.component';
+import DateSelector from '../../components/date-selector/date-selector.component';
+import SearchFoodModal from '../../components/search-food-modal/search-food-modal.component';
+import TotalsChart from '../../components/totals-chart/totals-chart.component';
+import DailyChart from '../../components/daily-hud/daily-hud.component';
+import Rail from '../../components/rail/rail.component';
 import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
 import { connect } from 'react-redux';
 
