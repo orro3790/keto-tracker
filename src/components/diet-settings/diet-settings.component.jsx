@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import { updateDietSettings } from '../../firebase/firebase.utils';
 import { setCurrentUser } from '../../redux/user/user.actions';
-import FormHandler from '../../formHandler';
-import { requiredValidation, under100 } from '../../validators';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 
 import './diet-settings.styles.scss';
@@ -12,26 +10,12 @@ import './diet-settings.styles.scss';
 const DietSettings = ({ currentUser, setCurrentUser }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
   const [modalStatus, setModalStatus] = useState(null);
+  const [fatLimit, setFatLimit] = useState('');
+  const [carbLimit, setCarbLimit] = useState('');
+  const [proteinLimit, setProteinLimit] = useState('');
+  const [calorieLimit, setCalorieLimit] = useState('');
 
-  const FIELDS = {
-    fatLimit: {
-      value: '',
-      validations: [requiredValidation, under100],
-    },
-    carbLimit: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    proteinLimit: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    calorieLimit: {
-      value: '',
-      validations: [requiredValidation],
-    },
-  };
-
+  // load 0 as default values if currentUser.diet data hasn't been loaded into state yet
   let fats = 0;
   let protein = 0;
   let carbs = 0;
@@ -44,14 +28,104 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
     calories = currentUser.diet.calories;
   }
 
-  const onSubmitDispatcher = () => {
+  // check that all fields are filled
+  let fieldsFilled = false;
+
+  if (
+    fatLimit !== '' &&
+    carbLimit !== '' &&
+    proteinLimit !== '' &&
+    calorieLimit !== ''
+  ) {
+    fieldsFilled = true;
+  }
+
+  // check that total percentages add up to 100
+  let totalPercentage = 0;
+
+  if (fatLimit !== '') {
+    totalPercentage += parseFloat(fatLimit);
+  }
+
+  if (carbLimit !== '') {
+    totalPercentage += parseFloat(carbLimit);
+  }
+
+  if (proteinLimit !== '') {
+    totalPercentage += parseFloat(proteinLimit);
+  }
+
+  // in order to check whether sum of percentages === 100, apply .toPrecision(3), then convert back to int
+  totalPercentage = parseInt(totalPercentage.toPrecision(3));
+
+  // determine whether or not the form can be submitted
+  let isSubmittable = false;
+
+  if (fieldsFilled === true && totalPercentage === 100) {
+    isSubmittable = true;
+  }
+
+  // handles conditional rendering of error divs
+
+  const renderErrors = (errorsArray) => {
+    return errorsArray.map((error) => (
+      <div className='diet-form-row' key={error.error}>
+        {error.error}
+      </div>
+    ));
+  };
+
+  let metaErrors = [];
+
+  if (fieldsFilled && totalPercentage !== 100 && totalPercentage < 100) {
+    metaErrors.push({
+      error: 'Sum of percentages must be 100%.',
+    });
+  }
+
+  if (totalPercentage > 100) {
+    metaErrors.push({
+      error: 'Sum of percentages cannot be greater than 100%.',
+    });
+  }
+
+  let errorModal = renderErrors(metaErrors);
+
+  const handleChange = (e) => {
+    // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
+    const caloriesPermitted = /^\d{0,5}(\.\d{1})?$/;
+
+    // allow empty string or values 0-9, 0-3 digits, optionally including one decimal point /w 1 digit after decimal
+    const macrosPermitted = /^\d{0,3}(\.\d{1})?$/;
+
+    switch (e.target.name) {
+      case 'calorieLimit':
+        if (e.target.value.match(caloriesPermitted))
+          setCalorieLimit(e.target.value);
+        break;
+      case 'fatLimit':
+        if (e.target.value.match(macrosPermitted)) setFatLimit(e.target.value);
+        break;
+      case 'carbLimit':
+        if (e.target.value.match(macrosPermitted)) setCarbLimit(e.target.value);
+        break;
+      case 'proteinLimit':
+        if (e.target.value.match(macrosPermitted))
+          setProteinLimit(e.target.value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubmit = () => {
     const userCopy = Object.assign({}, currentUser);
 
     userCopy.diet = {
       fats: parseInt(fatsInGrams),
       carbs: parseInt(carbsInGrams),
       protein: parseInt(proteinInGrams),
-      calories: parseInt(fields.calorieLimit.value),
+      calories: parseInt(calorieLimit),
     };
 
     setCurrentUser(userCopy);
@@ -67,65 +141,21 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
     setModalStatus('visible');
   };
 
-  const { fields, handleChange, handleSubmit } = FormHandler(
-    FIELDS,
-    onSubmitDispatcher
-  );
+  let fatsInGrams = 0;
+  let carbsInGrams = 0;
+  let proteinInGrams = 0;
 
-  // Define meta-level validator
-  const fieldsFilled = !isNaN(
-    parseInt(fields.calorieLimit.value) +
-      parseInt(fields.fatLimit.value) +
-      parseInt(fields.carbLimit.value) +
-      parseInt(fields.proteinLimit.value)
-  );
-
-  const totalPercentage =
-    parseInt(fields.fatLimit.value) +
-    parseInt(fields.carbLimit.value) +
-    parseInt(fields.proteinLimit.value);
-
-  const totalPercentageValidator = {
-    isValid: totalPercentage === 100,
-    message: '*percentages must add up to 100',
-  };
-
-  let metaErrors = [];
-
-  if (totalPercentageValidator.isValid === false && fieldsFilled) {
-    metaErrors.push(totalPercentageValidator.message);
+  if (fatLimit !== '') {
+    fatsInGrams = parseInt(((fatLimit / 100) * calorieLimit) / 9);
   }
 
-  // define whether or not the form can be submitted
-  let isSubmittable = false;
-
-  if (metaErrors.length === 0 && fieldsFilled) {
-    isSubmittable = true;
+  if (carbsInGrams !== '') {
+    carbsInGrams = parseInt(((carbLimit / 100) * calorieLimit) / 4);
   }
 
-  // handles conditional rendering of error divs
-
-  const renderErrors = (errorsArray) => {
-    return errorsArray.map((error) => (
-      <div className='diet-form-row' key={error}>
-        {error}
-      </div>
-    ));
-  };
-
-  let errorModal = renderErrors(metaErrors);
-
-  const fatsInGrams = parseInt(
-    ((fields.fatLimit.value / 100) * fields.calorieLimit.value) / 9
-  );
-
-  const carbsInGrams = parseInt(
-    ((fields.carbLimit.value / 100) * fields.calorieLimit.value) / 4
-  );
-
-  const proteinInGrams = parseInt(
-    ((fields.proteinLimit.value / 100) * fields.calorieLimit.value) / 4
-  );
+  if (proteinInGrams !== '') {
+    proteinInGrams = parseInt(((proteinLimit / 100) * calorieLimit) / 4);
+  }
 
   const getArrowStyle = (value) => {
     if (value) {
@@ -188,7 +218,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='calorieLimit'
               type='number'
-              value={fields.calorieLimit.value}
+              value={calorieLimit}
               onChange={handleChange}
               label={'calories per day'}
               className='diet-form-row'
@@ -196,7 +226,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='fatLimit'
               type='number'
-              value={fields.fatLimit.value}
+              value={fatLimit}
               onChange={handleChange}
               label={'desired % fats'}
               className='diet-form-row'
@@ -204,7 +234,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='carbLimit'
               type='number'
-              value={fields.carbLimit.value}
+              value={carbLimit}
               onChange={handleChange}
               label={'desired % carbs'}
               className='diet-form-row'
@@ -212,7 +242,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='proteinLimit'
               type='number'
-              value={fields.proteinLimit.value}
+              value={proteinLimit}
               onChange={handleChange}
               label={'desired % protein'}
               className='diet-form-row'
@@ -228,30 +258,30 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
         </div>
         <div className='center-col'>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(fields.calorieLimit.value)}></i>
+            <i className={getArrowStyle(calorieLimit)}></i>
           </div>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(fields.fatLimit.value)}></i>
+            <i className={getArrowStyle(fatLimit)}></i>
           </div>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(fields.carbLimit.value)}></i>
+            <i className={getArrowStyle(carbLimit)}></i>
           </div>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(fields.proteinLimit.value)}></i>
+            <i className={getArrowStyle(proteinLimit)}></i>
           </div>
           <div className='diet-form-row'></div>
         </div>
         <div className='right-col'>
-          <div className={getOutputStyle(fields.calorieLimit.value)}>
-            {`${fields.calorieLimit.value} cal / day`}
+          <div className={getOutputStyle(calorieLimit)}>
+            {`${calorieLimit} cal / day`}
           </div>
-          <div className={getOutputStyle(fields.fatLimit.value)}>
+          <div className={getOutputStyle(fatLimit)}>
             {`${fatsInGrams} g fat / day`}
           </div>
-          <div className={getOutputStyle(fields.carbLimit.value)}>
+          <div className={getOutputStyle(carbLimit)}>
             {`${carbsInGrams} g carbs / day`}
           </div>
-          <div className={getOutputStyle(fields.proteinLimit.value)}>
+          <div className={getOutputStyle(proteinLimit)}>
             {`${proteinInGrams} g protein / day`}
           </div>
           <div className='diet-form-row'></div>
