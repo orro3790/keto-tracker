@@ -518,7 +518,18 @@ const SearchFoodModal = ({
       </div>
     );
   } else {
-    resultsContainer = <div className='results-container'></div>;
+    resultsContainer = (
+      <div className='search-category-container'>
+        <div>
+          <i className='fas fa-folder-plus custom-foods'></i>
+        </div>
+        <div>
+          <i class='fas fa-bookmark favorites'></i>
+        </div>
+        <div className='label'>Add a custom food</div>
+        <div className='label'>View your favorites</div>
+      </div>
+    );
   }
 
   return (

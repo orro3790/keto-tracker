@@ -171,6 +171,42 @@ $keto-green: #1eb980;
       z-index: -1;
     }
   }
+
+  .search-category-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-self: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0px 20px 20px 20px;
+
+    i {
+      font-size: 75px;
+      align-self: center;
+      color: $dp-24;
+      transition: 0.3s;
+
+      &.favorites {
+        padding-bottom: 10px;
+      }
+
+      &.custom-foods {
+        padding-top: 10px;
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: $keto-green;
+        transition: 0.3s;
+      }
+    }
+
+    .label {
+      align-items: flex-start;
+    }
+  }
+
   .submit-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
