@@ -49,6 +49,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
           carbs: 25,
           fats: 166,
         },
+        carbSettings: 'total',
         ...additionalData,
       });
     } catch (error) {
@@ -328,6 +329,15 @@ export const updateEntry = async (userId, entry) => {
 export const signOut = () => {
   const auth = firebase.auth();
   auth.signOut();
+};
+
+export const updateCarbSettings = async (userId, setting) => {
+  const userRef = firestore.doc(`users/${userId}`);
+  try {
+    await userRef.update({ carbSettings: setting });
+  } catch (error) {
+    console.log('error creating foodDiary entry', error.message);
+  }
 };
 
 export default firebase;

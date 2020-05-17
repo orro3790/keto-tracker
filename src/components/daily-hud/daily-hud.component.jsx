@@ -18,7 +18,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   };
 
   useEffect(() => {
-    if (entries !== '') {
+    if (currentUser !== null && entries !== '') {
       setDailyFats(entries.dailyMacros.f);
       setDailyProtein(entries.dailyMacros.p);
       if (currentUser.carbSettings === 'net') {

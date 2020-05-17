@@ -20,7 +20,11 @@ const ConfirmationModal = ({ messageObj, handleClose, onConfirm }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onConfirm();
+
+    // onConfirm is used when the confirmation model prompts the user with a question that needs confirmation to execute
+    if (onConfirm) {
+      onConfirm();
+    }
   };
 
   return (
