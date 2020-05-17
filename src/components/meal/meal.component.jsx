@@ -63,15 +63,15 @@ const Meal = ({
     entryPlaceholder = entries;
   }
 
-  let totalCarbsOrNetCarbs = 'carbs';
+  let carbType = 'carbs';
   let totalCarbsOrNetCarbsValue;
 
   if (currentUser !== null) {
     if (currentUser.carbSettings === 'net') {
-      totalCarbsOrNetCarbs = 'net carbs';
+      carbType = 'net carbs';
       totalCarbsOrNetCarbsValue = totalNetCarbs;
     } else {
-      totalCarbsOrNetCarbs = 'carbs';
+      carbType = 'carbs';
       totalCarbsOrNetCarbsValue = totalCarbs;
     }
   }
@@ -96,7 +96,7 @@ const Meal = ({
           </div>
           <div className='total-carbs'>
             {totalCarbsOrNetCarbsValue}g
-            <div className='macro-label'>{totalCarbsOrNetCarbs}</div>
+            <div className='macro-label'>{carbType}</div>
           </div>
           <div className='total-protein'>
             {totalProtein}g<div className='macro-label'>protein</div>

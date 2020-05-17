@@ -30,11 +30,6 @@ $brightest: #474747;
   .logo {
     font-size: 48px;
     color: $keto-green;
-    // background-color: $dp-16;
-    // width: 75px;
-    // height: 75px;
-    // margin: auto;
-    // border-radius: 100%;
   }
 
   i {
@@ -45,7 +40,6 @@ $brightest: #474747;
     height: 50px;
 
     &:hover:not(.enabled) {
-      // color: $dp-24;
       cursor: pointer;
       color: $brightest;
     }

@@ -28,7 +28,7 @@ $keto-blue: #94cbff;
 $keto-green: #1eb980;
 
 .title {
-  font-size: $font-size-display-2;
+  font-size: $font-size-display-1;
   margin-top: 40px;
 }
 
@@ -140,10 +140,9 @@ $keto-green: #1eb980;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0px 5px;
-  margin: 20px auto 20px -20px;
+  margin: 20px auto 0px -20px;
   align-items: center;
   text-align: center;
-  height: 50px;
   width: 300px;
 
   .label {
@@ -166,5 +165,50 @@ $keto-green: #1eb980;
   }
   .daily-calories {
     color: #ffffff;
+  }
+}
+
+.carb-settings-container {
+  .toggle {
+    display: grid;
+    grid-template-columns: 3fr 2px 3fr;
+    gap: 0px 10px;
+    margin: 20px auto 0px 0px;
+    font-size: $font-size-large;
+    width: 25vw;
+
+    .total {
+      text-align: right;
+      cursor: pointer;
+
+      &:hover:not(.enabled) {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    .separator {
+      background-color: $dp-24;
+    }
+
+    .net {
+      text-align: left;
+      cursor: pointer;
+
+      &:hover:not(.enabled) {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    .enabled {
+      color: $keto-green;
+      transition: 0.3s;
+    }
+
+    .disabled {
+      color: $dp-24;
+      transition: 0.3s;
+    }
+  }
+  .description {
+    margin-top: 20px;
   }
 }

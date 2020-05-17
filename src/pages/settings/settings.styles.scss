@@ -1,10 +1,12 @@
-$font-size-display-large: 36px;
+$font-size-display-1: 32px;
 
 .outer-container {
   padding: 38px 0px 0px 38px;
+  margin-bottom: 200px;
 }
 
 .page-title {
-  font-size: $font-size-display-large;
+  font-size: $font-size-display-1;
+  text-align: center;
   margin: 0px 0px 50px 0px;
 }

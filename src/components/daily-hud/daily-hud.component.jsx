@@ -11,7 +11,6 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
 
   const toggleRemaining = () => {
     selectHudModel('remaining');
-    // need to update user settings in firestore next
   };
 
   const toggleAdditive = () => {

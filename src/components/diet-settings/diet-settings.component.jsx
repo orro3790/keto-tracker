@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import { updateDietSettings } from '../../firebase/firebase.utils';
@@ -7,7 +7,7 @@ import ConfirmationModal from '../confirmation-modal/confirmation-modal.componen
 
 import './diet-settings.styles.scss';
 
-const DietSettings = ({ currentUser, setCurrentUser }) => {
+const DietSettings = ({ currentUser, setCurrentUser, hudModel }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
   const [modalStatus, setModalStatus] = useState(null);
   const [fatLimit, setFatLimit] = useState('');
@@ -198,6 +198,22 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
     carbLabel = 'desired % net carbs';
   }
 
+  const toggleRemaining = () => {
+    console.log('toggled remaining');
+  };
+
+  const toggleAdditive = () => {
+    console.log('toggled additive');
+  };
+
+  const getStyle = (className) => {
+    if (currentUser !== null && className === currentUser.carbSettings) {
+      return 'enabled';
+    } else {
+      return 'disabled';
+    }
+  };
+
   return (
     <div>
       <div className='title'>Current Diet</div>
@@ -294,12 +310,46 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
         </div>
         <div className='error-col'>{errorModal}</div>
       </div>
+      <div className='title'>Carb Settings</div>
+      <div className='carb-settings-container'>
+        <div className='toggle'>
+          <div
+            className={`${getStyle('total')} total`}
+            onClick={toggleRemaining}
+          >
+            TOTAL CARBS
+          </div>
+          <div className='separator'></div>
+          <div className={`${getStyle('net')} net`} onClick={toggleAdditive}>
+            NET CARBS
+          </div>
+        </div>
+        <div className='description'>
+          <ul className='total'>
+            <li>Total carbs includes fiber.</li>
+            <li>Foods will display total carbs by default.</li>
+            <li>
+              All carbs will count towards the daily carb limit defined in your
+              diet.
+            </li>
+          </ul>
+          <ul className='net'>
+            <li>Net carbs is the sum of total carbs minus fiber.</li>
+            <li>Foods will display net carbs by default.</li>
+            <li>
+              Only net carbs will count towards the daily carb limit defined in
+              your diet.
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
+  hudModel: state.dailyHud.hudModel,
 });
 
 const mapDispatchToProps = (dispatch) => ({
