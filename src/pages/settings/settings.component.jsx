@@ -12,13 +12,9 @@ const Settings = () => {
         <Rail />
       </div>
       <div className='outer-container'>
-        <div className='left-side'>
-          <CurrentDiet />
-          <UpdateDiet />
-        </div>
-        <div className='right-side'>
-          <CarbSettings />
-        </div>
+        <CurrentDiet />
+        <CarbSettings />
+        <UpdateDiet />
       </div>
     </div>
   );

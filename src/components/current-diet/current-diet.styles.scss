@@ -9,15 +9,6 @@ $dp-24: #373737;
   margin: 20px 0px 0px 0px;
   font-size: $font-size-large;
   width: 250px;
-
-  .daily-intake {
-    text-align: right;
-    cursor: pointer;
-
-    &:hover:not(.enabled) {
-      color: rgba(255, 255, 255, 0.2);
-    }
-  }
 }
 
 .current-diet-description-box {
