@@ -14,14 +14,11 @@ const Settings = () => {
       <div className='outer-container'>
         <div className='left-side'>
           <CurrentDiet />
-        </div>
-        <div className='left-side'>
-          <CarbSettings />
-        </div>
-        <div className='left-side'>
           <UpdateDiet />
         </div>
-        <div className='right-side'></div>
+        <div className='right-side'>
+          <CarbSettings />
+        </div>
       </div>
     </div>
   );

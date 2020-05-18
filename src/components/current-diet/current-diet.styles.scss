@@ -2,28 +2,6 @@ $font-size-large: 20px;
 $dp-08: #2e2e2e;
 $dp-24: #373737;
 
-.current-diet-description-box {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  column-gap: 0px;
-  align-items: center;
-  text-align: center;
-  height: 120px;
-  max-width: 400px;
-  margin-top: 20px;
-  padding: 20px;
-  background-color: $dp-08;
-
-  .macro-container {
-    height: 100%;
-    align-items: end;
-
-    .label {
-      align-self: start;
-    }
-  }
-}
-
 .subtitle {
   display: grid;
   grid-template-columns: 3fr 2px 3fr;
@@ -38,6 +16,27 @@ $dp-24: #373737;
 
     &:hover:not(.enabled) {
       color: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+.current-diet-description-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  column-gap: 0px;
+  align-items: center;
+  text-align: center;
+  max-width: 400px;
+  margin-top: 20px;
+  padding: 20px;
+  background-color: $dp-08;
+
+  .macro-container {
+    height: 100%;
+    align-items: end;
+
+    .label {
+      align-self: start;
     }
   }
 }
