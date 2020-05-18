@@ -1,59 +1,59 @@
-$google-blue: #4285f4;
-$google-red: #db4437;
-$google-yellow: #f4b400;
-$google-green: #0f9d58;
-$background-color: white;
-$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
-$border-radius: 0.5rem;
 $font-size-small: 12px;
 $font-size-medium: 16px;
 $font-size-large: 20px;
-$font-size-macro: 1.5;
-$section-inner-padding: 10px 10px 0px 10px;
-$sunrise-gradient: linear-gradient(
-  90deg,
-  rgba(255, 147, 64, 1) 0%,
-  rgba(227, 28, 116, 1) 94%
-);
-$seafoam-gradient: linear-gradient(
-  90deg,
-  rgba(64, 168, 255, 1) 0%,
-  rgba(28, 227, 174, 1) 94%
-);
+$font-size-display-3: 22px;
+$font-size-display-2: 26px;
+
+$small-weight: 300;
+$medium-weight: 400;
+$large-weight: 700;
+
+$base-grey: #121212;
+$dp-01: #1e1e1e;
+$dp-02: #222222;
+$dp-03: #242424;
+$dp-04: #272727;
+$dp-06: #2c2c2c;
+$dp-08: #2e2e2e;
+$dp-12: #323232;
+$dp-16: #353535;
+$dp-24: #373737;
+
+$error-red-600: #e53935;
+$keto-orange: #ffc894;
+$keto-pink: #ff94cb;
+$keto-blue: #94cbff;
+$keto-green: #1eb980;
 
 @mixin centered {
   position: fixed;
   top: 50%;
   left: 50%;
-  /* bring your own prefixes */
   transform: translate(-50%, -50%);
 }
 
 .modal-outer-box {
-  height: 500px;
-  width: 30vw;
+  @include centered;
+  height: 600px;
+  width: 450px;
   display: grid;
   grid-template-rows: 85% 15%;
-  border-radius: $border-radius;
-  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
-  background-color: $background-color;
-  @include centered;
-  z-index: 100;
+  background-color: $dp-08;
+  box-shadow: (0px 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 1;
 
   // everything inside the modal
   .modal-inner-box {
-    // Remove focus outline from opened modal
-    outline: 0;
     display: grid;
     grid-template-rows: 15% 15% 70%;
 
-    .close-modal-btn {
+    .close-search-modal-btn {
       position: absolute;
       margin-top: 5px;
       margin-right: 5px;
       top: 0;
       right: 0;
-      color: $google-red;
+      color: $error-red-600;
       cursor: pointer;
 
       & i {
@@ -77,7 +77,6 @@ $seafoam-gradient: linear-gradient(
 
     .title-section {
       display: grid;
-      padding: $section-inner-padding;
       z-index: -1px;
 
       ::placeholder {
@@ -96,10 +95,10 @@ $seafoam-gradient: linear-gradient(
 
       .food-name-input {
         font-size: $font-size-large;
+        background-color: $dp-08;
         width: 100%;
         height: stretch;
         padding-left: 20px;
-        border-radius: $border-radius;
 
         &:focus::placeholder {
           color: transparent;
@@ -108,19 +107,16 @@ $seafoam-gradient: linear-gradient(
     }
 
     .description-section {
-      padding: $section-inner-padding;
-
       .description-area {
+        background-color: $dp-08;
         resize: none;
         height: stretch;
         width: 100%;
         outline: 0;
         border: none;
-        font-family: 'Roboto', sans-serif;
         font-size: $font-size-medium;
         font-weight: 400;
         padding: 20px 0px 0px 20px;
-        border-bottom: $primary-border-style;
       }
 
       ::placeholder {
@@ -161,8 +157,7 @@ $seafoam-gradient: linear-gradient(
       display: flex;
       text-align: center;
       align-items: flex-end;
-      font-size: $font-size-macro;
-      border-bottom: $primary-border-style;
+      background-color: $dp-08;
     }
 
     .macro-unit {
@@ -173,33 +168,36 @@ $seafoam-gradient: linear-gradient(
   }
 
   .submit-btn {
-    display: flex;
-    background: $sunrise-gradient;
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
-    border: none;
-    outline: none;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    display: grid;
+    text-align: center;
+    background-color: $dp-04;
+    font-size: $font-size-display-3;
+    align-content: center;
+    padding: 10px;
+    transition: 0.5s;
+    height: 100%;
 
-    &:disabled {
-      transition: 0.4s;
-      opacity: 0.3;
-    }
-
-    &:enabled {
-      transition: 0.4s;
-      opacity: 1;
-    }
-
-    i {
-      margin-left: 10px;
+    &.enabled {
+      background-color: $keto-green;
+      transition: 0.5s;
+      cursor: pointer;
     }
 
     .submit-btn-text {
-      color: white;
-      font-size: 1.4rem;
+      padding: 0px 0px 0px 5px;
+      font-size: $font-size-display-3;
+      color: $dp-08;
+      transition: 0.5s;
+
+      &.enabled {
+        color: white;
+        transition: 0.5s;
+        cursor: pointer;
+      }
+    }
+
+    i {
+      padding-left: 5px;
     }
   }
 }

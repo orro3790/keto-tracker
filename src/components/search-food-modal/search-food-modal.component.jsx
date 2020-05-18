@@ -9,9 +9,11 @@ import {
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
+import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 
 const SearchFoodModal = ({
   toggleSearchModal,
+  toggleCreateFoodModal,
   updateTotals,
   foodReference,
   createFoodReference,
@@ -59,6 +61,13 @@ const SearchFoodModal = ({
     toggleSearchModal({
       status: 'hidden',
       meal: 'none',
+    });
+  };
+
+  const openCustomFoods = () => {
+    handleClose();
+    toggleCreateFoodModal({
+      status: 'visible',
     });
   };
 
@@ -521,10 +530,13 @@ const SearchFoodModal = ({
     resultsContainer = (
       <div className='search-category-container'>
         <div>
-          <i className='fas fa-folder-plus custom-foods'></i>
+          <i
+            className='fas fa-folder-plus custom-foods'
+            onClick={openCustomFoods}
+          ></i>
         </div>
         <div>
-          <i class='fas fa-bookmark favorites'></i>
+          <i className='fas fa-bookmark favorites' onClick={handleClose}></i>
         </div>
         <div className='label'>Add a custom food</div>
         <div className='label'>View your favorites</div>
@@ -557,6 +569,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+  toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),

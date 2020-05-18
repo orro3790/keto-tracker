@@ -6,15 +6,21 @@ import SearchFoodModal from '../../components/search-food-modal/search-food-moda
 import TotalsChart from '../../components/totals-chart/totals-chart.component';
 import DailyChart from '../../components/daily-hud/daily-hud.component';
 import Rail from '../../components/rail/rail.component';
-import { changeModalStatus } from '../../redux/create-food-item/create-food-item.actions.js';
+import CreateFood from '../../components/create-food/create-food';
+import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { connect } from 'react-redux';
 
-const Diary = ({ searchModal }) => {
+const Diary = ({ searchModal, createFoodModalStatus }) => {
   let searchFoodModal;
   if (searchModal.status === 'visible') {
     searchFoodModal = <SearchFoodModal />;
   } else {
     searchFoodModal = null;
+  }
+
+  let createFoodModal;
+  if (createFoodModalStatus.status === 'visible') {
+    createFoodModal = <CreateFood />;
   }
 
   return (
@@ -27,6 +33,7 @@ const Diary = ({ searchModal }) => {
         <div className='diary-outer-container'>
           <DateSelector />
           <DailyChart />
+          {createFoodModal}
         </div>
         <div className='diary-outer-container'>
           <div className='diary-inner-container'>
@@ -67,11 +74,12 @@ const Diary = ({ searchModal }) => {
 
 const mapStateToProps = (state) => ({
   searchModal: state.searchModal.searchModal,
+  createFoodModalStatus: state.createFood.createFoodModal,
   foodReference: state.searchItemSuggestion.foodReference,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  changeModalStatus: (status) => dispatch(changeModalStatus(status)),
+  toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Diary);

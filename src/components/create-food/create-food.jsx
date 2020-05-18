@@ -1,89 +1,89 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import {
   createFoodItem,
-  changeModalStatus,
-} from '../../redux/create-food-item/create-food-item.actions.js';
-import FormHandler from './../../formHandler.js';
-import { requiredValidation } from './../../validators.js';
-import './create-food-item.styles.scss';
-import { createCreateFoodDocument } from './../../firebase/firebase.utils.js';
+  toggleCreateFoodModal,
+} from '../../redux/create-food/create-food.actions.js';
+import './create-food.styles.scss';
+import { createCreateFoodDocument } from '../../firebase/firebase.utils.js';
 
 const CreateFood = ({
   createFoodItem,
-  changeModalStatus,
+  toggleCreateFoodModal,
   modalStatus,
-  createdFoods,
   currentUser,
 }) => {
-  const FIELDS = {
-    name: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    description: {
-      value: '',
-      validations: [],
-    },
-    grams: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    fats: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    carbs: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    protein: {
-      value: '',
-      validations: [requiredValidation],
-    },
-    calories: {
-      value: '',
-      validations: [requiredValidation],
-    },
-  };
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [calories, setCalories] = useState('');
+  const [fats, setFats] = useState('');
+  const [carbs, setCarbs] = useState('');
+  const [protein, setProtein] = useState('');
 
-  const onSubmitDispatcher = () => {
-    // create the new item
-    createFoodItem(fields);
-    // try to push to firebase
-    pushToFirebase();
-  };
+  const handleChange = (e) => {
+    // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
+    const caloriesPermitted = /^\d{0,5}(\.\d{1})?$/;
 
-  const { fields, handleChange, handleSubmit, isSubmittable } = FormHandler(
-    FIELDS,
-    onSubmitDispatcher
-  );
+    // allow empty string or values 0-9, 0-3 digits, optionally including one decimal point /w 1 digit after decimal
+    const macrosPermitted = /^\d{0,3}(\.\d{1})?$/;
 
-  const handleClose = () => {
-    // control the modal window
-    if (modalStatus === 'visible') {
-      changeModalStatus('hidden');
+    switch (e.target.name) {
+      case 'name':
+        if (e.target.value.match(caloriesPermitted)) setName(e.target.value);
+        break;
+      case 'description':
+        if (e.target.value.match(caloriesPermitted))
+          setDescription(e.target.value);
+        break;
+      case 'calories':
+        if (e.target.value.match(caloriesPermitted))
+          setCalories(e.target.value);
+        break;
+      case 'fats':
+        if (e.target.value.match(macrosPermitted)) setFats(e.target.value);
+        break;
+      case 'carbs':
+        if (e.target.value.match(macrosPermitted)) setCarbs(e.target.value);
+        break;
+      case 'protein':
+        if (e.target.value.match(macrosPermitted)) setProtein(e.target.value);
+        break;
+      default:
+        break;
     }
   };
 
-  const pushToFirebase = async () => {
-    const results = await createCreateFoodDocument(currentUser, fields);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('submitted');
   };
+
+  const handleClose = () => {
+    toggleCreateFoodModal({
+      status: 'hidden',
+    });
+  };
+
+  let isSubmittable = false;
+
+  // const pushToFirebase = async () => {
+  //   const results = await createCreateFoodDocument(currentUser);
+  // };
 
   return (
     <div>
       <form className='modal'>
         <div className='modal-outer-box'>
           <div className='modal-inner-box'>
-            <span className='close-modal-btn'>
-              <i className='fas fa-times-circle' onClick={handleClose}></i>
+            <span className='close-search-modal-btn'>
+              <i className='fas fa-times' onClick={handleClose}></i>
             </span>
             <div className='title-section'>
               <input
                 className='food-name-input'
                 name='name'
                 type='text'
-                value={fields.name.value}
+                value={name}
                 onChange={handleChange}
                 placeholder='Add a name...'
                 maxLength='35'
@@ -94,7 +94,7 @@ const CreateFood = ({
               <textarea
                 className='description-area'
                 name='description'
-                value={fields.description.value}
+                value={description}
                 onChange={handleChange}
                 placeholder='Add a description...'
                 maxLength='90'
@@ -102,21 +102,21 @@ const CreateFood = ({
             </div>
             <div className='macro-section'>
               <span className='macro-label'>Size</span>
-              <input
+              {/* <input
                 className={'macro-input'}
                 name='grams'
                 type='number'
                 value={fields.grams.value}
                 onChange={handleChange}
                 placeholder='0'
-              />
+              /> */}
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Fats</span>
               <input
                 className={'macro-input'}
                 name='fats'
                 type='number'
-                value={fields.fats.value}
+                value={fats}
                 onChange={handleChange}
                 placeholder='0'
               />
@@ -126,7 +126,7 @@ const CreateFood = ({
                 className={'macro-input'}
                 name='carbs'
                 type='number'
-                value={fields.carbs.value}
+                value={carbs}
                 onChange={handleChange}
                 placeholder='0'
               />
@@ -136,7 +136,7 @@ const CreateFood = ({
                 className={'macro-input'}
                 name='protein'
                 type='number'
-                value={fields.protein.value}
+                value={protein}
                 onChange={handleChange}
                 placeholder='0'
               />
@@ -146,14 +146,14 @@ const CreateFood = ({
                 className={'macro-input'}
                 name='calories'
                 type='number'
-                value={fields.calories.value}
+                value={calories}
                 onChange={handleChange}
                 placeholder='0'
               />
               <span className='macro-unit'></span>
             </div>
           </div>
-          <button
+          <div
             className='submit-btn'
             disabled={!isSubmittable}
             type='submit'
@@ -163,7 +163,7 @@ const CreateFood = ({
               Add to Database
               <i className='fas fa-plus'></i>
             </div>
-          </button>
+          </div>
         </div>
       </form>
     </div>
@@ -173,13 +173,11 @@ const CreateFood = ({
 const mapStateToProps = (state) => ({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   currentUser: state.user.currentUser,
-  createdFoods: state.createFoodItem.createdFoods,
-  modalStatus: state.createFoodItem.modalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   createFoodItem: (newFoodItem) => dispatch(createFoodItem(newFoodItem)),
-  changeModalStatus: (status) => dispatch(changeModalStatus(status)),
+  toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);

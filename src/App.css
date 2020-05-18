@@ -25,3 +25,11 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+input {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+textarea {
+  font-family: 'Roboto Condensed', sans-serif;
+}
