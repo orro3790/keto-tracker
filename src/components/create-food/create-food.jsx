@@ -17,6 +17,7 @@ const CreateFood = ({
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
+  const [size, setSize] = useState('');
   const [fats, setFats] = useState('');
   const [carbs, setCarbs] = useState('');
   const [protein, setProtein] = useState('');
@@ -34,6 +35,9 @@ const CreateFood = ({
         break;
       case 'description':
         setDescription(e.target.value);
+        break;
+      case 'size':
+        if (e.target.value.match(rule1)) setSize(e.target.value);
         break;
       case 'calories':
         if (e.target.value.match(rule1)) setCalories(e.target.value);
@@ -65,9 +69,36 @@ const CreateFood = ({
 
   let isSubmittable = false;
 
+  // check that all fields are filled
+  let fieldsFilled = false;
+
+  if (
+    name !== '' &&
+    description !== '' &&
+    size !== '' &&
+    fats !== '' &&
+    carbs !== '' &&
+    protein !== '' &&
+    calories !== ''
+  ) {
+    fieldsFilled = true;
+  }
+
+  if (fieldsFilled === true) {
+    isSubmittable = true;
+  }
+
   // const pushToFirebase = async () => {
   //   const results = await createCreateFoodDocument(currentUser);
   // };
+
+  const enabledCheck = () => {
+    if (fieldsFilled === true) {
+      return 'enabled';
+    } else {
+      return null;
+    }
+  };
 
   return (
     <div>
@@ -86,7 +117,7 @@ const CreateFood = ({
                 onChange={handleChange}
                 value={name}
                 maxLength='70'
-                label={'Give your food a name'}
+                label='Give your food a name'
                 required
               />
             </div>
@@ -97,26 +128,28 @@ const CreateFood = ({
                 inputType='textarea'
                 onChange={handleChange}
                 value={description}
-                maxLength='70'
-                label={'Give your food a description'}
+                maxLength='100'
+                label='Give your food a description'
                 required
               />
             </div>
             <div className='macro-section'>
               <span className='macro-label'>Size</span>
-              {/* <input
-                className={'macro-input'}
-                name='grams'
+              <FormInput
+                className='macro-input'
+                name='size'
+                inputType='input'
                 type='number'
-                value={fields.grams.value}
+                value={size}
                 onChange={handleChange}
                 placeholder='0'
-              /> */}
+              />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Fats</span>
-              <input
-                className={'macro-input'}
+              <FormInput
+                className='macro-input'
                 name='fats'
+                inputType='input'
                 type='number'
                 value={fats}
                 onChange={handleChange}
@@ -124,9 +157,10 @@ const CreateFood = ({
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Carbs</span>
-              <input
-                className={'macro-input'}
+              <FormInput
+                className='macro-input'
                 name='carbs'
+                inputType='input'
                 type='number'
                 value={carbs}
                 onChange={handleChange}
@@ -134,9 +168,10 @@ const CreateFood = ({
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Protein</span>
-              <input
-                className={'macro-input'}
+              <FormInput
+                className='macro-input'
                 name='protein'
+                inputType='input'
                 type='number'
                 value={protein}
                 onChange={handleChange}
@@ -144,9 +179,10 @@ const CreateFood = ({
               />
               <span className='macro-unit'>(g)</span>
               <span className='macro-label'>Calories</span>
-              <input
-                className={'macro-input'}
+              <FormInput
+                className='macro-input'
                 name='calories'
+                inputType='input'
                 type='number'
                 value={calories}
                 onChange={handleChange}
@@ -156,12 +192,12 @@ const CreateFood = ({
             </div>
           </div>
           <div
-            className='submit-btn'
+            className={`submit-btn ${enabledCheck()}`}
             disabled={!isSubmittable}
             type='submit'
             onClick={handleSubmit}
           >
-            <div className='submit-btn-text'>
+            <div className={`submit-btn-text ${enabledCheck()}`}>
               Add to Database
               <i className='fas fa-plus'></i>
             </div>

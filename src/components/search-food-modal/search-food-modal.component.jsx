@@ -472,7 +472,7 @@ const SearchFoodModal = ({
   let carbsOrNetCarbs;
   let carbsOrNetCarbsLabel;
 
-  if (currentUser.carbSettings === 'net') {
+  if (currentUser !== null && currentUser.carbSettings === 'net') {
     carbsOrNetCarbs = netCarbs;
     carbsOrNetCarbsLabel = 'net carbs';
   } else {

@@ -45,7 +45,7 @@ $keto-green: #1eb980;
   // everything inside the modal
   .modal-inner-box {
     display: grid;
-    grid-template-rows: 15% 15% 70%;
+    grid-template-rows: auto auto 1fr;
 
     .close-search-modal-btn {
       position: absolute;
@@ -80,11 +80,11 @@ $keto-green: #1eb980;
     }
 
     .description-section {
-      padding: 25px 20px 20px 20px;
+      padding: 25px 20px 0px 20px;
 
-      // textarea {
-      //   height: 100px;
-      // }
+      textarea {
+        height: 100%;
+      }
 
       .description-area {
         background-color: $dp-04;
@@ -120,36 +120,36 @@ $keto-green: #1eb980;
     .macro-section {
       display: grid;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 75px 1fr;
+      column-gap: 20px;
       padding: 10px;
-      overflow: clip;
-    }
+      font-size: $font-size-medium;
 
-    .macro-label {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      font-size: $font-size-small;
-    }
+      .macro-label {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
 
-    .macro-input {
-      display: flex;
-      text-align: center;
-      align-items: flex-end;
-      background-color: $dp-08;
-    }
+      .macro-input {
+        display: flex;
+        text-align: center;
+        align-items: flex-end;
+        background-color: $dp-08;
+      }
 
-    .macro-unit {
-      display: flex;
-      align-items: center;
-      padding: 0px;
+      .macro-unit {
+        display: flex;
+        align-items: center;
+        padding: 0px;
+      }
     }
   }
 
   .submit-btn {
     display: grid;
     text-align: center;
-    background-color: $dp-04;
+    background-color: $dp-12;
     font-size: $font-size-display-3;
     align-content: center;
     padding: 10px;
@@ -165,7 +165,7 @@ $keto-green: #1eb980;
     .submit-btn-text {
       padding: 0px 0px 0px 5px;
       font-size: $font-size-display-3;
-      color: $dp-08;
+      color: rgba(255, 255, 255, 0.38);
       transition: 0.5s;
 
       &.enabled {
@@ -176,15 +176,14 @@ $keto-green: #1eb980;
     }
 
     i {
-      padding-left: 5px;
+      padding-left: 10px;
     }
   }
 }
 
 input {
   border: none;
-  font-size: $font-size-small;
-  min-width: 0px;
+  font-size: $font-size-medium;
   overflow: hidden;
   /* Chrome, Safari, Edge, Opera */
   &::-webkit-outer-spin-button,

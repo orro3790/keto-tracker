@@ -13,10 +13,9 @@ $dp-16: #353535;
 $dp-24: #373737;
 
 @mixin shrinkLabel {
-  //move it up and change the font size and color
   top: -20px;
   font-size: $font-size-small;
-  opacity: 0.2;
+  opacity: 0.38;
 }
 
 .group {
@@ -33,6 +32,10 @@ $dp-24: #373737;
     width: 100%;
     border: none;
     border-bottom: 2px solid $dp-16;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.38);
+    }
 
     &:focus {
       outline: none;

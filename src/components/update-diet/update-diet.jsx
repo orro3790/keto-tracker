@@ -174,11 +174,9 @@ const UpdateDiet = ({ currentUser }) => {
     confirmationModal = null;
   }
 
-  let carbType = 'carbs';
   let carbLabel = 'desired % carbs';
 
   if (currentUser && currentUser.carbSettings === 'net') {
-    carbType = 'net carbs';
     carbLabel = 'desired % net carbs';
   }
 
