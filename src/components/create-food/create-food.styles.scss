@@ -76,39 +76,18 @@ $keto-green: #1eb980;
     }
 
     .title-section {
-      display: grid;
-      z-index: -1px;
-
-      ::placeholder {
-        font-size: $font-size-medium;
-      }
-
-      &:hover ::placeholder {
-        transition: 0.5s;
-        -moz-transform: scale(0.8) translate(-55px, -20px);
-        -webkit-transform: scale(0.8) translate(-55px, -20px);
-        -o-transform: scale(0.8) translate(-55px, -20px);
-        -ms-transform: scale(0.8) translate(-55px, -20px);
-        transform: scale(0.8) translate(-55px, -20px);
-        z-index: 2;
-      }
-
-      .food-name-input {
-        font-size: $font-size-large;
-        background-color: $dp-08;
-        width: 100%;
-        height: stretch;
-        padding-left: 20px;
-
-        &:focus::placeholder {
-          color: transparent;
-        }
-      }
+      padding: 30px 20px 0px 20px;
     }
 
     .description-section {
+      padding: 25px 20px 20px 20px;
+
+      // textarea {
+      //   height: 100px;
+      // }
+
       .description-area {
-        background-color: $dp-08;
+        background-color: $dp-04;
         resize: none;
         height: stretch;
         width: 100%;

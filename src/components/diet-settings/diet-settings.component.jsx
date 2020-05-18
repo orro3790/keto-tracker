@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
-import {
-  updateDietSettings,
-  updateCarbSettings,
-} from '../../firebase/firebase.utils';
-import { setCurrentUser } from '../../redux/user/user.actions';
+import { updateDietSettings } from '../../firebase/firebase.utils';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
-
 import './diet-settings.styles.scss';
 
-const DietSettings = ({ currentUser, setCurrentUser }) => {
+const DietSettings = ({ currentUser }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
-  const [modalStatus, setModalStatus] = useState(null);
+  const [modalStatus, setModalStatus] = useState('hidden');
   const [fatLimit, setFatLimit] = useState('');
   const [carbLimit, setCarbLimit] = useState('');
   const [proteinLimit, setProteinLimit] = useState('');
@@ -175,7 +170,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
   };
 
   const handleClose = () => {
-    setModalStatus(null);
+    setModalStatus('hidden');
   };
 
   let confirmationModal;
@@ -194,58 +189,11 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
 
   let carbType = 'carbs';
   let carbLabel = 'desired % carbs';
-  let carbDescription = (
-    <div className='total-list'>
-      <div>Total carbs includes fiber.</div>
-      <div>Foods will display total carbs by default.</div>
-      <div>
-        All carbs will count towards the daily carb limit defined in your diet.
-      </div>
-    </div>
-  );
 
   if (currentUser && currentUser.carbSettings === 'net') {
     carbType = 'net carbs';
     carbLabel = 'desired % net carbs';
-    carbDescription = (
-      <div className='net-list'>
-        <div>Net carbs is the sum of total carbs minus fiber.</div>
-        <div>Foods will display net carbs by default.</div>
-        <div>
-          Only net carbs will count towards the daily carb limit defined in your
-          diet.
-        </div>
-      </div>
-    );
   }
-
-  const toggleTotal = () => {
-    const copy = Object.assign({}, currentUser);
-    copy.carbSettings = 'total';
-    setCurrentUser(copy);
-  };
-
-  const toggleNet = () => {
-    const copy = Object.assign({}, currentUser);
-    copy.carbSettings = 'net';
-    setCurrentUser(copy);
-  };
-
-  const saveCarbSettings = () => {
-    updateCarbSettings(currentUser.id, currentUser.carbSettings);
-    setConfirmationMsg({
-      success: `Carb settings changed to "${currentUser.carbSettings}".`,
-    });
-    setModalStatus('visible');
-  };
-
-  const getStyle = (className) => {
-    if (currentUser !== null && className === currentUser.carbSettings) {
-      return 'enabled';
-    } else {
-      return 'disabled';
-    }
-  };
 
   return (
     <div>
@@ -273,6 +221,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='calorieLimit'
               type='number'
+              inputType='input'
               value={calorieLimit}
               onChange={handleChange}
               label={'calories per day'}
@@ -281,6 +230,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='fatLimit'
               type='number'
+              inputType='input'
               value={fatLimit}
               onChange={handleChange}
               label={'desired % fats'}
@@ -289,6 +239,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='carbLimit'
               type='number'
+              inputType='input'
               value={carbLimit}
               onChange={handleChange}
               label={carbLabel}
@@ -297,6 +248,7 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
             <FormInput
               name='proteinLimit'
               type='number'
+              inputType='input'
               value={proteinLimit}
               onChange={handleChange}
               label={'desired % protein'}
@@ -343,26 +295,6 @@ const DietSettings = ({ currentUser, setCurrentUser }) => {
         </div>
         <div className='error-col'>{errorModal}</div>
       </div>
-      <div className='title'>Carb Settings</div>
-      <div className='carb-settings-container'>
-        <div className='toggle'>
-          <div className={`${getStyle('total')} total`} onClick={toggleTotal}>
-            TOTAL CARBS
-          </div>
-          <div className='separator'></div>
-          <div className={`${getStyle('net')} net`} onClick={toggleNet}>
-            NET CARBS
-          </div>
-        </div>
-        <div className='description'>{carbDescription}</div>
-        <button
-          className='save-changes-btn'
-          type='submit'
-          onClick={saveCarbSettings}
-        >
-          Save
-        </button>
-      </div>
     </div>
   );
 };
@@ -371,8 +303,4 @@ const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(DietSettings);
+export default connect(mapStateToProps, null)(DietSettings);

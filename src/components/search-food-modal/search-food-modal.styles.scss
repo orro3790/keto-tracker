@@ -41,6 +41,7 @@ $keto-green: #1eb980;
   grid-template-rows: 15% 85%;
   box-shadow: (0px 3px 6px rgba(0, 0, 0, 0.3));
   background-color: $dp-08;
+  z-index: 1;
 
   .search-section {
     padding: 30px 20px 0px 20px;

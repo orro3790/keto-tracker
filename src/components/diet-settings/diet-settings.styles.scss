@@ -27,6 +27,11 @@ $keto-pink: #ff94cb;
 $keto-blue: #94cbff;
 $keto-green: #1eb980;
 
+.diet-settings-separator {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .title {
   font-size: $font-size-display-1;
   margin-top: 40px;

@@ -63,6 +63,7 @@ class SignUp extends React.Component {
         <form className='sign-up-form' onSubmit={this.handleSubmit}>
           <FormInput
             type='text'
+            inputType='input'
             name='displayName'
             value={displayName}
             onChange={this.handleChange}
@@ -71,6 +72,7 @@ class SignUp extends React.Component {
           />
           <FormInput
             type='emil'
+            inputType='input'
             name='email'
             value={email}
             onChange={this.handleChange}
@@ -79,6 +81,7 @@ class SignUp extends React.Component {
           />
           <FormInput
             type='password'
+            inputType='input'
             name='password'
             value={password}
             onChange={this.handleChange}
@@ -87,6 +90,7 @@ class SignUp extends React.Component {
           />
           <FormInput
             type='password'
+            inputType='input'
             name='confirmPassword'
             value={confirmPassword}
             onChange={this.handleChange}

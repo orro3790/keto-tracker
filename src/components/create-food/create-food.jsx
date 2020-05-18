@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
 import {
   createFoodItem,
@@ -22,31 +23,29 @@ const CreateFood = ({
 
   const handleChange = (e) => {
     // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
-    const caloriesPermitted = /^\d{0,5}(\.\d{1})?$/;
+    const rule1 = /^\d{0,5}(\.\d{1})?$/;
 
     // allow empty string or values 0-9, 0-3 digits, optionally including one decimal point /w 1 digit after decimal
-    const macrosPermitted = /^\d{0,3}(\.\d{1})?$/;
+    const rule2 = /^\d{0,3}(\.\d{1})?$/;
 
     switch (e.target.name) {
       case 'name':
-        if (e.target.value.match(caloriesPermitted)) setName(e.target.value);
+        setName(e.target.value);
         break;
       case 'description':
-        if (e.target.value.match(caloriesPermitted))
-          setDescription(e.target.value);
+        setDescription(e.target.value);
         break;
       case 'calories':
-        if (e.target.value.match(caloriesPermitted))
-          setCalories(e.target.value);
+        if (e.target.value.match(rule1)) setCalories(e.target.value);
         break;
       case 'fats':
-        if (e.target.value.match(macrosPermitted)) setFats(e.target.value);
+        if (e.target.value.match(rule2)) setFats(e.target.value);
         break;
       case 'carbs':
-        if (e.target.value.match(macrosPermitted)) setCarbs(e.target.value);
+        if (e.target.value.match(rule2)) setCarbs(e.target.value);
         break;
       case 'protein':
-        if (e.target.value.match(macrosPermitted)) setProtein(e.target.value);
+        if (e.target.value.match(rule2)) setProtein(e.target.value);
         break;
       default:
         break;
@@ -79,26 +78,29 @@ const CreateFood = ({
               <i className='fas fa-times' onClick={handleClose}></i>
             </span>
             <div className='title-section'>
-              <input
-                className='food-name-input'
+              <FormInput
+                id='name'
                 name='name'
+                inputType='input'
                 type='text'
-                value={name}
                 onChange={handleChange}
-                placeholder='Add a name...'
-                maxLength='35'
+                value={name}
+                maxLength='70'
+                label={'Give your food a name'}
                 required
               />
             </div>
             <div className='description-section'>
-              <textarea
-                className='description-area'
+              <FormInput
+                id='description'
                 name='description'
-                value={description}
+                inputType='textarea'
                 onChange={handleChange}
-                placeholder='Add a description...'
-                maxLength='90'
-              ></textarea>
+                value={description}
+                maxLength='70'
+                label={'Give your food a description'}
+                required
+              />
             </div>
             <div className='macro-section'>
               <span className='macro-label'>Size</span>

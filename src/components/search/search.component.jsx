@@ -73,6 +73,7 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
           <FormInput
             id='name'
             name='search-input'
+            inputType='input'
             type='text'
             onChange={handleChange}
             value={searchInput}
