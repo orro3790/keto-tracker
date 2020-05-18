@@ -1,6 +1,9 @@
 $font-size-display-1: 32px;
 
 .outer-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 100px auto;
   padding: 38px 0px 0px 38px;
   margin-bottom: 200px;
 }

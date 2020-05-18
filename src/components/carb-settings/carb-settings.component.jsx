@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { setCurrentUser } from '../../redux/user/user.actions';
 import { updateCarbSettings } from '../../firebase/firebase.utils';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
+import './carb-settings.styles.scss';
 
 const CarbSettings = ({ currentUser, setCurrentUser }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);

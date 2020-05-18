@@ -1,0 +1,77 @@
+$font-size-medium: 16px;
+$font-size-large: 20px;
+$dp-08: #2e2e2e;
+$dp-24: #373737;
+$keto-green: #1eb980;
+
+.carb-settings-container {
+  .toggle {
+    display: grid;
+    grid-template-columns: 3fr 2px 3fr;
+    gap: 0px 10px;
+    margin: 20px 0px 0px 0px;
+    font-size: $font-size-large;
+    width: 250px;
+
+    .total {
+      text-align: right;
+      cursor: pointer;
+
+      &:hover:not(.enabled) {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+    .separator {
+      background-color: $dp-24;
+    }
+
+    .net {
+      text-align: left;
+      cursor: pointer;
+
+      &:hover:not(.enabled) {
+        color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    .enabled {
+      color: $keto-green;
+      transition: 0.3s;
+    }
+
+    .disabled {
+      color: $dp-24;
+      transition: 0.3s;
+    }
+  }
+  .description {
+    margin-top: 20px;
+    width: 600px;
+    background-color: $dp-08;
+
+    .total-list {
+      padding: 20px;
+    }
+
+    .net-list {
+      padding: 20px;
+    }
+  }
+
+  .save-changes-btn {
+    cursor: pointer;
+    height: 40px;
+    width: 142.5px;
+    padding: 0px 5px 0px 5px;
+    margin-top: 25px;
+    background-color: $keto-green;
+    color: white;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: $font-size-medium;
+    border: none;
+    box-sizing: border;
+    &:focus {
+      outline: none;
+    }
+  }
+}

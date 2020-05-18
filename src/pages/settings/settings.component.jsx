@@ -1,7 +1,7 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
 import DietSettings from '../../components/diet-settings/diet-settings.component';
-import CarbSettings from '../../components/carb-settings/carb-settings.component.js';
+import CarbSettings from '../../components/carb-settings/carb-settings.component.jsx';
 import './settings.styles.scss';
 
 const Settings = () => {
@@ -10,13 +10,14 @@ const Settings = () => {
       <div>
         <Rail />
       </div>
-
       <div className='outer-container'>
-        <div className='page-title'>Settings</div>
-        <DietSettings />
-        <CarbSettings />
+        <div className='left-side'>
+          <DietSettings />
+        </div>
+        <div className='left-side'>
+          <CarbSettings />
+        </div>
       </div>
-      <div></div>
     </div>
   );
 };
