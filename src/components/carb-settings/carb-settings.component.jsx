@@ -103,7 +103,7 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
             NET CARBS
           </div>
         </div>
-        <div className='description'>{carbDescription}</div>
+        <div className='carb-settings-description-box'>{carbDescription}</div>
         <button
           className='save-changes-btn'
           type='submit'

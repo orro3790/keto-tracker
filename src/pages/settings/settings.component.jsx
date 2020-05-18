@@ -1,7 +1,8 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
-import DietSettings from '../../components/diet-settings/diet-settings.component';
+import UpdateDiet from '../../components/update-diet/update-diet';
 import CarbSettings from '../../components/carb-settings/carb-settings.component.jsx';
+import CurrentDiet from '../../components/current-diet/current-diet.component';
 import './settings.styles.scss';
 
 const Settings = () => {
@@ -12,11 +13,15 @@ const Settings = () => {
       </div>
       <div className='outer-container'>
         <div className='left-side'>
-          <DietSettings />
+          <CurrentDiet />
         </div>
         <div className='left-side'>
           <CarbSettings />
         </div>
+        <div className='left-side'>
+          <UpdateDiet />
+        </div>
+        <div className='right-side'></div>
       </div>
     </div>
   );

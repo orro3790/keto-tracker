@@ -1,30 +1,17 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { updateUpdateDiet } from '../../firebase/firebase.utils';
 import FormInput from '../form-input/form-input.component';
-import { updateDietSettings } from '../../firebase/firebase.utils';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
-import './diet-settings.styles.scss';
+import './update-diet.styles.scss';
 
-const DietSettings = ({ currentUser }) => {
+const UpdateDiet = ({ currentUser }) => {
   const [confirmationMsg, setConfirmationMsg] = useState(null);
   const [modalStatus, setModalStatus] = useState('hidden');
   const [fatLimit, setFatLimit] = useState('');
   const [carbLimit, setCarbLimit] = useState('');
   const [proteinLimit, setProteinLimit] = useState('');
   const [calorieLimit, setCalorieLimit] = useState('');
-
-  // load 0 as default values if currentUser.diet data hasn't been loaded into state yet
-  let fats = 0;
-  let protein = 0;
-  let carbs = 0;
-  let calories = 0;
-
-  if (currentUser !== null) {
-    fats = currentUser.diet.fats;
-    protein = currentUser.diet.protein;
-    carbs = currentUser.diet.carbs;
-    calories = currentUser.diet.calories;
-  }
 
   // check that all fields are filled
   let fieldsFilled = false;
@@ -129,7 +116,7 @@ const DietSettings = ({ currentUser }) => {
     };
 
     // now update the data in firestore
-    updateDietSettings(currentUser.id, userCopy.diet);
+    updateUpdateDiet(currentUser.id, userCopy.diet);
 
     setConfirmationMsg({
       success: 'Diet settings successfully updated!',
@@ -197,23 +184,7 @@ const DietSettings = ({ currentUser }) => {
 
   return (
     <div>
-      <div className='title'>Current Diet</div>
       {confirmationModal}
-      <div className='current-macros'>
-        <div className='daily-fats macro-container'>
-          {fats}g<div className='label'>fats</div>
-        </div>
-        <div className='daily-carbs macro-container'>
-          {carbs}g<div className='label'>{carbType}</div>
-        </div>
-        <div className='daily-protein macro-container'>
-          {protein}g<div className='label'>protein</div>
-        </div>
-        <div className='daily-calories macro-container'>
-          {calories}
-          <div className='label'>calories</div>
-        </div>
-      </div>
       <div className='title'>Update Diet Settings</div>
       <div className='macro-calculator-container'>
         <div className='left-col'>
@@ -303,4 +274,4 @@ const mapStateToProps = (state) => ({
   currentUser: state.user.currentUser,
 });
 
-export default connect(mapStateToProps, null)(DietSettings);
+export default connect(mapStateToProps, null)(UpdateDiet);

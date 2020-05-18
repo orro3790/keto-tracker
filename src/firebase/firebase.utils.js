@@ -117,7 +117,7 @@ export const returnCollectionSnapshots = (collectionSnapshot) => {
   return transformedCollection;
 };
 
-export const updateDietSettings = async (userId, macros) => {
+export const updateUpdateDiet = async (userId, macros) => {
   if (userId === null) return;
 
   // grab the collection and instantiate an empty doc so it is assigned a random ID
