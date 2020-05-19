@@ -59,46 +59,16 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-export const createCreateFoodDocument = async (currentUser, fields) => {
+export const createCreateFoodDocument = async (currentUser, newFood) => {
   // grab the collection and instantiate an empty doc so it is assigned a random ID
   const collectionRef = firestore.collection(
     `users/${currentUser.id}/createdFoods/`
   );
   const newDocRef = collectionRef.doc();
-
-  // prep the fields
-  const name = fields.name.value;
-  const description = fields.description.value;
-  const size = parseFloat(fields.size.value);
-  const unit = fields.unit.value;
-  const fats = parseFloat(fields.fats.value);
-  const fatsPer = parseFloat(fields.fatsPer.value);
-  const carbs = parseFloat(fields.carbs.value);
-  const carbsPer = parseFloat(fields.carbsPer.value);
-  const protein = parseFloat(fields.protein.value);
-  const proteinPer = parseFloat(fields.proteinPer.value);
-  const calories = parseFloat(fields.calories.value);
-  const caloriesPer = parseFloat(fields.caloriesPer.value);
-  const createdAt = new Date();
-
   try {
     // .set() is the create method
-    await newDocRef.set({
-      name,
-      description,
-      size,
-      unit,
-      fats,
-      fatsPer,
-      carbs,
-      carbsPer,
-      protein,
-      proteinPer,
-      calories,
-      caloriesPer,
-      createdAt,
-    });
-    return 'successful';
+    await newDocRef.set(newFood);
+    console.log('New food successfully added!');
   } catch (error) {
     console.log('error creating new food item', error.message);
   }
@@ -142,22 +112,6 @@ export const updateDietMacros = async (userId, macros) => {
     console.log('error updating user macros', error.message);
   }
 };
-
-// export const addCollectionAndDocuments = async (
-//   collectionKey,
-//   objectsToAdd
-// ) => {
-//   const collectionRef = firestore.collection(collectionKey);
-
-//   // rather than set each obj, wait for the batch to finish then set, just in case the code is interrupted midway through, we don't want it to be unpredictable, but the limit is 500 docs per batch, so batches need to be chunked
-//   const batch = firestore.batch();
-//   objectsToAdd.forEach((obj) => {
-//     const newDocRef = collectionRef.doc();
-//     batch.set(newDocRef, obj);
-//   });
-
-//   return await batch.commit();
-// };
 
 // .add() assigns a new auto-generated id to the document, it's like .set() but it knows the doc didn't already exist
 export const addCollectionAndDocuments = async (

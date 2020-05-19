@@ -1,5 +1,4 @@
 $font-size-medium: 16px;
-$keto-green: #1eb980;
 $dp-01: #1e1e1e;
 $dp-02: #222222;
 $dp-03: #242424;
@@ -9,6 +8,10 @@ $dp-08: #2e2e2e;
 $dp-12: #323232;
 $dp-16: #353535;
 $dp-24: #373737;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
+$keto-green: #1eb980;
 
 .calculation-model-container {
   display: grid;
@@ -87,13 +90,13 @@ $dp-24: #373737;
 }
 
 .daily-fats {
-  color: rgba(255, 147, 64, 1);
+  color: #ffa053;
 }
 .daily-carbs {
-  color: rgba(227, 28, 116, 1);
+  color: #ff5387;
 }
 .daily-protein {
-  color: rgba(64, 168, 255, 1);
+  color: #53a3ff;
 }
 .daily-calories {
   color: #ffffff;

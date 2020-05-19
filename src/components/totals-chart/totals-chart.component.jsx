@@ -63,9 +63,9 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
       colors = '#727378';
     } else {
       colors = [
-        'rgba(255, 147, 64, 1)',
-        'rgba(227, 28, 116, 1)',
-        'rgba(64, 168, 255, 1)',
+        'rgba(255,160,83,1)',
+        'rgba(255,83,135,1)',
+        'rgba(83,163,255,1)',
       ];
     }
     const chart = () => {
@@ -84,7 +84,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
     };
     chart();
     // use searchModal as useEffect trigger for updating charts because searchModal precedes all CRUD operations
-  }, [totalsData]);
+  }, [totalsData, currentUser]);
 
   return (
     <div>

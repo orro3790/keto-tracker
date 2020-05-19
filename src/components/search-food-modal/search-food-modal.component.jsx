@@ -327,7 +327,7 @@ const SearchFoodModal = ({
 
     const chart = () => {
       let data;
-      if (currentUser.carbSettings === 'net') {
+      if (currentUser !== null && currentUser.carbSettings === 'net') {
         data = [
           fatsRemaining.toPrecision(3),
           netCarbsRemaining.toPrecision(3),
@@ -344,7 +344,7 @@ const SearchFoodModal = ({
       }
 
       let labels;
-      if (currentUser.carbSettings === 'net') {
+      if (currentUser !== null && currentUser.carbSettings === 'net') {
         labels = ['fats', 'net carbs', 'protein', 'calories'];
       } else {
         labels = ['fats', 'carbs', 'protein', 'calories'];
@@ -357,10 +357,10 @@ const SearchFoodModal = ({
             label: 'macro ratios',
             data: data,
             backgroundColor: [
-              'rgba(255, 147, 64, 1)',
-              'rgba(227, 28, 116, 1)',
-              'rgba(64, 168, 255, 1)',
-              'rgba(255, 255, 255, 1)',
+              'rgba(255,160,83,1)',
+              'rgba(255,83,135,1)',
+              'rgba(83,163,255,1)',
+              'rgba(255,255,255,1)',
             ],
             borderWidth: 2,
             borderColor: '#434250',

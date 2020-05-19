@@ -1,26 +1,21 @@
 import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
-import {
-  createFoodItem,
-  toggleCreateFoodModal,
-} from '../../redux/create-food/create-food.actions.js';
+import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import './create-food.styles.scss';
 import { createCreateFoodDocument } from '../../firebase/firebase.utils.js';
+import ConfirmationModal from './../confirmation-modal/confirmation-modal.component';
 
-const CreateFood = ({
-  createFoodItem,
-  toggleCreateFoodModal,
-  modalStatus,
-  currentUser,
-}) => {
+const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
   const [size, setSize] = useState('');
   const [fats, setFats] = useState('');
   const [carbs, setCarbs] = useState('');
+  const [fiber, setFiber] = useState('');
   const [protein, setProtein] = useState('');
+  const [unit, setUnit] = useState('');
 
   const handleChange = (e) => {
     // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
@@ -48,6 +43,9 @@ const CreateFood = ({
       case 'carbs':
         if (e.target.value.match(rule2)) setCarbs(e.target.value);
         break;
+      case 'fiber':
+        if (e.target.value.match(rule2)) setFiber(e.target.value);
+        break;
       case 'protein':
         if (e.target.value.match(rule2)) setProtein(e.target.value);
         break;
@@ -58,7 +56,34 @@ const CreateFood = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('submitted');
+    // all macros in the database must be based off 100g/ml portions
+    const ePer = parseFloat(((calories / size) * 100).toPrecision(4));
+    const cPer = parseFloat(((carbs / size) * 100).toPrecision(4));
+    const fPer = parseFloat(((fats / size) * 100).toPrecision(4));
+    const pPer = parseFloat(((protein / size) * 100).toPrecision(4));
+    const dPer = parseFloat(((fiber / size) * 100).toPrecision(4));
+    const kPer = cPer - dPer;
+
+    // implement ability to add by label:
+    // const g = ...
+    // const i = ...
+
+    const newFood = {
+      b: description,
+      c: cPer,
+      d: dPer,
+      e: ePer,
+      f: fPer,
+      g: '',
+      i: '',
+      k: kPer,
+      n: name,
+      p: pPer,
+      u: unit,
+    };
+    createCreateFoodDocument(currentUser, newFood);
+    handleClose();
+    // dispatch toggleGlobalMessage next
   };
 
   const handleClose = () => {
@@ -78,6 +103,7 @@ const CreateFood = ({
     size !== '' &&
     fats !== '' &&
     carbs !== '' &&
+    fiber !== '' &&
     protein !== '' &&
     calories !== ''
   ) {
@@ -88,15 +114,40 @@ const CreateFood = ({
     isSubmittable = true;
   }
 
-  // const pushToFirebase = async () => {
-  //   const results = await createCreateFoodDocument(currentUser);
-  // };
-
   const enabledCheck = () => {
     if (fieldsFilled === true) {
       return 'enabled';
     } else {
       return null;
+    }
+  };
+
+  let gramsStyle = 'g enabled';
+  let mlStyle = 'ml';
+
+  switch (unit) {
+    case 'g':
+      gramsStyle = 'g enabled';
+      break;
+    case 'ml':
+      mlStyle = 'ml enabled';
+      gramsStyle = 'g';
+      break;
+    default:
+      break;
+  }
+
+  const toggleUnit = (e) => {
+    console.log(e.target.className);
+    switch (e.target.className) {
+      case 'g':
+        setUnit('g');
+        break;
+      case 'ml':
+        setUnit('ml');
+        break;
+      default:
+        break;
     }
   };
 
@@ -144,8 +195,18 @@ const CreateFood = ({
                 onChange={handleChange}
                 placeholder='0'
               />
-              <span className='macro-unit'>(g)</span>
-              <span className='macro-label'>Fats</span>
+
+              <div className=' macro-unit toggle'>
+                <div className={gramsStyle} onClick={toggleUnit}>
+                  g
+                </div>
+                <div className='separator'>/</div>
+                <div className={mlStyle} onClick={toggleUnit}>
+                  ml
+                </div>
+              </div>
+
+              <span className='macro-label fats'>Fats</span>
               <FormInput
                 className='macro-input'
                 name='fats'
@@ -155,8 +216,8 @@ const CreateFood = ({
                 onChange={handleChange}
                 placeholder='0'
               />
-              <span className='macro-unit'>(g)</span>
-              <span className='macro-label'>Carbs</span>
+              <span className='macro-unit'>g</span>
+              <span className='macro-label carbs'>Carbs</span>
               <FormInput
                 className='macro-input'
                 name='carbs'
@@ -166,8 +227,8 @@ const CreateFood = ({
                 onChange={handleChange}
                 placeholder='0'
               />
-              <span className='macro-unit'>(g)</span>
-              <span className='macro-label'>Protein</span>
+              <span className='macro-unit'>g</span>
+              <span className='macro-label protein'>Protein</span>
               <FormInput
                 className='macro-input'
                 name='protein'
@@ -177,7 +238,18 @@ const CreateFood = ({
                 onChange={handleChange}
                 placeholder='0'
               />
-              <span className='macro-unit'>(g)</span>
+              <span className='macro-unit'>g</span>
+              <span className='macro-label'>Fiber</span>
+              <FormInput
+                className='macro-input'
+                name='fiber'
+                inputType='input'
+                type='number'
+                value={fiber}
+                onChange={handleChange}
+                placeholder='0'
+              />
+              <span className='macro-unit'>g</span>
               <span className='macro-label'>Calories</span>
               <FormInput
                 className='macro-input'
@@ -214,7 +286,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  createFoodItem: (newFoodItem) => dispatch(createFoodItem(newFoodItem)),
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
 });
 

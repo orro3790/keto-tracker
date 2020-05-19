@@ -20,9 +20,9 @@ $dp-16: #353535;
 $dp-24: #373737;
 
 $error-red-600: #e53935;
-$keto-orange: #ffc894;
-$keto-pink: #ff94cb;
-$keto-blue: #94cbff;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
 @mixin centered {
@@ -119,29 +119,71 @@ $keto-green: #1eb980;
 
     .macro-section {
       display: grid;
-      grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
       grid-template-columns: 1fr 75px 1fr;
       column-gap: 20px;
       padding: 10px;
       font-size: $font-size-medium;
 
       .macro-label {
-        display: flex;
+        display: grid;
         align-items: center;
         justify-content: flex-end;
+
+        &.protein {
+          color: $keto-blue;
+        }
+
+        &.carbs {
+          color: $keto-pink;
+        }
+
+        &.fats {
+          color: $keto-orange;
+        }
       }
 
       .macro-input {
-        display: flex;
+        display: grid;
         text-align: center;
         align-items: flex-end;
         background-color: $dp-08;
       }
 
       .macro-unit {
-        display: flex;
+        display: grid;
         align-items: center;
         padding: 0px;
+      }
+
+      .toggle {
+        display: grid;
+        grid-template-columns: auto 5px 1fr;
+        gap: 0px 10px;
+        color: rgba(255, 255, 255, 0.38);
+
+        .g {
+          text-align: left;
+          cursor: pointer;
+
+          &:hover:not(.enabled) {
+            color: white;
+          }
+        }
+
+        .ml {
+          text-align: left;
+          cursor: pointer;
+
+          &:hover:not(.enabled) {
+            color: white;
+          }
+        }
+
+        .enabled {
+          color: $keto-green;
+          transition: 0.3s;
+        }
       }
     }
   }
