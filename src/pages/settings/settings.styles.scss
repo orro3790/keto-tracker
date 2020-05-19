@@ -1,11 +1,23 @@
 $font-size-display-1: 32px;
 
-.outer-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-  column-gap: 50px;
-  margin: 38px 0px 200px 38px;
+@media only screen and (min-width: 768px) {
+  .outer-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    column-gap: 50px;
+    margin: 38px 38px 200px 38px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .outer-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    column-gap: 50px;
+    margin: 38px 38px 200px 38px;
+  }
 }
 
 .page-title {
