@@ -15,6 +15,22 @@ $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
+@mixin bp($point) {
+  @if $point == large {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media (max-width: 768px) {
+      @content;
+    }
+  } @else if $point == small {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+}
+
 .meal-header-container {
   margin: 1px 0px 1px 0px;
   padding: 10px 10px 10px 0px;
@@ -49,6 +65,10 @@ $keto-green: #1eb980;
   padding: 10px 10px 10px 10px;
   display: grid;
   grid-template-columns: 1fr 2fr;
+
+  @include bp(small) {
+    grid-template-columns: 75px auto;
+  }
 
   &:hover {
     background: $dp-12;

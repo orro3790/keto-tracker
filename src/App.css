@@ -40,6 +40,10 @@ textarea {
     display: grid;
     grid-template-columns: 100px auto;
   }
+  .page-body-container {
+    padding-top: 38px;
+    margin: 0px 38px 0px 38px;
+  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -47,9 +51,9 @@ textarea {
     display: grid;
     grid-template-rows: 75px auto;
   }
-}
 
-.page-body-container {
-  padding-top: 38px;
-  margin: 0px 50px 0px 50px;
+  .page-body-container {
+    padding-top: 38px;
+    margin: 0px 10px 0px 10px;
+  }
 }

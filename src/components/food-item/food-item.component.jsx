@@ -42,12 +42,25 @@ const FoodItem = ({
     }
   }
 
+  const truncate = (string, length) => {
+    if (string !== '') {
+      if (string.length > length) {
+        return `${string.slice(0, length)}...`;
+      } else {
+        return `${string}`;
+      }
+    }
+  };
+
+  let description;
+  description = truncate(food.b, 11);
+
   return (
     <div className='food-outer-container' onClick={handleClick}>
       <div className='macro-row'>
         <div className='name-description-container'>
           <div className='food-name'>{food.n}</div>
-          <div className='food-item-description'>{food.b}</div>
+          <div className='food-item-description'>{description}</div>
         </div>
         <div className='macro-container'>
           <div className='size'>

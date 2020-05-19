@@ -16,6 +16,28 @@ $dp-12: #323232;
 $dp-16: #353535;
 $dp-24: #373737;
 
+$error-red-600: #e53935;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
+$keto-green: #1eb980;
+
+@mixin bp($point) {
+  @if $point == large {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media (max-width: 768px) {
+      @content;
+    }
+  } @else if $point == small {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+}
+
 .food-outer-container {
   margin: 0px 0px 0px 0px;
   background: $dp-06;
@@ -33,6 +55,10 @@ $dp-24: #373737;
     padding: 10px 10px 10px 10px;
     display: grid;
     grid-template-columns: 1fr 2fr;
+
+    @include bp(small) {
+      grid-template-columns: 75px auto;
+    }
 
     .name-description-container {
       // padding: 5px 0px 0px 10px;
@@ -61,15 +87,15 @@ $dp-24: #373737;
       align-content: center;
 
       .fats {
-        color: rgba(255, 147, 64, 1);
+        color: $keto-orange;
       }
 
       .carbs {
-        color: rgba(227, 28, 116, 1);
+        color: $keto-pink;
       }
 
       .protein {
-        color: rgba(64, 168, 255, 1);
+        color: $keto-blue;
       }
     }
   }
