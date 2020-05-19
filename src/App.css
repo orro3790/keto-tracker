@@ -48,3 +48,8 @@ textarea {
     grid-template-rows: 75px auto;
   }
 }
+
+.page-body-container {
+  padding-top: 38px;
+  margin: 0px 50px 0px 50px;
+}

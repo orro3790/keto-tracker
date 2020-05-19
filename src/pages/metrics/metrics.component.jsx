@@ -31,8 +31,8 @@ const Metrics = () => {
         <Rail />
       </div>
 
-      <div>
-        <h1>Metrics</h1>
+      <div className='page-body-container'>
+        <div className='title'>Metrics</div>
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
       <div>
         <Rail />
       </div>
-      <div className='diary-body'>
+      <div className='page-body-container'>
         {searchFoodModal}
         <div className='diary-outer-container'>
           <DateSelector />

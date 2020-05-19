@@ -7,8 +7,8 @@ const Home = () => (
       <Rail />
     </div>
 
-    <div>
-      <h1>Home Page</h1>
+    <div className='page-body-container'>
+      <div className='title'>Home Page</div>
     </div>
   </div>
 );
