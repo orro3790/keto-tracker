@@ -17,11 +17,11 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
   const [unit, setUnit] = useState('');
 
   const handleChange = (e) => {
-    // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
-    const rule1 = /^\d{0,5}(\.\d{1})?$/;
+    // allow 0-9, 0-4 digits before decimal, optionally includes one decimal point /w 1 digit after decimal
+    const rule1 = /^(\d{0,1}|[1-9]\d{0,3})(\.\d{1,1})?$/;
 
-    // allow empty string or values 0-9, 0-3 digits, optionally including one decimal point /w 1 digit after decimal
-    const rule2 = /^\d{0,3}(\.\d{1})?$/;
+    // allow 0-9, 0-2 digits before decimal, optionally includes one decimal point /w 2 digits after decimal
+    const rule2 = /^(\d{0,1}|[1-9]\d{0,2})(\.\d{1,2})?$/;
 
     switch (e.target.name) {
       case 'name':
