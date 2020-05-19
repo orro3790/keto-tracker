@@ -70,7 +70,7 @@ const UpdateDiet = ({ currentUser }) => {
 
   if (totalPercentage > 100) {
     metaErrors.push({
-      error: 'Sum of percentages cannot be greater than 100%.',
+      error: "Sum of percentages can't be > 100%.",
     });
   }
 
@@ -260,9 +260,9 @@ const UpdateDiet = ({ currentUser }) => {
           <div className={getOutputStyle(proteinLimit)}>
             {`${proteinInGrams} g protein / day`}
           </div>
-          <div className='diet-form-row'></div>
+          <div className='diet-form-row error-col small'>{errorModal}</div>
         </div>
-        <div className='error-col'>{errorModal}</div>
+        <div></div>
       </div>
     </div>
   );

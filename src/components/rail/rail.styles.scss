@@ -19,8 +19,7 @@ $brightest: #474747;
 .rail-outer-container {
   display: grid;
   grid-row: 1fr;
-  padding-top: 38px;
-  padding-bottom: 38px;
+  padding-top: 38px 0px 38px 0px;
   position: fixed;
   height: 100%;
   width: 100px;
@@ -30,9 +29,15 @@ $brightest: #474747;
   z-index: 1;
 
   @media only screen and (max-width: 600px) {
-    &.hidden {
-      display: none;
-    }
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    padding-top: 0px 38px 0px 38px;
+    position: fixed;
+    height: 75px;
+    width: 100%;
+    text-align: center;
+    align-items: center;
+    background-color: $dp-03;
   }
 
   .logo {

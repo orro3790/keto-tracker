@@ -7,15 +7,33 @@ $dp-24: #373737;
 $keto-green: #1eb980;
 $error-red: #f06292;
 
+@mixin bp($point) {
+  @if $point == large {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media (max-width: 768px) {
+      @content;
+    }
+  } @else if $point == small {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+}
+
 .title {
   font-size: $font-size-display-1;
-  margin-top: 40px;
 }
 
 .macro-calculator-container {
   margin-top: 20px;
   display: grid;
-  grid-template-columns: 130px auto auto auto;
+  grid-template-columns: 145px 145px 120px;
+  @include bp(small) {
+    grid-template-columns: 145px 35px 120px;
+  }
   column-gap: 10px;
 
   .left-col {
@@ -55,6 +73,7 @@ $error-red: #f06292;
   .center-col {
     display: grid;
     grid-template-rows: 65px 65px 65px 65px 65px;
+    row-gap: 20px;
     height: 100%;
     align-self: center;
     text-align: center;
@@ -79,14 +98,11 @@ $error-red: #f06292;
   .right-col {
     display: grid;
     grid-template-rows: 65px 65px 65px 65px 65px;
+    row-gap: 20px;
     height: 100%;
   }
 
   .error-col {
-    display: grid;
-    height: 260px;
-    margin-bottom: auto;
-    text-align: center;
     color: $error-red;
   }
 

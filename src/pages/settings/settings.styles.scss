@@ -5,7 +5,7 @@ $font-size-display-1: 32px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
-    column-gap: 50px;
+    gap: 50px;
     margin: 38px 38px 200px 38px;
   }
 }
@@ -15,7 +15,7 @@ $font-size-display-1: 32px;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
-    column-gap: 50px;
+    gap: 50px;
     margin: 38px 38px 200px 38px;
   }
 }
