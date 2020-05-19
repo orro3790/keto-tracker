@@ -54,8 +54,28 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' component={Home} />
           <Route path='/diary' component={Diary} />
-          <Route path='/exercises' component={Exercises} />
-          <Route path='/metrics' component={Metrics} />
+          <Route
+            path='/exercises'
+            render={() =>
+              this.props.currentUser &&
+              this.props.currentUser.membership.t === 'premium' ? (
+                <Exercises />
+              ) : (
+                <Redirect to='/' />
+              )
+            }
+          />
+          <Route
+            path='/metrics'
+            render={() =>
+              this.props.currentUser &&
+              this.props.currentUser.membership.t === 'premium' ? (
+                <Metrics />
+              ) : (
+                <Redirect to='/' />
+              )
+            }
+          />
           <Route path='/settings' component={Settings} />
           <Route
             exact

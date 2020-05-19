@@ -1,8 +1,9 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
+import { connect } from 'react-redux';
 import './exercises.styles.scss';
 
-const Exercises = () => (
+const Exercises = ({ currentUser }) => (
   <div className='rail-body-separator'>
     <div>
       <Rail />
@@ -14,4 +15,9 @@ const Exercises = () => (
   </div>
 );
 
-export default Exercises;
+const mapStateToProps = (state) => ({
+  // createdFoods is only used here to check the state after adding an item. It's not really necessary
+  currentUser: state.user.currentUser,
+});
+
+export default connect(mapStateToProps, null)(Exercises);

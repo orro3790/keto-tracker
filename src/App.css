@@ -33,3 +33,11 @@ input {
 textarea {
   font-family: 'Roboto Condensed', sans-serif;
 }
+
+/* don't show rail on small screens */
+@media only screen and (min-width: 600px) {
+  .rail-body-separator {
+    display: grid;
+    grid-template-columns: 100px auto;
+  }
+}

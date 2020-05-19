@@ -17,15 +17,23 @@ $dp-24: #373737;
 $brightest: #474747;
 
 .rail-outer-container {
+  display: grid;
+  grid-row: 1fr;
   padding-top: 38px;
   padding-bottom: 38px;
   position: fixed;
   height: 100%;
   width: 100px;
-  display: grid;
-  grid-row: 1fr;
   text-align: center;
   align-items: center;
+  background-color: $dp-03;
+  z-index: 1;
+
+  @media only screen and (max-width: 600px) {
+    &.hidden {
+      display: none;
+    }
+  }
 
   .logo {
     font-size: 48px;

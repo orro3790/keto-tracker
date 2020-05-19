@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import './create-food.styles.scss';
 import { createCreateFoodDocument } from '../../firebase/firebase.utils.js';
-import ConfirmationModal from './../confirmation-modal/confirmation-modal.component';
 
 const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
   const [name, setName] = useState('');

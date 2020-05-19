@@ -9,19 +9,9 @@ $light-grey: #434250;
 $mid-grey: #373741;
 $dark-grey: #33333d;
 
-$sunrise-gradient: linear-gradient(
-  90deg,
-  rgba(255, 147, 64, 1) 0%,
-  rgba(227, 28, 116, 1) 94%
-);
-
-.rail-body-separator {
-  display: grid;
-  grid-template-columns: 100px auto 50px;
-}
-
 .diary-body {
   padding-top: 38px;
+  margin: 0px 50px 0px 50px;
 
   .diary-outer-container {
     // padding: 0px 50px 0px 50px;

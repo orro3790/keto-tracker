@@ -98,7 +98,7 @@ const Rail = ({ currentUser }) => {
   return (
     <div>
       {confirmationModal}
-      <div className='rail-outer-container'>
+      <div className='rail-outer-container hidden'>
         <Link to='/'>
           <div className={styles.logo}>K</div>
         </Link>
