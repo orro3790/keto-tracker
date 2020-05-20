@@ -82,7 +82,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
             className={`${getStyle('additive')} additive`}
             onClick={toggleAdditive}
           >
-            ADDITIVE
+            DAILY SUM
           </div>
         </div>
         <div className='daily-hud'>
