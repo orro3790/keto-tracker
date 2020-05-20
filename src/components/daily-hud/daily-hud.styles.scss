@@ -52,52 +52,39 @@ $keto-green: #1eb980;
   }
 }
 
-@media only screen and (max-width: 768px) {
-  .daily-hud {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 0px 5px;
-    margin: 10px auto 10px auto;
-    text-align: center;
-    align-items: center;
-    height: 50px;
-    width: 75vw;
-  }
-}
+.daily-hud {
+  display: flex;
+  margin: 10px auto 10px auto;
+  text-align: center;
+  align-items: center;
+  height: 50px;
+  margin-left: 20%;
+  margin-right: 20%;
 
-@media only screen and (min-width: 769px) {
-  .daily-hud {
+  .macro-container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 0px 5px;
-    margin: 10px auto 10px auto;
-    text-align: center;
-    align-items: center;
-    height: 50px;
-    width: 33vw;
+    grid-template-rows: 1fr 1fr;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .daily-fats {
+    color: #ffa053;
+  }
+  .daily-carbs {
+    color: #ff5387;
+  }
+  .daily-protein {
+    color: #53a3ff;
+  }
+  .daily-calories {
+    color: #ffffff;
   }
 }
 
 .label {
   font-size: $font-size-medium;
-}
-
-.macro-container {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-}
-
-.daily-fats {
-  color: #ffa053;
-}
-.daily-carbs {
-  color: #ff5387;
-}
-.daily-protein {
-  color: #53a3ff;
-}
-.daily-calories {
-  color: #ffffff;
 }
 
 .daily-hud-loading {

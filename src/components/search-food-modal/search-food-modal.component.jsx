@@ -5,6 +5,7 @@ import Search from './../search/search.component';
 import {
   toggleSearchModal,
   updateTotals,
+  setFoodFilter,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
 import { Bar } from 'react-chartjs-2';
@@ -22,9 +23,12 @@ const SearchFoodModal = ({
   searchModal,
   setEntry,
   currentUser,
+  setFoodFilter,
+  foodFilter,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
+  const [filter, setFilter] = useState('usda');
 
   let calories;
   let fats;
@@ -132,74 +136,76 @@ const SearchFoodModal = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    let foodCopy = Object.assign({}, foodReference);
-    // entry state is immutable so make a copy of it first because pushing the edited version
-    let entryCopy = Object.assign({}, entries);
+    if (sizeInput !== '') {
+      let foodCopy = Object.assign({}, foodReference);
+      // entry state is immutable so make a copy of it first because pushing the edited version
+      let entryCopy = Object.assign({}, entries);
 
-    switch (searchModal.editMode) {
-      case false:
-        if (sizeInput !== '') {
-          // adjust the food object based on user's input
-          foodCopy.e = parseFloat(
-            ((foodReference.e / 100) * sizeInput).toFixed(1)
-          );
-          foodCopy.f = parseFloat(
-            ((foodReference.f / 100) * sizeInput).toFixed(1)
-          );
-          foodCopy.c = parseFloat(
-            ((foodReference.c / 100) * sizeInput).toFixed(1)
-          );
-          foodCopy.p = parseFloat(
-            ((foodReference.p / 100) * sizeInput).toFixed(1)
-          );
-          foodCopy.d = parseFloat(
-            ((foodReference.d / 100) * sizeInput).toFixed(1)
-          );
-          foodCopy.k = parseFloat(
-            ((foodReference.k / 100) * sizeInput).toFixed(1)
-          );
-          foodCopy.size = parseFloat(sizeInput);
+      switch (searchModal.editMode) {
+        case false:
+          if (sizeInput !== '') {
+            // adjust the food object based on user's input
+            foodCopy.e = parseFloat(
+              ((foodReference.e / 100) * sizeInput).toFixed(1)
+            );
+            foodCopy.f = parseFloat(
+              ((foodReference.f / 100) * sizeInput).toFixed(1)
+            );
+            foodCopy.c = parseFloat(
+              ((foodReference.c / 100) * sizeInput).toFixed(1)
+            );
+            foodCopy.p = parseFloat(
+              ((foodReference.p / 100) * sizeInput).toFixed(1)
+            );
+            foodCopy.d = parseFloat(
+              ((foodReference.d / 100) * sizeInput).toFixed(1)
+            );
+            foodCopy.k = parseFloat(
+              ((foodReference.k / 100) * sizeInput).toFixed(1)
+            );
+            foodCopy.size = parseFloat(sizeInput);
 
-          entryCopy[searchModal.meal]['foods'].push(foodCopy);
-        }
-        break;
-      case true:
-        if (sizeInput !== '') {
-          foodCopy.f = parseFloat(fats);
-          foodCopy.c = parseFloat(carbs);
-          foodCopy.k = parseFloat(netCarbs);
-          foodCopy.p = parseFloat(protein);
-          foodCopy.e = parseFloat(calories);
-          foodCopy.size = parseFloat(sizeInput);
+            entryCopy[searchModal.meal]['foods'].push(foodCopy);
+          }
+          break;
+        case true:
+          if (sizeInput !== '') {
+            foodCopy.f = parseFloat(fats);
+            foodCopy.c = parseFloat(carbs);
+            foodCopy.k = parseFloat(netCarbs);
+            foodCopy.p = parseFloat(protein);
+            foodCopy.e = parseFloat(calories);
+            foodCopy.size = parseFloat(sizeInput);
 
-          // remove the edited food from the entries obj
-          entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
+            // remove the edited food from the entries obj
+            entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
-          // add the updated food to the entries obj back where it used to be
-          entryCopy[searchModal.meal]['foods'].splice(
-            searchModal.listId,
-            0,
-            foodCopy
-          );
-        }
-        break;
-      default:
-        break;
+            // add the updated food to the entries obj back where it used to be
+            entryCopy[searchModal.meal]['foods'].splice(
+              searchModal.listId,
+              0,
+              foodCopy
+            );
+          }
+          break;
+        default:
+          break;
+      }
+
+      // recalculate meal totals
+      let updatedEntry = recalculateTotals(entryCopy);
+
+      // recalculate daily totals
+      updatedEntry = recalculateDailyTotals(updatedEntry);
+
+      // before changing the entry state, we want to signal that we want to update the totals
+      updateTotals(true);
+
+      // dispatch the new entry obj to state
+      setEntry(updatedEntry);
+
+      handleClose();
     }
-
-    // recalculate meal totals
-    let updatedEntry = recalculateTotals(entryCopy);
-
-    // recalculate daily totals
-    updatedEntry = recalculateDailyTotals(updatedEntry);
-
-    // before changing the entry state, we want to signal that we want to update the totals
-    updateTotals(true);
-
-    // dispatch the new entry obj to state
-    setEntry(updatedEntry);
-
-    handleClose();
   };
 
   const handleDelete = () => {
@@ -544,14 +550,67 @@ const SearchFoodModal = ({
     );
   }
 
+  let usdaFilter;
+  let favFilter;
+  let userFoodsFilter;
+  let filterPath;
+
+  switch (foodFilter) {
+    case 'usda':
+      usdaFilter = 'enabled';
+      filterPath = 'usda';
+      break;
+    case 'fav':
+      favFilter = 'enabled';
+      filterPath = `users/${currentUser.id}/favs/`;
+      break;
+    case 'user-foods':
+      userFoodsFilter = 'enabled';
+      filterPath = `users/${currentUser.id}/createdFoods/`;
+      break;
+    default:
+      break;
+  }
+
+  // dispatch food filter to state so it will remember last preference upon reopening of search modal
+  const toggleFilter = (e) => {
+    if (e.target.className.includes('fav')) {
+      setFoodFilter('fav');
+    } else if (e.target.className.includes('usda')) {
+      setFoodFilter('usda');
+    } else if (e.target.className.includes('user-foods')) {
+      setFoodFilter('user-foods');
+    }
+  };
+
   return (
     <div>
       <div className='search-food-modal'>
-        <span className='close-search-modal-btn'>
-          <i className='fas fa-times' onClick={handleClose}></i>
-        </span>
         <div className='search-section'>
-          <Search />
+          <div className='btn-container'>
+            <span className='filter-btn'>
+              <i
+                className={`fas fa-user-tag user-foods ${userFoodsFilter}`}
+                onClick={toggleFilter}
+              ></i>
+            </span>
+            <span className='filter-btn'>
+              <i
+                className={`fas fa-bookmark fav ${favFilter}`}
+                onClick={toggleFilter}
+              ></i>
+            </span>
+            <span className='filter-btn'>
+              <i
+                className={`fas fa-shield-alt usda ${usdaFilter}`}
+                onClick={toggleFilter}
+              ></i>
+            </span>
+            <span className='close-search-modal-btn'>
+              <i className='fas fa-times' onClick={handleClose}></i>
+            </span>
+          </div>
+          <Search filter={filterPath} />
         </div>
         {resultsContainer}
       </div>
@@ -565,6 +624,7 @@ const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
   searchModal: state.searchModal.searchModal,
   currentUser: state.user.currentUser,
+  foodFilter: state.searchModal.foodFilter,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -573,6 +633,7 @@ const mapDispatchToProps = (dispatch) => ({
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
+  setFoodFilter: (filter) => dispatch(setFoodFilter(filter)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchFoodModal);

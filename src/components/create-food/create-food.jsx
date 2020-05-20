@@ -14,7 +14,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
   const [carbs, setCarbs] = useState('');
   const [fiber, setFiber] = useState('');
   const [protein, setProtein] = useState('');
-  const [unit, setUnit] = useState('');
+  const [unit, setUnit] = useState('g');
 
   const handleChange = (e) => {
     // allow 0-9, 0-4 digits before decimal, optionally includes one decimal point /w 1 digit after decimal
@@ -68,7 +68,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
     // const i = ...
 
     const newFood = {
-      b: description,
+      b: description.toUpperCase(),
       c: cPer,
       d: dPer,
       e: ePer,
@@ -76,7 +76,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
       g: '',
       i: '',
       k: kPer,
-      n: name,
+      n: name.toUpperCase(),
       p: pPer,
       u: unit,
     };
@@ -167,7 +167,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 onChange={handleChange}
                 value={name}
                 maxLength='70'
-                label='Give your food a name'
+                label='Give your food a name ...'
                 required
               />
             </div>
@@ -179,7 +179,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 onChange={handleChange}
                 value={description}
                 maxLength='100'
-                label='Give your food a description'
+                label='Give your food a description ...'
                 required
               />
             </div>

@@ -44,33 +44,51 @@ $keto-green: #1eb980;
   z-index: 1;
 
   .search-section {
-    padding: 30px 20px 0px 20px;
-  }
+    padding: 0px 20px 0px 20px;
 
-  .close-search-modal-btn {
-    position: absolute;
-    margin-top: 5px;
-    margin-right: 5px;
-    top: 0;
-    right: 0;
-    color: $error-red-600;
-    cursor: pointer;
+    .btn-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      width: 150px;
+      margin-left: auto;
+      text-align: right;
+      padding: 10px 0px 10px 0px;
+      color: rgba(255, 255, 255, 0.38);
 
-    & i {
-      font-size: 1.2rem;
+      .filter-btn {
+        i {
+          &:hover {
+            color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transform: scale(1.1);
+          }
+          &.enabled {
+            color: $keto-green;
+          }
+        }
+      }
     }
 
-    &:hover {
-      animation: blinking-icon 1.2s linear infinite;
-    }
-    @keyframes blinking-icon {
-      50% {
-        opacity: 0;
-        -moz-transform: scale(0.9);
-        -webkit-transform: scale(0.9);
-        -o-transform: scale(0.9);
-        -ms-transform: scale(0.9);
-        transform: scale(0.9);
+    .close-search-modal-btn {
+      color: $error-red-600;
+      cursor: pointer;
+
+      & i {
+        font-size: 1.2rem;
+      }
+
+      &:hover {
+        animation: blinking-icon 1.2s linear infinite;
+      }
+      @keyframes blinking-icon {
+        50% {
+          opacity: 0;
+          -moz-transform: scale(0.9);
+          -webkit-transform: scale(0.9);
+          -o-transform: scale(0.9);
+          -ms-transform: scale(0.9);
+          transform: scale(0.9);
+        }
       }
     }
   }
@@ -83,6 +101,7 @@ $keto-green: #1eb980;
 
     .name {
       font-size: $font-size-display-2;
+      padding-top: 20px;
     }
 
     .description {
@@ -210,15 +229,15 @@ $keto-green: #1eb980;
 
   .submit-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 75px 1fr;
     padding-top: 20px;
 
     .submit-btn {
       background-color: $dp-04;
       font-size: $font-size-display-3;
-      align-self: center;
-      padding: 10px;
+      align-items: center;
       transition: 0.5s;
+      padding: 5px;
 
       &.enabled {
         background-color: $keto-green;
@@ -227,7 +246,6 @@ $keto-green: #1eb980;
       }
 
       .add-icon {
-        padding: 0px 0px 0px 5px;
         font-size: $font-size-display-3;
         color: $dp-08;
         transition: 0.5s;
@@ -243,15 +261,17 @@ $keto-green: #1eb980;
 
   .submit-row-edit-mode {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 75px 75px;
     gap: 0px 20px;
     padding-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
 
     .submit-btn {
       background-color: $dp-04;
       font-size: $font-size-display-3;
       align-self: center;
-      padding: 10px;
+      padding: 5px;
       transition: 0.5s;
 
       &.enabled {
@@ -278,7 +298,7 @@ $keto-green: #1eb980;
       background-color: $error-red-600;
       font-size: $font-size-display-3;
       align-self: center;
-      padding: 10px;
+      padding: 5px;
       transition: 0.5s;
       cursor: pointer;
 

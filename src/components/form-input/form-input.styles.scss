@@ -56,9 +56,10 @@ $dp-24: #373737;
     font-weight: normal;
     position: absolute;
     pointer-events: none;
-    top: 10px;
+    top: 12px;
     transition: 300ms ease all;
     padding: 0px 0px 0px 10px;
+    align-content: center;
 
     &.shrink {
       @include shrinkLabel();

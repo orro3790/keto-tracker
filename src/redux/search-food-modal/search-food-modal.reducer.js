@@ -5,6 +5,7 @@ const INITIAL_STATE = {
     status: 'hidden',
     meal: 'none',
   },
+  foodFilter: 'usda',
   updateTotals: false,
 };
 
@@ -19,6 +20,11 @@ const searchModalReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         updateTotals: action.payload,
+      };
+    case SearchModalActionTypes.SET_FOOD_FILTER:
+      return {
+        ...state,
+        foodFilter: action.payload,
       };
     default:
       return state;

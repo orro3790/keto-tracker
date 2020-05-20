@@ -5,7 +5,7 @@ import './search.styles.scss';
 import { connect } from 'react-redux';
 import { firestore } from '../../firebase/firebase.utils';
 
-const Search = ({ suggestionWindow, searchModal, foodReference }) => {
+const Search = ({ suggestionWindow, searchModal, foodReference, filter }) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -27,11 +27,12 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
   useEffect(() => {
     const fetchData = async () => {
       const response = await firestore
-        .collection('usda')
+        .collection(filter)
         .where('n', '==', query.toUpperCase())
         .get();
 
       // update state with results, snapshot.data() doesn't include the doc id, so add it to the json obj to use as a key
+
       setResults(
         response.docs.map((snapshot) => {
           const snap = snapshot.data();
@@ -46,7 +47,7 @@ const Search = ({ suggestionWindow, searchModal, foodReference }) => {
     // return () => {
     //   cleanup;
     // };
-  }, [query]);
+  }, [query, filter]);
 
   let labelMsg;
 

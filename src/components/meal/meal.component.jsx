@@ -90,18 +90,18 @@ const Meal = ({
       <div className='totals-row'>
         <div className='total-label'>totals</div>
         <div className='totals-container'>
-          <div className='total-size'></div>
-          <div className='total-fats'>
+          <div className='size total-box'></div>
+          <div className='fats total-box'>
             {totalFats}g<div className='macro-label'>fats</div>
           </div>
-          <div className='total-carbs'>
+          <div className='carbs total-box'>
             {totalCarbsOrNetCarbsValue}g
             <div className='macro-label'>{carbType}</div>
           </div>
-          <div className='total-protein'>
+          <div className='protein total-box'>
             {totalProtein}g<div className='macro-label'>protein</div>
           </div>
-          <div className='total-calories'>
+          <div className='calories total-box'>
             {totalCalories}
             <div className='macro-label'>calories</div>
           </div>

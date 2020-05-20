@@ -64,11 +64,7 @@ $keto-green: #1eb980;
   margin: 1px 0px 1px 0px;
   padding: 10px 10px 10px 10px;
   display: grid;
-  grid-template-columns: 1fr 2fr;
-
-  @include bp(small) {
-    grid-template-columns: 75px auto;
-  }
+  grid-template-columns: 1fr 1fr;
 
   &:hover {
     background: $dp-12;
@@ -79,31 +75,40 @@ $keto-green: #1eb980;
   }
 
   .totals-container {
-    display: grid;
+    display: flex;
+    flex: 1;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     text-align: right;
-    align-content: center;
-    gap: 0px 5px;
+
+    .total-box {
+      width: 50px;
+      margin-left: auto;
+
+      &:not(.calories) {
+        @include bp(medium) {
+          display: none;
+        }
+      }
+    }
   }
 
   .total-label {
     height: 40px;
     display: grid;
     align-content: center;
-    padding: 0px 0px 0px 0px;
   }
 
-  .total-fats {
+  .fats {
     color: $keto-orange;
   }
 
-  .total-carbs {
+  .carbs {
     display: grid;
     grid-template-rows: 1fr 1fr;
     color: $keto-pink;
   }
 
-  .total-protein {
+  .protein {
     color: $keto-blue;
   }
 }

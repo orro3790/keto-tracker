@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import './food-item.styles.scss';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
@@ -42,35 +42,22 @@ const FoodItem = ({
     }
   }
 
-  const truncate = (string, length) => {
-    if (string !== '') {
-      if (string.length > length) {
-        return `${string.slice(0, length)}...`;
-      } else {
-        return `${string}`;
-      }
-    }
-  };
-
-  let description;
-  description = truncate(food.b, 8);
-
   return (
     <div className='food-outer-container' onClick={handleClick}>
       <div className='macro-row'>
         <div className='name-description-container'>
           <div className='food-name'>{food.n}</div>
-          <div className='food-item-description'>{description}</div>
+          <div className='food-item-description'>{food.b}</div>
         </div>
         <div className='macro-container'>
-          <div className='size'>
+          <div className='size total-box'>
             {food.size}
             {food.u}
           </div>
-          <div className='fats'>{food.f}</div>
-          <div className='carbs'>{carbValue}</div>
-          <div className='protein'>{food.p}</div>
-          <div className='calories'>{food.e}</div>
+          <div className='fats total-box'>{food.f}</div>
+          <div className='carbs total-box'>{carbValue}</div>
+          <div className='protein total-box'>{food.p}</div>
+          <div className='calories total-box'>{food.e}</div>
         </div>
       </div>
     </div>

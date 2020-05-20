@@ -9,3 +9,8 @@ export const updateTotals = (status) => ({
   type: SearchModalActionTypes.UPDATE_TOTALS,
   payload: status,
 });
+
+export const setFoodFilter = (filter) => ({
+  type: SearchModalActionTypes.SET_FOOD_FILTER,
+  payload: filter,
+});
