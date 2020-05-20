@@ -39,7 +39,7 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
       }
     }
     setConfirmationMsg({
-      success: `Carb settings changed to "${currentUser.carbSettings}".`,
+      success: `Carb settings changed to "${toggle}".`,
     });
     setModalStatus('visible');
   };

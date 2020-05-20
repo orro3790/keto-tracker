@@ -53,7 +53,7 @@ const FoodItem = ({
   };
 
   let description;
-  description = truncate(food.b, 11);
+  description = truncate(food.b, 8);
 
   return (
     <div className='food-outer-container' onClick={handleClick}>
