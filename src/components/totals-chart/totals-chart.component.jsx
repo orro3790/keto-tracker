@@ -47,8 +47,9 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
       display: false,
     },
     tooltips: {
-      enabled: tooltipStatus,
+      on: tooltipStatus,
     },
+    cutoutPercentage: 60,
   };
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
             label: 'macro ratios',
             data: [totalsData[0], totalsData[1], totalsData[2]],
             backgroundColor: colors,
-            borderWidth: 3,
+            borderWidth: 2.5,
             borderColor: '#222222',
           },
         ],

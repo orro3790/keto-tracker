@@ -9,8 +9,8 @@ const Exercises = ({ currentUser }) => (
       <Rail />
     </div>
 
-    <div className='page-body-container'>
-      <div className='title'>Exercises</div>
+    <div className='page-body-c'>
+      <div className='t'>Exercises</div>
     </div>
   </div>
 );

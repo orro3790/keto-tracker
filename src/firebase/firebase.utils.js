@@ -113,7 +113,6 @@ export const updateDietMacros = async (userId, macros) => {
   }
 };
 
-// .add() assigns a new auto-generated id to the document, it's like .set() but it knows the doc didn't already exist
 export const addCollectionAndDocuments = async (
   collectionKey,
   objectsToAdd
@@ -291,6 +290,49 @@ export const updateCarbSettings = async (userId, setting) => {
     await userRef.update({ carbSettings: setting });
   } catch (error) {
     console.log('error creating foodDiary entry', error.message);
+  }
+};
+
+export const addFavoriteFood = async (currentUser, foodReference) => {
+  // grab the collection and instantiate an empty doc so it is assigned a random ID
+  const userRef = firestore.doc(`users/${currentUser.id}/`);
+
+  const snapshot = await userRef.get();
+
+  const userData = snapshot.data();
+
+  let exists = false;
+
+  userData.favFoods.forEach((food) => {
+    if (food.id === foodReference.id) {
+      exists = true;
+    }
+  });
+
+  if (exists === false) {
+    try {
+      let userCopy = Object.assign({}, userData);
+      userCopy.favFoods.push(foodReference);
+      userRef.set(userCopy).then(function () {
+        console.log(`${foodReference.n} added to favorites`);
+      });
+    } catch (error) {
+      console.log(
+        `error adding ${foodReference.n} to favorites: ${error.error}`
+      );
+    }
+  } else {
+    try {
+      let userCopy = Object.assign({}, userData);
+      userCopy.favFoods.splice(foodReference, 1);
+      userRef.set(userCopy).then(function () {
+        console.log(`${foodReference.n} removed from favorites`);
+      });
+    } catch (error) {
+      console.log(
+        `error removing ${foodReference.n} from favorites: ${error.error}`
+      );
+    }
   }
 };
 

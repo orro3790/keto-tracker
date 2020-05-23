@@ -1,53 +1,34 @@
-$font-size-small: 12px;
 $font-size-medium: 16px;
-$font-size-large: 20px;
 $font-size-display-3: 22px;
-$font-size-display-2: 26px;
-
-$small-weight: 300;
-$medium-weight: 400;
-$large-weight: 700;
-
 $base-grey: #121212;
-$dp-01: #1e1e1e;
-$dp-02: #222222;
-$dp-03: #242424;
 $dp-04: #272727;
-$dp-06: #2c2c2c;
 $dp-08: #2e2e2e;
 $dp-12: #323232;
-$dp-16: #353535;
 $dp-24: #373737;
-
 $error-red-600: #e53935;
 $keto-orange: #ffa053;
 $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
-@mixin centered {
+.create-m-c {
+  display: grid;
+  grid-template-rows: 85% 15%;
+  height: 600px;
+  width: 450px;
+  background-color: $dp-08;
+  box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 1;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
 
-.modal-outer-box {
-  @include centered;
-  height: 600px;
-  width: 450px;
-  display: grid;
-  grid-template-rows: 85% 15%;
-  background-color: $dp-08;
-  box-shadow: (0px 3px 6px rgba(0, 0, 0, 0.3));
-  z-index: 1;
-
-  // everything inside the modal
-  .modal-inner-box {
+  .inner-c {
     display: grid;
     grid-template-rows: auto auto 1fr;
 
-    .close-search-modal-btn {
+    .close-btn {
       position: absolute;
       margin-top: 5px;
       margin-right: 5px;
@@ -59,65 +40,28 @@ $keto-green: #1eb980;
       & i {
         font-size: 1.2rem;
       }
-
-      &:hover {
-        animation: blinking-icon 1.2s linear infinite;
-      }
-      @keyframes blinking-icon {
-        50% {
-          opacity: 0;
-          -moz-transform: scale(0.9);
-          -webkit-transform: scale(0.9);
-          -o-transform: scale(0.9);
-          -ms-transform: scale(0.9);
-          transform: scale(0.9);
-        }
-      }
     }
 
-    .title-section {
-      padding: 30px 20px 0px 20px;
+    .t-s {
+      padding: 30px 20px 0 20px;
     }
 
-    .description-section {
-      padding: 25px 20px 0px 20px;
-
-      textarea {
-        height: 100%;
-      }
-
-      .description-area {
-        background-color: $dp-04;
-        resize: none;
-        height: stretch;
-        width: 100%;
-        outline: 0;
-        border: none;
-        font-size: $font-size-medium;
-        font-weight: 400;
-        padding: 20px 0px 0px 20px;
-      }
-
-      ::placeholder {
-        font-size: $font-size-medium;
-      }
+    .desc-s {
+      padding: 25px 20px 0 20px;
 
       ::-webkit-scrollbar {
-        display: none;
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: $dp-04;
       }
 
-      &:hover ::placeholder {
-        transition: 0.5s;
-        -moz-transform: scale(0.8) translate(-55px, -20px);
-        -webkit-transform: scale(0.8) translate(-55px, -20px);
-        -o-transform: scale(0.8) translate(-55px, -20px);
-        -ms-transform: scale(0.8) translate(-55px, -20px);
-        transform: scale(0.8) translate(-55px, -20px);
-        z-index: 2;
+      ::-webkit-scrollbar-thumb {
+        background: $dp-24;
       }
     }
 
-    .macro-section {
+    .macro-s {
       display: grid;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
       grid-template-columns: 1fr 75px 1fr;
@@ -125,7 +69,7 @@ $keto-green: #1eb980;
       padding: 10px;
       font-size: $font-size-medium;
 
-      .macro-label {
+      .macro-l {
         display: grid;
         align-items: center;
         justify-content: flex-end;
@@ -143,46 +87,35 @@ $keto-green: #1eb980;
         }
       }
 
-      .macro-input {
+      .macro-in {
         display: grid;
         text-align: center;
-        align-items: flex-end;
         background-color: $dp-08;
       }
 
       .macro-unit {
         display: grid;
         align-items: center;
-        padding: 0px;
+        padding: 0;
       }
 
       .toggle {
         display: grid;
         grid-template-columns: auto 5px 1fr;
-        gap: 0px 10px;
+        gap: 0 10px;
         color: rgba(255, 255, 255, 0.38);
 
-        .g {
-          text-align: left;
-          cursor: pointer;
-
-          &:hover:not(.enabled) {
-            color: white;
-          }
-        }
-
-        .ml {
-          text-align: left;
-          cursor: pointer;
-
-          &:hover:not(.enabled) {
-            color: white;
-          }
-        }
-
-        .enabled {
+        .on {
           color: $keto-green;
           transition: 0.3s;
+        }
+
+        .opt {
+          text-align: left;
+          cursor: pointer;
+          &:hover:not(.on) {
+            color: rgba(255, 255, 255, 0.5);
+          }
         }
       }
     }
@@ -190,30 +123,28 @@ $keto-green: #1eb980;
 
   .submit-btn {
     display: grid;
+    align-content: center;
     text-align: center;
+    padding: 10px;
     background-color: $dp-12;
     font-size: $font-size-display-3;
-    align-content: center;
-    padding: 10px;
     transition: 0.5s;
-    height: 100%;
 
-    &.enabled {
+    &.on {
       background-color: $keto-green;
       transition: 0.5s;
       cursor: pointer;
     }
 
-    .submit-btn-text {
-      padding: 0px 0px 0px 5px;
+    .txt {
+      padding-right: 5px;
       font-size: $font-size-display-3;
       color: rgba(255, 255, 255, 0.38);
       transition: 0.5s;
 
-      &.enabled {
+      &.on {
         color: white;
         transition: 0.5s;
-        cursor: pointer;
       }
     }
 
@@ -233,17 +164,14 @@ input {
     -webkit-appearance: none;
     margin: 0;
   }
-
   /* Firefox */
   &[type='number'] {
     -moz-appearance: textfield;
   }
-
   &:focus {
     outline: none;
   }
 }
-
 textarea:focus::placeholder {
   color: transparent;
 }

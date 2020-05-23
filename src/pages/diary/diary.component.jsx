@@ -28,44 +28,34 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
       <div>
         <Rail />
       </div>
-      <div className='page-body-container'>
+      <div className='page-body-c'>
         {searchFoodModal}
-        <div className='diary-outer-container'>
-          <DateSelector />
-          <DailyChart />
-          {createFoodModal}
-        </div>
-        <div className='diary-outer-container'>
-          <div className='diary-inner-container'>
-            <div className='breakfast-section'>
-              <Meal meal={'Breakfast'} />
-            </div>
-            <TotalsChart meal={'Breakfast'} />
+        <DateSelector />
+        <DailyChart />
+        {createFoodModal}
+        <div className='c'>
+          <div>
+            <Meal meal={'Breakfast'} />
           </div>
+          <TotalsChart meal={'Breakfast'} />
         </div>
-        <div className='diary-outer-container'>
-          <div className='diary-inner-container'>
-            <div className='breakfast-section'>
-              <Meal meal={'Lunch'} />
-            </div>
-            <TotalsChart meal={'Lunch'} />
+        <div className='c'>
+          <div>
+            <Meal meal={'Lunch'} />
           </div>
+          <TotalsChart meal={'Lunch'} />
         </div>
-        <div className='diary-outer-container'>
-          <div className='diary-inner-container'>
-            <div className='breakfast-section'>
-              <Meal meal={'Dinner'} />
-            </div>
-            <TotalsChart meal={'Dinner'} />
+        <div className='c'>
+          <div>
+            <Meal meal={'Dinner'} />
           </div>
+          <TotalsChart meal={'Dinner'} />
         </div>
-        <div className='diary-outer-container'>
-          <div className='diary-inner-container'>
-            <div className='breakfast-section'>
-              <Meal meal={'Snacks'} />
-            </div>
-            <TotalsChart meal={'Snacks'} />
+        <div className='c'>
+          <div>
+            <Meal meal={'Snacks'} />
           </div>
+          <TotalsChart meal={'Snacks'} />
         </div>
       </div>
     </div>

@@ -24,23 +24,23 @@ const CurrentDiet = ({ currentUser }) => {
 
   return (
     <div>
-      <div className='title'>Current Diet</div>
-      <div className='subtitle'>
+      <div className='t'>Current Diet</div>
+      <div className='st'>
         <div className='daily-intake'>DAILY INTAKE</div>
       </div>
-      <div className='current-diet-description-box'>
-        <div className='daily-fats macro-container'>
-          {fats}g<div className='label'>fats</div>
+      <div className='current-diet-c'>
+        <div className='fats macro-c'>
+          {fats}g<div className='l'>fats</div>
         </div>
-        <div className='daily-carbs macro-container'>
-          {carbs}g<div className='label'>{carbType}</div>
+        <div className='carbs macro-c'>
+          {carbs}g<div className='l'>{carbType}</div>
         </div>
-        <div className='daily-protein macro-container'>
-          {protein}g<div className='label'>protein</div>
+        <div className='protein macro-c'>
+          {protein}g<div className='l'>protein</div>
         </div>
-        <div className='daily-calories macro-container'>
+        <div className='macro-c'>
           {calories}
-          <div className='label'>calories</div>
+          <div className='l'>calories</div>
         </div>
       </div>
     </div>

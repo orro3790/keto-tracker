@@ -14,7 +14,7 @@ const FormInput = ({
     case 'input':
       renderInput = (
         <input
-          className={`form-input ${className}`}
+          className={`form-in ${className}`}
           onChange={handleChange}
           {...otherProps}
         />
@@ -23,7 +23,7 @@ const FormInput = ({
     case 'textarea':
       renderInput = (
         <textarea
-          className={`form-input ${className}`}
+          className={`form-in ${className}`}
           onChange={handleChange}
           {...otherProps}
         />
@@ -36,12 +36,10 @@ const FormInput = ({
   return (
     <div className='group'>
       {renderInput}
-      {/* if there's a label, dynamically assign classname that checks if there's a label value and then applies shrink class to it, and form-input-label*/}
+      {/* if there's a label, dynamically assign classname that checks if there's a label value and then applies shrink class to it, and form-in-l*/}
       {label ? (
         <label
-          className={`${
-            otherProps.value.length ? 'shrink' : ''
-          } form-input-label`}
+          className={`${otherProps.value.length ? 'shrink' : ''} form-in-l`}
         >
           {label}
         </label>

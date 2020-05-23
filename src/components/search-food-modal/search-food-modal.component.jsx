@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './search-food-modal.styles.scss';
 import { connect } from 'react-redux';
 import Search from './../search/search.component';
+import AddFavorite from '../../components/add-favorite/add-favorite.component';
 import {
   toggleSearchModal,
   updateTotals,
   setFoodFilter,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
-import { Bar } from 'react-chartjs-2';
+import { HorizontalBar } from 'react-chartjs-2';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
+import { addFavoriteFood } from '../../firebase/firebase.utils';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -28,7 +30,6 @@ const SearchFoodModal = ({
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
-  const [filter, setFilter] = useState('usda');
 
   let calories;
   let fats;
@@ -236,6 +237,13 @@ const SearchFoodModal = ({
     });
   };
 
+  let labels;
+  if (currentUser !== null && currentUser.carbSettings === 'net') {
+    labels = ['fats', 'net carbs', 'protein', 'calories'];
+  } else {
+    labels = ['fats', 'carbs', 'protein', 'calories'];
+  }
+
   // chart options config
   const options = {
     responsive: true,
@@ -251,13 +259,16 @@ const SearchFoodModal = ({
     scales: {
       yAxes: [
         {
+          type: 'category',
+          labels: labels,
+
+          display: false,
           gridLines: {
             color: '#373737',
+            display: false,
           },
           ticks: {
-            max: 100,
-            min: 0,
-            stepSize: 25,
+            padding: 10,
             fontColor: 'rgba(255, 255, 255, 1)',
           },
         },
@@ -266,8 +277,13 @@ const SearchFoodModal = ({
         {
           gridLines: {
             color: '#373737',
+            drawBorder: false,
           },
           ticks: {
+            max: 100,
+            min: 0,
+            stepSize: 20,
+            padding: 5,
             fontColor: 'rgba(255, 255, 255, 1)',
           },
         },
@@ -349,27 +365,13 @@ const SearchFoodModal = ({
         ];
       }
 
-      let labels;
-      if (currentUser !== null && currentUser.carbSettings === 'net') {
-        labels = ['fats', 'net carbs', 'protein', 'calories'];
-      } else {
-        labels = ['fats', 'carbs', 'protein', 'calories'];
-      }
-
       setChartData({
-        labels: labels,
         datasets: [
           {
-            label: 'macro ratios',
             data: data,
-            backgroundColor: [
-              'rgba(255,160,83,1)',
-              'rgba(255,83,135,1)',
-              'rgba(83,163,255,1)',
-              'rgba(255,255,255,1)',
-            ],
-            borderWidth: 2,
-            borderColor: '#434250',
+            backgroundColor: ['#ffa053', '#ff5387', '#53a3ff', '#fff'],
+            categoryPercentage: 1.0,
+            barPercentage: 0.8,
           },
         ],
       });
@@ -427,7 +429,7 @@ const SearchFoodModal = ({
 
   const getBtnStyle = () => {
     if (sizeInput !== '') {
-      return 'submit-btn enabled';
+      return 'submit-btn on';
     } else {
       return 'submit-btn';
     }
@@ -435,25 +437,34 @@ const SearchFoodModal = ({
 
   const getIconStyle = () => {
     if (sizeInput !== '') {
-      return 'fas fa-check add-icon enabled';
+      return 'fas fa-check add-i on';
     } else {
-      return 'fas fa-check add-icon';
+      return 'fas fa-check add-i';
     }
   };
 
   let placeholder;
 
-  if (searchModal.editMode === false) {
-    placeholder = `100${foodReference.u}`;
-  } else {
-    placeholder = `${foodReference.size}${foodReference.u}`;
+  switch (searchModal.editMode) {
+    case false:
+      placeholder = `100${foodReference.u}`;
+      break;
+    case true:
+      if (foodReference.size !== undefined) {
+        placeholder = `${foodReference.size}${foodReference.u}`;
+      } else {
+        placeholder = `100${foodReference.u}`;
+      }
+      break;
+    default:
+      break;
   }
 
   let submitRow;
 
   if (searchModal.editMode === false) {
     submitRow = (
-      <div className='submit-row'>
+      <div className='submit-r'>
         <div></div>
         <div className={getBtnStyle()} onClick={handleSubmit}>
           <i className={getIconStyle()}></i>
@@ -463,12 +474,12 @@ const SearchFoodModal = ({
     );
   } else {
     submitRow = (
-      <div className='submit-row-edit-mode'>
+      <div className='submit-r-edit-mode'>
         <div className={getBtnStyle()} onClick={handleSubmit}>
           <i className={getIconStyle()}></i>
         </div>
         <div className='delete-btn' onClick={handleDelete}>
-          <i className='fas fa-trash delete-icon'></i>
+          <i className='fas fa-trash delete-i'></i>
         </div>
       </div>
     );
@@ -486,18 +497,27 @@ const SearchFoodModal = ({
     carbsOrNetCarbsLabel = 'carbs';
   }
 
+  const handleAddFavorite = () => {
+    addFavoriteFood(currentUser, foodReference);
+  };
+
   if (foodReference !== '') {
     resultsContainer = (
-      <div className='results-container'>
-        <div className='name'>{foodReference.n}</div>
-        <div className='description'>{foodReference.b}</div>
-        <div className='portion-input-row'>
+      <div className='results-c'>
+        <div className='name'>
+          <div>{foodReference.n}</div>
+          <div className='fav-btn-c'>
+            <AddFavorite onClick={handleAddFavorite} />
+          </div>
+        </div>
+        <div className='desc'>{foodReference.b}</div>
+        <div className='portion-r'>
           <div></div>
           <div>
             <form onSubmit={handleSubmit}>
               <input
-                id='portion-input'
-                className='portion-input'
+                id='in'
+                className='in'
                 type='number'
                 placeholder={placeholder}
                 onChange={handleChange}
@@ -508,44 +528,42 @@ const SearchFoodModal = ({
           <div></div>
         </div>
 
-        <div className='macro-row'>
-          <div className='fats-column'>
-            <span className='fats-value'>{fats}</span>g
-            <div className='label'>fats</div>
+        <div className='macro-r'>
+          <div className='fats col'>
+            <span>{fats}</span>g<div className='l'>fats</div>
           </div>
-          <div className='carbs-column'>
-            <span className='carbs-value'>{carbsOrNetCarbs}</span>g
-            <div className='label'>{carbsOrNetCarbsLabel}</div>
+          <div className='carbs col'>
+            <span>{carbsOrNetCarbs}</span>g
+            <div className='l'>{carbsOrNetCarbsLabel}</div>
           </div>
-          <div className='protein-column'>
-            <span className='protein-value'>{protein}</span>g
-            <div className='label'>protein</div>
+          <div className='protein col'>
+            <span>{protein}</span>g<div className='l'>protein</div>
           </div>
-          <div className='calories-column'>
-            <span className='calories-value'>{calories}</span>
-            <div className='label'>calories</div>
+          <div className='calories col'>
+            <span className='val'>{calories}</span>
+            <div className='l'>calories</div>
           </div>
         </div>
-        <div className='graph-area'>
-          <Bar data={chartData} options={options} />
+        <div className='graph-s'>
+          <HorizontalBar data={chartData} options={options} />
         </div>
         {submitRow}
       </div>
     );
   } else {
     resultsContainer = (
-      <div className='search-category-container'>
+      <div className='filter-c'>
         <div>
           <i
-            className='fas fa-folder-plus custom-foods'
+            className='fas fa-folder-plus custom'
             onClick={openCustomFoods}
           ></i>
         </div>
         <div>
-          <i className='fas fa-bookmark favorites' onClick={handleClose}></i>
+          <i className='fas fa-bookmark fav' onClick={handleClose}></i>
         </div>
-        <div className='label'>Add a custom food</div>
-        <div className='label'>View your favorites</div>
+        <div className='l'>Add a custom food</div>
+        <div className='l'>View your favorites</div>
       </div>
     );
   }
@@ -557,15 +575,15 @@ const SearchFoodModal = ({
 
   switch (foodFilter) {
     case 'usda':
-      usdaFilter = 'enabled';
+      usdaFilter = 'on';
       filterPath = 'usda';
       break;
     case 'fav':
-      favFilter = 'enabled';
-      filterPath = `users/${currentUser.id}/favs/`;
+      favFilter = 'on';
+      filterPath = `users/${currentUser.id}/favFoods/`;
       break;
     case 'user-foods':
-      userFoodsFilter = 'enabled';
+      userFoodsFilter = 'on';
       filterPath = `users/${currentUser.id}/createdFoods/`;
       break;
     default:
@@ -585,9 +603,9 @@ const SearchFoodModal = ({
 
   return (
     <div>
-      <div className='search-food-modal'>
-        <div className='search-section'>
-          <div className='btn-container'>
+      <div className='search-food-m'>
+        <div className='search-s'>
+          <div className='btn-c'>
             <span className='filter-btn'>
               <i
                 className={`fas fa-user-tag user-foods ${userFoodsFilter}`}
@@ -606,7 +624,7 @@ const SearchFoodModal = ({
                 onClick={toggleFilter}
               ></i>
             </span>
-            <span className='close-search-modal-btn'>
+            <span className='close-btn'>
               <i className='fas fa-times' onClick={handleClose}></i>
             </span>
           </div>

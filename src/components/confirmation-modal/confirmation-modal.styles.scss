@@ -1,50 +1,31 @@
-$primary-border-style: 1px dotted rgba(1, 1, 1, 0.2);
 $error-red-600: #e53935;
-
-$font-size-small: 12px;
 $font-size-medium: 16px;
-$font-size-large: 20px;
 $font-size-display-3: 22px;
 $font-size-display-2: 26px;
-$small-weight: 300;
-$medium-weight: 400;
-$large-weight: 700;
-
-$base-grey: #121212;
-$dp-01: #1e1e1e;
-$dp-02: #222222;
-$dp-03: #242424;
 $dp-04: #272727;
-$dp-06: #2c2c2c;
 $dp-08: #2e2e2e;
 $dp-12: #323232;
-$dp-16: #353535;
-$dp-24: #373737;
-
 $keto-orange: #ffa053;
-$keto-pink: #ff5387;
-$keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
 @mixin centered {
   position: fixed;
   top: 50%;
   left: 50%;
-  /* bring your own prefixes */
   transform: translate(-50%, -50%);
-  width: 300px;
 }
 
-.confirmation-modal-outer-box {
-  z-index: 200;
+.confirm-m-c {
   @include centered;
-  background-color: $dp-04;
-  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
+  width: 300px;
   padding: 15px;
+  background-color: $dp-04;
+  z-index: 2;
+  box-shadow: (0 3px 9px rgba(0, 0, 0, 0.5));
 
-  .confirmation-modal-header-section {
+  .header-s {
     display: grid;
     text-align: center;
     align-items: center;
@@ -64,7 +45,7 @@ $keto-green: #1eb980;
       font-size: $font-size-display-2;
     }
 
-    .close-modal-btn {
+    .close-m-btn {
       position: absolute;
       margin-top: 5px;
       margin-right: 5px;
@@ -76,35 +57,21 @@ $keto-green: #1eb980;
       & i {
         font-size: $font-size-medium;
       }
-
-      &:hover {
-        animation: blinking-icon 1.2s linear infinite;
-      }
-      @keyframes blinking-icon {
-        50% {
-          opacity: 0;
-          -moz-transform: scale(0.9);
-          -webkit-transform: scale(0.9);
-          -o-transform: scale(0.9);
-          -ms-transform: scale(0.9);
-          transform: scale(0.9);
-        }
-      }
     }
   }
 
-  .confirmation-modal-message-section {
+  .message-s {
     display: grid;
     text-align: center;
     align-items: center;
   }
 
-  .confirmation-modal-submit-section {
+  .submit-s {
     display: grid;
     font-size: $font-size-medium;
     text-align: center;
 
-    .submit-row {
+    .submit-r {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
 
@@ -115,19 +82,19 @@ $keto-green: #1eb980;
         padding: 10px;
         transition: 0.3s;
 
-        &.enabled:hover {
+        &.on:hover {
           background-color: $keto-green;
           transition: 0.3s;
           cursor: pointer;
         }
 
-        .add-icon {
+        .add-i {
           padding: 0px 0px 0px 5px;
           font-size: $font-size-display-3;
           color: $dp-08;
           transition: 0.3s;
 
-          &.enabled {
+          &.on {
             color: white;
             transition: 0.3s;
             cursor: pointer;

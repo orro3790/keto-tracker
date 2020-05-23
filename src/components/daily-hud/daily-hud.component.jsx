@@ -58,9 +58,9 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
 
   const getStyle = (className) => {
     if (className === hudModel) {
-      return 'enabled';
+      return 'on';
     } else {
-      return 'disabled';
+      return 'off';
     }
   };
 
@@ -70,7 +70,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   } else {
     macroHud = (
       <div>
-        <div className='calculation-model-container'>
+        <div className='calculation-c'>
           <div
             className={`${getStyle('remaining')} remaining`}
             onClick={toggleRemaining}
@@ -86,18 +86,18 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
           </div>
         </div>
         <div className='daily-hud'>
-          <div className='daily-fats macro-container'>
-            {fatsValue}g<div className='label'>fats</div>
+          <div className='fats macro-c'>
+            {fatsValue}g<div className='l'>fats</div>
           </div>
-          <div className='daily-carbs macro-container'>
-            {carbsValue}g<div className='label'>{carbLabel}</div>
+          <div className='carbs macro-c'>
+            {carbsValue}g<div className='l'>{carbLabel}</div>
           </div>
-          <div className='daily-protein macro-container'>
-            {proteinValue}g<div className='label'>protein</div>
+          <div className='protein macro-c'>
+            {proteinValue}g<div className='l'>protein</div>
           </div>
-          <div className='daily-calories macro-container'>
+          <div className=' macro-c'>
             {caloriesValue}
-            <div className='label'>calories</div>
+            <div className='l'>calories</div>
           </div>
         </div>
       </div>

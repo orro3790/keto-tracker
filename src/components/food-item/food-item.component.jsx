@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import './food-item.styles.scss';
 import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
@@ -13,23 +13,25 @@ const FoodItem = ({
   createFoodReference,
   currentUser,
 }) => {
-  const handleClick = () => {
-    if (searchModal.status === 'hidden') {
-      toggleSearchModal({
-        status: 'visible',
-        meal: meal,
-        editMode: true,
-        foodToEdit: food,
-        listId: listId,
-      });
-    } else {
-      toggleSearchModal({
-        status: 'hidden',
-        meal: meal,
-        listId: listId,
-      });
+  const handleClick = (e) => {
+    if (!e.target.className.includes('fav-btn')) {
+      if (searchModal.status === 'hidden') {
+        toggleSearchModal({
+          status: 'visible',
+          meal: meal,
+          editMode: true,
+          foodToEdit: food,
+          listId: listId,
+        });
+      } else {
+        toggleSearchModal({
+          status: 'hidden',
+          meal: meal,
+          listId: listId,
+        });
+      }
+      createFoodReference(food);
     }
-    createFoodReference(food);
   };
 
   let carbValue = 0;
@@ -43,21 +45,21 @@ const FoodItem = ({
   }
 
   return (
-    <div className='food-outer-container' onClick={handleClick}>
-      <div className='macro-row'>
-        <div className='name-description-container'>
-          <div className='food-name'>{food.n}</div>
-          <div className='food-item-description'>{food.b}</div>
+    <div className='food-c' onClick={handleClick}>
+      <div className='macro-r'>
+        <div className='name-desc-c'>
+          <div className='name'>{food.n}</div>
+          <div className='desc'>{food.b}</div>
         </div>
-        <div className='macro-container'>
-          <div className='size total-box'>
+        <div className='macro-c'>
+          <div className='size total-c'>
             {food.size}
             {food.u}
           </div>
-          <div className='fats total-box'>{food.f}</div>
-          <div className='carbs total-box'>{carbValue}</div>
-          <div className='protein total-box'>{food.p}</div>
-          <div className='calories total-box'>{food.e}</div>
+          <div className='fats total-c'>{food.f}</div>
+          <div className='carbs total-c'>{carbValue}</div>
+          <div className='protein total-c'>{food.p}</div>
+          <div className='calories total-c'>{food.e}</div>
         </div>
       </div>
     </div>

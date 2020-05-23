@@ -14,6 +14,10 @@ a {
   box-sizing: border-box;
 }
 
+button {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
 /* Hide arrow spinners on inputs in Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -40,9 +44,9 @@ textarea {
     display: grid;
     grid-template-columns: 100px auto;
   }
-  .page-body-container {
+  .page-body-c {
     padding-top: 38px;
-    margin: 0px 10% 0px 10%;
+    margin: 0 10% 0 10%;
   }
 }
 
@@ -52,8 +56,8 @@ textarea {
     grid-template-rows: 75px auto;
   }
 
-  .page-body-container {
+  .page-body-c {
     padding-top: 20px;
-    margin: 0px 10px 0px 10px;
+    margin: 0 10px 0 10px;
   }
 }

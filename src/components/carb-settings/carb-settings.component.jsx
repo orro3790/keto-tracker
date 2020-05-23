@@ -46,9 +46,9 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
 
   const getStyle = (className) => {
     if (currentUser !== null && className === toggle) {
-      return 'enabled';
+      return 'on';
     } else {
-      return 'disabled';
+      return 'off';
     }
   };
 
@@ -92,23 +92,22 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
   return (
     <div>
       {confirmationModal}
-      <div className='title'>Carb Settings</div>
-      <div className='carb-settings-container'>
+      <div className='t'>Carb Settings</div>
+      <div className='carb-set-c'>
         <div className='toggle'>
-          <div className={`${getStyle('total')} total`} onClick={toggleTotal}>
+          <div
+            className={`${getStyle('total')} total opt`}
+            onClick={toggleTotal}
+          >
             TOTAL CARBS
           </div>
           <div className='separator'></div>
-          <div className={`${getStyle('net')} net`} onClick={toggleNet}>
+          <div className={`${getStyle('net')} net opt`} onClick={toggleNet}>
             NET CARBS
           </div>
         </div>
-        <div className='carb-settings-description-box'>{carbDescription}</div>
-        <button
-          className='save-changes-btn'
-          type='submit'
-          onClick={saveCarbSettings}
-        >
+        <div className='desc-c'>{carbDescription}</div>
+        <button className='save-btn' type='submit' onClick={saveCarbSettings}>
           Save
         </button>
       </div>

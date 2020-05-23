@@ -113,52 +113,46 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
     isSubmittable = true;
   }
 
-  const enabledCheck = () => {
+  const onCheck = () => {
     if (fieldsFilled === true) {
-      return 'enabled';
+      return 'on';
     } else {
       return null;
     }
   };
 
-  let gramsStyle = 'g enabled';
-  let mlStyle = 'ml';
+  let gramsStyle = 'g opt on';
+  let mlStyle = 'ml opt';
 
   switch (unit) {
     case 'g':
-      gramsStyle = 'g enabled';
+      gramsStyle = 'g opt on';
       break;
     case 'ml':
-      mlStyle = 'ml enabled';
-      gramsStyle = 'g';
+      mlStyle = 'ml opt on';
+      gramsStyle = 'g opt';
       break;
     default:
       break;
   }
 
   const toggleUnit = (e) => {
-    console.log(e.target.className);
-    switch (e.target.className) {
-      case 'g':
-        setUnit('g');
-        break;
-      case 'ml':
-        setUnit('ml');
-        break;
-      default:
-        break;
+    if (e.target.className.includes('g')) {
+      setUnit('g');
+    } else if (e.target.className.includes('ml')) {
+      setUnit('ml');
     }
   };
 
   return (
     <div>
       <form className='modal'>
-        <div className='modal-outer-box'>
-          <div className='modal-inner-box'>
-            <span className='close-search-modal-btn'>
+        <div className='create-m-c'>
+          <div className='inner-c'>
+            <span className='close-btn'>
               <i className='fas fa-times' onClick={handleClose}></i>
             </span>
-            <div className='title-section'>
+            <div className='t-s'>
               <FormInput
                 id='name'
                 name='name'
@@ -171,7 +165,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 required
               />
             </div>
-            <div className='description-section'>
+            <div className='desc-s'>
               <FormInput
                 id='description'
                 name='description'
@@ -183,10 +177,10 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 required
               />
             </div>
-            <div className='macro-section'>
-              <span className='macro-label'>Size</span>
+            <div className='macro-s'>
+              <span className='macro-l'>Size</span>
               <FormInput
-                className='macro-input'
+                className='macro-in'
                 name='size'
                 inputType='input'
                 type='number'
@@ -205,9 +199,9 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 </div>
               </div>
 
-              <span className='macro-label fats'>Fats</span>
+              <span className='macro-l fats'>Fats</span>
               <FormInput
-                className='macro-input'
+                className='macro-in'
                 name='fats'
                 inputType='input'
                 type='number'
@@ -216,9 +210,9 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 placeholder='0'
               />
               <span className='macro-unit'>g</span>
-              <span className='macro-label carbs'>Carbs</span>
+              <span className='macro-l carbs'>Carbs</span>
               <FormInput
-                className='macro-input'
+                className='macro-in'
                 name='carbs'
                 inputType='input'
                 type='number'
@@ -227,9 +221,9 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 placeholder='0'
               />
               <span className='macro-unit'>g</span>
-              <span className='macro-label protein'>Protein</span>
+              <span className='macro-l protein'>Protein</span>
               <FormInput
-                className='macro-input'
+                className='macro-in'
                 name='protein'
                 inputType='input'
                 type='number'
@@ -238,9 +232,9 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 placeholder='0'
               />
               <span className='macro-unit'>g</span>
-              <span className='macro-label'>Fiber</span>
+              <span className='macro-l'>Fiber</span>
               <FormInput
-                className='macro-input'
+                className='macro-in'
                 name='fiber'
                 inputType='input'
                 type='number'
@@ -249,9 +243,9 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
                 placeholder='0'
               />
               <span className='macro-unit'>g</span>
-              <span className='macro-label'>Calories</span>
+              <span className='macro-l'>Calories</span>
               <FormInput
-                className='macro-input'
+                className='macro-in'
                 name='calories'
                 inputType='input'
                 type='number'
@@ -263,12 +257,12 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
             </div>
           </div>
           <div
-            className={`submit-btn ${enabledCheck()}`}
+            className={`submit-btn ${onCheck()}`}
             disabled={!isSubmittable}
             type='submit'
             onClick={handleSubmit}
           >
-            <div className={`submit-btn-text ${enabledCheck()}`}>
+            <div className={`txt ${onCheck()}`}>
               Add to Database
               <i className='fas fa-plus'></i>
             </div>

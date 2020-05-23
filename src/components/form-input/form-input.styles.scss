@@ -1,16 +1,8 @@
 $font-size-small: 12px;
 $font-size-medium: 16px;
 $font-size-large: 20px;
-$base-grey: #121212;
-$dp-01: #1e1e1e;
-$dp-02: #222222;
-$dp-03: #242424;
 $dp-04: #272727;
-$dp-06: #2c2c2c;
-$dp-08: #2e2e2e;
-$dp-12: #323232;
 $dp-16: #353535;
-$dp-24: #373737;
 
 @mixin shrinkLabel {
   top: -20px;
@@ -20,15 +12,15 @@ $dp-24: #373737;
 
 .group {
   position: relative;
-  width: 100%;
   margin: auto;
+  width: 100%;
 
-  .form-input {
+  .form-in {
+    display: block;
+    padding: 10px;
+    font-size: $font-size-large;
     background-color: $dp-04;
     color: white;
-    font-size: $font-size-large;
-    padding: 10px;
-    display: block;
     width: 100%;
     border: none;
     border-bottom: 2px solid $dp-16;
@@ -41,7 +33,7 @@ $dp-24: #373737;
       outline: none;
     }
 
-    &:focus ~ .form-input-label {
+    &:focus ~ .form-in-l {
       @include shrinkLabel();
     }
   }
@@ -50,16 +42,15 @@ $dp-24: #373737;
     letter-spacing: 0.3em;
   }
 
-  .form-input-label {
-    color: white;
-    font-size: $font-size-medium;
-    font-weight: normal;
+  .form-in-l {
     position: absolute;
-    pointer-events: none;
-    top: 12px;
-    transition: 300ms ease all;
-    padding: 0px 0px 0px 10px;
     align-content: center;
+    padding: 0 0 0 10px;
+    top: 12px;
+    font-size: $font-size-medium;
+    color: white;
+    pointer-events: none;
+    transition: 300ms ease all;
 
     &.shrink {
       @include shrinkLabel();

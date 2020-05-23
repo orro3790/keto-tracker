@@ -28,16 +28,16 @@ const Rail = ({ currentUser }) => {
       styles.logo = 'logo';
       break;
     case '/diary':
-      styles.diary = 'fas fa-book enabled';
+      styles.diary = 'fas fa-book on';
       break;
     case '/exercises':
-      styles.exercise = 'fas fa-dumbbell enabled';
+      styles.exercise = 'fas fa-dumbbell on';
       break;
     case '/metrics':
-      styles.metrics = 'far fa-chart-bar enabled';
+      styles.metrics = 'far fa-chart-bar on';
       break;
     case '/settings':
-      styles.settings = 'fas fa-cog enabled';
+      styles.settings = 'fas fa-cog on';
       break;
     default:
       break;
@@ -98,7 +98,7 @@ const Rail = ({ currentUser }) => {
   return (
     <div>
       {confirmationModal}
-      <div className='rail-outer-container hidden'>
+      <div className='rail-c hidden'>
         <Link to='/'>
           <div className={styles.logo}>K</div>
         </Link>

@@ -29,21 +29,21 @@ const ConfirmationModal = ({ messageObj, handleClose, onConfirm }) => {
 
   return (
     <div className='confirmation-modal'>
-      <div className='confirmation-modal-outer-box'>
-        <div className='confirmation-modal-header-section'>
-          <span className='close-modal-btn' onClick={handleClose}>
+      <div className='confirm-m-c'>
+        <div className='header-s'>
+          <span className='close-m-btn' onClick={handleClose}>
             <i className='fas fa-times-circle'></i>
           </span>
           <h3>
             <i className={classStyle}></i>
           </h3>
         </div>
-        <div className='confirmation-modal-message-section'>{message}</div>
-        <div className='confirmation-modal-submit-section'>
-          <div className='submit-row'>
+        <div className='message-s'>{message}</div>
+        <div className='submit-s'>
+          <div className='submit-r'>
             <div></div>
-            <div className='submit-btn enabled' onClick={handleSubmit}>
-              <i className='fas fa-check add-icon enabled'></i>
+            <div className='submit-btn on' onClick={handleSubmit}>
+              <i className='fas fa-check add-i on'></i>
             </div>
             <div></div>
           </div>

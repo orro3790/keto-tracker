@@ -4,68 +4,66 @@ $dp-08: #2e2e2e;
 $dp-24: #373737;
 $keto-green: #1eb980;
 
-.carb-settings-container {
+.carb-set-c {
   .toggle {
     display: grid;
     grid-template-columns: 3fr 2px 3fr;
-    gap: 0px 10px;
-    margin: 20px 0px 0px 0px;
-    font-size: $font-size-large;
+    gap: 0 10px;
+    margin-top: 20px;
     width: 250px;
+    font-size: $font-size-large;
+
+    .separator {
+      background-color: $dp-24;
+    }
 
     .total {
       text-align: right;
       cursor: pointer;
-
-      &:hover:not(.enabled) {
-        color: rgba(255, 255, 255, 0.2);
-      }
-    }
-    .separator {
-      background-color: $dp-24;
     }
 
     .net {
       text-align: left;
       cursor: pointer;
-
-      &:hover:not(.enabled) {
-        color: rgba(255, 255, 255, 0.2);
-      }
     }
 
-    .enabled {
+    .on {
       color: $keto-green;
       transition: 0.3s;
     }
 
-    .disabled {
-      color: $dp-24;
+    .off {
+      color: rgba(255, 255, 255, 0.38);
       transition: 0.3s;
+    }
+
+    .opt {
+      &:hover:not(.on) {
+        color: rgba(255, 255, 255, 0.5);
+      }
     }
   }
 
-  .carb-settings-description-box {
+  .desc-c {
     display: grid;
     align-items: center;
-    height: 100%;
     margin-top: 20px;
     padding: 20px;
     background-color: $dp-08;
   }
 
-  .save-changes-btn {
-    cursor: pointer;
+  .save-btn {
+    padding: 0 5px 0 5px;
+    margin-top: 25px;
     height: 40px;
     width: 142.5px;
-    padding: 0px 5px 0px 5px;
-    margin-top: 25px;
+    font-size: $font-size-medium;
     background-color: $keto-green;
     color: white;
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: $font-size-medium;
     border: none;
     box-sizing: border;
+
+    cursor: pointer;
     &:focus {
       outline: none;
     }

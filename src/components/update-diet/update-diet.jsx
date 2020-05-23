@@ -142,7 +142,7 @@ const UpdateDiet = ({ currentUser }) => {
 
   const getArrowStyle = (value) => {
     if (value) {
-      return 'far fa-arrow-alt-circle-right output-arrow enabled';
+      return 'far fa-arrow-alt-circle-right output-arrow on';
     } else {
       return 'far fa-arrow-alt-circle-right output-arrow';
     }
@@ -150,9 +150,9 @@ const UpdateDiet = ({ currentUser }) => {
 
   const getOutputStyle = (value) => {
     if (value) {
-      return 'diet-form-row enabled';
+      return 'diet-form-row on';
     } else {
-      return 'diet-form-row disabled';
+      return 'diet-form-row off';
     }
   };
 
@@ -183,8 +183,8 @@ const UpdateDiet = ({ currentUser }) => {
   return (
     <div>
       {confirmationModal}
-      <div className='title'>Update Diet Settings</div>
-      <div className='macro-calculator-container'>
+      <div className='t'>Update Diet Settings</div>
+      <div className='macro-calc-c'>
         <div className='left-col'>
           <form className='diet-form' onSubmit={handleSubmit}>
             <FormInput
@@ -224,7 +224,7 @@ const UpdateDiet = ({ currentUser }) => {
               className='diet-form-row'
             />
             <button
-              className='save-changes-btn diet-form-row'
+              className='save-btn diet-form-row'
               type='submit'
               disabled={!isSubmittable}
             >

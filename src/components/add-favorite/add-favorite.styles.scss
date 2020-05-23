@@ -1,0 +1,22 @@
+$keto-green: #1eb980;
+$error-red-600: #e53935;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
+
+.fav-btn-c {
+  text-align: right;
+
+  i {
+    color: rgba(255, 255, 255, 0.38);
+    cursor: pointer;
+
+    &:hover:not(.on) {
+      color: $keto-green;
+    }
+
+    &.on {
+      color: $keto-green;
+    }
+  }
+}

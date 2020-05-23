@@ -78,32 +78,32 @@ const Meal = ({
 
   return (
     <div>
-      <div className='meal-header-container'>
-        <span className='meal-title'>
+      <div className='meal-h-c'>
+        <span className='t'>
           {meal}
-          <span className='add-food-to-meal-btn' onClick={handleClick}>
+          <span className='add-btn' onClick={handleClick}>
             <i className='fas fa-plus-square'></i>
           </span>
         </span>
       </div>
       {entryPlaceholder[meal]['foods'].map((food) => renderFoodItems(food))}
-      <div className='totals-row'>
-        <div className='total-label'>totals</div>
-        <div className='totals-container'>
-          <div className='size total-box'></div>
-          <div className='fats total-box'>
-            {totalFats}g<div className='macro-label'>fats</div>
+      <div className='totals-r'>
+        <div className='total-l'>totals</div>
+        <div className='totals-c'>
+          <div className='size c'></div>
+          <div className='fats c'>
+            {totalFats}g<div className='macro-l'>fats</div>
           </div>
-          <div className='carbs total-box'>
+          <div className='carbs c'>
             {totalCarbsOrNetCarbsValue}g
-            <div className='macro-label'>{carbType}</div>
+            <div className='macro-l'>{carbType}</div>
           </div>
-          <div className='protein total-box'>
-            {totalProtein}g<div className='macro-label'>protein</div>
+          <div className='protein c'>
+            {totalProtein}g<div className='macro-l'>protein</div>
           </div>
-          <div className='calories total-box'>
+          <div className='calories c'>
             {totalCalories}
-            <div className='macro-label'>calories</div>
+            <div className='macro-l'>calories</div>
           </div>
         </div>
       </div>

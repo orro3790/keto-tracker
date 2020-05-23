@@ -1,8 +1,11 @@
 $font-size-large: 20px;
 $dp-08: #2e2e2e;
 $dp-24: #373737;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
 
-.subtitle {
+.st {
   display: grid;
   grid-template-columns: 3fr 2px 3fr;
   gap: 0px 10px;
@@ -11,7 +14,7 @@ $dp-24: #373737;
   width: 250px;
 }
 
-.current-diet-description-box {
+.current-diet-c {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   column-gap: 0px;
@@ -22,12 +25,24 @@ $dp-24: #373737;
   padding: 20px;
   background-color: $dp-08;
 
-  .macro-container {
+  .macro-c {
     height: 100%;
     align-items: end;
 
-    .label {
+    .l {
       align-self: start;
     }
+  }
+
+  .protein {
+    color: $keto-blue;
+  }
+
+  .carbs {
+    color: $keto-pink;
+  }
+
+  .fats {
+    color: $keto-orange;
   }
 }

@@ -1,4 +1,4 @@
-$font-size-display-1: 32px;
+$font-size-display-2: 26px;
 
 @media only screen and (min-width: 768px) {
   .outer-container {
@@ -20,6 +20,6 @@ $font-size-display-1: 32px;
   }
 }
 
-.title {
-  font-size: $font-size-display-1;
+.t {
+  font-size: $font-size-display-2;
 }

@@ -23,7 +23,7 @@ $error-red: #f06292;
   }
 }
 
-.macro-calculator-container {
+.macro-calc-c {
   margin-top: 20px;
   display: grid;
   grid-template-columns: 145px 145px 120px;
@@ -39,7 +39,7 @@ $error-red: #f06292;
       row-gap: 20px;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 
-      .save-changes-btn {
+      .save-btn {
         cursor: pointer;
         display: flex;
         justify-content: center;
@@ -82,7 +82,7 @@ $error-red: #f06292;
       opacity: 0;
       transition: 0.5s;
 
-      &.enabled {
+      &.on {
         color: $keto-green;
         transform: translateX(0px);
         opacity: 1;
@@ -105,12 +105,12 @@ $error-red: #f06292;
   .diet-form-row {
     margin: auto 0px auto 0px;
 
-    &.disabled {
+    &.off {
       opacity: 0;
       transition: 0.5s;
     }
 
-    &.enabled {
+    &.on {
       opacity: 1;
       transition: 0.5s;
       transition-delay: 0.3s;

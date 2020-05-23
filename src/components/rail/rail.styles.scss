@@ -1,42 +1,28 @@
-$font-size-medium: 16px;
-$font-size-large: 20px;
-$error-red-600: #e53935;
-$keto-orange: #ffa053;
-$keto-pink: #ff5387;
-$keto-blue: #53a3ff;
 $keto-green: #1eb980;
-$dp-01: #1e1e1e;
-$dp-02: #222222;
 $dp-03: #242424;
-$dp-04: #272727;
-$dp-06: #2c2c2c;
-$dp-08: #2e2e2e;
-$dp-12: #323232;
 $dp-16: #353535;
-$dp-24: #373737;
-$brightest: #474747;
 
-.rail-outer-container {
+.rail-c {
   display: grid;
   grid-row: 1fr;
-  padding-top: 38px 0px 38px 0px;
   position: fixed;
+  align-items: center;
+  text-align: center;
+  padding-top: 38px 0 38px 0;
   height: 100%;
   width: 100px;
-  text-align: center;
-  align-items: center;
   background-color: $dp-03;
   z-index: 1;
 
   @media only screen and (max-width: 600px) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    padding-top: 0px 38px 0px 38px;
+    align-items: center;
     position: fixed;
+    padding-top: 0 38px 0 38px;
     height: 75px;
     width: 100%;
     text-align: center;
-    align-items: center;
     background-color: $dp-03;
   }
 
@@ -46,20 +32,20 @@ $brightest: #474747;
   }
 
   i {
-    font-size: 24px;
-    color: $dp-16;
     padding: 10px;
     width: 50px;
     height: 50px;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.38);
 
-    &:hover:not(.enabled) {
+    &:hover:not(.on) {
       cursor: pointer;
-      color: $brightest;
+      color: rgba(255, 255, 255, 0.5);
     }
   }
 
-  .enabled {
-    color: #ffffff;
+  .on {
+    color: #fff;
   }
 
   .empty {

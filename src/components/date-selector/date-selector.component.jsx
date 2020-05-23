@@ -82,12 +82,12 @@ const DateSelector = ({
 
   return (
     <div>
-      <div className='date-container'>
-        <div className='yesterday-container' onClick={goToPrevDay}>
+      <div className='date-c'>
+        <div className='yesterday-c' onClick={goToPrevDay}>
           <i className='fas fa-chevron-left'></i>
         </div>
-        <div className='today-container'>{date}</div>
-        <div className='tomorrow-container' onClick={goToNextDay}>
+        <div className='today-c'>{date}</div>
+        <div className='tomorrow-c' onClick={goToNextDay}>
           <i className='fas fa-chevron-right'></i>
         </div>
       </div>

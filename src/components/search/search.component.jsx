@@ -5,7 +5,14 @@ import './search.styles.scss';
 import { connect } from 'react-redux';
 import { firestore } from '../../firebase/firebase.utils';
 
-const Search = ({ suggestionWindow, searchModal, foodReference, filter }) => {
+const Search = ({
+  suggestionWindow,
+  searchModal,
+  foodReference,
+  filter,
+  foodFilter,
+  currentUser,
+}) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -26,20 +33,25 @@ const Search = ({ suggestionWindow, searchModal, foodReference, filter }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await firestore
-        .collection(filter)
-        .where('n', '==', query.toUpperCase())
-        .get();
+      if (foodFilter === 'fav') {
+        const response = currentUser.favFoods.filter(
+          (food) => food.n === query.toUpperCase()
+        );
+        setResults(response);
+      } else {
+        const response = await firestore
+          .collection(filter)
+          .where('n', '==', query.toUpperCase())
+          .get();
 
-      // update state with results, snapshot.data() doesn't include the doc id, so add it to the json obj to use as a key
-
-      setResults(
-        response.docs.map((snapshot) => {
-          const snap = snapshot.data();
-          snap.id = snapshot.id;
-          return snap;
-        })
-      );
+        setResults(
+          response.docs.map((snapshot) => {
+            const snap = snapshot.data();
+            snap.id = snapshot.id;
+            return snap;
+          })
+        );
+      }
     };
 
     fetchData();
@@ -47,14 +59,44 @@ const Search = ({ suggestionWindow, searchModal, foodReference, filter }) => {
     // return () => {
     //   cleanup;
     // };
-  }, [query, filter]);
+  }, [query, filter, foodFilter, currentUser]);
 
   let labelMsg;
 
   if (searchModal.editMode === true) {
     labelMsg = `Replace "${foodReference.n}" with ...`;
   } else {
-    labelMsg = `Search for food to add to ${searchModal.meal} ...`;
+    switch (foodFilter) {
+      case 'usda':
+        labelMsg = (
+          <div>
+            Search foods within
+            <span className='emphasis'>USDA database </span>
+            ...
+          </div>
+        );
+        break;
+      case 'fav':
+        labelMsg = (
+          <div>
+            Search foods within
+            <span className='emphasis'>my favorites </span>
+            ...
+          </div>
+        );
+        break;
+      case 'user-foods':
+        labelMsg = (
+          <div>
+            Search foods within
+            <span className='emphasis'>my custom foods </span>
+            ...
+          </div>
+        );
+        break;
+      default:
+        break;
+    }
   }
 
   let rendered;
@@ -69,11 +111,11 @@ const Search = ({ suggestionWindow, searchModal, foodReference, filter }) => {
 
   return (
     <div>
-      <div className='food-item-input'>
+      <div className='food-item-in'>
         <form onSubmit={handleSubmit}>
           <FormInput
             id='name'
-            name='search-input'
+            name='search-in'
             inputType='input'
             type='text'
             onChange={handleChange}
@@ -83,8 +125,8 @@ const Search = ({ suggestionWindow, searchModal, foodReference, filter }) => {
           />
         </form>
       </div>
-      <div className='wrapper'>
-        <div className='search-results-list'>{rendered}</div>
+      <div className='wrap'>
+        <div className='result-li'>{rendered}</div>
       </div>
     </div>
   );
@@ -94,6 +136,8 @@ const mapStateToProps = (state) => ({
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
   searchModal: state.searchModal.searchModal,
   foodReference: state.searchItemSuggestion.foodReference,
+  foodFilter: state.searchModal.foodFilter,
+  currentUser: state.user.currentUser,
 });
 
 export default connect(mapStateToProps)(Search);
