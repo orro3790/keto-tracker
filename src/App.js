@@ -53,7 +53,12 @@ class App extends React.Component {
         {/* <Header /> */}
         <Switch>
           <Route exact path='/' component={Home} />
-          <Route path='/diary' component={Diary} />
+          <Route
+            path='/diary'
+            render={() =>
+              this.props.currentUser ? <Diary /> : <Redirect to='/' />
+            }
+          />
           <Route
             path='/exercises'
             render={() =>

@@ -50,6 +50,8 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
           fats: 166,
         },
         carbSettings: 'total',
+        favFoods: [],
+        membership: 'standard',
         ...additionalData,
       });
     } catch (error) {

@@ -47,7 +47,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
       display: false,
     },
     tooltips: {
-      on: tooltipStatus,
+      enabled: tooltipStatus,
     },
     cutoutPercentage: 60,
   };

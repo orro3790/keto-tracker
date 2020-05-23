@@ -33,25 +33,25 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
         <DateSelector />
         <DailyChart />
         {createFoodModal}
-        <div className='c'>
+        <div className='meal-c'>
           <div>
             <Meal meal={'Breakfast'} />
           </div>
           <TotalsChart meal={'Breakfast'} />
         </div>
-        <div className='c'>
+        <div className='meal-c'>
           <div>
             <Meal meal={'Lunch'} />
           </div>
           <TotalsChart meal={'Lunch'} />
         </div>
-        <div className='c'>
+        <div className='meal-c'>
           <div>
             <Meal meal={'Dinner'} />
           </div>
           <TotalsChart meal={'Dinner'} />
         </div>
-        <div className='c'>
+        <div className='meal-c'>
           <div>
             <Meal meal={'Snacks'} />
           </div>

@@ -1,3 +1,5 @@
+$keto-green: #1eb980;
+
 .custom-button {
   min-width: 165px;
   width: auto;
@@ -23,12 +25,14 @@
   }
 
   &.google-sign-in {
-    background-color: #4285f4;
+    background: $keto-green;
     color: white;
+    transition: 0.3s;
 
     &:hover {
-      background: #357ae8;
+      background: $keto-green;
       border: none;
+      transition: 0.3s;
     }
   }
 
