@@ -52,12 +52,11 @@ $keto-green: #1eb980;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 ::-webkit-scrollbar-track {
   background: $dp-04;
 }
-/* Handle */
 ::-webkit-scrollbar-thumb {
   background: $dp-24;
 }

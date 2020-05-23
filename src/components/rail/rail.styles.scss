@@ -4,11 +4,11 @@ $dp-16: #353535;
 
 .rail-c {
   display: grid;
-  grid-row: 1fr;
+  grid-template-rows: 1fr;
   position: fixed;
   align-items: center;
   text-align: center;
-  padding-top: 38px 0 38px 0;
+  padding: 38px 0 38px 0;
   height: 100%;
   width: 100px;
   background-color: $dp-03;
@@ -19,7 +19,7 @@ $dp-16: #353535;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
     position: fixed;
-    padding-top: 0 38px 0 38px;
+    padding: 0 38px 0 38px;
     height: 75px;
     width: 100%;
     text-align: center;
