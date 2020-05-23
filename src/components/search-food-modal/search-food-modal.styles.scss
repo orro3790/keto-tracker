@@ -46,7 +46,10 @@ $keto-green: #1eb980;
           &:hover {
             color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
-            transform: scale(1.1);
+            &:active {
+              transition: 0.1s;
+              transform: scale(0.7);
+            }
           }
           &.on {
             color: $keto-green;
@@ -61,6 +64,10 @@ $keto-green: #1eb980;
 
       & i {
         font-size: 1.2rem;
+        &:active {
+          transition: 0.1s;
+          transform: scale(0.7);
+        }
       }
     }
   }

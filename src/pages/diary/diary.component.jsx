@@ -63,7 +63,7 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
 };
 
 const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.searchModal,
+  searchModal: state.searchModal.modal,
   createFoodModalStatus: state.createFood.createFoodModal,
   foodReference: state.searchItemSuggestion.foodReference,
 });

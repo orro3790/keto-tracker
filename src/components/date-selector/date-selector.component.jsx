@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './date-selector.styles.scss';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectUpdate } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
 import {
   setCurrentDate,
   setEntry,
@@ -95,10 +99,10 @@ const DateSelector = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
-  entries: state.dateSelector.entries,
-  update: state.searchModal.updateTotals,
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  entries: selectEntries,
+  update: selectUpdate,
 });
 
 const mapDispatchToProps = (dispatch) => ({

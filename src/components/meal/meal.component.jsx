@@ -4,36 +4,17 @@ import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import ToggleSearchModal from '../toggle-search/toggle-search.component';
 
-const Meal = ({
-  meal,
-  toggleSearchModal,
-  searchModal,
-  entries,
-  createFoodReference,
-  currentUser,
-}) => {
+const Meal = ({ meal, entries, currentUser }) => {
   const [totalFats, setTotalFats] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalNetCarbs, setTotalNetCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
-
-  const handleClick = () => {
-    if (searchModal.status === 'hidden') {
-      toggleSearchModal({
-        status: 'visible',
-        meal: meal,
-        editMode: false,
-      });
-      createFoodReference('');
-    } else {
-      toggleSearchModal({
-        status: 'hidden',
-        meal: meal,
-      });
-    }
-  };
 
   // handles the displaying of totals in the UI, but searchModal handles the calculations
   useEffect(() => {
@@ -76,14 +57,14 @@ const Meal = ({
     }
   }
 
+  console.log('I am being called');
+
   return (
     <div>
       <div className='meal-h-c'>
-        <span className='t'>
-          {meal}
-          <span className='add-btn' onClick={handleClick}>
-            <i className='fas fa-plus-square'></i>
-          </span>
+        <span className='t'>{meal}</span>
+        <span>
+          <ToggleSearchModal meal={meal} />
         </span>
       </div>
       {entryPlaceholder[meal]['foods'].map((food) => renderFoodItems(food))}
@@ -111,10 +92,9 @@ const Meal = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.searchModal,
-  entries: state.dateSelector.entries,
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  entries: selectEntries,
+  currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({

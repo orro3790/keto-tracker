@@ -98,7 +98,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
 
 const mapStateToProps = (state) => ({
   entries: state.dateSelector.entries,
-  searchModal: state.searchModal.searchModal,
+  searchModal: state.searchModal.modal,
   currentUser: state.user.currentUser,
 });
 

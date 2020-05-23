@@ -67,7 +67,7 @@ const FoodItem = ({
 };
 
 const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.searchModal,
+  searchModal: state.searchModal.modal,
   foodReference: state.searchItemSuggestion.foodReference,
   currentUser: state.user.currentUser,
 });

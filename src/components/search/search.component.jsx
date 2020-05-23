@@ -134,7 +134,7 @@ const Search = ({
 
 const mapStateToProps = (state) => ({
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
-  searchModal: state.searchModal.searchModal,
+  searchModal: state.searchModal.modal,
   foodReference: state.searchItemSuggestion.foodReference,
   foodFilter: state.searchModal.foodFilter,
   currentUser: state.user.currentUser,

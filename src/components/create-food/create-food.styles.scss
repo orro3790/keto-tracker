@@ -39,6 +39,10 @@ $keto-green: #1eb980;
 
       & i {
         font-size: 1.2rem;
+        &:active {
+          transition: 0.1s;
+          transform: scale(0.7);
+        }
       }
     }
 

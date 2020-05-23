@@ -1,7 +1,7 @@
 import { SearchModalActionTypes } from './search-food-modal.types';
 
 const INITIAL_STATE = {
-  searchModal: {
+  modal: {
     status: 'hidden',
     meal: 'none',
   },
@@ -14,7 +14,7 @@ const searchModalReducer = (state = INITIAL_STATE, action) => {
     case SearchModalActionTypes.TOGGLE_SEARCH_MODAL:
       return {
         ...state,
-        searchModal: action.payload,
+        modal: action.payload,
       };
     case SearchModalActionTypes.UPDATE_TOTALS:
       return {

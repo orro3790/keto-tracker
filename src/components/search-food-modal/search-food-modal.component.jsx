@@ -640,7 +640,7 @@ const mapStateToProps = (state) => ({
   foodReference: state.searchItemSuggestion.foodReference,
   suggestionWindow: state.searchItemSuggestion.suggestionWindow,
   entries: state.dateSelector.entries,
-  searchModal: state.searchModal.searchModal,
+  searchModal: state.searchModal.modal,
   currentUser: state.user.currentUser,
   foodFilter: state.searchModal.foodFilter,
 });
