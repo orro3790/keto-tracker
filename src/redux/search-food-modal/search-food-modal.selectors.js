@@ -7,6 +7,11 @@ export const selectModal = createSelector(
   (searchModal) => searchModal.modal
 );
 
+export const selectFoodFilter = createSelector(
+  [selectSearchModal],
+  (searchModal) => searchModal.foodFilter
+);
+
 export const selectUpdate = createSelector(
   [selectSearchModal],
   (searchModal) => searchModal.updateTotals

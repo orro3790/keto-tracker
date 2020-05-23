@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../redux/user/user.actions';
 import { updateCarbSettings } from '../../firebase/firebase.utils';
-import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 import './carb-settings.styles.scss';
 
 const CarbSettings = ({ currentUser, setCurrentUser }) => {
@@ -115,8 +117,8 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({

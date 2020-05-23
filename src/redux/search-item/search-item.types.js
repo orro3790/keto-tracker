@@ -1,4 +1,4 @@
-export const SearchItemSuggestionActionTypes = {
+export const SearchItemActionTypes = {
   CREATE_FOOD_REFERENCE: 'CREATE_FOOD_REFERENCE',
   TOGGLE_SUGGESTION_WINDOW: 'TOGGLE_SUGGESTION_WINDOW',
 };

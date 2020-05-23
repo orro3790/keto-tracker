@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import FormInput from '../form-input/form-input.component';
-import SearchItemSuggestion from './../search-item-suggestion/search-item-suggestion.component';
-import './search.styles.scss';
 import { connect } from 'react-redux';
+import FormInput from '../form-input/form-input.component';
+import SearchItemSuggestion from './../search-item/search-item.component';
 import { firestore } from '../../firebase/firebase.utils';
+import { createStructuredSelector } from 'reselect';
+import {
+  selectCurrentUserId,
+  selectFavFoods,
+} from '../../redux/user/user.selectors';
+import {
+  selectFoodReference,
+  selectSuggestionWindow,
+} from '../../redux/search-item/search-item.selectors';
+import {
+  selectModal,
+  selectFoodFilter,
+} from '../../redux/search-food-modal/search-food-modal.selectors';
+import './search.styles.scss';
 
 const Search = ({
   suggestionWindow,
   searchModal,
   foodReference,
-  filter,
   foodFilter,
-  currentUser,
+  userId,
+  favFoods,
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
@@ -32,34 +45,53 @@ const Search = ({
   }, [suggestionWindow]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (foodFilter === 'fav') {
-        const response = currentUser.favFoods.filter(
-          (food) => food.n === query.toUpperCase()
-        );
-        setResults(response);
-      } else {
-        const response = await firestore
-          .collection(filter)
-          .where('n', '==', query.toUpperCase())
-          .get();
+    let filterPath;
 
-        setResults(
-          response.docs.map((snapshot) => {
-            const snap = snapshot.data();
-            snap.id = snapshot.id;
-            return snap;
-          })
-        );
-      }
-    };
+    switch (foodFilter) {
+      case 'usda':
+        filterPath = 'usda';
+        break;
+      case 'fav':
+        filterPath = `users/${userId}/favFoods/`;
+        break;
+      case 'user-foods':
+        filterPath = `users/${userId}/createdFoods/`;
+        break;
+      default:
+        break;
+    }
 
-    fetchData();
+    // check that query !== '' to prevent a fetch upon mount
+    if (query !== '') {
+      const fetchData = async () => {
+        if (foodFilter === 'fav') {
+          const response = favFoods.filter(
+            (food) => food.n === query.toUpperCase()
+          );
+          console.log(response);
+          setResults(response);
+        } else {
+          const response = await firestore
+            .collection(filterPath)
+            .where('n', '==', query.toUpperCase())
+            .get();
+
+          setResults(
+            response.docs.map((snapshot) => {
+              const snap = snapshot.data();
+              snap.id = snapshot.id;
+              return snap;
+            })
+          );
+        }
+      };
+      fetchData();
+    }
 
     // return () => {
     //   cleanup;
     // };
-  }, [query, filter, foodFilter, currentUser]);
+  }, [query, foodFilter, userId, favFoods, searchModal.foodFilter]);
 
   let labelMsg;
 
@@ -70,7 +102,7 @@ const Search = ({
       case 'usda':
         labelMsg = (
           <div>
-            Search foods within
+            Search
             <span className='emphasis'>USDA database </span>
             ...
           </div>
@@ -79,8 +111,8 @@ const Search = ({
       case 'fav':
         labelMsg = (
           <div>
-            Search foods within
-            <span className='emphasis'>my favorites </span>
+            Search
+            <span className='emphasis'>favorites </span>
             ...
           </div>
         );
@@ -88,7 +120,7 @@ const Search = ({
       case 'user-foods':
         labelMsg = (
           <div>
-            Search foods within
+            Search
             <span className='emphasis'>my custom foods </span>
             ...
           </div>
@@ -132,12 +164,13 @@ const Search = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  suggestionWindow: state.searchItemSuggestion.suggestionWindow,
-  searchModal: state.searchModal.modal,
-  foodReference: state.searchItemSuggestion.foodReference,
-  foodFilter: state.searchModal.foodFilter,
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  suggestionWindow: selectSuggestionWindow,
+  searchModal: selectModal,
+  foodReference: selectFoodReference,
+  userId: selectCurrentUserId,
+  favFoods: selectFavFoods,
+  foodFilter: selectFoodFilter,
 });
 
 export default connect(mapStateToProps)(Search);

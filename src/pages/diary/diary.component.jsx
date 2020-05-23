@@ -1,5 +1,4 @@
 import React from 'react';
-import './diary.styles.scss';
 import Meal from '../../components/meal/meal.component';
 import DateSelector from '../../components/date-selector/date-selector.component';
 import SearchFoodModal from '../../components/search-food-modal/search-food-modal.component';
@@ -9,6 +8,11 @@ import Rail from '../../components/rail/rail.component';
 import CreateFood from '../../components/create-food/create-food';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectCreateFoodModalStatus } from '../../redux/create-food/create-food.selectors';
+import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
+import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import './diary.styles.scss';
 
 const Diary = ({ searchModal, createFoodModalStatus }) => {
   let searchFoodModal;
@@ -19,7 +23,7 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
   }
 
   let createFoodModal;
-  if (createFoodModalStatus.status === 'visible') {
+  if (createFoodModalStatus === 'visible') {
     createFoodModal = <CreateFood />;
   }
 
@@ -62,10 +66,10 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.modal,
-  createFoodModalStatus: state.createFood.createFoodModal,
-  foodReference: state.searchItemSuggestion.foodReference,
+const mapStateToProps = createStructuredSelector({
+  searchModal: selectModal,
+  createFoodModalStatus: selectCreateFoodModalStatus,
+  foodReference: selectFoodReference,
 });
 
 const mapDispatchToProps = (dispatch) => ({

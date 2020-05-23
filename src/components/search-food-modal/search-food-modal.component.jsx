@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import './search-food-modal.styles.scss';
 import { connect } from 'react-redux';
 import Search from './../search/search.component';
 import AddFavorite from '../../components/add-favorite/add-favorite.component';
+import FoodFilter from '../../components/food-filter/food-filter.component';
 import {
   toggleSearchModal,
   updateTotals,
   setFoodFilter,
 } from './../../redux/search-food-modal/search-food-modal.actions';
-import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
 import { HorizontalBar } from 'react-chartjs-2';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { addFavoriteFood } from '../../firebase/firebase.utils';
+import { createStructuredSelector } from 'reselect';
+import {
+  selectDietSettings,
+  selectCarbSettings,
+  selectCurrentUserId,
+} from '../../redux/user/user.selectors';
+import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import {
+  selectSuggestionWindow,
+  selectFoodReference,
+} from '../../redux/search-item/search-item.selectors';
+import './search-food-modal.styles.scss';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -24,9 +37,10 @@ const SearchFoodModal = ({
   entries,
   searchModal,
   setEntry,
-  currentUser,
   setFoodFilter,
-  foodFilter,
+  carbSettings,
+  userId,
+  diet,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -77,7 +91,7 @@ const SearchFoodModal = ({
   };
 
   const recalculateTotals = (entry) => {
-    if (entry !== '' && currentUser !== null) {
+    if (entry !== '') {
       // total fats in meal
       const fats = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
@@ -238,7 +252,7 @@ const SearchFoodModal = ({
   };
 
   let labels;
-  if (currentUser !== null && currentUser.carbSettings === 'net') {
+  if (carbSettings === 'net') {
     labels = ['fats', 'net carbs', 'protein', 'calories'];
   } else {
     labels = ['fats', 'carbs', 'protein', 'calories'];
@@ -299,57 +313,49 @@ const SearchFoodModal = ({
     let caloriesRemaining = 0;
     let netCarbsRemaining = 0;
 
-    if (currentUser !== null) {
-      // switch block controls all of the chart rendering logic
-      switch (searchModal.editMode) {
-        case true:
-          if (sizeInput !== '') {
-            // render chart data based on user input
-            fatsRemaining = (fats / currentUser.diet.fats) * 100;
-            carbsRemaining = (carbs / currentUser.diet.carbs) * 100;
-            netCarbsRemaining = (netCarbs / currentUser.diet.carbs) * 100;
-            proteinRemaining = (protein / currentUser.diet.protein) * 100;
-            caloriesRemaining = (calories / currentUser.diet.calories) * 100;
-          } else {
-            // render chart data based on foodToEdit's existing macro data
-            fatsRemaining = (foodReference.f / currentUser.diet.fats) * 100;
-            carbsRemaining = (foodReference.c / currentUser.diet.carbs) * 100;
-            netCarbsRemaining =
-              (foodReference.k / currentUser.diet.carbs) * 100;
-            proteinRemaining =
-              (foodReference.p / currentUser.diet.protein) * 100;
-            caloriesRemaining =
-              (foodReference.e / currentUser.diet.calories) * 100;
-          }
-          break;
-        case false:
-          if (sizeInput !== '') {
-            // render chart data based on user input
-            fatsRemaining = (fats / currentUser.diet.fats) * 100;
-            carbsRemaining = (carbs / currentUser.diet.carbs) * 100;
-            netCarbsRemaining = (netCarbs / currentUser.diet.carbs) * 100;
-            proteinRemaining = (protein / currentUser.diet.protein) * 100;
-            caloriesRemaining = (calories / currentUser.diet.calories) * 100;
-          } else {
-            // render chart data based on default macro data
-            fatsRemaining = (foodReference.f / currentUser.diet.fats) * 100;
-            carbsRemaining = (foodReference.c / currentUser.diet.carbs) * 100;
-            netCarbsRemaining =
-              (foodReference.k / currentUser.diet.carbs) * 100;
-            proteinRemaining =
-              (foodReference.p / currentUser.diet.protein) * 100;
-            caloriesRemaining =
-              (foodReference.e / currentUser.diet.calories) * 100;
-          }
-          break;
-        default:
-          break;
-      }
+    // switch block controls all of the chart rendering logic
+    switch (searchModal.editMode) {
+      case true:
+        if (sizeInput !== '') {
+          // render chart data based on user input
+          fatsRemaining = (fats / diet.fats) * 100;
+          carbsRemaining = (carbs / diet.carbs) * 100;
+          netCarbsRemaining = (netCarbs / diet.carbs) * 100;
+          proteinRemaining = (protein / diet.protein) * 100;
+          caloriesRemaining = (calories / diet.calories) * 100;
+        } else {
+          // render chart data based on foodToEdit's existing macro data
+          fatsRemaining = (foodReference.f / diet.fats) * 100;
+          carbsRemaining = (foodReference.c / diet.carbs) * 100;
+          netCarbsRemaining = (foodReference.k / diet.carbs) * 100;
+          proteinRemaining = (foodReference.p / diet.protein) * 100;
+          caloriesRemaining = (foodReference.e / diet.calories) * 100;
+        }
+        break;
+      case false:
+        if (sizeInput !== '') {
+          // render chart data based on user input
+          fatsRemaining = (fats / diet.fats) * 100;
+          carbsRemaining = (carbs / diet.carbs) * 100;
+          netCarbsRemaining = (netCarbs / diet.carbs) * 100;
+          proteinRemaining = (protein / diet.protein) * 100;
+          caloriesRemaining = (calories / diet.calories) * 100;
+        } else {
+          // render chart data based on default macro data
+          fatsRemaining = (foodReference.f / diet.fats) * 100;
+          carbsRemaining = (foodReference.c / diet.carbs) * 100;
+          netCarbsRemaining = (foodReference.k / diet.carbs) * 100;
+          proteinRemaining = (foodReference.p / diet.protein) * 100;
+          caloriesRemaining = (foodReference.e / diet.calories) * 100;
+        }
+        break;
+      default:
+        break;
     }
 
     const chart = () => {
       let data;
-      if (currentUser !== null && currentUser.carbSettings === 'net') {
+      if (carbSettings === 'net') {
         data = [
           fatsRemaining.toPrecision(3),
           netCarbsRemaining.toPrecision(3),
@@ -382,13 +388,14 @@ const SearchFoodModal = ({
     suggestionWindow,
     sizeInput,
     searchModal,
-    currentUser,
     calories,
     carbs,
     netCarbs,
     fats,
     protein,
     foodReference,
+    diet,
+    carbSettings,
   ]);
 
   // update daily totals
@@ -489,7 +496,7 @@ const SearchFoodModal = ({
   let carbsOrNetCarbs;
   let carbsOrNetCarbsLabel;
 
-  if (currentUser !== null && currentUser.carbSettings === 'net') {
+  if (carbSettings === 'net') {
     carbsOrNetCarbs = netCarbs;
     carbsOrNetCarbsLabel = 'net carbs';
   } else {
@@ -498,7 +505,7 @@ const SearchFoodModal = ({
   }
 
   const handleAddFavorite = () => {
-    addFavoriteFood(currentUser, foodReference);
+    addFavoriteFood(userId, foodReference);
   };
 
   if (foodReference !== '') {
@@ -552,7 +559,7 @@ const SearchFoodModal = ({
     );
   } else {
     resultsContainer = (
-      <div className='filter-c'>
+      <div className='hud'>
         <div>
           <i
             className='fas fa-folder-plus custom'
@@ -568,67 +575,17 @@ const SearchFoodModal = ({
     );
   }
 
-  let usdaFilter;
-  let favFilter;
-  let userFoodsFilter;
-  let filterPath;
-
-  switch (foodFilter) {
-    case 'usda':
-      usdaFilter = 'on';
-      filterPath = 'usda';
-      break;
-    case 'fav':
-      favFilter = 'on';
-      filterPath = `users/${currentUser.id}/favFoods/`;
-      break;
-    case 'user-foods':
-      userFoodsFilter = 'on';
-      filterPath = `users/${currentUser.id}/createdFoods/`;
-      break;
-    default:
-      break;
-  }
-
-  // dispatch food filter to state so it will remember last preference upon reopening of search modal
-  const toggleFilter = (e) => {
-    if (e.target.className.includes('fav')) {
-      setFoodFilter('fav');
-    } else if (e.target.className.includes('usda')) {
-      setFoodFilter('usda');
-    } else if (e.target.className.includes('user-foods')) {
-      setFoodFilter('user-foods');
-    }
-  };
-
   return (
     <div>
       <div className='search-food-m'>
         <div className='search-s'>
           <div className='btn-c'>
-            <span className='filter-btn'>
-              <i
-                className={`fas fa-user-tag user-foods ${userFoodsFilter}`}
-                onClick={toggleFilter}
-              ></i>
-            </span>
-            <span className='filter-btn'>
-              <i
-                className={`fas fa-bookmark fav ${favFilter}`}
-                onClick={toggleFilter}
-              ></i>
-            </span>
-            <span className='filter-btn'>
-              <i
-                className={`fas fa-shield-alt usda ${usdaFilter}`}
-                onClick={toggleFilter}
-              ></i>
-            </span>
-            <span className='close-btn'>
+            <FoodFilter />
+            <div className='close-btn'>
               <i className='fas fa-times' onClick={handleClose}></i>
-            </span>
+            </div>
           </div>
-          <Search filter={filterPath} />
+          <Search />
         </div>
         {resultsContainer}
       </div>
@@ -636,13 +593,14 @@ const SearchFoodModal = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  foodReference: state.searchItemSuggestion.foodReference,
-  suggestionWindow: state.searchItemSuggestion.suggestionWindow,
-  entries: state.dateSelector.entries,
-  searchModal: state.searchModal.modal,
-  currentUser: state.user.currentUser,
-  foodFilter: state.searchModal.foodFilter,
+const mapStateToProps = createStructuredSelector({
+  foodReference: selectFoodReference,
+  suggestionWindow: selectSuggestionWindow,
+  entries: selectEntries,
+  searchModal: selectModal,
+  carbSettings: selectCarbSettings,
+  diet: selectDietSettings,
+  userId: selectCurrentUserId,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -651,7 +609,6 @@ const mapDispatchToProps = (dispatch) => ({
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
-  setFoodFilter: (filter) => dispatch(setFoodFilter(filter)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchFoodModal);

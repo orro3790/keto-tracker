@@ -1,24 +1,27 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import {
+  selectDietSettings,
+  selectCarbSettings,
+} from '../../redux/user/user.selectors';
 import './current-diet.styles.scss';
 
-const CurrentDiet = ({ currentUser }) => {
+const CurrentDiet = ({ dietSettings, carbSettings }) => {
   // load 0 as default values if currentUser.diet data hasn't been loaded into state yet
   let fats = 0;
   let protein = 0;
   let carbs = 0;
   let calories = 0;
 
-  if (currentUser !== null) {
-    fats = currentUser.diet.fats;
-    protein = currentUser.diet.protein;
-    carbs = currentUser.diet.carbs;
-    calories = currentUser.diet.calories;
-  }
+  fats = dietSettings.fats;
+  protein = dietSettings.protein;
+  carbs = dietSettings.carbs;
+  calories = dietSettings.calories;
 
   let carbType = 'carbs';
 
-  if (currentUser && currentUser.carbSettings === 'net') {
+  if (carbSettings === 'net') {
     carbType = 'net carbs';
   }
 
@@ -47,8 +50,9 @@ const CurrentDiet = ({ currentUser }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  carbSettings: selectCarbSettings,
+  dietSettings: selectDietSettings,
 });
 
 export default connect(mapStateToProps, null)(CurrentDiet);

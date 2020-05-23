@@ -7,7 +7,7 @@ import {
 } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
 
-const SearchItemSuggestion = ({
+const SearchItem = ({
   food,
   createFoodReference,
   ToggleSuggestionWindow,
@@ -50,7 +50,4 @@ const mapDispatchToProps = (dispatch) => ({
   ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchItemSuggestion);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchItem);

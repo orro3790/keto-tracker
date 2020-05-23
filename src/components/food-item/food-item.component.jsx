@@ -1,8 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './food-item.styles.scss';
-import { toggleSearchModal } from './../../redux/meal/meal.actions.js';
-import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
+import { createFoodReference } from '../../redux/search-item/search-item.actions';
+import { createStructuredSelector } from 'reselect';
+import { selectCarbSettings } from '../../redux/user/user.selectors';
+import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
+import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 
 const FoodItem = ({
   food,
@@ -66,10 +70,10 @@ const FoodItem = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.modal,
-  foodReference: state.searchItemSuggestion.foodReference,
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  searchModal: selectModal,
+  foodReference: selectFoodReference,
+  carbSettings: selectCarbSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({

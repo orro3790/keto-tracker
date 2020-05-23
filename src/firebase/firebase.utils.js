@@ -295,9 +295,9 @@ export const updateCarbSettings = async (userId, setting) => {
   }
 };
 
-export const addFavoriteFood = async (currentUser, foodReference) => {
+export const addFavoriteFood = async (userId, foodReference) => {
   // grab the collection and instantiate an empty doc so it is assigned a random ID
-  const userRef = firestore.doc(`users/${currentUser.id}/`);
+  const userRef = firestore.doc(`users/${userId}/`);
 
   const snapshot = await userRef.get();
 

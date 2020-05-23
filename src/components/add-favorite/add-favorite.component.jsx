@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 import './add-favorite.styles.scss';
 
 const AddFavorite = ({ currentUser, foodReference, onClick }) => {
@@ -30,9 +33,9 @@ const AddFavorite = ({ currentUser, foodReference, onClick }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
-  foodReference: state.searchItemSuggestion.foodReference,
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+  foodReference: selectFoodReference,
 });
 
 const mapDispatchToProps = (dispatch) => ({

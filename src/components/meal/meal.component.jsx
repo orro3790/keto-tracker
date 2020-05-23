@@ -3,7 +3,7 @@ import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
 import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
-import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { selectEntries } from '../../redux/date-selector/date-selector.selectors';

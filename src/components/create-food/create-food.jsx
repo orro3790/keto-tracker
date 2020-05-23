@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
-import './create-food.styles.scss';
 import { createCreateFoodDocument } from '../../firebase/firebase.utils.js';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import './create-food.styles.scss';
 
 const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
   const [name, setName] = useState('');
@@ -273,9 +275,9 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
-  currentUser: state.user.currentUser,
+  currentUser: selectCurrentUser,
 });
 
 const mapDispatchToProps = (dispatch) => ({

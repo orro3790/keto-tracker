@@ -34,28 +34,13 @@ $keto-green: #1eb980;
 
     .btn-c {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-columns: 1fr auto;
+      gap: 15px;
       margin-left: auto;
       text-align: right;
       width: 150px;
-      padding: 10px 0 10px 0;
+      padding: 10px 0 0 0;
       color: rgba(255, 255, 255, 0.38);
-
-      .filter-btn {
-        i {
-          &:hover {
-            color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            &:active {
-              transition: 0.1s;
-              transform: scale(0.7);
-            }
-          }
-          &.on {
-            color: $keto-green;
-          }
-        }
-      }
     }
 
     .close-btn {
@@ -63,7 +48,7 @@ $keto-green: #1eb980;
       cursor: pointer;
 
       & i {
-        font-size: 1.2rem;
+        font-size: $font-size-large;
         &:active {
           transition: 0.1s;
           transform: scale(0.7);
@@ -156,7 +141,7 @@ $keto-green: #1eb980;
     }
   }
 
-  .filter-c {
+  .hud {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
@@ -170,14 +155,6 @@ $keto-green: #1eb980;
       font-size: 75px;
       color: $dp-24;
       transition: 0.3s;
-
-      &.fav {
-        padding-bottom: 10px;
-      }
-
-      &.custom {
-        padding-top: 10px;
-      }
 
       &:hover {
         cursor: pointer;

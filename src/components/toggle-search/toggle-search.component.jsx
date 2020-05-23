@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
-import { createFoodReference } from './../../redux/search-item-suggestion/search-item-suggestion.actions.js';
+import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
 
 const ToggleSearchModal = ({ meal, searchModal, toggleSearchModal }) => {
   const handleClick = () => {
