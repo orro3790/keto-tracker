@@ -1,7 +1,7 @@
 import { CreateFoodActionTypes } from './create-food.types';
 
 const INITIAL_STATE = {
-  createFoodModal: {
+  modal: {
     status: 'hidden',
   },
 };
@@ -11,7 +11,7 @@ const createFoodReducer = (state = INITIAL_STATE, action) => {
     case CreateFoodActionTypes.TOGGLE_CREATE_FOOD_MODAL:
       return {
         ...state,
-        createFoodModal: action.payload,
+        modal: action.payload,
       };
     default:
       return state;

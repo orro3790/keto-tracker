@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   modal: {
     status: 'hidden',
     meal: 'none',
+    editMode: false,
   },
   foodFilter: 'usda',
   updateTotals: false,

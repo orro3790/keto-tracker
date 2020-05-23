@@ -3,19 +3,19 @@ import './search-item.styles.scss';
 import { connect } from 'react-redux';
 import {
   createFoodReference,
-  ToggleSuggestionWindow,
+  toggleSuggestionWindow,
 } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
 
 const SearchItemSuggestion = ({
   food,
   createFoodReference,
-  ToggleSuggestionWindow,
+  toggleSuggestionWindow,
   suggestionWindow,
 }) => {
   const handleClick = () => {
     createFoodReference(food);
-    ToggleSuggestionWindow(!suggestionWindow);
+    toggleSuggestionWindow(!suggestionWindow);
   };
 
   const truncate = (string) => {
@@ -47,7 +47,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  ToggleSuggestionWindow: (status) => dispatch(ToggleSuggestionWindow(status)),
+  toggleSuggestionWindow: (status) => dispatch(toggleSuggestionWindow(status)),
 });
 
 export default connect(

@@ -6,7 +6,6 @@ import FoodFilter from '../../components/food-filter/food-filter.component';
 import {
   toggleSearchModal,
   updateTotals,
-  setFoodFilter,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
 import { HorizontalBar } from 'react-chartjs-2';
@@ -37,7 +36,6 @@ const SearchFoodModal = ({
   entries,
   searchModal,
   setEntry,
-  setFoodFilter,
   carbSettings,
   userId,
   diet,
@@ -566,8 +564,8 @@ const SearchFoodModal = ({
             onClick={openCustomFoods}
           ></i>
         </div>
-        <div>
-          <i className='fas fa-bookmark fav' onClick={handleClose}></i>
+        <div onClick={handleClose}>
+          <i className='fas fa-bookmark fav'></i>
         </div>
         <div className='l'>Add a custom food</div>
         <div className='l'>View your favorites</div>
@@ -581,8 +579,8 @@ const SearchFoodModal = ({
         <div className='search-s'>
           <div className='btn-c'>
             <FoodFilter />
-            <div className='close-btn'>
-              <i className='fas fa-times' onClick={handleClose}></i>
+            <div className='close-btn' onClick={handleClose}>
+              <i className='fas fa-times'></i>
             </div>
           </div>
           <Search />

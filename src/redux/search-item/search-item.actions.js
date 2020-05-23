@@ -5,7 +5,7 @@ export const createFoodReference = (food) => ({
   payload: food,
 });
 
-export const ToggleSuggestionWindow = (status) => ({
+export const toggleSuggestionWindow = (status) => ({
   type: SearchItemActionTypes.TOGGLE_SUGGESTION_WINDOW,
   payload: status,
 });

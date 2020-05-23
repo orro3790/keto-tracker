@@ -15,7 +15,7 @@ const FoodItem = ({
   listId,
   meal,
   createFoodReference,
-  currentUser,
+  carbSettings,
 }) => {
   const handleClick = (e) => {
     if (!e.target.className.includes('fav-btn')) {
@@ -40,12 +40,10 @@ const FoodItem = ({
 
   let carbValue = 0;
 
-  if (currentUser !== null) {
-    if (currentUser.carbSettings === 'net') {
-      carbValue = food.k;
-    } else {
-      carbValue = food.c;
-    }
+  if (carbSettings === 'net') {
+    carbValue = food.k;
+  } else {
+    carbValue = food.c;
   }
 
   return (

@@ -45,10 +45,11 @@ $keto-green: #1eb980;
 
     .close-btn {
       color: $error-red-600;
-      cursor: pointer;
 
       & i {
         font-size: $font-size-large;
+        cursor: pointer;
+
         &:active {
           transition: 0.1s;
           transform: scale(0.7);

@@ -4,5 +4,5 @@ const selectCreateFood = (state) => state.createFood;
 
 export const selectCreateFoodModalStatus = createSelector(
   [selectCreateFood],
-  (createFoodModal) => createFoodModal.status
+  (createFoodModal) => createFoodModal.modal.status
 );

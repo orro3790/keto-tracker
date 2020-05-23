@@ -26,6 +26,7 @@ $keto-green: #1eb980;
 .meal-h-c {
   display: grid;
   grid-template-columns: auto 1fr;
+  gap: 0 10px;
   margin: 1px 0px 1px 0px;
   padding: 10px 10px 10px 0px;
   border-radius: 2.5px;
@@ -38,8 +39,6 @@ $keto-green: #1eb980;
   .add-btn {
     font-size: $font-size-large;
     color: white;
-    padding: 0px 0px 0px 10px;
-    // color: rgba(227, 28, 116, 1);
 
     i {
       cursor: pointer;

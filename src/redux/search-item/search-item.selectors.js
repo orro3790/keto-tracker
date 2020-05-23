@@ -9,5 +9,5 @@ export const selectFoodReference = createSelector(
 
 export const selectSuggestionWindow = createSelector(
   [selectSearchItem],
-  (searchItem) => searchItem.selectSuggestionWindow
+  (searchItem) => searchItem.suggestionWindow
 );

@@ -3,23 +3,20 @@ $font-size-medium: 16px;
 $dp-04: #272727;
 $dp-06: #2c2c2c;
 $dp-12: #323232;
+$dp-24: #373737;
 $keto-green: #1eb980;
 
 .item-c {
   display: grid;
   grid-template-columns: 20px auto;
   gap: 5px;
+  height: 50px;
   align-items: center;
   padding: 5px;
   font-size: $font-size-medium;
   color: #fff;
-  background-color: $dp-04;
-  z-index: 1;
+  z-index: 3;
   cursor: pointer;
-
-  &:nth-child(odd) {
-    background-color: $dp-06;
-  }
 
   &:hover {
     background-color: $dp-12;
@@ -44,4 +41,23 @@ $keto-green: #1eb980;
   .desc {
     font-size: $font-size-small;
   }
+}
+
+.liOdd {
+  background-color: $dp-06;
+}
+
+.liEven {
+  background-color: $dp-04;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: $dp-04;
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $dp-24;
 }

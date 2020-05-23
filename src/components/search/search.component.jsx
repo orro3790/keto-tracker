@@ -16,6 +16,9 @@ import {
   selectModal,
   selectFoodFilter,
 } from '../../redux/search-food-modal/search-food-modal.selectors';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList as List } from 'react-window';
+import { toggleSuggestionWindow } from '../../redux/search-item/search-item.actions';
 import './search.styles.scss';
 
 const Search = ({
@@ -25,6 +28,7 @@ const Search = ({
   foodFilter,
   userId,
   favFoods,
+  toggleSuggestionWindow,
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
@@ -86,12 +90,20 @@ const Search = ({
         }
       };
       fetchData();
+      toggleSuggestionWindow(true);
     }
 
     // return () => {
     //   cleanup;
     // };
-  }, [query, foodFilter, userId, favFoods, searchModal.foodFilter]);
+  }, [
+    query,
+    foodFilter,
+    userId,
+    favFoods,
+    searchModal.foodFilter,
+    toggleSuggestionWindow,
+  ]);
 
   let labelMsg;
 
@@ -133,17 +145,38 @@ const Search = ({
 
   let rendered;
 
-  if (searchInput !== '') {
-    rendered = results.map((food) => (
-      <SearchItemSuggestion key={food.i} food={food} />
-    ));
-  } else {
-    rendered = null;
+  const Row = ({ index, style }) => (
+    <div style={style}>
+      <SearchItemSuggestion
+        key={results[index].i}
+        food={results[index]}
+        index={index}
+      />
+    </div>
+  );
+
+  if (suggestionWindow === true) {
+    rendered = (
+      <div className='wrap'>
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              height={height}
+              itemCount={results.length}
+              itemSize={50}
+              width={width}
+            >
+              {Row}
+            </List>
+          )}
+        </AutoSizer>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className='food-item-in'>
+      <div>
         <form onSubmit={handleSubmit}>
           <FormInput
             id='name'
@@ -157,9 +190,7 @@ const Search = ({
           />
         </form>
       </div>
-      <div className='wrap'>
-        <div className='result-li'>{rendered}</div>
-      </div>
+      {rendered}
     </div>
   );
 };
@@ -173,4 +204,8 @@ const mapStateToProps = createStructuredSelector({
   foodFilter: selectFoodFilter,
 });
 
-export default connect(mapStateToProps)(Search);
+const mapDispatchToProps = (dispatch) => ({
+  toggleSuggestionWindow: (status) => dispatch(toggleSuggestionWindow(status)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);

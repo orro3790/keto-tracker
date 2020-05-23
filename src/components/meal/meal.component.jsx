@@ -57,8 +57,6 @@ const Meal = ({ meal, entries, currentUser }) => {
     }
   }
 
-  console.log('I am being called');
-
   return (
     <div>
       <div className='meal-h-c'>
