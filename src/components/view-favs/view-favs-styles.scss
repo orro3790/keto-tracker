@@ -12,9 +12,9 @@ $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
-.create-m-c {
+.view-favs-c {
   display: grid;
-  grid-template-rows: 85% 15%;
+  grid-template-rows: 40px auto;
   height: 600px;
   width: 450px;
   background-color: $dp-08;
@@ -24,30 +24,34 @@ $keto-green: #1eb980;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
 
-.btn-c {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-  margin-left: auto;
-  height: 40px;
-  text-align: right;
-  width: 150px;
-  padding: 10px 20px 0 0;
-  color: rgba(255, 255, 255, 0.38);
-}
+  .favs-list {
+    padding: 20px;
+  }
 
-.close-create-btn {
-  color: $error-red-600;
+  .btn-c {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-left: auto;
+    height: 40px;
+    text-align: right;
+    width: 150px;
+    padding: 10px 20px 0 0;
+    color: rgba(255, 255, 255, 0.38);
+  }
 
-  & i {
-    font-size: $font-size-large;
-    cursor: pointer;
+  .close-create-btn {
+    color: $error-red-600;
 
-    &:active {
-      transition: 0.1s;
-      transform: scale(0.7);
+    & i {
+      font-size: $font-size-large;
+      cursor: pointer;
+
+      &:active {
+        transition: 0.05s;
+        transform: scale(0.9);
+      }
     }
   }
 }

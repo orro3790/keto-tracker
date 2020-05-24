@@ -11,12 +11,12 @@ $keto-blue: #53a3ff;
     color: rgba(255, 255, 255, 0.38);
     cursor: pointer;
     &:active {
-      transition: 0.1s;
-      transform: scale(0.7);
+      transition: 0.05s;
+      transform: scale(0.9);
     }
 
     &:hover:not(.on) {
-      color: $keto-green;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     &.on {

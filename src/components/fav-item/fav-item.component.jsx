@@ -1,21 +1,13 @@
 import React from 'react';
-import './search-item.styles.scss';
+import './fav-item.styles.scss';
 import { connect } from 'react-redux';
-import {
-  createFoodReference,
-  toggleSuggestionWindow,
-} from '../../redux/search-item/search-item.actions.js';
+import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
 
-const SearchItemSuggestion = ({
-  food,
-  createFoodReference,
-  toggleSuggestionWindow,
-  suggestionWindow,
-}) => {
+const FavItem = ({ food, createFoodReference }) => {
   const handleClick = () => {
     createFoodReference(food);
-    toggleSuggestionWindow(!suggestionWindow);
+    // toggle search modal next, to view the details
   };
 
   const truncate = (string) => {
@@ -39,18 +31,9 @@ const SearchItemSuggestion = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.modal,
-  suggestionWindow: state.searchItem.suggestionWindow,
-});
-
 const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  toggleSuggestionWindow: (status) => dispatch(toggleSuggestionWindow(status)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchItemSuggestion);
+export default connect(null, mapDispatchToProps)(FavItem);

@@ -2,13 +2,14 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectFoodFilter } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { setFoodFilter } from './../../redux/search-food-modal/search-food-modal.actions';
 import './food-filter.styles.scss';
 
-const FoodFilter = ({ foodFilter, setFoodFilter }) => {
+const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
   let userOn, favOn, usdaOn;
 
-  switch (foodFilter) {
+  switch (foodFilter.filter) {
     case 'usda':
       usdaOn = 'on';
       break;
@@ -25,11 +26,20 @@ const FoodFilter = ({ foodFilter, setFoodFilter }) => {
   // dispatch food filter to state so it will remember last preference upon reopening of search modal
   const toggleFilter = (e) => {
     if (e.target.className.includes('fav')) {
-      setFoodFilter('fav');
+      setFoodFilter({
+        filter: 'fav',
+        path: `users/${userId}/favFoods/`,
+      });
     } else if (e.target.className.includes('usda')) {
-      setFoodFilter('usda');
+      setFoodFilter({
+        filter: 'usda',
+        path: `usda`,
+      });
     } else if (e.target.className.includes('user-foods')) {
-      setFoodFilter('user-foods');
+      setFoodFilter({
+        filter: 'user-foods',
+        path: `users/${userId}/createdFoods/`,
+      });
     }
   };
 
@@ -59,6 +69,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter }) => {
 
 const mapStateToProps = createStructuredSelector({
   foodFilter: selectFoodFilter,
+  userId: selectCurrentUserId,
 });
 
 const mapDispatchToProps = (dispatch) => ({

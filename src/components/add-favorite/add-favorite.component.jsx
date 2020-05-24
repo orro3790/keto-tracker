@@ -20,8 +20,10 @@ const AddFavorite = ({ currentUser, foodReference, onClick }) => {
     if (currentUser !== null) {
       if (currentUser.favFoods.some((food) => food.id === foodReference.id)) {
         setEnabled(true);
+        console.log('favorited');
       } else {
         setEnabled(false);
+        console.log('unfavorited');
       }
     }
   }, [currentUser, foodReference]);

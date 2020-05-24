@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import SearchItemSuggestion from './../search-item/search-item.component';
@@ -33,6 +33,7 @@ const Search = ({
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setSearchInput(e.target.value);
@@ -41,6 +42,7 @@ const Search = ({
   const handleSubmit = (e) => {
     e.preventDefault();
     setQuery(searchInput);
+    setSubmitting(true);
   };
 
   useEffect(() => {
@@ -49,26 +51,10 @@ const Search = ({
   }, [suggestionWindow]);
 
   useEffect(() => {
-    let filterPath;
-
-    switch (foodFilter) {
-      case 'usda':
-        filterPath = 'usda';
-        break;
-      case 'fav':
-        filterPath = `users/${userId}/favFoods/`;
-        break;
-      case 'user-foods':
-        filterPath = `users/${userId}/createdFoods/`;
-        break;
-      default:
-        break;
-    }
-
     // check that query !== '' to prevent a fetch upon mount
-    if (query !== '') {
+    if (query !== '' && submitting === true) {
       const fetchData = async () => {
-        if (foodFilter === 'fav') {
+        if (foodFilter.filter === 'fav') {
           const response = favFoods.filter(
             (food) => food.n === query.toUpperCase()
           );
@@ -76,7 +62,7 @@ const Search = ({
           setResults(response);
         } else {
           const response = await firestore
-            .collection(filterPath)
+            .collection(foodFilter.path)
             .where('n', '==', query.toUpperCase())
             .get();
 
@@ -91,12 +77,13 @@ const Search = ({
       };
       fetchData();
       toggleSuggestionWindow(true);
+      setSubmitting(false);
     }
-
     // return () => {
     //   cleanup;
     // };
   }, [
+    submitting,
     query,
     foodFilter,
     userId,
@@ -110,7 +97,7 @@ const Search = ({
   if (searchModal.editMode === true) {
     labelMsg = `Replace "${foodReference.n}" with ...`;
   } else {
-    switch (foodFilter) {
+    switch (foodFilter.filter) {
       case 'usda':
         labelMsg = (
           <div>

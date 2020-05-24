@@ -70,7 +70,6 @@ export const createCreateFoodDocument = async (currentUser, newFood) => {
   try {
     // .set() is the create method
     await newDocRef.set(newFood);
-    console.log('New food successfully added!');
   } catch (error) {
     console.log('error creating new food item', error.message);
   }
@@ -315,9 +314,7 @@ export const addFavoriteFood = async (userId, foodReference) => {
     try {
       let userCopy = Object.assign({}, userData);
       userCopy.favFoods.push(foodReference);
-      userRef.set(userCopy).then(function () {
-        console.log(`${foodReference.n} added to favorites`);
-      });
+      userRef.set(userCopy);
     } catch (error) {
       console.log(
         `error adding ${foodReference.n} to favorites: ${error.error}`
@@ -327,9 +324,7 @@ export const addFavoriteFood = async (userId, foodReference) => {
     try {
       let userCopy = Object.assign({}, userData);
       userCopy.favFoods.splice(foodReference, 1);
-      userRef.set(userCopy).then(function () {
-        console.log(`${foodReference.n} removed from favorites`);
-      });
+      userRef.set(userCopy);
     } catch (error) {
       console.log(
         `error removing ${foodReference.n} from favorites: ${error.error}`

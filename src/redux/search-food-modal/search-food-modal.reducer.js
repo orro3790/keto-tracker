@@ -6,7 +6,10 @@ const INITIAL_STATE = {
     meal: 'none',
     editMode: false,
   },
-  foodFilter: 'usda',
+  foodFilter: {
+    filter: 'usda',
+    path: 'usda',
+  },
   updateTotals: false,
 };
 
