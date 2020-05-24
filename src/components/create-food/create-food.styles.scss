@@ -127,7 +127,6 @@ $keto-green: #1eb980;
 
   .submit-btn {
     display: grid;
-    align-content: center;
     text-align: center;
     padding: 10px;
     background-color: $dp-12;
@@ -141,7 +140,7 @@ $keto-green: #1eb980;
     }
 
     .txt {
-      padding-right: 5px;
+      align-self: center;
       font-size: $font-size-display-3;
       color: rgba(255, 255, 255, 0.38);
       transition: 0.5s;

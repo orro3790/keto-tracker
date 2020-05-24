@@ -57,34 +57,37 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // all macros in the database must be based off 100g/ml portions
-    const ePer = parseFloat(((calories / size) * 100).toPrecision(4));
-    const cPer = parseFloat(((carbs / size) * 100).toPrecision(4));
-    const fPer = parseFloat(((fats / size) * 100).toPrecision(4));
-    const pPer = parseFloat(((protein / size) * 100).toPrecision(4));
-    const dPer = parseFloat(((fiber / size) * 100).toPrecision(4));
-    const kPer = cPer - dPer;
 
-    // implement ability to add by label:
-    // const g = ...
-    // const i = ...
+    if (isSubmittable === true) {
+      // all macros in the database must be based off 100g/ml portions
+      const ePer = parseFloat(((calories / size) * 100).toPrecision(4));
+      const cPer = parseFloat(((carbs / size) * 100).toPrecision(4));
+      const fPer = parseFloat(((fats / size) * 100).toPrecision(4));
+      const pPer = parseFloat(((protein / size) * 100).toPrecision(4));
+      const dPer = parseFloat(((fiber / size) * 100).toPrecision(4));
+      const kPer = cPer - dPer;
 
-    const newFood = {
-      b: description.toUpperCase(),
-      c: cPer,
-      d: dPer,
-      e: ePer,
-      f: fPer,
-      g: '',
-      i: '',
-      k: kPer,
-      n: name.toUpperCase(),
-      p: pPer,
-      u: unit,
-    };
-    createCreateFoodDocument(currentUser, newFood);
-    handleClose();
-    // dispatch toggleGlobalMessage next
+      // implement ability to add by label:
+      // const g = ...
+      // const i = ...
+
+      const newFood = {
+        b: description.toUpperCase(),
+        c: cPer,
+        d: dPer,
+        e: ePer,
+        f: fPer,
+        g: '',
+        i: '',
+        k: kPer,
+        n: name.toUpperCase(),
+        p: pPer,
+        u: unit,
+      };
+      createCreateFoodDocument(currentUser, newFood);
+      handleClose();
+      // dispatch toggleGlobalMessage next
+    }
   };
 
   const handleClose = () => {
