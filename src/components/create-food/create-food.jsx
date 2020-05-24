@@ -154,9 +154,11 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
       <form className='modal'>
         <div className='create-m-c'>
           <div className='inner-c'>
-            <span className='close-btn'>
-              <i className='fas fa-times' onClick={handleClose}></i>
-            </span>
+            <div className='btn-c'>
+              <div className='close-create-btn' onClick={handleClose}>
+                <i className='fas fa-times'></i>
+              </div>
+            </div>
             <div className='t-s'>
               <FormInput
                 id='name'

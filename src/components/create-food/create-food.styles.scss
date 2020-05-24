@@ -1,4 +1,5 @@
 $font-size-medium: 16px;
+$font-size-large: 20px;
 $font-size-display-3: 22px;
 $base-grey: #121212;
 $dp-04: #272727;
@@ -26,7 +27,7 @@ $keto-green: #1eb980;
 
   .inner-c {
     display: grid;
-    grid-template-rows: auto auto 1fr;
+    grid-template-rows: auto auto auto 1fr;
 
     .close-btn {
       position: absolute;
@@ -47,7 +48,7 @@ $keto-green: #1eb980;
     }
 
     .t-s {
-      padding: 30px 20px 0 20px;
+      padding: 0 20px 0 20px;
     }
 
     .desc-s {
@@ -177,4 +178,30 @@ input {
 }
 textarea:focus::placeholder {
   color: transparent;
+}
+
+.btn-c {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-left: auto;
+  height: 40px;
+  text-align: right;
+  width: 150px;
+  padding: 10px 20px 0 0;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.close-create-btn {
+  color: $error-red-600;
+
+  & i {
+    font-size: $font-size-large;
+    cursor: pointer;
+
+    &:active {
+      transition: 0.1s;
+      transform: scale(0.7);
+    }
+  }
 }
