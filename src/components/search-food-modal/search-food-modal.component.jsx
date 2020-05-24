@@ -3,15 +3,15 @@ import { connect } from 'react-redux';
 import Search from './../search/search.component';
 import AddFavorite from '../../components/add-favorite/add-favorite.component';
 import FoodFilter from '../../components/food-filter/food-filter.component';
+import { HorizontalBar } from 'react-chartjs-2';
 import {
   toggleSearchModal,
   updateTotals,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
-import { HorizontalBar } from 'react-chartjs-2';
+import { toggleViewFavsModal } from '../../redux/view-favs/view-favs.actions.js';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
-import { addFavoriteFood } from '../../firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
@@ -24,11 +24,13 @@ import {
   selectSuggestionWindow,
   selectFoodReference,
 } from '../../redux/search-item/search-item.selectors';
+import { addFavoriteFood } from '../../firebase/firebase.utils';
 import './search-food-modal.styles.scss';
 
 const SearchFoodModal = ({
   toggleSearchModal,
   toggleCreateFoodModal,
+  toggleViewFavsModal,
   updateTotals,
   foodReference,
   createFoodReference,
@@ -84,6 +86,13 @@ const SearchFoodModal = ({
   const openCustomFoods = () => {
     handleClose();
     toggleCreateFoodModal({
+      status: 'visible',
+    });
+  };
+
+  const openViewFavs = () => {
+    handleClose();
+    toggleViewFavsModal({
       status: 'visible',
     });
   };
@@ -564,7 +573,7 @@ const SearchFoodModal = ({
             onClick={openCustomFoods}
           ></i>
         </div>
-        <div onClick={handleClose}>
+        <div onClick={openViewFavs}>
           <i className='fas fa-bookmark fav'></i>
         </div>
         <div className='l'>Add a custom food</div>
@@ -604,6 +613,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
+  toggleViewFavsModal: (status) => dispatch(toggleViewFavsModal(status)),
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),

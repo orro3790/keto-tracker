@@ -6,25 +6,26 @@ import TotalsChart from '../../components/totals-chart/totals-chart.component';
 import DailyChart from '../../components/daily-hud/daily-hud.component';
 import Rail from '../../components/rail/rail.component';
 import CreateFood from '../../components/create-food/create-food';
+import ViewFavs from '../../components/view-favs/view-favs-component';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCreateFoodModalStatus } from '../../redux/create-food/create-food.selectors';
 import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectViewFavModalStatus } from '../../redux/view-favs/view-favs.selectors';
 import './diary.styles.scss';
 
-const Diary = ({ searchModal, createFoodModalStatus }) => {
-  let searchFoodModal;
+const Diary = ({ searchModal, createFoodModalStatus, viewFavsModalStatus }) => {
+  let searchFoodModal, createFoodModal, viewFavsModal;
   if (searchModal.status === 'visible') {
     searchFoodModal = <SearchFoodModal />;
-  } else {
-    searchFoodModal = null;
   }
-
-  let createFoodModal;
   if (createFoodModalStatus === 'visible') {
     createFoodModal = <CreateFood />;
+  }
+  if (viewFavsModalStatus === 'visible') {
+    viewFavsModal = <ViewFavs />;
   }
 
   return (
@@ -34,9 +35,10 @@ const Diary = ({ searchModal, createFoodModalStatus }) => {
       </div>
       <div className='page-body-c'>
         {searchFoodModal}
+        {createFoodModal}
+        {viewFavsModal}
         <DateSelector />
         <DailyChart />
-        {createFoodModal}
         <div className='meal-c'>
           <div>
             <Meal meal={'Breakfast'} />
@@ -70,6 +72,7 @@ const mapStateToProps = createStructuredSelector({
   searchModal: selectModal,
   createFoodModalStatus: selectCreateFoodModalStatus,
   foodReference: selectFoodReference,
+  viewFavsModalStatus: selectViewFavModalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({
