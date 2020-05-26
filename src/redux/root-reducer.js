@@ -5,7 +5,8 @@ import searchModalReducer from './search-food-modal/search-food-modal.reducer';
 import dateSelectorReducer from './date-selector/date-selector.reducer';
 import dailyHudSelector from './daily-hud/daily-hud-reducer';
 import createFoodReducer from './create-food/create-food.reducer';
-import viewFavsReducer from './favs-modal/favs-modal.reducer';
+import FavsModalReducer from './favs-modal/favs-modal.reducer';
+import customFoodsModalReducer from './custom-foods-modal/custom-foods-modal.reducer';
 
 export default combineReducers({
   user: userReducer,
@@ -14,5 +15,6 @@ export default combineReducers({
   dateSelector: dateSelectorReducer,
   dailyHud: dailyHudSelector,
   createFood: createFoodReducer,
-  viewFavs: viewFavsReducer,
+  viewFavs: FavsModalReducer,
+  customFoodsModal: customFoodsModalReducer,
 });

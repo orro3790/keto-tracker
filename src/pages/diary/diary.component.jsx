@@ -7,7 +7,7 @@ import DailyChart from '../../components/daily-hud/daily-hud.component';
 import Rail from '../../components/rail/rail.component';
 import CreateFood from '../../components/create-food/create-food';
 import ViewFavs from '../../components/favs-modal/favs-modal-component';
-import Alert from '../../components/alert/alert.component';
+import CustomFoodsModal from '../../components/custom-foods-modal/custom-foods-modal-component';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
@@ -15,10 +15,16 @@ import { selectCreateFoodModalStatus } from '../../redux/create-food/create-food
 import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectViewFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
+import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import './diary.styles.scss';
 
-const Diary = ({ searchModal, createFoodModalStatus, viewFavsModalStatus }) => {
-  let searchFoodModal, createFoodModal, viewFavsModal;
+const Diary = ({
+  searchModal,
+  createFoodModalStatus,
+  viewFavsModalStatus,
+  customFoodsModalStatus,
+}) => {
+  let searchFoodModal, createFoodModal, viewFavsModal, customFoodsModal;
   if (searchModal.status === 'visible') {
     searchFoodModal = <SearchFoodModal />;
   }
@@ -27,6 +33,9 @@ const Diary = ({ searchModal, createFoodModalStatus, viewFavsModalStatus }) => {
   }
   if (viewFavsModalStatus === 'visible') {
     viewFavsModal = <ViewFavs />;
+  }
+  if (customFoodsModalStatus === 'visible') {
+    customFoodsModal = <CustomFoodsModal />;
   }
 
   return (
@@ -38,6 +47,7 @@ const Diary = ({ searchModal, createFoodModalStatus, viewFavsModalStatus }) => {
         {searchFoodModal}
         {createFoodModal}
         {viewFavsModal}
+        {customFoodsModal}
         <DateSelector />
         <DailyChart />
         <div className='meal-c'>
@@ -74,6 +84,7 @@ const mapStateToProps = createStructuredSelector({
   createFoodModalStatus: selectCreateFoodModalStatus,
   foodReference: selectFoodReference,
   viewFavsModalStatus: selectViewFavModalStatus,
+  customFoodsModalStatus: selectCustomFoodsModalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({

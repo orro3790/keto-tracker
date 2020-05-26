@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   },
 };
 
-const viewFavsReducer = (state = INITIAL_STATE, action) => {
+const FavsModalReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ViewFavsActionTypes.TOGGLE_FAVS_MODAL:
       return {
@@ -18,4 +18,4 @@ const viewFavsReducer = (state = INITIAL_STATE, action) => {
   }
 };
 
-export default viewFavsReducer;
+export default FavsModalReducer;

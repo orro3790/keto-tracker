@@ -12,6 +12,7 @@ import { createFoodReference } from './../../redux/search-item/search-item.actio
 import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
+import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
@@ -31,6 +32,7 @@ const SearchFoodModal = ({
   toggleSearchModal,
   toggleCreateFoodModal,
   toggleViewFavsModal,
+  toggleCustomFoodsModal,
   updateTotals,
   foodReference,
   createFoodReference,
@@ -97,16 +99,23 @@ const SearchFoodModal = ({
     }
   };
 
-  const openCustomFoods = () => {
+  const openAddCustomFoodModal = () => {
     handleClose();
     toggleCreateFoodModal({
       status: 'visible',
     });
   };
 
-  const openViewFavs = () => {
+  const openViewFavsModal = () => {
     handleClose('maintainMeal');
     toggleViewFavsModal({
+      status: 'visible',
+    });
+  };
+
+  const openCustomFoodModal = () => {
+    handleClose();
+    toggleCustomFoodsModal({
       status: 'visible',
     });
   };
@@ -583,9 +592,12 @@ const SearchFoodModal = ({
       <div className='hud'>
         <div className='hud-r'>
           <div>
-            <i className='fas fa-utensils add' onClick={openCustomFoods}></i>
+            <i
+              className='fas fa-utensils add'
+              onClick={openAddCustomFoodModal}
+            ></i>
           </div>
-          <div onClick={openViewFavs}>
+          <div onClick={openViewFavsModal}>
             <i className='fas fa-bookmark fav'></i>
           </div>
           <div className='l'>Add a food</div>
@@ -596,7 +608,7 @@ const SearchFoodModal = ({
           <div>
             <i
               className='fas fa-folder-open custom'
-              onClick={openCustomFoods}
+              onClick={openCustomFoodModal}
             ></i>
           </div>
           <div className='l'>Edit Custom Foods</div>
@@ -638,6 +650,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
   toggleViewFavsModal: (status) => dispatch(toggleViewFavsModal(status)),
+  toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
