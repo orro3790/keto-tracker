@@ -8,22 +8,14 @@ $keto-green: #1eb980;
   grid-template-rows: 1fr;
   gap: 15px;
   align-self: center;
+  align-items: center;
   justify-content: center;
   text-align: center;
 
   i {
-    align-self: center;
     font-size: $font-size-medium;
     color: $dp-24;
     transition: 0.3s;
-
-    &.fav {
-      padding-bottom: 10px;
-    }
-
-    &.custom {
-      padding-top: 10px;
-    }
 
     &:hover {
       cursor: pointer;

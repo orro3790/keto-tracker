@@ -12,47 +12,51 @@ $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
-.create-m-c {
+.create-m {
   display: grid;
-  grid-template-rows: 85% 15%;
+  grid-template-rows: 30px auto 15%;
   height: 600px;
   width: 450px;
-  background-color: $dp-08;
-  box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
-  z-index: 1;
   position: fixed;
   top: 50%;
   left: 50%;
+  padding: 0 20px 20px 20px;
+  background-color: $dp-08;
+  box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 1;
   transform: translate(-50%, -50%);
 
-  .inner-c {
+  .btn-c {
     display: grid;
-    grid-template-rows: auto auto auto 1fr;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    text-align: right;
+    justify-self: right;
+    width: 150px;
+    color: rgba(255, 255, 255, 0.38);
+  }
 
-    .close-btn {
-      position: absolute;
-      margin-top: 5px;
-      margin-right: 5px;
-      top: 0;
-      right: 0;
-      color: $error-red-600;
+  .close-btn {
+    align-self: center;
+    color: $error-red-600;
+
+    & i {
+      font-size: $font-size-large;
       cursor: pointer;
 
-      & i {
-        font-size: 1.2rem;
-        &:active {
-          transition: 0.1s;
-          transform: scale(0.7);
-        }
+      &:active {
+        transition: 0.05s;
+        transform: scale(0.9);
       }
     }
+  }
 
-    .t-s {
-      padding: 0 20px 0 20px;
-    }
+  .info-c {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
 
     .desc-s {
-      padding: 25px 20px 0 20px;
+      padding-top: 25px;
 
       ::-webkit-scrollbar {
         width: 10px;
@@ -71,7 +75,7 @@ $keto-green: #1eb980;
       grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
       grid-template-columns: 1fr 75px 1fr;
       column-gap: 20px;
-      padding: 10px;
+      padding-bottom: 14px;
       font-size: $font-size-medium;
 
       .macro-l {
@@ -178,30 +182,4 @@ input {
 }
 textarea:focus::placeholder {
   color: transparent;
-}
-
-.btn-c {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-  height: 40px;
-  text-align: right;
-  justify-self: right;
-  width: 150px;
-  padding: 10px 20px 0 0px;
-  color: rgba(255, 255, 255, 0.38);
-}
-
-.close-create-btn {
-  color: $error-red-600;
-
-  & i {
-    font-size: $font-size-large;
-    cursor: pointer;
-
-    &:active {
-      transition: 0.05s;
-      transform: scale(0.9);
-    }
-  }
 }

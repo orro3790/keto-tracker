@@ -22,9 +22,10 @@ $keto-green: #1eb980;
 .search-food-m {
   @include centered;
   display: grid;
-  grid-template-rows: 40px auto 85%;
+  grid-template-rows: 30px auto 85%;
   height: 600px;
   width: 450px;
+  padding: 0 20px 20px 20px;
   background-color: $dp-08;
   box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
   z-index: 1;
@@ -40,6 +41,7 @@ $keto-green: #1eb980;
   }
 
   .close-btn {
+    align-self: center;
     color: $error-red-600;
 
     & i {
@@ -51,10 +53,6 @@ $keto-green: #1eb980;
         transform: scale(0.9);
       }
     }
-  }
-
-  .search-s {
-    padding: 0 20px 0 20px;
   }
 
   .results-c {

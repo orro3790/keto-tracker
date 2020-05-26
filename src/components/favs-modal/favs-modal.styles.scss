@@ -13,27 +13,36 @@ $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
-.view-favs-c {
-  display: grid;
-  grid-template-rows: 40px auto;
-  height: 600px;
-  width: 450px;
-  background-color: $dp-08;
-  box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
-  z-index: 1;
+@mixin centered {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
 
-  .favs-list {
-    height: 495px;
-    width: 100%;
-    box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
-    padding: 0 20px 0 20px;
+.view-favs-m {
+  @include centered;
+  display: grid;
+  grid-template-rows: 30px auto 1fr;
+  height: 600px;
+  width: 450px;
+  padding: 0 20px 20px 20px;
+  background-color: $dp-08;
+  box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 1;
+
+  .btn-c {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    text-align: right;
+    justify-self: right;
+    width: 150px;
+    color: rgba(255, 255, 255, 0.38);
   }
 
-  .close-create-btn {
+  .close-btn {
+    align-self: center;
     color: $error-red-600;
 
     & i {
@@ -45,5 +54,11 @@ $keto-green: #1eb980;
         transform: scale(0.9);
       }
     }
+  }
+
+  .favs-list {
+    height: 100%;
+    width: 100%;
+    box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
   }
 }
