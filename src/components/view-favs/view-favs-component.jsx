@@ -15,8 +15,6 @@ const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
     });
   };
 
-  let rendered;
-
   const Row = ({ index, style }) => (
     <div style={style}>
       <FavItem key={favFoods[index].i} food={favFoods[index]} index={index} />
@@ -26,24 +24,26 @@ const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
   return (
     <div className='view-favs-m'>
       <div className='view-favs-c'>
-        <div className='btn-c'>
-          <div className='close-create-btn' onClick={handleClose}>
-            <i className='fas fa-times'></i>
+        <div className='search-s'>
+          <div className='btn-c'>
+            <div className='close-create-btn' onClick={handleClose}>
+              <i className='fas fa-times'></i>
+            </div>
           </div>
-        </div>
-        <div className='favs-list'>
-          <AutoSizer>
-            {({ height, width }) => (
-              <List
-                height={height}
-                itemCount={favFoods.length}
-                itemSize={50}
-                width={width}
-              >
-                {Row}
-              </List>
-            )}
-          </AutoSizer>
+          <div className='favs-list'>
+            <AutoSizer>
+              {({ height, width }) => (
+                <List
+                  height={height}
+                  itemCount={favFoods.length}
+                  itemSize={50}
+                  width={width}
+                >
+                  {Row}
+                </List>
+              )}
+            </AutoSizer>
+          </div>
         </div>
       </div>
     </div>

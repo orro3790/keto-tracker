@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import FormInput from '../form-input/form-input.component';
 import SearchItemSuggestion from './../search-item/search-item.component';

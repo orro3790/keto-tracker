@@ -16,3 +16,8 @@ export const selectUpdate = createSelector(
   [selectSearchModal],
   (searchModal) => searchModal.updateTotals
 );
+
+export const selectMeal = createSelector(
+  [selectSearchModal],
+  (searchModal) => searchModal.modal.meal
+);

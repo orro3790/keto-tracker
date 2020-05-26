@@ -18,24 +18,22 @@ const FoodItem = ({
   carbSettings,
 }) => {
   const handleClick = (e) => {
-    if (!e.target.className.includes('fav-btn')) {
-      if (searchModal.status === 'hidden') {
-        toggleSearchModal({
-          status: 'visible',
-          meal: meal,
-          editMode: true,
-          foodToEdit: food,
-          listId: listId,
-        });
-      } else {
-        toggleSearchModal({
-          status: 'hidden',
-          meal: meal,
-          listId: listId,
-        });
-      }
-      createFoodReference(food);
+    if (searchModal.status === 'hidden') {
+      toggleSearchModal({
+        status: 'visible',
+        meal: meal,
+        editMode: true,
+        foodToEdit: food,
+        listId: listId,
+      });
+    } else {
+      toggleSearchModal({
+        status: 'hidden',
+        meal: meal,
+        listId: listId,
+      });
     }
+    createFoodReference(food);
   };
 
   let carbValue = 0;

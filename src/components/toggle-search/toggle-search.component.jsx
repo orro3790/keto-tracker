@@ -30,12 +30,16 @@ const ToggleSearchModal = ({
         status: 'visible',
         meal: meal,
         editMode: false,
+        foodToEdit: '',
+        listId: '',
       });
     } else {
       toggleSearchModal({
         status: 'hidden',
-        meal: meal,
+        meal: 'none',
         editMode: false,
+        foodToEdit: '',
+        listId: '',
       });
     }
   };

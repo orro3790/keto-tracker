@@ -5,7 +5,6 @@ import {
   createFoodReference,
   toggleSuggestionWindow,
 } from '../../redux/search-item/search-item.actions.js';
-import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
 
 const SearchItem = ({
   food,
@@ -44,13 +43,11 @@ const SearchItem = ({
 };
 
 const mapStateToProps = (state) => ({
-  searchModal: state.searchModal.modal,
   suggestionWindow: state.searchItem.suggestionWindow,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleSuggestionWindow: (status) => dispatch(toggleSuggestionWindow(status)),
 });
 

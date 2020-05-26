@@ -1,4 +1,4 @@
-$dp-04: #272727;
+$dp-08: #2e2e2e;
 $dp-24: #373737;
 $keto-green: #1eb980;
 
@@ -8,8 +8,9 @@ $keto-green: #1eb980;
 }
 
 .wrap {
-  height: 300px;
+  height: 495px;
   width: 100%;
-  background-color: $dp-04;
+  background-color: $dp-08;
   box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 1;
 }

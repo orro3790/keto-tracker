@@ -76,11 +76,25 @@ const SearchFoodModal = ({
     }
   };
 
-  const handleClose = () => {
-    toggleSearchModal({
-      status: 'hidden',
-      meal: 'none',
-    });
+  const handleClose = (maintainMeal) => {
+    // pass handleClose anything, if it receives an input parameter, it will maintain the meal
+    if (maintainMeal) {
+      toggleSearchModal({
+        status: 'hidden',
+        meal: searchModal.meal,
+        editMode: false,
+        foodToEdit: '',
+        listId: '',
+      });
+    } else {
+      toggleSearchModal({
+        status: 'hidden',
+        meal: 'none',
+        editMode: false,
+        foodToEdit: '',
+        listId: '',
+      });
+    }
   };
 
   const openCustomFoods = () => {
@@ -91,7 +105,7 @@ const SearchFoodModal = ({
   };
 
   const openViewFavs = () => {
-    handleClose();
+    handleClose('maintainMeal');
     toggleViewFavsModal({
       status: 'visible',
     });

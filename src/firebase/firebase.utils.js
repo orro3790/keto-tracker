@@ -323,7 +323,10 @@ export const addFavoriteFood = async (userId, foodReference) => {
   } else {
     try {
       let userCopy = Object.assign({}, userData);
-      userCopy.favFoods.splice(foodReference, 1);
+      let indexToRemove = userCopy.favFoods.findIndex(
+        (food) => food.id === foodReference.id
+      );
+      userCopy.favFoods.splice(indexToRemove, 1);
       userRef.set(userCopy);
     } catch (error) {
       console.log(

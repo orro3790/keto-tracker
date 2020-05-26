@@ -5,6 +5,8 @@ const INITIAL_STATE = {
     status: 'hidden',
     meal: 'none',
     editMode: false,
+    foodToEdit: '',
+    listId: '',
   },
   foodFilter: {
     filter: 'usda',
