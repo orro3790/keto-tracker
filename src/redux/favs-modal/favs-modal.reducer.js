@@ -1,4 +1,4 @@
-import { ViewFavsActionTypes } from './view-favs.types';
+import { ViewFavsActionTypes } from './favs-modal.types';
 
 const INITIAL_STATE = {
   modal: {

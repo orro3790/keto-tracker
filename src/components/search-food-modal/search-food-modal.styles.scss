@@ -22,40 +22,39 @@ $keto-green: #1eb980;
 .search-food-m {
   @include centered;
   display: grid;
-  grid-template-rows: 15% 85%;
+  grid-template-rows: 40px auto 85%;
   height: 600px;
   width: 450px;
   background-color: $dp-08;
   box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
   z-index: 1;
 
-  .search-s {
-    padding: 0 20px 0 20px;
+  .btn-c {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    text-align: right;
+    justify-self: right;
+    width: 150px;
+    color: rgba(255, 255, 255, 0.38);
+  }
 
-    .btn-c {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 15px;
-      margin-left: auto;
-      text-align: right;
-      width: 150px;
-      padding: 10px 0 0 0;
-      color: rgba(255, 255, 255, 0.38);
-    }
+  .close-btn {
+    color: $error-red-600;
 
-    .close-btn {
-      color: $error-red-600;
+    & i {
+      font-size: $font-size-large;
+      cursor: pointer;
 
-      & i {
-        font-size: $font-size-large;
-        cursor: pointer;
-
-        &:active {
-          transition: 0.05s;
-          transform: scale(0.9);
-        }
+      &:active {
+        transition: 0.05s;
+        transform: scale(0.9);
       }
     }
+  }
+
+  .search-s {
+    padding: 0 20px 0 20px;
   }
 
   .results-c {

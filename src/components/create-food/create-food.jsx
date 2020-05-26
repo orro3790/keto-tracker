@@ -151,7 +151,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
 
   return (
     <div>
-      <form className='modal'>
+      <form>
         <div className='create-m-c'>
           <div className='inner-c'>
             <div className='btn-c'>

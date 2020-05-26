@@ -1,0 +1,49 @@
+$font-size-medium: 16px;
+$font-size-large: 20px;
+$font-size-display-3: 22px;
+$base-grey: #121212;
+$dp-04: #272727;
+$dp-06: #2c2c2c;
+$dp-08: #2e2e2e;
+$dp-12: #323232;
+$dp-24: #373737;
+$error-red-600: #e53935;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
+$keto-green: #1eb980;
+
+.view-favs-c {
+  display: grid;
+  grid-template-rows: 40px auto;
+  height: 600px;
+  width: 450px;
+  background-color: $dp-08;
+  box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 1;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  .favs-list {
+    height: 495px;
+    width: 100%;
+    box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+    padding: 0 20px 0 20px;
+  }
+
+  .close-create-btn {
+    color: $error-red-600;
+
+    & i {
+      font-size: $font-size-large;
+      cursor: pointer;
+
+      &:active {
+        transition: 0.05s;
+        transform: scale(0.9);
+      }
+    }
+  }
+}

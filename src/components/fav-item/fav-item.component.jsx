@@ -3,8 +3,10 @@ import './fav-item.styles.scss';
 import { connect } from 'react-redux';
 import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
-import { toggleViewFavsModal } from '../../redux/view-favs/view-favs.actions.js';
+import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
+import { addFavoriteFood } from '../../firebase/firebase.utils';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
 
 const FavItem = ({
@@ -14,17 +16,23 @@ const FavItem = ({
   modal,
   toggleSearchModal,
   toggleViewFavsModal,
+  userId,
 }) => {
-  const handleClick = () => {
-    createFoodReference(food);
-    // close the favorites modal
-    toggleViewFavsModal({
-      status: 'hidden',
-    });
-    // toggle search modal to view the details and stage it to add to meal
-    const copy = Object.assign({}, modal);
-    copy.status = 'visible';
-    toggleSearchModal(copy);
+  const handleClick = (e) => {
+    if (!e.target.className.includes('bookmark')) {
+      createFoodReference(food);
+      // close the favorites modal
+      toggleViewFavsModal({
+        status: 'hidden',
+      });
+      // toggle search modal to view the details and stage it to add to meal
+      const copy = Object.assign({}, modal);
+      copy.status = 'visible';
+      toggleSearchModal(copy);
+    } else {
+      //remove the food from favorites
+      addFavoriteFood(userId, food);
+    }
   };
 
   const truncate = (string) => {
@@ -42,7 +50,7 @@ const FavItem = ({
       className={`item-c ${index % 2 ? 'liOdd' : 'liEven'}`}
       onClick={handleClick}
     >
-      <i className='fas fa-plus-square add-btn'></i>
+      <i className='fas fa-bookmark add-btn'></i>
 
       <span className='name'>{food.n}</span>
       <div></div>
@@ -53,6 +61,7 @@ const FavItem = ({
 
 const mapStateToProps = createStructuredSelector({
   modal: selectModal,
+  userId: selectCurrentUserId,
 });
 
 const mapDispatchToProps = (dispatch) => ({

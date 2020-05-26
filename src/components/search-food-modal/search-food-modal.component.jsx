@@ -9,7 +9,7 @@ import {
   updateTotals,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
-import { toggleViewFavsModal } from '../../redux/view-favs/view-favs.actions.js';
+import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { createStructuredSelector } from 'reselect';
@@ -599,15 +599,16 @@ const SearchFoodModal = ({
   return (
     <div>
       <div className='search-food-m'>
-        <div className='search-s'>
-          <div className='btn-c'>
-            <FoodFilter />
-            <div className='close-btn' onClick={handleClose}>
-              <i className='fas fa-times'></i>
-            </div>
+        <div className='btn-c'>
+          <FoodFilter />
+          <div className='close-btn' onClick={handleClose}>
+            <i className='fas fa-times'></i>
           </div>
+        </div>
+        <div className='search-s'>
           <Search />
         </div>
+
         {resultsContainer}
       </div>
     </div>

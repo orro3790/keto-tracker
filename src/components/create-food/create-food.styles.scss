@@ -184,11 +184,11 @@ textarea:focus::placeholder {
   display: grid;
   grid-template-columns: 1fr;
   gap: 15px;
-  margin-left: auto;
   height: 40px;
   text-align: right;
+  justify-self: right;
   width: 150px;
-  padding: 10px 20px 0 0;
+  padding: 10px 20px 0 0px;
   color: rgba(255, 255, 255, 0.38);
 }
 
