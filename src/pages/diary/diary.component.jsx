@@ -7,6 +7,7 @@ import DailyChart from '../../components/daily-hud/daily-hud.component';
 import Rail from '../../components/rail/rail.component';
 import CreateFood from '../../components/create-food/create-food';
 import ViewFavs from '../../components/favs-modal/favs-modal-component';
+import Alert from '../../components/alert/alert.component';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';

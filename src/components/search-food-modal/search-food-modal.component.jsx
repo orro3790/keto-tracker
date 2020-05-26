@@ -581,17 +581,26 @@ const SearchFoodModal = ({
   } else {
     resultsContainer = (
       <div className='hud'>
-        <div>
-          <i
-            className='fas fa-folder-plus custom'
-            onClick={openCustomFoods}
-          ></i>
+        <div className='hud-r'>
+          <div>
+            <i className='fas fa-utensils add' onClick={openCustomFoods}></i>
+          </div>
+          <div onClick={openViewFavs}>
+            <i className='fas fa-bookmark fav'></i>
+          </div>
+          <div className='l'>Add a food</div>
+          <div className='l'>Edit Favorites</div>
         </div>
-        <div onClick={openViewFavs}>
-          <i className='fas fa-bookmark fav'></i>
+
+        <div className='hud-r-single'>
+          <div>
+            <i
+              className='fas fa-folder-open custom'
+              onClick={openCustomFoods}
+            ></i>
+          </div>
+          <div className='l'>Edit Custom Foods</div>
         </div>
-        <div className='l'>Add a custom food</div>
-        <div className='l'>View your favorites</div>
       </div>
     );
   }

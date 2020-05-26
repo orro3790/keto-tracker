@@ -141,16 +141,14 @@ $keto-green: #1eb980;
 
   .hud {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    gap: 50px 0;
     align-self: center;
     justify-content: center;
     text-align: center;
-    padding: 0 20px 20px 20px;
 
     i {
       align-self: center;
-      font-size: 75px;
+      font-size: 65px;
       color: $dp-24;
       transition: 0.3s;
 
@@ -159,7 +157,25 @@ $keto-green: #1eb980;
         color: $keto-green;
         transition: 0.3s;
       }
+
+      &.add {
+        padding-bottom: 10px;
+      }
+
+      &.fav {
+        padding-bottom: 10px;
+      }
     }
+  }
+
+  .hud-r {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 0 50px;
+    align-self: center;
+    justify-content: center;
+    text-align: center;
   }
 
   .submit-r {
