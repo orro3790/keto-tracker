@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FavItem from '../fav-item/fav-item.component';
-import FoodFilter from '../food-filter/food-filter.component';
 import { connect } from 'react-redux';
 import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import { createStructuredSelector } from 'reselect';
@@ -12,6 +11,7 @@ import './favs-modal.styles.scss';
 
 const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
   const [searchInput, setSearchInput] = useState('');
+  const [results, setResults] = useState(favFoods);
 
   const handleClose = () => {
     toggleViewFavsModal({
@@ -19,19 +19,33 @@ const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
     });
   };
 
-  const Row = ({ index, style }) => (
-    <div style={style}>
-      <FavItem key={favFoods[index].i} food={favFoods[index]} index={index} />
-    </div>
-  );
-
-  const handleSubmit = () => {
-    console.log('submitted');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(searchInput);
   };
 
   const handleChange = (e) => {
-    setSearchInput(e.target.value);
+    setSearchInput(e.target.value.toUpperCase());
   };
+
+  useEffect(() => {
+    let foodList = [];
+    const renderResults = () => {
+      favFoods.forEach((food) => {
+        if (food.n.includes(searchInput)) {
+          foodList.push(food);
+        }
+      });
+    };
+    renderResults();
+    setResults(foodList);
+  }, [searchInput, favFoods]);
+
+  let Row = ({ index, style }) => (
+    <div style={style}>
+      <FavItem key={results[index].i} food={results[index]} index={index} />
+    </div>
+  );
 
   return (
     <div>
@@ -61,7 +75,7 @@ const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
             {({ height, width }) => (
               <List
                 height={height}
-                itemCount={favFoods.length}
+                itemCount={results.length}
                 itemSize={50}
                 width={width}
               >
