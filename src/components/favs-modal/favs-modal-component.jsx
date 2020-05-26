@@ -8,6 +8,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import FormInput from '../../components/form-input/form-input.component';
 import './favs-modal.styles.scss';
+import { ReactComponent as Logo } from '../../assets/no-results.svg';
 
 const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
   const [searchInput, setSearchInput] = useState('');
@@ -47,6 +48,31 @@ const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
     </div>
   );
 
+  let resultsList = (
+    <div className='no-results-t'>
+      <div className='logo'>
+        <Logo className='logo' />
+      </div>
+    </div>
+  );
+
+  if (results.length > 0) {
+    resultsList = (
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            height={height}
+            itemCount={results.length}
+            itemSize={50}
+            width={width}
+          >
+            {Row}
+          </List>
+        )}
+      </AutoSizer>
+    );
+  }
+
   return (
     <div>
       <div className='view-favs-m'>
@@ -70,20 +96,7 @@ const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
             />
           </form>
         </div>
-        <div className='favs-list'>
-          <AutoSizer>
-            {({ height, width }) => (
-              <List
-                height={height}
-                itemCount={results.length}
-                itemSize={50}
-                width={width}
-              >
-                {Row}
-              </List>
-            )}
-          </AutoSizer>
-        </div>
+        <div className='list-s'>{resultsList}</div>
       </div>
     </div>
   );

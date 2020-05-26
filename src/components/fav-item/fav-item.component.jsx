@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './fav-item.styles.scss';
 import { connect } from 'react-redux';
 import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
@@ -18,8 +18,10 @@ const FavItem = ({
   toggleViewFavsModal,
   userId,
 }) => {
+  const [iconClass, setIconClass] = useState('fas fa-bookmark add-btn');
+
   const handleClick = (e) => {
-    if (!e.target.className.includes('bookmark')) {
+    if (!e.target.className.includes('del-btn')) {
       createFoodReference(food);
       // close the favorites modal
       toggleViewFavsModal({
@@ -45,12 +47,24 @@ const FavItem = ({
     }
   };
 
+  const handleMouseOver = () => {
+    setIconClass('fas fa-minus-circle del-btn');
+  };
+
+  const handleMouseOut = () => {
+    setIconClass('fas fa-bookmark add-btn');
+  };
+
   return (
     <div
       className={`item-c ${index % 2 ? 'liOdd' : 'liEven'}`}
       onClick={handleClick}
     >
-      <i className='fas fa-bookmark add-btn'></i>
+      <i
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        className={iconClass}
+      ></i>
 
       <span className='name'>{food.n}</span>
       <div></div>

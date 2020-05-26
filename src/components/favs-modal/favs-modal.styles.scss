@@ -56,9 +56,24 @@ $keto-green: #1eb980;
     }
   }
 
-  .favs-list {
+  .list-s {
+    display: grid;
     height: 100%;
     width: 100%;
-    box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+
+    .no-results-t {
+      align-self: center;
+      text-align: center;
+      font-size: $font-size-display-3;
+    }
+
+    .logo {
+      width: 50%;
+      height: 50%;
+      align-self: center;
+      margin-left: auto;
+      margin-right: auto;
+      fill: #fff;
+    }
   }
 }
