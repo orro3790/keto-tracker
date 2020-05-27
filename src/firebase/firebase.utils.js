@@ -37,7 +37,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     const createdAt = new Date();
 
     try {
-      // .set() is the create method
       await userRef.set({
         displayName,
         email,
@@ -49,9 +48,8 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
           carbs: 25,
           fats: 166,
         },
-        carbSettings: 'total',
-        favFoods: [],
-        membership: 'standard',
+        carbSettings: 't',
+        membership: 's',
         ...additionalData,
       });
     } catch (error) {
@@ -61,17 +59,21 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-export const createFood = async (currentUser, newFood) => {
-  // grab the collection and instantiate an empty doc so it is assigned a random ID
-  const collectionRef = firestore.collection(
-    `users/${currentUser.id}/createdFoods/`
-  );
-  const newDocRef = collectionRef.doc();
+export const createFood = async (userId, food) => {
   try {
-    // .set() is the create method
-    await newDocRef.set(newFood);
+    const collectionRef = firestore.collection(`users/${userId}/createdFoods`);
+    await collectionRef.add(food);
   } catch (error) {
-    console.log('error creating new food item', error.message);
+    console.log(`error adding ${food.n} to favorites`, error.message);
+  }
+};
+
+export const deleteFood = async (userId, food) => {
+  try {
+    const foodRef = firestore.doc(`users/${userId}/createdFoods/${food.id}`);
+    await foodRef.delete();
+  } catch (error) {
+    console.log(`error deleting food from custom foods`, error.message);
   }
 };
 
@@ -281,49 +283,8 @@ export const updateCarbSettings = async (userId, setting) => {
   }
 };
 
-export const addFavoriteFood = async (userId, foodReference) => {
-  // grab the collection and instantiate an empty doc so it is assigned a random ID
-  const userRef = firestore.doc(`users/${userId}/`);
-
-  const snapshot = await userRef.get();
-
-  const userData = snapshot.data();
-
-  let exists = false;
-
-  userData.favFoods.forEach((food) => {
-    if (food.id === foodReference.id) {
-      exists = true;
-    }
-  });
-
-  if (exists === false) {
-    try {
-      let userCopy = Object.assign({}, userData);
-      userCopy.favFoods.push(foodReference);
-      userRef.set(userCopy);
-    } catch (error) {
-      console.log(
-        `error adding ${foodReference.n} to favorites: ${error.error}`
-      );
-    }
-  } else {
-    try {
-      let userCopy = Object.assign({}, userData);
-      let indexToRemove = userCopy.favFoods.findIndex(
-        (food) => food.id === foodReference.id
-      );
-      userCopy.favFoods.splice(indexToRemove, 1);
-      userRef.set(userCopy);
-    } catch (error) {
-      console.log(
-        `error removing ${foodReference.n} from favorites: ${error.error}`
-      );
-    }
-  }
-};
-
 export const toggleFavFood = async (userId, food) => {
+  console.log(food);
   // grab the collection and instantiate an empty doc so it is assigned a random ID
   const querySnapshot = await firestore
     .collection(`users/${userId}/favFoods`)
@@ -333,7 +294,7 @@ export const toggleFavFood = async (userId, food) => {
   if (querySnapshot.empty) {
     try {
       const collectionRef = firestore.collection(`users/${userId}/favFoods`);
-      await collectionRef.add(food);
+      await collectionRef.doc(food.id).set(food);
     } catch (error) {
       console.log(`error adding ${food.n} to favorites`, error.message);
     }

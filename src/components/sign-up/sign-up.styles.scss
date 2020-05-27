@@ -1,11 +1,23 @@
-.sign-up {
-  display: flex;
-  flex-direction: column;
-  width: 380px;
-  align-self: center;
+.sign-up-c {
+  display: grid;
+  width: 100%;
   justify-self: center;
 
   .t {
     margin: 10px 0;
+  }
+
+  .sign-up-r {
+    margin-bottom: 25px;
+  }
+
+  .buttons {
+    align-items: center;
+  }
+
+  .btn {
+    display: grid;
+    width: 100%;
+    align-items: center;
   }
 }

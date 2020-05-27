@@ -38,7 +38,7 @@ const FoodItem = ({
 
   let carbValue = 0;
 
-  if (carbSettings === 'net') {
+  if (carbSettings === 'n') {
     carbValue = food.k;
   } else {
     carbValue = food.c;

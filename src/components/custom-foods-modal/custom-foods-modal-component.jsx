@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import FoodItem from '../fav-item/fav-item.component';
+import EditItem from '../edit-item/edit-item.component';
 import { connect } from 'react-redux';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
-import { selectFavFoods } from '../../redux/user/user.selectors';
+import { selectCustomFoods } from '../../redux/user/user.selectors';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import FormInput from '../../components/form-input/form-input.component';
@@ -12,8 +12,7 @@ import './custom-foods-modal.styles.scss';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import { firestore } from '../../firebase/firebase.utils';
 
-const CustomFoodsModal = ({ favFoods, toggleCustomFoodsModal, userId }) => {
-  const [customFoods, setCustomFoods] = useState('');
+const CustomFoodsModal = ({ customFoods, toggleCustomFoodsModal, userId }) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -32,7 +31,7 @@ const CustomFoodsModal = ({ favFoods, toggleCustomFoodsModal, userId }) => {
   };
 
   const handleChange = (e) => {
-    setSearchInput(e.target.value.toUpperCase());
+    setSearchInput(e.target.value);
   };
 
   useEffect(() => {
@@ -41,41 +40,6 @@ const CustomFoodsModal = ({ favFoods, toggleCustomFoodsModal, userId }) => {
       setResults(customFoods);
     }
   }, [searchInput, customFoods]);
-
-  useEffect(() => {
-    let initalizing = true;
-
-    if (initalizing) {
-      const fetchData = async () => {
-        const response = await firestore
-          .collection(`users/${userId}/createdFoods`)
-          .get();
-
-        setResults(
-          response.docs.map((snapshot) => {
-            const snap = snapshot.data();
-            snap.id = snapshot.id;
-            return snap;
-          })
-        );
-        // store the complete list so it can be used to populate results again if user backspaces to ''
-        setCustomFoods(
-          response.docs.map((snapshot) => {
-            const snap = snapshot.data();
-            snap.id = snapshot.id;
-            return snap;
-          })
-        );
-      };
-      fetchData();
-    }
-
-    console.log('initial fetch');
-    // if unmount, cancel the async function, preventing attempt to render unmounted component
-    return () => {
-      initalizing = false;
-    };
-  }, [userId]);
 
   useEffect(() => {
     // check that query !== '' to prevent a fetch upon mount
@@ -105,7 +69,12 @@ const CustomFoodsModal = ({ favFoods, toggleCustomFoodsModal, userId }) => {
 
   let Row = ({ index, style }) => (
     <div style={style}>
-      <FoodItem key={results[index].i} food={results[index]} index={index} />
+      <EditItem
+        key={results[index].i}
+        food={results[index]}
+        index={index}
+        type='user-foods'
+      />
     </div>
   );
 
@@ -165,7 +134,7 @@ const CustomFoodsModal = ({ favFoods, toggleCustomFoodsModal, userId }) => {
 
 const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
-  favFoods: selectFavFoods,
+  customFoods: selectCustomFoods,
   userId: selectCurrentUserId,
 });
 

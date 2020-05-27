@@ -176,7 +176,7 @@ const UpdateDiet = ({ currentUser }) => {
 
   let carbLabel = 'desired % carbs';
 
-  if (currentUser && currentUser.carbSettings === 'net') {
+  if (currentUser && currentUser.carbSettings === 'n') {
     carbLabel = 'desired % net carbs';
   }
 

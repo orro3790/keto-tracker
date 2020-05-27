@@ -21,7 +21,7 @@ const CurrentDiet = ({ dietSettings, carbSettings }) => {
 
   let carbType = 'carbs';
 
-  if (carbSettings === 'net') {
+  if (carbSettings === 'n') {
     carbType = 'net carbs';
   }
 

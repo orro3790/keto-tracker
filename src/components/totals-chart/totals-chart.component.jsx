@@ -17,7 +17,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
         const totalNetCarbs = entries[meal]['totals']['k'];
         const totalProtein = entries[meal]['totals']['p'];
         const totalCalories = entries[meal]['totals']['e'];
-        if (currentUser.carbSettings === 'net') {
+        if (currentUser.carbSettings === 'n') {
           setTotalsData([
             totalFats,
             totalNetCarbs,
@@ -55,7 +55,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
   useEffect(() => {
     let colors;
     let labels;
-    if (currentUser !== null && currentUser.carbSettings === 'net') {
+    if (currentUser !== null && currentUser.carbSettings === 'n') {
       labels = ['fats', 'net carbs', 'protein'];
     } else {
       labels = ['fats', 'carbs', 'protein'];

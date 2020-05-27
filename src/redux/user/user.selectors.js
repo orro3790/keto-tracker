@@ -24,5 +24,10 @@ export const selectDietSettings = createSelector(
 
 export const selectFavFoods = createSelector(
   [selectUser],
-  (user) => user.currentUser.favFoods
+  (user) => user.favFoods
+);
+
+export const selectCustomFoods = createSelector(
+  [selectUser],
+  (user) => user.createdFoods
 );

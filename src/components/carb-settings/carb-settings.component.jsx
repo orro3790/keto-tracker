@@ -14,7 +14,16 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
 
   useEffect(() => {
     if (currentUser !== null) {
-      setToggle(currentUser.carbSettings);
+      switch (currentUser.carbSettings) {
+        case 'n':
+          setToggle('net');
+          break;
+        case 't':
+          setToggle('total');
+          break;
+        default:
+          break;
+      }
     }
   }, [currentUser]);
 
@@ -31,12 +40,19 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
   };
 
   const saveCarbSettings = () => {
+    let setting;
+    if (toggle === 'total') {
+      setting = 't';
+    } else {
+      setting = 'n';
+    }
+
     if (currentUser !== null) {
-      if (currentUser.carbSettings !== toggle) {
+      if (currentUser.carbSettings !== setting) {
         // only push update if there's a change between state and user settings in firebase
-        updateCarbSettings(currentUser.id, toggle);
+        updateCarbSettings(currentUser.id, setting);
         const userCopy = Object.assign({}, currentUser);
-        userCopy.carbSettings = toggle;
+        userCopy.carbSettings = setting;
         setCurrentUser(userCopy);
       }
     }

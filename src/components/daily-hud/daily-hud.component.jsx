@@ -21,7 +21,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
     if (currentUser !== null && entries !== '') {
       setDailyFats(entries.dailyMacros.f);
       setDailyProtein(entries.dailyMacros.p);
-      if (currentUser.carbSettings === 'net') {
+      if (currentUser.carbSettings === 'n') {
         setDailyCarbs(entries.dailyMacros.k);
       } else {
         setDailyCarbs(entries.dailyMacros.c);
@@ -38,7 +38,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   let carbLabel = 'carbs';
 
   if (currentUser !== null) {
-    if (currentUser.carbSettings === 'net') {
+    if (currentUser.carbSettings === 'n') {
       carbLabel = 'net carbs';
     } else {
       carbLabel = 'carbs';

@@ -8,6 +8,8 @@ const INITIAL_STATE = {
     protein: '',
     calories: '',
   },
+  favFoods: [],
+  createdFoods: [],
 };
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -21,6 +23,16 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         userMacros: action.payload,
+      };
+    case UserActionTypes.SET_FAV_FOODS:
+      return {
+        ...state,
+        favFoods: action.payload,
+      };
+    case UserActionTypes.SET_CREATED_FOODS:
+      return {
+        ...state,
+        createdFoods: action.payload,
       };
     default:
       return state;

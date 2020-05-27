@@ -1,6 +1,77 @@
-.signin-c {
+$dp-04: #272727;
+$dp-08: #2e2e2e;
+$dp-12: #323232;
+$dp-24: #373737;
+$keto-green: #1eb980;
+
+@mixin bp($point) {
+  @if $point == large {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media (max-width: 768px) {
+      @content;
+    }
+  } @else if $point == small {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+}
+
+.sign-in-c {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 10px;
-  padding-top: 50px;
+  grid-template-columns: 20% auto;
+  height: 100vh;
+
+  @include bp(small) {
+    grid-template-columns: 1px auto;
+  }
+
+  .left-c {
+    display: grid;
+    grid-template-rows: 1fr 3fr;
+    background-color: $dp-04;
+    padding: 50px;
+
+    @include bp(small) {
+      padding: 10px 0 10px 0;
+    }
+  }
+
+  .right-c {
+    display: grid;
+    grid-template-rows: 50px auto;
+    padding: 25px;
+  }
+
+  .already-btn {
+    justify-self: right;
+    align-self: center;
+  }
+
+  .inner-c {
+    display: grid;
+    grid-template-rows: auto auto;
+
+    gap: 25px;
+
+    .top-r {
+      display: grid;
+      grid-template-columns: auto 380px auto;
+      align-items: flex-end;
+      @include bp(small) {
+        grid-template-columns: auto auto auto;
+      }
+    }
+    .bottom-r {
+      display: grid;
+      grid-template-columns: auto 380px auto;
+      align-items: flex-start;
+      @include bp(small) {
+        grid-template-columns: auto auto auto;
+      }
+    }
+  }
 }

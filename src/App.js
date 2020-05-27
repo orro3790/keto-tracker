@@ -12,16 +12,23 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from './redux/user/user.selectors';
+import {
+  setCurrentUser,
+  setFavFoods,
+  setCreatedFoods,
+} from './redux/user/user.actions';
 import {
   auth,
   createUserProfileDocument,
   firestore,
 } from './firebase/firebase.utils';
-import { connect } from 'react-redux';
-import { setCurrentUser } from './redux/user/user.actions';
 
-const App = ({ setCurrentUser }) => {
+const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
   const [authUser, setAuthUser] = useState(null);
+
   // call onAuthStateChanged from firebase.auth, so firebase can notify us about user state changes and we can change our state with the user object when a change occurs. The snapshots themselves don't show anything until we call .data() on them. The id value is always used to reference the location of data in the database, so it must be referenced
 
   useEffect(() => {
@@ -33,10 +40,10 @@ const App = ({ setCurrentUser }) => {
         const userRef = await createUserProfileDocument(authUser);
 
         // get a snapshot of the user from the database, and set our state to it
-        userRef.onSnapshot((snapShot) => {
+        userRef.onSnapshot((snapshot) => {
           setCurrentUser({
-            id: snapShot.id,
-            ...snapShot.data(),
+            id: snapshot.id,
+            ...snapshot.data(),
           });
         });
       } else {
@@ -45,32 +52,83 @@ const App = ({ setCurrentUser }) => {
       }
     });
 
-    // listen for changes to favFoods collection
-    // const unsubFavFoods = firestore
-    //   .collection(`user/${authUser.uid}/favFoods`)
-    //   .onSnapshot(function () {
-    //     console.log('added');
-    //   });
-
     return () => {
       unsubCurrentUser();
-      // unsubFavFoods();
     };
-  }, [setCurrentUser, authUser]);
+  }, [setCurrentUser]);
+
+  // favorites listener
+  useEffect(() => {
+    let unsubFavFoods = null;
+
+    const favFoodsListener = () => {
+      return firestore
+        .collection(`users/${authUser.uid}/favFoods`)
+        .onSnapshot((querySnapshot) => {
+          const favFoods = [];
+          querySnapshot.forEach((doc) => {
+            const food = doc.data();
+            food.id = doc.id;
+            favFoods.push(food);
+          });
+          setFavFoods(favFoods);
+        });
+    };
+
+    if (authUser !== null) {
+      unsubFavFoods = favFoodsListener();
+    }
+
+    return () => {
+      if (unsubFavFoods) {
+        unsubFavFoods();
+        console.log('unsubbed from favs listener');
+      }
+    };
+  }, [authUser, setFavFoods]);
+
+  // createdFoods listener
+  useEffect(() => {
+    let unsubCreatedFoods = null;
+
+    const createdFoodsListener = () => {
+      return firestore
+        .collection(`users/${authUser.uid}/createdFoods`)
+        .onSnapshot((querySnapshot) => {
+          const createdFoods = [];
+          querySnapshot.forEach((doc) => {
+            const food = doc.data();
+            food.id = doc.id;
+            createdFoods.push(food);
+          });
+          setCreatedFoods(createdFoods);
+        });
+    };
+
+    if (authUser !== null) {
+      unsubCreatedFoods = createdFoodsListener();
+    }
+
+    return () => {
+      if (unsubCreatedFoods) {
+        unsubCreatedFoods();
+        console.log('unsubbed from favs listener');
+      }
+    };
+  }, [authUser, setCreatedFoods]);
 
   return (
     <Router>
-      {/* <Header /> */}
       <Switch>
         <Route exact path='/' component={Home} />
         <Route
           path='/diary'
-          render={() => (authUser ? <Diary /> : <Redirect to='/' />)}
+          render={() => (currentUser ? <Diary /> : <Redirect to='/' />)}
         />
         <Route
           path='/exercises'
           render={() =>
-            authUser && authUser.membership.t === 'premium' ? (
+            currentUser && currentUser.membership.t === 'p' ? (
               <Exercises />
             ) : (
               <Redirect to='/' />
@@ -80,7 +138,7 @@ const App = ({ setCurrentUser }) => {
         <Route
           path='/metrics'
           render={() =>
-            authUser && authUser.membership.t === 'premium' ? (
+            currentUser && currentUser.membership.t === 'p' ? (
               <Metrics />
             ) : (
               <Redirect to='/' />
@@ -89,7 +147,7 @@ const App = ({ setCurrentUser }) => {
         />
         <Route
           path='/settings'
-          render={() => (authUser ? <Settings /> : <Redirect to='/' />)}
+          render={() => (currentUser ? <Settings /> : <Redirect to='/' />)}
         />
         <Route
           exact
@@ -103,8 +161,14 @@ const App = ({ setCurrentUser }) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
 });
 
-export default connect(null, mapDispatchToProps)(App);
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  setFavFoods: (favFoods) => dispatch(setFavFoods(favFoods)),
+  setCreatedFoods: (createdFoods) => dispatch(setCreatedFoods(createdFoods)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

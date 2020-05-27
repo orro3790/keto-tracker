@@ -1,39 +1,58 @@
 import React, { useState } from 'react';
-import './fav-item.styles.scss';
+import './edit-item.styles.scss';
 import { connect } from 'react-redux';
 import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
-import { addFavoriteFood } from '../../firebase/firebase.utils';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
+import { toggleFavFood, deleteFood } from '../../firebase/firebase.utils';
 
-const FavItem = ({
+const EditItem = ({
   food,
   createFoodReference,
   index,
-  modal,
+  searchModal,
   toggleSearchModal,
   toggleFavsModal,
   userId,
+  type,
 }) => {
-  const [iconClass, setIconClass] = useState('fas fa-bookmark add-btn');
+  const [iconClass, setIconClass] = useState('fas fa-plus-square add-btn');
 
   const handleClick = (e) => {
-    if (!e.target.className.includes('del-btn')) {
-      createFoodReference(food);
-      // close the favorites modal
-      toggleFavsModal({
-        status: 'hidden',
-      });
-      // toggle search modal to view the details and stage it to add to meal
-      const copy = Object.assign({}, modal);
-      copy.status = 'visible';
-      toggleSearchModal(copy);
-    } else {
-      //remove the food from favorites
-      addFavoriteFood(userId, food);
+    switch (type) {
+      case 'fav':
+        if (!e.target.className.includes('del-btn')) {
+          createFoodReference(food);
+          // // close the favorites modal
+          // toggleFavsModal({
+          //   status: 'hidden',
+          // });
+          // toggle search modal to view the details and stage it to add to meal
+          const copy = Object.assign({}, searchModal);
+          copy.status = 'visible';
+          toggleSearchModal(copy);
+        } else {
+          //remove the food from favorites
+          toggleFavFood(userId, food);
+        }
+        break;
+      case 'user-foods':
+        if (!e.target.className.includes('del-btn')) {
+          createFoodReference(food);
+          // toggle search modal to view the details and stage it to add to meal
+          const copy = Object.assign({}, searchModal);
+          copy.status = 'visible';
+          toggleSearchModal(copy);
+        } else {
+          //remove the food from favorites
+          deleteFood(userId, food);
+        }
+        break;
+      default:
+        break;
     }
   };
 
@@ -52,7 +71,7 @@ const FavItem = ({
   };
 
   const handleMouseOut = () => {
-    setIconClass('fas fa-bookmark add-btn');
+    setIconClass('fas fa-plus-square add-btn');
   };
 
   return (
@@ -74,7 +93,7 @@ const FavItem = ({
 };
 
 const mapStateToProps = createStructuredSelector({
-  modal: selectModal,
+  searchModal: selectModal,
   userId: selectCurrentUserId,
 });
 
@@ -84,4 +103,4 @@ const mapDispatchToProps = (dispatch) => ({
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FavItem);
+export default connect(mapStateToProps, mapDispatchToProps)(EditItem);

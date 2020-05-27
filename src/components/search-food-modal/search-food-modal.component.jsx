@@ -114,7 +114,7 @@ const SearchFoodModal = ({
   };
 
   const openCustomFoodModal = () => {
-    handleClose();
+    handleClose('maintainMeal');
     toggleCustomFoodsModal({
       status: 'visible',
     });
@@ -122,42 +122,36 @@ const SearchFoodModal = ({
 
   const recalculateTotals = (entry) => {
     if (entry !== '') {
-      // total fats in meal
       const fats = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
           return (accumulator += food.f);
         },
         0
       );
-      // total carbs in meal
       const carbs = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
           return (accumulator += food.c);
         },
         0
       );
-      // total protein in meal
       const protein = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
           return (accumulator += food.p);
         },
         0
       );
-      // total calories in meal
       const calories = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
           return (accumulator += food.e);
         },
         0
       );
-      // total fiber in meal
       const fiber = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
           return (accumulator += food.d);
         },
         0
       );
-      // total net carbs in meal
       const netCarbs = entry[searchModal.meal]['foods'].reduce(
         (accumulator, food) => {
           return (accumulator += food.k);
@@ -183,13 +177,10 @@ const SearchFoodModal = ({
 
     if (sizeInput !== '') {
       let foodCopy = Object.assign({}, foodReference);
-      // entry state is immutable so make a copy of it first because pushing the edited version
       let entryCopy = Object.assign({}, entries);
-
       switch (searchModal.editMode) {
         case false:
           if (sizeInput !== '') {
-            // adjust the food object based on user's input
             foodCopy.e = parseFloat(
               ((foodReference.e / 100) * sizeInput).toFixed(1)
             );
@@ -281,8 +272,64 @@ const SearchFoodModal = ({
     });
   };
 
+  const handleToggleFavFood = () => {
+    toggleFavFood(userId, foodReference);
+    console.log(userId, foodReference);
+  };
+
+  const recalculateDailyTotals = (entry) => {
+    const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
+
+    let dailyFats = 0;
+    let dailyProtein = 0;
+    let dailyCarbs = 0;
+    let dailyFiber = 0;
+    let dailyNetCarbs = 0;
+    let dailyCalories = 0;
+
+    if (entries !== '') {
+      meals.forEach((meal) => {
+        dailyFats += entries[meal].totals.f;
+        dailyProtein += entries[meal].totals.p;
+        dailyCarbs += entries[meal].totals.c;
+        dailyFiber += entries[meal].totals.d;
+        dailyNetCarbs += entries[meal].totals.k;
+        dailyCalories += entries[meal].totals.e;
+      });
+    }
+
+    const copy = Object.assign({}, entry);
+
+    copy.dailyMacros = {
+      f: parseFloat(dailyFats.toFixed(1)),
+      p: parseFloat(dailyProtein.toFixed(1)),
+      c: parseFloat(dailyCarbs.toFixed(1)),
+      d: parseFloat(dailyFiber.toFixed(1)),
+      e: parseFloat(dailyCalories.toFixed(1)),
+      k: parseFloat(dailyNetCarbs.toFixed(1)),
+    };
+
+    return copy;
+  };
+
+  const getBtnStyle = () => {
+    if (sizeInput !== '') {
+      return 'submit-btn on';
+    } else {
+      return 'submit-btn';
+    }
+  };
+
+  const getIconStyle = () => {
+    if (sizeInput !== '') {
+      return 'fas fa-check add-i on';
+    } else {
+      return 'fas fa-check add-i';
+    }
+  };
+
   let labels;
-  if (carbSettings === 'net') {
+  if (carbSettings === 'n') {
     labels = ['fats', 'net carbs', 'protein', 'calories'];
   } else {
     labels = ['fats', 'carbs', 'protein', 'calories'];
@@ -335,7 +382,7 @@ const SearchFoodModal = ({
     },
   };
 
-  // render chart based on input values
+  // update chart rendering based on input values
   useEffect(() => {
     let fatsRemaining = 0;
     let carbsRemaining = 0;
@@ -385,7 +432,7 @@ const SearchFoodModal = ({
 
     const chart = () => {
       let data;
-      if (carbSettings === 'net') {
+      if (carbSettings === 'n') {
         data = [
           fatsRemaining.toPrecision(3),
           netCarbsRemaining.toPrecision(3),
@@ -427,58 +474,6 @@ const SearchFoodModal = ({
     diet,
     carbSettings,
   ]);
-
-  // update daily totals
-  const recalculateDailyTotals = (entry) => {
-    const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
-
-    let dailyFats = 0;
-    let dailyProtein = 0;
-    let dailyCarbs = 0;
-    let dailyFiber = 0;
-    let dailyNetCarbs = 0;
-    let dailyCalories = 0;
-
-    if (entries !== '') {
-      meals.forEach((meal) => {
-        dailyFats += entries[meal].totals.f;
-        dailyProtein += entries[meal].totals.p;
-        dailyCarbs += entries[meal].totals.c;
-        dailyFiber += entries[meal].totals.d;
-        dailyNetCarbs += entries[meal].totals.k;
-        dailyCalories += entries[meal].totals.e;
-      });
-    }
-
-    const copy = Object.assign({}, entry);
-
-    copy.dailyMacros = {
-      f: parseFloat(dailyFats.toFixed(1)),
-      p: parseFloat(dailyProtein.toFixed(1)),
-      c: parseFloat(dailyCarbs.toFixed(1)),
-      d: parseFloat(dailyFiber.toFixed(1)),
-      e: parseFloat(dailyCalories.toFixed(1)),
-      k: parseFloat(dailyNetCarbs.toFixed(1)),
-    };
-
-    return copy;
-  };
-
-  const getBtnStyle = () => {
-    if (sizeInput !== '') {
-      return 'submit-btn on';
-    } else {
-      return 'submit-btn';
-    }
-  };
-
-  const getIconStyle = () => {
-    if (sizeInput !== '') {
-      return 'fas fa-check add-i on';
-    } else {
-      return 'fas fa-check add-i';
-    }
-  };
 
   let placeholder;
 
@@ -526,17 +521,13 @@ const SearchFoodModal = ({
   let carbsOrNetCarbs;
   let carbsOrNetCarbsLabel;
 
-  if (carbSettings === 'net') {
+  if (carbSettings === 'n') {
     carbsOrNetCarbs = netCarbs;
     carbsOrNetCarbsLabel = 'net carbs';
   } else {
     carbsOrNetCarbs = carbs;
     carbsOrNetCarbsLabel = 'carbs';
   }
-
-  const handleToggleFavFood = () => {
-    toggleFavFood(userId, foodReference);
-  };
 
   if (foodReference !== '') {
     resultsContainer = (

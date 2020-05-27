@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { createFood } from '../../firebase/firebase.utils.js';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import './create-food.styles.scss';
 
-const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
+const CreateFood = ({ toggleCreateFoodModal, userId }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
@@ -84,7 +84,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
         p: pPer,
         u: unit,
       };
-      createFood(currentUser, newFood);
+      createFood(userId, newFood);
       handleClose();
       // dispatch toggleGlobalMessage next
     }
@@ -283,7 +283,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
 
 const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
-  currentUser: selectCurrentUser,
+  userId: selectCurrentUserId,
 });
 
 const mapDispatchToProps = (dispatch) => ({

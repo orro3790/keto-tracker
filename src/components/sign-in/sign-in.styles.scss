@@ -1,12 +1,11 @@
-.sign-in {
-  width: 380px;
-  display: flex;
-  flex-direction: column;
-  align-self: center;
-  justify-self: center;
+.g {
+  height: 100%;
+  width: 100%;
+}
 
-  .buttons {
-    display: flex;
-    justify-content: space-between;
-  }
+.with-icon-c {
+  display: grid;
+  grid-template-columns: 50px auto;
+  align-items: center;
+  height: 100%;
 }

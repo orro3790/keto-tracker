@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import FavItem from '../fav-item/fav-item.component';
+import EditItem from '../edit-item/edit-item.component';
+import FormInput from '../../components/form-input/form-input.component';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import { connect } from 'react-redux';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import { createStructuredSelector } from 'reselect';
-import { selectFavFoods } from '../../redux/user/user.selectors';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import {
+  selectFavFoods,
+  selectCurrentUserId,
+} from '../../redux/user/user.selectors';
 import { FixedSizeList as List } from 'react-window';
-import FormInput from '../../components/form-input/form-input.component';
-import './favs-modal.styles.scss';
+import { firestore } from '../../firebase/firebase.utils';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
+import './favs-modal.styles.scss';
 
-const ViewFavs = ({ favFoods, toggleFavsModal }) => {
+const ViewFavs = ({ favFoods, toggleFavsModal, userId }) => {
   const [searchInput, setSearchInput] = useState('');
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState(favFoods);
+  const [submitting, setSubmitting] = useState(false);
 
   const handleClose = () => {
     toggleFavsModal({
@@ -22,29 +28,55 @@ const ViewFavs = ({ favFoods, toggleFavsModal }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(searchInput);
+    setQuery(searchInput);
+    setSubmitting(true);
   };
 
   const handleChange = (e) => {
-    setSearchInput(e.target.value.toUpperCase());
+    setSearchInput(e.target.value);
   };
 
   useEffect(() => {
-    let foodList = [];
-    const renderResults = () => {
-      favFoods.forEach((food) => {
-        if (food.n.includes(searchInput)) {
-          foodList.push(food);
-        }
-      });
-    };
-    renderResults();
-    setResults(foodList);
+    // if backspace to '', no need to fetch data again, load the list from state
+    if (searchInput === '') {
+      setResults(favFoods);
+    }
   }, [searchInput, favFoods]);
+
+  useEffect(() => {
+    // check that query !== '' to prevent a fetch upon mount
+    if (query !== '' && submitting === true) {
+      const fetchData = async () => {
+        const response = await firestore
+          .collection(`users/${userId}/favFoods`)
+          .where('n', '==', query.toUpperCase())
+          .get();
+
+        setResults(
+          response.docs.map((snapshot) => {
+            const snap = snapshot.data();
+            snap.id = snapshot.id;
+            return snap;
+          })
+        );
+      };
+
+      fetchData();
+      setSubmitting(false);
+    }
+    // return () => {
+    //   cleanup;
+    // };
+  }, [query, userId, submitting]);
 
   let Row = ({ index, style }) => (
     <div style={style}>
-      <FavItem key={results[index].i} food={results[index]} index={index} />
+      <EditItem
+        key={results[index].i}
+        food={results[index]}
+        index={index}
+        type='fav'
+      />
     </div>
   );
 
@@ -105,6 +137,7 @@ const ViewFavs = ({ favFoods, toggleFavsModal }) => {
 const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   favFoods: selectFavFoods,
+  userId: selectCurrentUserId,
 });
 
 const mapDispatchToProps = (dispatch) => ({
