@@ -3,7 +3,7 @@ import './fav-item.styles.scss';
 import { connect } from 'react-redux';
 import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
-import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
+import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { addFavoriteFood } from '../../firebase/firebase.utils';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
@@ -15,7 +15,7 @@ const FavItem = ({
   index,
   modal,
   toggleSearchModal,
-  toggleViewFavsModal,
+  toggleFavsModal,
   userId,
 }) => {
   const [iconClass, setIconClass] = useState('fas fa-bookmark add-btn');
@@ -24,7 +24,7 @@ const FavItem = ({
     if (!e.target.className.includes('del-btn')) {
       createFoodReference(food);
       // close the favorites modal
-      toggleViewFavsModal({
+      toggleFavsModal({
         status: 'hidden',
       });
       // toggle search modal to view the details and stage it to add to meal
@@ -81,7 +81,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  toggleViewFavsModal: (status) => dispatch(toggleViewFavsModal(status)),
+  toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FavItem);

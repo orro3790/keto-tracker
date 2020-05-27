@@ -14,7 +14,7 @@ import { createStructuredSelector } from 'reselect';
 import { selectCreateFoodModalStatus } from '../../redux/create-food/create-food.selectors';
 import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
-import { selectViewFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
+import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import './diary.styles.scss';
 
@@ -83,7 +83,7 @@ const mapStateToProps = createStructuredSelector({
   searchModal: selectModal,
   createFoodModalStatus: selectCreateFoodModalStatus,
   foodReference: selectFoodReference,
-  viewFavsModalStatus: selectViewFavModalStatus,
+  viewFavsModalStatus: selectFavModalStatus,
   customFoodsModalStatus: selectCustomFoodsModalStatus,
 });
 

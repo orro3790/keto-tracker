@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
-import { createCreateFoodDocument } from '../../firebase/firebase.utils.js';
+import { createFood } from '../../firebase/firebase.utils.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import './create-food.styles.scss';
@@ -84,7 +84,7 @@ const CreateFood = ({ toggleCreateFoodModal, currentUser }) => {
         p: pPer,
         u: unit,
       };
-      createCreateFoodDocument(currentUser, newFood);
+      createFood(currentUser, newFood);
       handleClose();
       // dispatch toggleGlobalMessage next
     }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import Home from './pages/home/home.component';
 import Diary from './pages/diary/diary.component';
@@ -12,21 +12,25 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import {
+  auth,
+  createUserProfileDocument,
+  firestore,
+} from './firebase/firebase.utils';
 import { connect } from 'react-redux';
 import { setCurrentUser } from './redux/user/user.actions';
 
-class App extends React.Component {
-  unsubscribeFromAuth = null;
-
+const App = ({ setCurrentUser }) => {
+  const [authUser, setAuthUser] = useState(null);
   // call onAuthStateChanged from firebase.auth, so firebase can notify us about user state changes and we can change our state with the user object when a change occurs. The snapshots themselves don't show anything until we call .data() on them. The id value is always used to reference the location of data in the database, so it must be referenced
-  componentDidMount() {
-    const { setCurrentUser } = this.props;
 
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-      if (userAuth) {
+  useEffect(() => {
+    const unsubCurrentUser = auth.onAuthStateChanged(async (authUser) => {
+      authUser ? setAuthUser(authUser) : setAuthUser(null);
+
+      if (authUser) {
         // create user in database if they don't already exist --> eitherway, return userRef
-        const userRef = await createUserProfileDocument(userAuth);
+        const userRef = await createUserProfileDocument(authUser);
 
         // get a snapshot of the user from the database, and set our state to it
         userRef.onSnapshot((snapShot) => {
@@ -37,79 +41,70 @@ class App extends React.Component {
         });
       } else {
         // If the current user logs out, set the state of currentUser to null (because userAuth will be null)
-        setCurrentUser(userAuth);
+        setCurrentUser(authUser);
       }
     });
-  }
 
-  // onAuthStateChanged is an open subscription (messaging system), so we have to close it when the component unmounts, to prevent memory leaks
-  componentWillUnmount() {
-    this.unsubscribeFromAuth();
-  }
+    // listen for changes to favFoods collection
+    // const unsubFavFoods = firestore
+    //   .collection(`user/${authUser.uid}/favFoods`)
+    //   .onSnapshot(function () {
+    //     console.log('added');
+    //   });
 
-  render() {
-    return (
-      <Router>
-        {/* <Header /> */}
-        <Switch>
-          <Route exact path='/' component={Home} />
-          <Route
-            path='/diary'
-            render={() =>
-              this.props.currentUser ? <Diary /> : <Redirect to='/' />
-            }
-          />
-          <Route
-            path='/exercises'
-            render={() =>
-              this.props.currentUser &&
-              this.props.currentUser.membership.t === 'premium' ? (
-                <Exercises />
-              ) : (
-                <Redirect to='/' />
-              )
-            }
-          />
-          <Route
-            path='/metrics'
-            render={() =>
-              this.props.currentUser &&
-              this.props.currentUser.membership.t === 'premium' ? (
-                <Metrics />
-              ) : (
-                <Redirect to='/' />
-              )
-            }
-          />
-          <Route
-            path='/settings'
-            render={() =>
-              this.props.currentUser ? <Settings /> : <Redirect to='/' />
-            }
-          />
-          <Route
-            exact
-            path='/signin'
-            render={() =>
-              this.props.currentUser ? (
-                <Redirect to='/' />
-              ) : (
-                <SignInAndSignUpPage />
-              )
-            }
-          />
-        </Switch>
-      </Router>
-    );
-  }
-}
+    return () => {
+      unsubCurrentUser();
+      // unsubFavFoods();
+    };
+  }, [setCurrentUser, authUser]);
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser,
-});
+  return (
+    <Router>
+      {/* <Header /> */}
+      <Switch>
+        <Route exact path='/' component={Home} />
+        <Route
+          path='/diary'
+          render={() => (authUser ? <Diary /> : <Redirect to='/' />)}
+        />
+        <Route
+          path='/exercises'
+          render={() =>
+            authUser && authUser.membership.t === 'premium' ? (
+              <Exercises />
+            ) : (
+              <Redirect to='/' />
+            )
+          }
+        />
+        <Route
+          path='/metrics'
+          render={() =>
+            authUser && authUser.membership.t === 'premium' ? (
+              <Metrics />
+            ) : (
+              <Redirect to='/' />
+            )
+          }
+        />
+        <Route
+          path='/settings'
+          render={() => (authUser ? <Settings /> : <Redirect to='/' />)}
+        />
+        <Route
+          exact
+          path='/signin'
+          render={() =>
+            authUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
+          }
+        />
+      </Switch>
+    </Router>
+  );
+};
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(App);

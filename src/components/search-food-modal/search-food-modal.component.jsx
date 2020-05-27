@@ -9,7 +9,7 @@ import {
   updateTotals,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
-import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
+import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
@@ -25,13 +25,13 @@ import {
   selectSuggestionWindow,
   selectFoodReference,
 } from '../../redux/search-item/search-item.selectors';
-import { addFavoriteFood } from '../../firebase/firebase.utils';
+import { toggleFavFood } from '../../firebase/firebase.utils';
 import './search-food-modal.styles.scss';
 
 const SearchFoodModal = ({
   toggleSearchModal,
   toggleCreateFoodModal,
-  toggleViewFavsModal,
+  toggleFavsModal,
   toggleCustomFoodsModal,
   updateTotals,
   foodReference,
@@ -108,7 +108,7 @@ const SearchFoodModal = ({
 
   const openViewFavsModal = () => {
     handleClose('maintainMeal');
-    toggleViewFavsModal({
+    toggleFavsModal({
       status: 'visible',
     });
   };
@@ -534,8 +534,8 @@ const SearchFoodModal = ({
     carbsOrNetCarbsLabel = 'carbs';
   }
 
-  const handleAddFavorite = () => {
-    addFavoriteFood(userId, foodReference);
+  const handleToggleFavFood = () => {
+    toggleFavFood(userId, foodReference);
   };
 
   if (foodReference !== '') {
@@ -544,7 +544,7 @@ const SearchFoodModal = ({
         <div className='name'>
           <div>{foodReference.n}</div>
           <div className='fav-btn-c'>
-            <AddFavorite onClick={handleAddFavorite} />
+            <AddFavorite onClick={handleToggleFavFood} />
           </div>
         </div>
         <div className='desc'>{foodReference.b}</div>
@@ -649,7 +649,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
-  toggleViewFavsModal: (status) => dispatch(toggleViewFavsModal(status)),
+  toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),

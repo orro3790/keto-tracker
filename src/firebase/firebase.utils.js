@@ -61,7 +61,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
-export const createCreateFoodDocument = async (currentUser, newFood) => {
+export const createFood = async (currentUser, newFood) => {
   // grab the collection and instantiate an empty doc so it is assigned a random ID
   const collectionRef = firestore.collection(
     `users/${currentUser.id}/createdFoods/`
@@ -73,19 +73,6 @@ export const createCreateFoodDocument = async (currentUser, newFood) => {
   } catch (error) {
     console.log('error creating new food item', error.message);
   }
-};
-
-export const returnCollectionSnapshots = (collectionSnapshot) => {
-  const transformedCollection = collectionSnapshot.docs.map((docSnapshot) => {
-    const { fdc_id, description } = docSnapshot.data();
-
-    return {
-      fdc_id: fdc_id,
-      description: description,
-    };
-  });
-
-  return transformedCollection;
 };
 
 export const updateUpdateDiet = async (userId, macros) => {
@@ -333,6 +320,26 @@ export const addFavoriteFood = async (userId, foodReference) => {
         `error removing ${foodReference.n} from favorites: ${error.error}`
       );
     }
+  }
+};
+
+export const toggleFavFood = async (userId, food) => {
+  // grab the collection and instantiate an empty doc so it is assigned a random ID
+  const querySnapshot = await firestore
+    .collection(`users/${userId}/favFoods`)
+    .where('id', '==', food.id)
+    .get();
+
+  if (querySnapshot.empty) {
+    try {
+      const collectionRef = firestore.collection(`users/${userId}/favFoods`);
+      await collectionRef.add(food);
+    } catch (error) {
+      console.log(`error adding ${food.n} to favorites`, error.message);
+    }
+  } else {
+    // const foodRef = firestore.collection(`users/${userId}/favFoods`);
+    querySnapshot.docs.forEach((doc) => doc.ref.delete());
   }
 };
 

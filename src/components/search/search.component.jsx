@@ -46,11 +46,6 @@ const Search = ({
   };
 
   useEffect(() => {
-    // when suggestionWindow changes state --> clear searchInput --> hides window. Pressing the + btn in suggestion window changes suggestionWindow and triggers the reset. Submitting or closing the modal popup triggers the reset as well.
-    setSearchInput('');
-  }, [suggestionWindow]);
-
-  useEffect(() => {
     // check that query !== '' to prevent a fetch upon mount
     if (query !== '' && submitting === true) {
       const fetchData = async () => {

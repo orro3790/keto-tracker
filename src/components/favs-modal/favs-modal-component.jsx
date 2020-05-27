@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FavItem from '../fav-item/fav-item.component';
 import { connect } from 'react-redux';
-import { toggleViewFavsModal } from '../../redux/favs-modal/favs-modal.actions';
+import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import { createStructuredSelector } from 'reselect';
 import { selectFavFoods } from '../../redux/user/user.selectors';
 import AutoSizer from 'react-virtualized-auto-sizer';
@@ -10,12 +10,12 @@ import FormInput from '../../components/form-input/form-input.component';
 import './favs-modal.styles.scss';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
 
-const ViewFavs = ({ favFoods, toggleViewFavsModal }) => {
+const ViewFavs = ({ favFoods, toggleFavsModal }) => {
   const [searchInput, setSearchInput] = useState('');
   const [results, setResults] = useState(favFoods);
 
   const handleClose = () => {
-    toggleViewFavsModal({
+    toggleFavsModal({
       status: 'hidden',
     });
   };
@@ -108,7 +108,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  toggleViewFavsModal: (status) => dispatch(toggleViewFavsModal(status)),
+  toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewFavs);

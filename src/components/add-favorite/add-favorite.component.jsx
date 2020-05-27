@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
+
 import './add-favorite.styles.scss';
 
 const AddFavorite = ({ currentUser, foodReference, onClick }) => {
@@ -20,10 +21,8 @@ const AddFavorite = ({ currentUser, foodReference, onClick }) => {
     if (currentUser !== null) {
       if (currentUser.favFoods.some((food) => food.id === foodReference.id)) {
         setEnabled(true);
-        console.log('favorited');
       } else {
         setEnabled(false);
-        console.log('unfavorited');
       }
     }
   }, [currentUser, foodReference]);
