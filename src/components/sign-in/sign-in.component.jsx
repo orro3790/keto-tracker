@@ -28,7 +28,7 @@ const SignIn = () => {
     >
       <div className='with-icon-c'>
         <Logo className='g-svg' />
-        <div>SIGN UP WITH GOOGLE</div>
+        <div>CONTINUE WITH GOOGLE</div>
       </div>
     </CustomButton>
   );

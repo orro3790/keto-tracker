@@ -13,8 +13,16 @@ import { FixedSizeList as List } from 'react-window';
 import { firestore } from '../../firebase/firebase.utils';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import './favs-modal.styles.scss';
+import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
+import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
 
-const ViewFavs = ({ favFoods, toggleFavsModal, userId }) => {
+const ViewFavs = ({
+  favFoods,
+  toggleFavsModal,
+  userId,
+  meal,
+  toggleSearchModal,
+}) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState(favFoods);
@@ -23,6 +31,19 @@ const ViewFavs = ({ favFoods, toggleFavsModal, userId }) => {
   const handleClose = () => {
     toggleFavsModal({
       status: 'hidden',
+    });
+  };
+
+  const handleBack = () => {
+    toggleFavsModal({
+      status: 'hidden',
+    });
+    toggleSearchModal({
+      status: 'visible',
+      meal: meal,
+      editMode: false,
+      foodToEdit: '',
+      listId: '',
     });
   };
 
@@ -110,6 +131,9 @@ const ViewFavs = ({ favFoods, toggleFavsModal, userId }) => {
       <div className='view-favs-m'>
         <div className='btn-c'>
           <div></div>
+          <div className='back-btn' onClick={handleBack}>
+            <i className='fas fa-arrow-left'></i>
+          </div>
           <div className='close-btn' onClick={handleClose}>
             <i className='fas fa-times'></i>
           </div>
@@ -138,10 +162,12 @@ const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   favFoods: selectFavFoods,
   userId: selectCurrentUserId,
+  meal: selectMeal,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
+  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewFavs);

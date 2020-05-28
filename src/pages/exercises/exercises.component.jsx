@@ -12,18 +12,19 @@ const Exercises = ({ toggleAlertModal }) => {
         "You're almost there! Check your email for a verification link, then you can start tracking!",
       img: 'email',
       status: 'visible',
+      sticky: false,
     });
   };
 
   return (
     <div>
-      <div onClick={handleClick}>Click me</div>
       <div className='rail-body-separator'>
         <div>
           <Rail />
         </div>
         <div className='page-body-c'>
           <div className='t'>Exercises</div>
+          <div onClick={handleClick}>Click me</div>
         </div>
       </div>
     </div>

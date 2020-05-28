@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { connect } from 'react-redux';
 import { auth, createUserDoc } from '../../firebase/firebase.utils';
 import './sign-up.styles.scss';
 
-const SignUp = () => {
+const SignUp = ({ toggleAlertModal }) => {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleAlert = () => {
+    toggleAlertModal({
+      title: 'CONFIRM EMAIL',
+      msg:
+        "You're almost there! Check your email for a verification link, then you can start tracking!",
+      img: 'email',
+      status: 'visible',
+      sticky: false,
+    });
+  };
 
   const actionCodeSettings = {
     // URL you want to redirect back to. The domain (www.example.com) for this
@@ -80,6 +93,8 @@ const SignUp = () => {
       .catch(function (error) {
         console.log(error.code);
       });
+
+    handleAlert();
   };
 
   const handleChange = (e) => {
@@ -157,4 +172,9 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+const mapDispatchToProps = (dispatch) => ({
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+  //add a confirmation modal
+});
+
+export default connect(null, mapDispatchToProps)(SignUp);

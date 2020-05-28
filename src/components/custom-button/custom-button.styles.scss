@@ -1,5 +1,6 @@
 $font-size-medium: 16px;
 $keto-green: #1eb980;
+$keto-blue: #53a3ff;
 
 .custom-button {
   display: grid;
@@ -13,6 +14,6 @@ $keto-green: #1eb980;
   cursor: pointer;
   outline: none;
 }
-// .google {
-//   width: 250px;
-// }
+.google {
+  background: $keto-blue;
+}

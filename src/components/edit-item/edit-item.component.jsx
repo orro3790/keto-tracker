@@ -3,11 +3,11 @@ import './edit-item.styles.scss';
 import { connect } from 'react-redux';
 import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
 import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
-import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { createStructuredSelector } from 'reselect';
 import { toggleFavFood, deleteFood } from '../../firebase/firebase.utils';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 
 const EditItem = ({
   food,
@@ -15,9 +15,9 @@ const EditItem = ({
   index,
   searchModal,
   toggleSearchModal,
-  toggleFavsModal,
   userId,
   type,
+  toggleAlertModal,
 }) => {
   const [iconClass, setIconClass] = useState('fas fa-plus-square add-btn');
 
@@ -26,17 +26,19 @@ const EditItem = ({
       case 'fav':
         if (!e.target.className.includes('del-btn')) {
           createFoodReference(food);
-          // // close the favorites modal
-          // toggleFavsModal({
-          //   status: 'hidden',
-          // });
-          // toggle search modal to view the details and stage it to add to meal
           const copy = Object.assign({}, searchModal);
           copy.status = 'visible';
           toggleSearchModal(copy);
         } else {
           //remove the food from favorites
           toggleFavFood(userId, food);
+          toggleAlertModal({
+            title: 'SUCCESS!',
+            msg: `${food.n} has been removed from favorites.`,
+            img: '',
+            status: 'visible',
+            callback: '',
+          });
         }
         break;
       case 'user-foods':
@@ -49,6 +51,13 @@ const EditItem = ({
         } else {
           //remove the food from favorites
           deleteFood(userId, food);
+          toggleAlertModal({
+            title: 'SUCCESS!',
+            msg: `${food.n} has been removed from your custom foods list.`,
+            img: '',
+            status: 'visible',
+            callback: '',
+          });
         }
         break;
       default:
@@ -100,7 +109,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditItem);

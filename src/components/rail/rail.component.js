@@ -6,9 +6,10 @@ import { signOut } from '../../firebase/firebase.utils';
 import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import './rail.styles.scss';
 
-const Rail = ({ currentUser }) => {
+const Rail = ({ currentUser, toggleAlertModal }) => {
   const [confirmationMsg, setConfirmationMsg] = useState('');
   const [modalStatus, setModalStatus] = useState('');
 
@@ -51,10 +52,17 @@ const Rail = ({ currentUser }) => {
 
   const handleSignOut = () => {
     // double check that user wants to sign out
-    setConfirmationMsg({
-      question: 'Are you sure you want to sign out?',
+    // setConfirmationMsg({
+    //   question: 'Are you sure you want to sign out?',
+    // });
+    // setModalStatus('visible');
+    toggleAlertModal({
+      title: 'SIGN OUT',
+      msg: 'Are you sure you want to sign out?',
+      img: 'confirm',
+      status: 'visible',
+      callback: 'signOut',
     });
-    setModalStatus('visible');
   };
 
   const confirmSignOut = () => {
@@ -135,4 +143,9 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 });
 
-export default connect(mapStateToProps)(Rail);
+const mapDispatchToProps = (dispatch) => ({
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+  //add a confirmation modal
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Rail);

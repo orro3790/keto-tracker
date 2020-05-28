@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { createFood } from '../../firebase/firebase.utils.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import './create-food.styles.scss';
 
-const CreateFood = ({ toggleCreateFoodModal, userId }) => {
+const CreateFood = ({ toggleCreateFoodModal, userId, toggleAlertModal }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
@@ -86,7 +87,13 @@ const CreateFood = ({ toggleCreateFoodModal, userId }) => {
       };
       createFood(userId, newFood);
       handleClose();
-      // dispatch toggleGlobalMessage next
+      toggleAlertModal({
+        title: 'SUCCESS!',
+        msg: `${newFood.n} has been added to your custom foods list!`,
+        img: '',
+        status: 'visible',
+        callback: '',
+      });
     }
   };
 
@@ -288,6 +295,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch) => ({
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);

@@ -11,7 +11,7 @@ const SignInAndSignUpPage = () => {
         <div></div>
       </div>
       <div className='right-c'>
-        <div className='already-btn'>Already a Member? Sign In</div>
+        <div className='already-btn'></div>
         <div className='inner-c'>
           <div className='top-r'>
             <div></div>

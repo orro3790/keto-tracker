@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import AlertModal from './components/alert-modal/alert-modal.component';
-import { ReactComponent as Logo } from './assets/email.svg';
 import Home from './pages/home/home.component';
 import Diary from './pages/diary/diary.component';
 import Exercises from './pages/exercises/exercises.component.jsx';

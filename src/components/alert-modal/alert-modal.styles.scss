@@ -30,10 +30,11 @@ $keto-green: #1eb980;
   padding: 10px;
   background-color: $dp-08;
   box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  z-index: 4;
 
   &.on {
     opacity: 1;
-    transition: 1s;
+    transition: 0.5s;
   }
 
   &.off {
@@ -80,6 +81,33 @@ $keto-green: #1eb980;
     rect {
       fill: $base-grey;
       opacity: 0.25;
+    }
+  }
+
+  .submit-r {
+    display: grid;
+    grid-template-columns: auto 75px auto;
+
+    .submit-btn {
+      background-color: $dp-12;
+      font-size: $font-size-display-3;
+      padding: 5px;
+      transition: 0.3s;
+
+      &.on {
+        background-color: $keto-green;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+
+      .add-i {
+        display: grid;
+        justify-items: center;
+        padding: 0px 0px 0px 5px;
+        font-size: $font-size-display-3;
+        color: #fff;
+        transition: 0.3s;
+      }
     }
   }
 }

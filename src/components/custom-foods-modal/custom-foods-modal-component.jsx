@@ -1,22 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import EditItem from '../edit-item/edit-item.component';
+import FormInput from '../../components/form-input/form-input.component';
 import { connect } from 'react-redux';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUserId } from '../../redux/user/user.selectors';
-import { selectCustomFoods } from '../../redux/user/user.selectors';
+import {
+  selectCurrentUserId,
+  selectCustomFoods,
+} from '../../redux/user/user.selectors';
+import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
-import FormInput from '../../components/form-input/form-input.component';
-import './custom-foods-modal.styles.scss';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import { firestore } from '../../firebase/firebase.utils';
+import './custom-foods-modal.styles.scss';
 
-const CustomFoodsModal = ({ customFoods, toggleCustomFoodsModal, userId }) => {
+const CustomFoodsModal = ({
+  customFoods,
+  toggleCustomFoodsModal,
+  userId,
+  toggleSearchModal,
+  meal,
+}) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+
+  const handleBack = () => {
+    toggleCustomFoodsModal({
+      status: 'hidden',
+    });
+    toggleSearchModal({
+      status: 'visible',
+      meal: meal,
+      editMode: false,
+      foodToEdit: '',
+      listId: '',
+    });
+  };
 
   const handleClose = () => {
     toggleCustomFoodsModal({
@@ -108,6 +131,9 @@ const CustomFoodsModal = ({ customFoods, toggleCustomFoodsModal, userId }) => {
       <div className='view-favs-m'>
         <div className='btn-c'>
           <div></div>
+          <div className='back-btn' onClick={handleBack}>
+            <i className='fas fa-arrow-left'></i>
+          </div>
           <div className='close-btn' onClick={handleClose}>
             <i className='fas fa-times'></i>
           </div>
@@ -136,10 +162,12 @@ const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   customFoods: selectCustomFoods,
   userId: selectCurrentUserId,
+  meal: selectMeal,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
+  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomFoodsModal);

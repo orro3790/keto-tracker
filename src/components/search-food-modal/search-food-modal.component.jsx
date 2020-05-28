@@ -25,7 +25,7 @@ import {
   selectSuggestionWindow,
   selectFoodReference,
 } from '../../redux/search-item/search-item.selectors';
-import { toggleFavFood } from '../../firebase/firebase.utils';
+
 import './search-food-modal.styles.scss';
 
 const SearchFoodModal = ({
@@ -270,11 +270,6 @@ const SearchFoodModal = ({
       status: 'hidden',
       meal: 'none',
     });
-  };
-
-  const handleToggleFavFood = () => {
-    toggleFavFood(userId, foodReference);
-    console.log(userId, foodReference);
   };
 
   const recalculateDailyTotals = (entry) => {
@@ -535,7 +530,7 @@ const SearchFoodModal = ({
         <div className='name'>
           <div>{foodReference.n}</div>
           <div className='fav-btn-c'>
-            <AddFavorite onClick={handleToggleFavFood} />
+            <AddFavorite />
           </div>
         </div>
         <div className='desc'>{foodReference.b}</div>
@@ -591,8 +586,8 @@ const SearchFoodModal = ({
           <div onClick={openViewFavsModal}>
             <i className='fas fa-bookmark fav'></i>
           </div>
-          <div className='l'>Add a food</div>
-          <div className='l'>Edit Favorites</div>
+          <div className='l'>Create Custom Food</div>
+          <div className='l'>View/Edit Favorites</div>
         </div>
 
         <div className='hud-r-single'>
@@ -602,7 +597,7 @@ const SearchFoodModal = ({
               onClick={openCustomFoodModal}
             ></i>
           </div>
-          <div className='l'>Edit Custom Foods</div>
+          <div className='l'>View/Edit Custom Foods</div>
         </div>
       </div>
     );
