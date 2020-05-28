@@ -28,12 +28,27 @@ $keto-green: #1eb980;
 
   .btn-c {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 15px;
+    grid-template-columns: 1fr auto auto;
+    gap: 20px;
     text-align: right;
     justify-self: right;
     width: 150px;
     color: rgba(255, 255, 255, 0.38);
+  }
+
+  .back-btn {
+    align-self: center;
+    color: $keto-orange;
+
+    & i {
+      font-size: $font-size-medium;
+      cursor: pointer;
+
+      &:active {
+        transition: 0.05s;
+        transform: scale(0.9);
+      }
+    }
   }
 
   .close-btn {

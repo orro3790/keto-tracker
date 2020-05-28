@@ -3,12 +3,20 @@ import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
 import { createFood } from '../../firebase/firebase.utils.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
+import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import './create-food.styles.scss';
 
-const CreateFood = ({ toggleCreateFoodModal, userId, toggleAlertModal }) => {
+const CreateFood = ({
+  toggleCreateFoodModal,
+  userId,
+  toggleAlertModal,
+  meal,
+  toggleSearchModal,
+}) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
@@ -18,6 +26,19 @@ const CreateFood = ({ toggleCreateFoodModal, userId, toggleAlertModal }) => {
   const [fiber, setFiber] = useState('');
   const [protein, setProtein] = useState('');
   const [unit, setUnit] = useState('g');
+
+  const handleBack = () => {
+    toggleCreateFoodModal({
+      status: 'hidden',
+    });
+    toggleSearchModal({
+      status: 'visible',
+      meal: meal,
+      editMode: false,
+      foodToEdit: '',
+      listId: '',
+    });
+  };
 
   const handleChange = (e) => {
     // allow 0-9, 0-4 digits before decimal, optionally includes one decimal point /w 1 digit after decimal
@@ -89,7 +110,7 @@ const CreateFood = ({ toggleCreateFoodModal, userId, toggleAlertModal }) => {
       handleClose();
       toggleAlertModal({
         title: 'SUCCESS!',
-        msg: `${newFood.n} has been added to your custom foods list!`,
+        msg: `${newFood.n} has been added to custom foods list! You can now add it to your diary.`,
         img: '',
         status: 'visible',
         callback: '',
@@ -162,6 +183,9 @@ const CreateFood = ({ toggleCreateFoodModal, userId, toggleAlertModal }) => {
         <div className='create-m'>
           <div className='btn-c'>
             <div></div>
+            <div className='back-btn' onClick={handleBack}>
+              <i className='fas fa-arrow-left'></i>
+            </div>
             <div className='close-btn' onClick={handleClose}>
               <i className='fas fa-times'></i>
             </div>
@@ -291,11 +315,13 @@ const CreateFood = ({ toggleCreateFoodModal, userId, toggleAlertModal }) => {
 const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   userId: selectCurrentUserId,
+  meal: selectMeal,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
   toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);

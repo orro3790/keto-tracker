@@ -27,6 +27,8 @@ import {
 } from '../../redux/search-item/search-item.selectors';
 
 import './search-food-modal.styles.scss';
+import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
+import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -43,6 +45,8 @@ const SearchFoodModal = ({
   carbSettings,
   userId,
   diet,
+  favModal,
+  customFoodModal,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -239,6 +243,18 @@ const SearchFoodModal = ({
 
       // dispatch the new entry obj to state
       setEntry(updatedEntry);
+
+      if (favModal === 'visible') {
+        toggleFavsModal({
+          status: 'hidden',
+        });
+      }
+
+      if (customFoodModal === 'visible') {
+        toggleCustomFoodsModal({
+          status: 'hidden',
+        });
+      }
 
       handleClose();
     }
@@ -630,6 +646,8 @@ const mapStateToProps = createStructuredSelector({
   carbSettings: selectCarbSettings,
   diet: selectDietSettings,
   userId: selectCurrentUserId,
+  favModal: selectFavModalStatus,
+  customFoodModal: selectCustomFoodsModalStatus,
 });
 
 const mapDispatchToProps = (dispatch) => ({

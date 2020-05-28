@@ -10,6 +10,7 @@ import {
 } from '../../redux/user/user.selectors';
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
+import { createFoodReference } from '../../redux/search-item/search-item.actions';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
@@ -22,6 +23,7 @@ const CustomFoodsModal = ({
   userId,
   toggleSearchModal,
   meal,
+  createFoodReference,
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
@@ -32,6 +34,7 @@ const CustomFoodsModal = ({
     toggleCustomFoodsModal({
       status: 'hidden',
     });
+    createFoodReference('');
     toggleSearchModal({
       status: 'visible',
       meal: meal,
@@ -168,6 +171,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+  createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CustomFoodsModal);

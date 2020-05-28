@@ -4,6 +4,8 @@ import FormInput from '../../components/form-input/form-input.component';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { connect } from 'react-redux';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
+import { createFoodReference } from '../../redux/search-item/search-item.actions';
+
 import { createStructuredSelector } from 'reselect';
 import {
   selectFavFoods,
@@ -22,6 +24,7 @@ const ViewFavs = ({
   userId,
   meal,
   toggleSearchModal,
+  createFoodReference,
 }) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
@@ -38,6 +41,7 @@ const ViewFavs = ({
     toggleFavsModal({
       status: 'hidden',
     });
+    createFoodReference('');
     toggleSearchModal({
       status: 'visible',
       meal: meal,
@@ -168,6 +172,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+  createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ViewFavs);

@@ -45,6 +45,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
 
   return (
     <div className='filter-c'>
+      <div></div>
       <span className='filter-btn'>
         <i
           className={`fas fa-user-tag user-foods ${userOn}`}
