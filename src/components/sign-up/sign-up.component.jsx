@@ -50,7 +50,11 @@ const SignUp = () => {
             .updateProfile({
               displayName: storedDisplayName,
             })
-            .then(createUserDoc(result.user));
+            .then(createUserDoc(result.user))
+            .then(
+              window.localStorage.removeItem('emailForSignIn'),
+              window.localStorage.removeItem('displayNameForSignIn')
+            );
         })
         .catch(function (error) {
           console.log(error.code);

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import AlertModal from './components/alert-modal/alert-modal.component';
+import { ReactComponent as Logo } from './assets/email.svg';
 import Home from './pages/home/home.component';
 import Diary from './pages/diary/diary.component';
 import Exercises from './pages/exercises/exercises.component.jsx';
@@ -15,6 +17,7 @@ import {
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './redux/user/user.selectors';
+import { selectAlertModal } from './redux/alert-modal/alert-modal.selectors';
 import {
   setCurrentUser,
   setFavFoods,
@@ -22,8 +25,15 @@ import {
 } from './redux/user/user.actions';
 import { auth, createUserDoc, firestore } from './firebase/firebase.utils';
 
-const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
+const App = ({
+  setCurrentUser,
+  currentUser,
+  setFavFoods,
+  setCreatedFoods,
+  alertModal,
+}) => {
   const [authUser, setAuthUser] = useState(null);
+  const [enabled, setEnabled] = useState('off');
 
   // call onAuthStateChanged from firebase.auth, so firebase can notify us about user state changes and we can change our state with the user object when a change occurs. The snapshots themselves don't show anything until we call .data() on them. The id value is always used to reference the location of data in the database, so it must be referenced
 
@@ -113,52 +123,78 @@ const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
     };
   }, [authUser, setCreatedFoods]);
 
+  // listen for alerts
+  useEffect(() => {
+    const fade = () => {
+      setTimeout(() => {
+        setEnabled('off');
+      }, 4000);
+    };
+    setEnabled('on');
+
+    fade();
+
+    return () => {
+      clearTimeout(fade);
+    };
+  }, [alertModal]);
+
+  let renderedAlert;
+
+  if (alertModal.status === 'visible') {
+    renderedAlert = <AlertModal enabled={enabled} />;
+  }
+
   return (
-    <Router>
-      <Switch>
-        <Route exact path='/' component={Home} />
-        <Route
-          path='/diary'
-          render={() => (currentUser ? <Diary /> : <Redirect to='/' />)}
-        />
-        <Route
-          path='/exercises'
-          render={() =>
-            currentUser && currentUser.membership === 's' ? (
-              <Exercises />
-            ) : (
-              <Redirect to='/' />
-            )
-          }
-        />
-        <Route
-          path='/metrics'
-          render={() =>
-            currentUser && currentUser.membership === 'p' ? (
-              <Metrics />
-            ) : (
-              <Redirect to='/' />
-            )
-          }
-        />
-        <Route
-          path='/settings'
-          render={() => (currentUser ? <Settings /> : <Redirect to='/' />)}
-        />
-        <Route
-          exact
-          path='/signin'
-          render={() =>
-            authUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
-          }
-        />
-      </Switch>
-    </Router>
+    <div>
+      {renderedAlert}
+      <Router>
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route
+            path='/diary'
+            render={() => (currentUser ? <Diary /> : <Redirect to='/' />)}
+          />
+          <Route
+            path='/exercises'
+            render={() =>
+              currentUser && currentUser.membership === 's' ? (
+                <Exercises />
+              ) : (
+                <Redirect to='/' />
+              )
+            }
+          />
+          <Route
+            path='/metrics'
+            render={() =>
+              currentUser && currentUser.membership === 'p' ? (
+                <Metrics />
+              ) : (
+                <Redirect to='/' />
+              )
+            }
+          />
+          <Route
+            path='/settings'
+            render={() => (currentUser ? <Settings /> : <Redirect to='/' />)}
+          />
+          <Route
+            exact
+            path='/signin'
+            render={() =>
+              authUser ? <Redirect to='/' /> : <SignInAndSignUpPage />
+            }
+          />
+        </Switch>
+      </Router>
+    </div>
   );
 };
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
+  alertModal: selectAlertModal,
 });
 
 const mapDispatchToProps = (dispatch) => ({

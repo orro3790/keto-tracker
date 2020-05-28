@@ -7,6 +7,7 @@ import dailyHudSelector from './daily-hud/daily-hud-reducer';
 import createFoodReducer from './create-food/create-food.reducer';
 import FavsModalReducer from './favs-modal/favs-modal.reducer';
 import customFoodsModalReducer from './custom-foods-modal/custom-foods-modal.reducer';
+import alertModalReducer from './alert-modal/alert-modal.reducer';
 
 export default combineReducers({
   user: userReducer,
@@ -17,4 +18,5 @@ export default combineReducers({
   createFood: createFoodReducer,
   viewFavs: FavsModalReducer,
   customFoodsModal: customFoodsModalReducer,
+  alertModal: alertModalReducer,
 });
