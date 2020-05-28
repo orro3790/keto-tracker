@@ -20,11 +20,7 @@ import {
   setFavFoods,
   setCreatedFoods,
 } from './redux/user/user.actions';
-import {
-  auth,
-  createUserProfileDocument,
-  firestore,
-} from './firebase/firebase.utils';
+import { auth, createUserDoc, firestore } from './firebase/firebase.utils';
 
 const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
   const [authUser, setAuthUser] = useState(null);
@@ -37,7 +33,7 @@ const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
 
       if (authUser) {
         // create user in database if they don't already exist --> eitherway, return userRef
-        const userRef = await createUserProfileDocument(authUser);
+        const userRef = await createUserDoc(authUser);
 
         // get a snapshot of the user from the database, and set our state to it
         userRef.onSnapshot((snapshot) => {
@@ -128,7 +124,7 @@ const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
         <Route
           path='/exercises'
           render={() =>
-            currentUser && currentUser.membership.t === 'p' ? (
+            currentUser && currentUser.membership === 's' ? (
               <Exercises />
             ) : (
               <Redirect to='/' />
@@ -138,7 +134,7 @@ const App = ({ setCurrentUser, currentUser, setFavFoods, setCreatedFoods }) => {
         <Route
           path='/metrics'
           render={() =>
-            currentUser && currentUser.membership.t === 'p' ? (
+            currentUser && currentUser.membership === 'p' ? (
               <Metrics />
             ) : (
               <Redirect to='/' />

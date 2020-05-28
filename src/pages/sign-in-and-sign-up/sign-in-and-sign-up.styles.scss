@@ -43,7 +43,7 @@ $keto-green: #1eb980;
   .right-c {
     display: grid;
     grid-template-rows: 50px auto;
-    padding: 25px;
+    padding: 0 20px 0 20px;
   }
 
   .already-btn {
@@ -54,15 +54,18 @@ $keto-green: #1eb980;
   .inner-c {
     display: grid;
     grid-template-rows: auto auto;
-
     gap: 25px;
+
+    @include bp(small) {
+      grid-template-rows: auto 1fr;
+    }
 
     .top-r {
       display: grid;
       grid-template-columns: auto 380px auto;
       align-items: flex-end;
       @include bp(small) {
-        grid-template-columns: auto auto auto;
+        grid-template-columns: 0 auto 0;
       }
     }
     .bottom-r {
@@ -70,7 +73,7 @@ $keto-green: #1eb980;
       grid-template-columns: auto 380px auto;
       align-items: flex-start;
       @include bp(small) {
-        grid-template-columns: auto auto auto;
+        grid-template-columns: 0 auto 0;
       }
     }
   }

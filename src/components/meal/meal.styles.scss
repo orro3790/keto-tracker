@@ -78,7 +78,7 @@ $keto-green: #1eb980;
       margin-left: auto;
 
       &:not(.calories) {
-        @include bp(medium) {
+        @include bp(small) {
           display: none;
         }
       }

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
-
-import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
-
+import { auth, createUserDoc } from '../../firebase/firebase.utils';
 import './sign-up.styles.scss';
 
 const SignUp = () => {
@@ -11,6 +9,54 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for this
+    // URL must be whitelisted in the Firebase Console.
+    url: 'http://localhost:3000/signin',
+    // This must be true.
+    handleCodeInApp: true,
+  };
+
+  useEffect(() => {
+    // Confirm the link is a sign-in with email link.
+    if (auth.isSignInWithEmailLink(window.location.href)) {
+      // Additional state parameters can also be passed via URL.
+      // This can be used to continue the user's intended action before triggering
+      // the sign-in operation.
+      let storedEmail = window.localStorage.getItem('emailForSignIn');
+      let storedDisplayName = window.localStorage.getItem(
+        'displayNameForSignIn'
+      );
+
+      if (!storedEmail) {
+        // User opened the link on a different device. To prevent session fixation
+        // attacks, ask the user to provide the associated email again. For example:
+        storedEmail = window.prompt(
+          'Please provide your email for confirmation'
+        );
+      }
+      if (!storedDisplayName) {
+        // User opened the link on a different device. To prevent session fixation
+        // attacks, ask the user to provide the associated email again. For example:
+        storedDisplayName = window.prompt(
+          'Please provide your display name for confirmation'
+        );
+      }
+      auth
+        .signInWithEmailLink(storedEmail, window.location.href)
+        .then(async function (result) {
+          await result.user
+            .updateProfile({
+              displayName: storedDisplayName,
+            })
+            .then(createUserDoc(result.user));
+        })
+        .catch(function (error) {
+          console.log(error.code);
+        });
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,18 +66,16 @@ const SignUp = () => {
       return;
     }
 
-    try {
-      // the follow method comes from firebase's auth, returns user obj
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
-
-      // now let's store that user into the database with our createUserProfileDocument then set the state to default values to clear the form
-      await createUserProfileDocument(user, { displayName });
-    } catch (error) {
-      console.error(error);
-    }
+    auth
+      .sendSignInLinkToEmail(email, actionCodeSettings)
+      .then(function () {
+        // The link was successfully sent. Inform the user.
+        window.localStorage.setItem('emailForSignIn', email);
+        window.localStorage.setItem('displayNameForSignIn', displayName);
+      })
+      .catch(function (error) {
+        console.log(error.code);
+      });
   };
 
   const handleChange = (e) => {
@@ -99,7 +143,7 @@ const SignUp = () => {
           className='sign-up-r'
           required
         />
-        <div class='btn'>
+        <div className='btn'>
           <CustomButton type='submit' className='google-sign-in'>
             SIGN UP
           </CustomButton>

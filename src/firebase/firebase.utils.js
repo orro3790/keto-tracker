@@ -23,7 +23,7 @@ provider.setCustomParameters({ prompt: 'select_account' });
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
 // automatically check if a logged in user is stored in the database or not, and add them, and also return the userRef for use later.
-export const createUserProfileDocument = async (userAuth, additionalData) => {
+export const createUserDoc = async (userAuth, additionalData) => {
   // If the user isn't logged in, pass
   if (!userAuth) return;
 
@@ -33,14 +33,13 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
   // If there's no data for this user in the database, create it and store the following variables
   if (!snapShot.exists) {
-    const { displayName, email } = userAuth;
+    const { email, displayName } = userAuth;
     const createdAt = new Date();
-
     try {
       await userRef.set({
-        displayName,
-        email,
         createdAt,
+        email,
+        displayName,
         hudModel: 'remaining',
         diet: {
           calories: 2000,
@@ -56,6 +55,7 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
       console.log('error creating user', error.message);
     }
   }
+  console.log(userAuth);
   return userRef;
 };
 
