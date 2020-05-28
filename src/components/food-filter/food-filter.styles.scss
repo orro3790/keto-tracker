@@ -13,7 +13,8 @@ $keto-green: #1eb980;
 
   i {
     font-size: 14px;
-    color: $dp-24;
+    color: #fff;
+    opacity: 0.38;
     transition: 0.3s;
 
     &:hover {
@@ -24,6 +25,7 @@ $keto-green: #1eb980;
 
     &.on {
       color: $keto-green;
+      opacity: 1;
     }
   }
 }

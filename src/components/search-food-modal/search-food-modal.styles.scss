@@ -149,12 +149,14 @@ $keto-green: #1eb980;
     i {
       align-self: center;
       font-size: 65px;
-      color: $dp-24;
+      color: #fff;
+      opacity: 0.38;
       transition: 0.3s;
 
       &:hover {
         cursor: pointer;
         color: $keto-green;
+        opacity: 1;
         transition: 0.3s;
       }
 
