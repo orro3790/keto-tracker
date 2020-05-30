@@ -9,6 +9,7 @@ import {
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import './add-favorite.styles.scss';
 import { toggleFavFood } from '../../firebase/firebase.utils';
+import { MdBookmark } from 'react-icons/md';
 
 const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
   const [enabled, setEnabled] = useState(false);
@@ -57,7 +58,9 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
 
   return (
     <div>
-      <i className={favStyling} onClick={handleToggleFavFood}></i>
+      <div>
+        <MdBookmark className={favStyling} onClick={handleToggleFavFood} />
+      </div>
     </div>
   );
 };

@@ -8,13 +8,8 @@ $font-size-display-2: 26px;
   padding-bottom: 20px;
   align-items: center;
 
-  i {
-    color: rgba(255, 255, 255, 0.38);
-
-    &:hover {
-      color: rgba(255, 255, 255, 0.5);
-      transition: 0.3s;
-    }
+  svg {
+    color: #767676;
   }
 
   .yesterday-c {

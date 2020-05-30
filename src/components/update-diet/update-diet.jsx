@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { updateUpdateDiet } from '../../firebase/firebase.utils';
 import FormInput from '../form-input/form-input.component';
-import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
+import { updateDiet } from '../../firebase/firebase.utils';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { FaArrowAltCircleRight } from 'react-icons/fa';
+import { createStructuredSelector } from 'reselect';
+import {
+  selectDietSettings,
+  selectCurrentUserId,
+  selectCarbSettings,
+} from '../../redux/user/user.selectors';
 import './update-diet.styles.scss';
 
-const UpdateDiet = ({ currentUser }) => {
-  const [confirmationMsg, setConfirmationMsg] = useState(null);
-  const [modalStatus, setModalStatus] = useState('hidden');
+const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   const [fatLimit, setFatLimit] = useState('');
   const [carbLimit, setCarbLimit] = useState('');
   const [proteinLimit, setProteinLimit] = useState('');
@@ -105,23 +110,36 @@ const UpdateDiet = ({ currentUser }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isSubmittable) {
+      let updatedDiet = Object.assign({}, diet);
 
-    const userCopy = Object.assign({}, currentUser);
+      updatedDiet = {
+        fats: parseInt(fatsInGrams),
+        carbs: parseInt(carbsInGrams),
+        protein: parseInt(proteinInGrams),
+        calories: parseInt(calorieLimit),
+      };
 
-    userCopy.diet = {
-      fats: parseInt(fatsInGrams),
-      carbs: parseInt(carbsInGrams),
-      protein: parseInt(proteinInGrams),
-      calories: parseInt(calorieLimit),
-    };
+      // now update the data in firestore
+      updateDiet(userId, updatedDiet);
 
-    // now update the data in firestore
-    updateUpdateDiet(currentUser.id, userCopy.diet);
-
-    setConfirmationMsg({
-      success: 'Diet settings successfully updated!',
-    });
-    setModalStatus('visible');
+      toggleAlertModal({
+        title: 'SETTINGS SAVED!',
+        msg: 'Your diet settings have been updated!',
+        img: 'update',
+        status: 'visible',
+        sticky: false,
+      });
+    } else {
+      toggleAlertModal({
+        title: 'OOPS!',
+        msg:
+          'Make sure all fields have been filled in before trying to save your settings.',
+        img: 'error',
+        status: 'visible',
+        sticky: false,
+      });
+    }
   };
 
   let fatsInGrams = 0;
@@ -156,33 +174,14 @@ const UpdateDiet = ({ currentUser }) => {
     }
   };
 
-  const handleClose = () => {
-    setModalStatus('hidden');
-  };
-
-  let confirmationModal;
-
-  if (modalStatus === 'visible') {
-    confirmationModal = (
-      <ConfirmationModal
-        messageObj={confirmationMsg}
-        handleClose={handleClose}
-        onConfirm={handleClose}
-      />
-    );
-  } else {
-    confirmationModal = null;
-  }
-
   let carbLabel = 'desired % carbs';
 
-  if (currentUser && currentUser.carbSettings === 'n') {
+  if (carbSettings === 'n') {
     carbLabel = 'desired % net carbs';
   }
 
   return (
     <div>
-      {confirmationModal}
       <div className='t'>Update Diet Settings</div>
       <div className='macro-calc-c'>
         <div className='left-col'>
@@ -223,27 +222,23 @@ const UpdateDiet = ({ currentUser }) => {
               label={'desired % protein'}
               className='diet-form-row'
             />
-            <button
-              className='save-btn diet-form-row'
-              type='submit'
-              disabled={!isSubmittable}
-            >
+            <button className='save-btn diet-form-row' type='submit'>
               Save
             </button>
           </form>
         </div>
         <div className='center-col'>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(calorieLimit)}></i>
+            <FaArrowAltCircleRight className={getArrowStyle(calorieLimit)} />
           </div>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(fatLimit)}></i>
+            <FaArrowAltCircleRight className={getArrowStyle(fatLimit)} />
           </div>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(carbLimit)}></i>
+            <FaArrowAltCircleRight className={getArrowStyle(carbLimit)} />
           </div>
           <div className='diet-form-row'>
-            <i className={getArrowStyle(proteinLimit)}></i>
+            <FaArrowAltCircleRight className={getArrowStyle(proteinLimit)} />
           </div>
           <div className='diet-form-row'></div>
         </div>
@@ -268,8 +263,14 @@ const UpdateDiet = ({ currentUser }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  currentUser: state.user.currentUser,
+const mapStateToProps = createStructuredSelector({
+  diet: selectDietSettings,
+  userId: selectCurrentUserId,
+  carbSettings: selectCarbSettings,
 });
 
-export default connect(mapStateToProps, null)(UpdateDiet);
+const mapDispatchToProps = (dispatch) => ({
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateDiet);

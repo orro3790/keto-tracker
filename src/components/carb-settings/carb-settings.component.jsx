@@ -1,35 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
 import { connect } from 'react-redux';
 import { setCurrentUser } from '../../redux/user/user.actions';
 import { updateCarbSettings } from '../../firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import './carb-settings.styles.scss';
 
-const CarbSettings = ({ currentUser, setCurrentUser }) => {
-  const [confirmationMsg, setConfirmationMsg] = useState(null);
-  const [modalStatus, setModalStatus] = useState('hidden');
+const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
   const [toggle, setToggle] = useState(null);
 
   useEffect(() => {
-    if (currentUser !== null) {
-      switch (currentUser.carbSettings) {
-        case 'n':
-          setToggle('net');
-          break;
-        case 't':
-          setToggle('total');
-          break;
-        default:
-          break;
-      }
+    switch (currentUser.carbSettings) {
+      case 'n':
+        setToggle('net');
+        break;
+      case 't':
+        setToggle('total');
+        break;
+      default:
+        break;
     }
   }, [currentUser]);
-
-  const handleClose = () => {
-    setModalStatus('hidden');
-  };
 
   const toggleTotal = () => {
     setToggle('total');
@@ -37,6 +29,16 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
 
   const toggleNet = () => {
     setToggle('net');
+  };
+
+  const handleAlert = () => {
+    toggleAlertModal({
+      title: 'SETTINGS SAVED!',
+      msg: `Your carb settings have been changed to ${toggle}.`,
+      img: 'update',
+      status: 'visible',
+      sticky: false,
+    });
   };
 
   const saveCarbSettings = () => {
@@ -47,23 +49,19 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
       setting = 'n';
     }
 
-    if (currentUser !== null) {
-      if (currentUser.carbSettings !== setting) {
-        // only push update if there's a change between state and user settings in firebase
-        updateCarbSettings(currentUser.id, setting);
-        const userCopy = Object.assign({}, currentUser);
-        userCopy.carbSettings = setting;
-        setCurrentUser(userCopy);
-      }
+    if (currentUser.carbSettings !== setting) {
+      // only push update if there's a change between state and user settings in firebase
+      updateCarbSettings(currentUser.id, setting);
+      const userCopy = Object.assign({}, currentUser);
+      userCopy.carbSettings = setting;
+      setCurrentUser(userCopy);
     }
-    setConfirmationMsg({
-      success: `Carb settings changed to "${toggle}".`,
-    });
-    setModalStatus('visible');
+
+    handleAlert();
   };
 
   const getStyle = (className) => {
-    if (currentUser !== null && className === toggle) {
+    if (className === toggle) {
       return 'on';
     } else {
       return 'off';
@@ -80,7 +78,7 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
     </div>
   );
 
-  if (currentUser && toggle === 'net') {
+  if (toggle === 'net') {
     carbDescription = (
       <div className='net-list'>
         <div>Net carbs is the sum of total carbs minus fiber.</div>
@@ -93,23 +91,8 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
     );
   }
 
-  let confirmationModal;
-
-  if (modalStatus === 'visible') {
-    confirmationModal = (
-      <ConfirmationModal
-        messageObj={confirmationMsg}
-        handleClose={handleClose}
-        onConfirm={handleClose}
-      />
-    );
-  } else {
-    confirmationModal = null;
-  }
-
   return (
     <div>
-      {confirmationModal}
       <div className='t'>Carb Settings</div>
       <div className='carb-set-c'>
         <div className='toggle'>
@@ -125,7 +108,7 @@ const CarbSettings = ({ currentUser, setCurrentUser }) => {
           </div>
         </div>
         <div className='desc-c'>{carbDescription}</div>
-        <button className='save-btn' type='submit' onClick={saveCarbSettings}>
+        <button className={'save-btn'} type='submit' onClick={saveCarbSettings}>
           Save
         </button>
       </div>
@@ -139,6 +122,7 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch) => ({
   setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CarbSettings);

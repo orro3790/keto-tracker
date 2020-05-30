@@ -8,6 +8,7 @@ import { createFood } from '../../firebase/firebase.utils.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import './create-food.styles.scss';
 
 const CreateFood = ({
@@ -184,10 +185,10 @@ const CreateFood = ({
           <div className='btn-c'>
             <div></div>
             <div className='back-btn' onClick={handleBack}>
-              <i className='fas fa-arrow-left'></i>
+              <FaArrowLeft className='fas fa-arrow-left' />
             </div>
             <div className='close-btn' onClick={handleClose}>
-              <i className='fas fa-times'></i>
+              <FaTimes className='fas fa-times' />
             </div>
           </div>
           <div className='info-c'>
@@ -301,10 +302,7 @@ const CreateFood = ({
             type='submit'
             onClick={handleSubmit}
           >
-            <div className={`txt ${onCheck()}`}>
-              Add to Database
-              <i className='fas fa-plus'></i>
-            </div>
+            <div className={`txt ${onCheck()}`}>Add to Database</div>
           </div>
         </div>
       </form>
@@ -313,7 +311,6 @@ const CreateFood = ({
 };
 
 const mapStateToProps = createStructuredSelector({
-  // createdFoods is only used here to check the state after adding an item. It's not really necessary
   userId: selectCurrentUserId,
   meal: selectMeal,
 });

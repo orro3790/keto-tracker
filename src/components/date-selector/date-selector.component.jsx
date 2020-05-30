@@ -10,6 +10,7 @@ import {
   setEntry,
 } from '../../redux/date-selector/date-selector.actions';
 import { updateTotals } from '../../redux/search-food-modal/search-food-modal.actions';
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { getEntry, updateEntry } from '../../firebase/firebase.utils';
 
 const DateSelector = ({
@@ -29,7 +30,7 @@ const DateSelector = ({
     };
 
     // if a user has already loaded entries into state, no need to re-load entries into state
-    if (currentUser !== null && entries === '') {
+    if (entries === '') {
       loadEntry();
     }
   }, [currentUser, setEntry, entries]);
@@ -64,9 +65,7 @@ const DateSelector = ({
       setEntry(entriesObj);
     };
 
-    if (currentUser !== null) {
-      loadEntry();
-    }
+    loadEntry();
   };
 
   const goToPrevDay = () => {
@@ -79,20 +78,18 @@ const DateSelector = ({
       setEntry(entriesObj);
     };
 
-    if (currentUser !== null) {
-      loadEntry();
-    }
+    loadEntry();
   };
 
   return (
     <div>
       <div className='date-c'>
         <div className='yesterday-c' onClick={goToPrevDay}>
-          <i className='fas fa-chevron-left'></i>
+          <FaChevronLeft className='fas fa-chevron-left' />
         </div>
         <div className='today-c'>{date}</div>
         <div className='tomorrow-c' onClick={goToNextDay}>
-          <i className='fas fa-chevron-right'></i>
+          <FaChevronRight className='fas fa-chevron-right' />
         </div>
       </div>
     </div>

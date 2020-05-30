@@ -3,17 +3,25 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { selectAlertModal } from '../../redux/alert-modal/alert-modal.selectors';
-import { ReactComponent as Bell } from '../../assets/bell.svg';
-import { ReactComponent as Email } from '../../assets/email.svg';
 import { signOut } from '../../firebase/firebase.utils';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { MdNotificationsActive, MdCheck, MdErrorOutline } from 'react-icons/md';
+import { FiCheckCircle } from 'react-icons/fi';
+import { GiLetterBomb } from 'react-icons/gi';
+
 import './alert-modal.styles.scss';
 
 const AlertModal = ({ currentUser, alertModal, enabled, toggleAlertModal }) => {
   let img;
   switch (alertModal.img) {
     case 'email':
-      img = <Email className='alert-img' />;
+      img = <GiLetterBomb className='alert-email' />;
+      break;
+    case 'update':
+      img = <FiCheckCircle className='alert-success' />;
+      break;
+    case 'error':
+      img = <MdErrorOutline className='alert-error' />;
       break;
     default:
       break;
@@ -46,7 +54,7 @@ const AlertModal = ({ currentUser, alertModal, enabled, toggleAlertModal }) => {
         <div className='submit-r'>
           <div></div>
           <div className='submit-btn on' onClick={callback}>
-            <i className='fas fa-check add-i'></i>
+            <MdCheck className='add-i' />
           </div>
           <div></div>
         </div>
@@ -61,7 +69,7 @@ const AlertModal = ({ currentUser, alertModal, enabled, toggleAlertModal }) => {
       <div className='alert-t'>
         {alertModal.title}
         <div>
-          <Bell className='bell-i' />
+          <MdNotificationsActive className='bell-i' />
         </div>
       </div>
       <div className='alert-msg'>{alertModal.msg}</div>

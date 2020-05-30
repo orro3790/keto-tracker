@@ -1,34 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { selectHudModel } from '../../redux/daily-hud/daily-hud-actions';
+import { createStructuredSelector } from 'reselect';
+import {
+  selectCarbSettings,
+  selectDietSettings,
+} from '../../redux/user/user.selectors';
+import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import { selectHudSettings } from '../../redux/daily-hud/daily-hud.selectors';
+import { setHudModel } from '../../redux/daily-hud/daily-hud-actions';
 import './daily-hud.styles.scss';
 
-const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
+const DailyChart = ({ setHudModel, carbSettings, diet, hudModel, entries }) => {
   const [dailyFats, setDailyFats] = useState('');
   const [dailyCarbs, setDailyCarbs] = useState('');
   const [dailyProtein, setDailyProtein] = useState('');
   const [dailyCalories, setDailyCalories] = useState('');
 
   const toggleRemaining = () => {
-    selectHudModel('remaining');
+    setHudModel('remaining');
   };
 
   const toggleAdditive = () => {
-    selectHudModel('additive');
+    setHudModel('additive');
   };
 
   useEffect(() => {
-    if (currentUser !== null && entries !== '') {
+    if (entries !== '') {
       setDailyFats(entries.dailyMacros.f);
       setDailyProtein(entries.dailyMacros.p);
-      if (currentUser.carbSettings === 'n') {
+      if (carbSettings === 'n') {
         setDailyCarbs(entries.dailyMacros.k);
       } else {
         setDailyCarbs(entries.dailyMacros.c);
       }
       setDailyCalories(entries.dailyMacros.e);
     }
-  }, [entries, currentUser]);
+  }, [entries, carbSettings]);
 
   // handle how to display the values, searchModal actually calculates the totals before updating firestore
   let fatsValue = 0;
@@ -37,23 +44,21 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   let caloriesValue = 0;
   let carbLabel = 'carbs';
 
-  if (currentUser !== null) {
-    if (currentUser.carbSettings === 'n') {
-      carbLabel = 'net carbs';
-    } else {
-      carbLabel = 'carbs';
-    }
-    if (hudModel === 'remaining') {
-      fatsValue = (currentUser.diet.fats - dailyFats).toFixed(1);
-      carbsValue = (currentUser.diet.carbs - dailyCarbs).toFixed(1);
-      proteinValue = (currentUser.diet.protein - dailyProtein).toFixed(1);
-      caloriesValue = (currentUser.diet.calories - dailyCalories).toFixed(1);
-    } else if (hudModel === 'additive') {
-      fatsValue = dailyFats;
-      carbsValue = dailyCarbs;
-      proteinValue = dailyProtein;
-      caloriesValue = dailyCalories;
-    }
+  if (carbSettings === 'n') {
+    carbLabel = 'net carbs';
+  } else {
+    carbLabel = 'carbs';
+  }
+  if (hudModel === 'remaining') {
+    fatsValue = (diet.fats - dailyFats).toFixed(1);
+    carbsValue = (diet.carbs - dailyCarbs).toFixed(1);
+    proteinValue = (diet.protein - dailyProtein).toFixed(1);
+    caloriesValue = (diet.calories - dailyCalories).toFixed(1);
+  } else if (hudModel === 'additive') {
+    fatsValue = dailyFats;
+    carbsValue = dailyCarbs;
+    proteinValue = dailyProtein;
+    caloriesValue = dailyCalories;
   }
 
   const getStyle = (className) => {
@@ -65,7 +70,7 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   };
 
   let macroHud;
-  if (currentUser !== null && currentUser.diet.calories === '') {
+  if (diet.calories === '') {
     macroHud = <div className='daily-hud-loading'>...Loading Macros</div>;
   } else {
     macroHud = (
@@ -107,14 +112,15 @@ const DailyChart = ({ selectHudModel, hudModel, currentUser, entries }) => {
   return <div>{macroHud}</div>;
 };
 
-const mapStateToProps = (state) => ({
-  hudModel: state.dailyHud.hudModel,
-  currentUser: state.user.currentUser,
-  entries: state.dateSelector.entries,
+const mapStateToProps = createStructuredSelector({
+  hudModel: selectHudSettings,
+  entries: selectEntries,
+  carbSettings: selectCarbSettings,
+  diet: selectDietSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  selectHudModel: (model) => dispatch(selectHudModel(model)),
+  setHudModel: (model) => dispatch(setHudModel(model)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DailyChart);

@@ -17,6 +17,7 @@ import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import './favs-modal.styles.scss';
 import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const ViewFavs = ({
   favFoods,
@@ -136,10 +137,10 @@ const ViewFavs = ({
         <div className='btn-c'>
           <div></div>
           <div className='back-btn' onClick={handleBack}>
-            <i className='fas fa-arrow-left'></i>
+            <FaArrowLeft className='fas fa-arrow-left' />
           </div>
           <div className='close-btn' onClick={handleClose}>
-            <i className='fas fa-times'></i>
+            <FaTimes className='fas fa-times' />
           </div>
         </div>
         <div>

@@ -4,17 +4,13 @@ $keto-green: #1eb980;
 
 .filter-c {
   display: grid;
-  padding-bottom: 2px;
-  align-self: center;
   grid-template-columns: 1fr auto auto auto;
   grid-template-rows: 1fr;
   gap: 20px;
-  text-align: center;
 
-  i {
-    font-size: 14px;
-    color: #fff;
-    opacity: 0.38;
+  svg {
+    vertical-align: middle;
+    color: #474747;
     transition: 0.3s;
 
     &:hover {
@@ -25,7 +21,6 @@ $keto-green: #1eb980;
 
     &.on {
       color: $keto-green;
-      opacity: 1;
     }
   }
 }

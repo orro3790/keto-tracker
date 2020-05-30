@@ -76,7 +76,7 @@ export const deleteFood = async (userId, food) => {
   }
 };
 
-export const updateUpdateDiet = async (userId, macros) => {
+export const updateDiet = async (userId, macros) => {
   if (userId === null) return;
 
   // grab the collection and instantiate an empty doc so it is assigned a random ID
@@ -87,19 +87,6 @@ export const updateUpdateDiet = async (userId, macros) => {
   });
 
   console.log('diet settings updated');
-};
-
-export const updateDietMacros = async (userId, macros) => {
-  if (!userId) return;
-
-  // grab the collection and instantiate an empty doc so it is assigned a random ID
-  const macrosRef = firestore.doc(`users/${userId}/diet/macros`);
-
-  try {
-    await macrosRef.set(macros);
-  } catch (error) {
-    console.log('error updating user macros', error.message);
-  }
 };
 
 export const addCollectionAndDocuments = async (

@@ -4,6 +4,8 @@ import { createStructuredSelector } from 'reselect';
 import { selectFoodFilter } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { setFoodFilter } from './../../redux/search-food-modal/search-food-modal.actions';
+import { MdVerifiedUser, MdTurnedIn } from 'react-icons/md';
+import { FaUserTag } from 'react-icons/fa';
 import './food-filter.styles.scss';
 
 const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
@@ -25,17 +27,17 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
 
   // dispatch food filter to state so it will remember last preference upon reopening of search modal
   const toggleFilter = (e) => {
-    if (e.target.className.includes('fav')) {
+    if (e.currentTarget.className.baseVal.includes('fav')) {
       setFoodFilter({
         filter: 'fav',
         path: `users/${userId}/favFoods/`,
       });
-    } else if (e.target.className.includes('usda')) {
+    } else if (e.currentTarget.className.baseVal.includes('usda')) {
       setFoodFilter({
         filter: 'usda',
         path: `usda`,
       });
-    } else if (e.target.className.includes('user-foods')) {
+    } else if (e.currentTarget.className.baseVal.includes('user-foods')) {
       setFoodFilter({
         filter: 'user-foods',
         path: `users/${userId}/createdFoods/`,
@@ -47,22 +49,22 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
     <div className='filter-c'>
       <div></div>
       <span className='filter-btn'>
-        <i
+        <FaUserTag
           className={`fas fa-user-tag user-foods ${userOn}`}
           onClick={toggleFilter}
-        ></i>
+        />
       </span>
       <span className='filter-btn'>
-        <i
+        <MdTurnedIn
           className={`fas fa-bookmark fav ${favOn}`}
           onClick={toggleFilter}
-        ></i>
+        />
       </span>
       <span className='filter-btn'>
-        <i
+        <MdVerifiedUser
           className={`fas fa-shield-alt usda ${usdaOn}`}
           onClick={toggleFilter}
-        ></i>
+        />
       </span>
     </div>
   );

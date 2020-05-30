@@ -29,6 +29,10 @@ import {
 import './search-food-modal.styles.scss';
 import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
+import { MdCheck, MdDelete } from 'react-icons/md';
+import { IoIosBookmark } from 'react-icons/io';
+import { GiFruitBowl } from 'react-icons/gi';
+import { FaUserTag, FaTimes } from 'react-icons/fa';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -356,7 +360,7 @@ const SearchFoodModal = ({
     title: {
       display: true,
       text: '% of daily allowance',
-      fontColor: 'rgba(255, 255, 255, 1)',
+      fontColor: '#fff',
     },
     scales: {
       yAxes: [
@@ -371,7 +375,7 @@ const SearchFoodModal = ({
           },
           ticks: {
             padding: 10,
-            fontColor: 'rgba(255, 255, 255, 1)',
+            fontColor: '#fff',
           },
         },
       ],
@@ -386,7 +390,7 @@ const SearchFoodModal = ({
             min: 0,
             stepSize: 20,
             padding: 5,
-            fontColor: 'rgba(255, 255, 255, 1)',
+            fontColor: '#fff',
           },
         },
       ],
@@ -510,7 +514,7 @@ const SearchFoodModal = ({
       <div className='submit-r'>
         <div></div>
         <div className={getBtnStyle()} onClick={handleSubmit}>
-          <i className={getIconStyle()}></i>
+          <MdCheck className={getIconStyle()} />
         </div>
         <div></div>
       </div>
@@ -519,10 +523,10 @@ const SearchFoodModal = ({
     submitRow = (
       <div className='submit-r-edit-mode'>
         <div className={getBtnStyle()} onClick={handleSubmit}>
-          <i className={getIconStyle()}></i>
+          <MdCheck className={getIconStyle()} />
         </div>
         <div className='delete-btn' onClick={handleDelete}>
-          <i className='fas fa-trash delete-i'></i>
+          <MdDelete className='fas fa-trash delete-i' />
         </div>
       </div>
     );
@@ -594,26 +598,26 @@ const SearchFoodModal = ({
       <div className='hud'>
         <div className='hud-r'>
           <div>
-            <i
+            <GiFruitBowl
               className='fas fa-utensils add'
               onClick={openAddCustomFoodModal}
-            ></i>
+            />
           </div>
           <div onClick={openViewFavsModal}>
-            <i className='fas fa-bookmark fav'></i>
+            <IoIosBookmark className='fas fa-bookmark fav' />
           </div>
           <div className='l'>Create Custom Food</div>
-          <div className='l'>View/Edit Favorites</div>
+          <div className='l'>View Favorites</div>
         </div>
 
         <div className='hud-r-single'>
           <div>
-            <i
+            <FaUserTag
               className='fas fa-folder-open custom'
               onClick={openCustomFoodModal}
-            ></i>
+            />
           </div>
-          <div className='l'>View/Edit Custom Foods</div>
+          <div className='l'>View Custom Foods</div>
         </div>
       </div>
     );
@@ -625,7 +629,7 @@ const SearchFoodModal = ({
         <div className='btn-c'>
           <FoodFilter />
           <div className='close-btn' onClick={handleClose}>
-            <i className='fas fa-times'></i>
+            <FaTimes className='fas fa-times' />
           </div>
         </div>
         <div className='search-s'>

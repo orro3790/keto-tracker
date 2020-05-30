@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { signOut } from '../../firebase/firebase.utils';
-import ConfirmationModal from '../confirmation-modal/confirmation-modal.component';
-import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import {
+  GiWhiteBook,
+  GiHeartBeats,
+  GiExitDoor,
+  GiEntryDoor,
+  GiHistogram,
+} from 'react-icons/gi';
+import { MdNotifications, MdSettings } from 'react-icons/md';
 import './rail.styles.scss';
 
-const Rail = ({ currentUser, toggleAlertModal }) => {
-  const [confirmationMsg, setConfirmationMsg] = useState('');
-  const [modalStatus, setModalStatus] = useState('');
-
+const Rail = ({ toggleAlertModal }) => {
   let location = useLocation();
 
   let styles = {
@@ -46,10 +47,6 @@ const Rail = ({ currentUser, toggleAlertModal }) => {
       break;
   }
 
-  const handleClose = () => {
-    setModalStatus(null);
-  };
-
   const handleSignOut = () => {
     // double check that user wants to sign out
     // setConfirmationMsg({
@@ -65,87 +62,50 @@ const Rail = ({ currentUser, toggleAlertModal }) => {
     });
   };
 
-  const confirmSignOut = () => {
-    signOut();
-
-    setConfirmationMsg({
-      success: 'You are now logged out.',
-    });
-  };
-
-  let confirmationModal;
-
-  let onConfirm = confirmSignOut;
-
-  if (confirmationMsg.question) {
-    // first click triggers the signout confirmation modal
-    onConfirm = confirmSignOut;
-  } else if (confirmationMsg.success) {
-    // if signed out, the handleClose function is reassigned to onConfirm
-    onConfirm = handleClose;
-  }
-
-  if (modalStatus === 'visible') {
-    confirmationModal = (
-      <ConfirmationModal
-        messageObj={confirmationMsg}
-        handleClose={handleClose}
-        onConfirm={onConfirm}
-      />
-    );
-  } else {
-    confirmationModal = null;
-  }
-
-  let icon = <i className={styles.signin}></i>;
+  let icon = <GiExitDoor className={styles.signin} />;
   let signInSignOut = <Link to='/signin'>{icon}</Link>;
 
-  if (currentUser !== null) {
-    icon = <i className={styles.signout} onClick={handleSignOut}></i>;
-    signInSignOut = <div>{icon}</div>;
-  }
+  icon = <GiEntryDoor className={styles.signout} onClick={handleSignOut} />;
+  signInSignOut = <div>{icon}</div>;
 
   return (
     <div>
-      {confirmationModal}
       <div className='rail-c hidden'>
         <Link to='/'>
           <div className={styles.logo}>K</div>
         </Link>
         <div>
           <Link to='/diary'>
-            <i className={styles.diary}></i>
+            <GiWhiteBook className={styles.diary} />
           </Link>
         </div>
         <div>
           <Link to='/exercises'>
-            <i className={styles.exercise}></i>
+            <GiHeartBeats className={styles.exercise} />
           </Link>
         </div>
         <div>
           <Link to='/metrics'>
-            <i className={styles.metrics}></i>
+            <GiHistogram className={styles.metrics} />
           </Link>
         </div>
         <div>
           <Link to='/settings'>
-            <i className={styles.settings}></i>
+            <MdSettings className={styles.settings} />
           </Link>
         </div>
         <div>{signInSignOut}</div>
-        <div className='empty'></div>
+        <div className='empty'>
+          <MdNotifications />
+        </div>
       </div>
     </div>
   );
 };
-
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
-});
 
 const mapDispatchToProps = (dispatch) => ({
   toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
   //add a confirmation modal
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Rail);
+export default connect(null, mapDispatchToProps)(Rail);

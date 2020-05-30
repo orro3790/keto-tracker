@@ -38,14 +38,15 @@ $keto-green: #1eb980;
     text-align: right;
     justify-self: right;
     width: 150px;
-    color: rgba(255, 255, 255, 0.38);
+    color: #7e7e7e;
   }
 
   .back-btn {
     align-self: center;
     color: $keto-orange;
 
-    & i {
+    & svg {
+      vertical-align: middle;
       font-size: $font-size-medium;
       cursor: pointer;
 
@@ -60,8 +61,9 @@ $keto-green: #1eb980;
     align-self: center;
     color: $error-red-600;
 
-    & i {
-      font-size: $font-size-large;
+    & svg {
+      vertical-align: middle;
+      font-size: $font-size-medium;
       cursor: pointer;
 
       &:active {

@@ -15,6 +15,7 @@ import {
   toggleSuggestionWindow,
 } from './../../redux/search-item/search-item.actions.js';
 import { selectSuggestionWindow } from '../../redux/search-item/search-item.selectors';
+import { MdAddBox } from 'react-icons/md';
 
 const ToggleSearchModal = ({
   meal,
@@ -85,7 +86,7 @@ const ToggleSearchModal = ({
   return (
     <div>
       <span className='add-btn' onClick={handleClick}>
-        <i className='fas fa-plus-square'></i>
+        <MdAddBox className='fas fa-plus-square' />
       </span>
     </div>
   );

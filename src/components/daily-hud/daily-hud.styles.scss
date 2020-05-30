@@ -11,23 +11,15 @@ $keto-green: #1eb980;
   .remaining {
     text-align: right;
     cursor: pointer;
-
-    &:hover:not(.on) {
-      color: rgba(255, 255, 255, 0.2);
-    }
   }
 
   .separator {
-    background-color: $dp-24;
+    background-color: #767676;
   }
 
   .additive {
     text-align: left;
     cursor: pointer;
-
-    &:hover:not(.on) {
-      color: rgba(255, 255, 255, 0.2);
-    }
   }
 
   .on {
@@ -36,7 +28,7 @@ $keto-green: #1eb980;
   }
 
   .off {
-    color: $dp-24;
+    color: #767676;
     transition: 0.3s;
   }
 }

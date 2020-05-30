@@ -7,16 +7,21 @@ $keto-blue: #53a3ff;
 .fav-btn-c {
   text-align: right;
 
-  i {
-    color: rgba(255, 255, 255, 0.38);
+  svg {
+    width: 30px;
+    height: 30px;
+    color: #474747;
+    transition: 0.3s;
+
     cursor: pointer;
     &:active {
       transition: 0.05s;
       transform: scale(0.9);
     }
 
-    &:hover:not(.on) {
-      color: rgba(255, 255, 255, 0.5);
+    &:hover {
+      color: $keto-green;
+      transition: 0.3s;
     }
 
     &.on {

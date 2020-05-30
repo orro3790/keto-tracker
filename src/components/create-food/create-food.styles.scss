@@ -33,14 +33,15 @@ $keto-green: #1eb980;
     text-align: right;
     justify-self: right;
     width: 150px;
-    color: rgba(255, 255, 255, 0.38);
+    color: #474747;
   }
 
   .back-btn {
     align-self: center;
     color: $keto-orange;
 
-    & i {
+    & svg {
+      vertical-align: middle;
       font-size: $font-size-medium;
       cursor: pointer;
 
@@ -55,8 +56,9 @@ $keto-green: #1eb980;
     align-self: center;
     color: $error-red-600;
 
-    & i {
-      font-size: $font-size-large;
+    & svg {
+      vertical-align: middle;
+      font-size: $font-size-medium;
       cursor: pointer;
 
       &:active {
@@ -127,7 +129,7 @@ $keto-green: #1eb980;
         display: grid;
         grid-template-columns: auto 5px 1fr;
         gap: 0 10px;
-        color: rgba(255, 255, 255, 0.38);
+        color: #474747;
 
         .on {
           color: $keto-green;
@@ -137,9 +139,6 @@ $keto-green: #1eb980;
         .opt {
           text-align: left;
           cursor: pointer;
-          &:hover:not(.on) {
-            color: rgba(255, 255, 255, 0.5);
-          }
         }
       }
     }
@@ -148,6 +147,7 @@ $keto-green: #1eb980;
   .submit-btn {
     display: grid;
     text-align: center;
+    align-items: center;
     padding: 10px;
     background-color: $dp-12;
     font-size: $font-size-display-3;
@@ -160,19 +160,14 @@ $keto-green: #1eb980;
     }
 
     .txt {
-      align-self: center;
       font-size: $font-size-display-3;
-      color: rgba(255, 255, 255, 0.38);
+      color: #7e7e7e;
       transition: 0.5s;
 
       &.on {
         color: white;
         transition: 0.5s;
       }
-    }
-
-    i {
-      padding-left: 10px;
     }
   }
 }

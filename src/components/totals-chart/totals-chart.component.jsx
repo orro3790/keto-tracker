@@ -55,7 +55,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
   useEffect(() => {
     let colors;
     let labels;
-    if (currentUser !== null && currentUser.carbSettings === 'n') {
+    if (currentUser.carbSettings === 'n') {
       labels = ['fats', 'net carbs', 'protein'];
     } else {
       labels = ['fats', 'carbs', 'protein'];

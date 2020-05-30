@@ -2,6 +2,7 @@ import React from 'react';
 import Rail from '../../components/rail/rail.component';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { connect } from 'react-redux';
+import { MdHelp } from 'react-icons/md';
 import './exercises.styles.scss';
 
 const Exercises = ({ toggleAlertModal }) => {
@@ -25,6 +26,7 @@ const Exercises = ({ toggleAlertModal }) => {
         <div className='page-body-c'>
           <div className='t'>Exercises</div>
           <div onClick={handleClick}>Click me</div>
+          <MdHelp />
         </div>
       </div>
     </div>

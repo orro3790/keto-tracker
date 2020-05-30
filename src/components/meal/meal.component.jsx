@@ -47,14 +47,12 @@ const Meal = ({ meal, entries, currentUser }) => {
   let carbType = 'carbs';
   let totalCarbsOrNetCarbsValue;
 
-  if (currentUser !== null) {
-    if (currentUser.carbSettings === 'n') {
-      carbType = 'net carbs';
-      totalCarbsOrNetCarbsValue = totalNetCarbs;
-    } else {
-      carbType = 'carbs';
-      totalCarbsOrNetCarbsValue = totalCarbs;
-    }
+  if (currentUser.carbSettings === 'n') {
+    carbType = 'net carbs';
+    totalCarbsOrNetCarbsValue = totalNetCarbs;
+  } else {
+    carbType = 'carbs';
+    totalCarbsOrNetCarbsValue = totalCarbs;
   }
 
   return (

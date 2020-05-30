@@ -14,6 +14,7 @@ import { createFoodReference } from '../../redux/search-item/search-item.actions
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
+import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { firestore } from '../../firebase/firebase.utils';
 import './custom-foods-modal.styles.scss';
 
@@ -135,10 +136,10 @@ const CustomFoodsModal = ({
         <div className='btn-c'>
           <div></div>
           <div className='back-btn' onClick={handleBack}>
-            <i className='fas fa-arrow-left'></i>
+            <FaArrowLeft className='fas fa-arrow-left' />
           </div>
           <div className='close-btn' onClick={handleClose}>
-            <i className='fas fa-times'></i>
+            <FaTimes className='fas fa-times' />
           </div>
         </div>
         <div>
@@ -162,7 +163,6 @@ const CustomFoodsModal = ({
 };
 
 const mapStateToProps = createStructuredSelector({
-  // createdFoods is only used here to check the state after adding an item. It's not really necessary
   customFoods: selectCustomFoods,
   userId: selectCurrentUserId,
   meal: selectMeal,

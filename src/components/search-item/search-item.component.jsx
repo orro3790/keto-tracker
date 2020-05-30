@@ -5,6 +5,7 @@ import {
   createFoodReference,
   toggleSuggestionWindow,
 } from '../../redux/search-item/search-item.actions.js';
+import { FaPlusSquare } from 'react-icons/fa';
 
 const SearchItem = ({
   food,
@@ -33,7 +34,7 @@ const SearchItem = ({
       className={`item-c ${index % 2 ? 'liOdd' : 'liEven'}`}
       onClick={handleClick}
     >
-      <i className='fas fa-plus-square add-btn'></i>
+      <FaPlusSquare className='fas fa-plus-square add-btn' />
 
       <span className='name'>{food.n}</span>
       <div></div>

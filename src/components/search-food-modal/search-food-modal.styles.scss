@@ -38,14 +38,15 @@ $keto-green: #1eb980;
     text-align: right;
     justify-self: right;
     width: 150px;
-    color: rgba(255, 255, 255, 0.38);
+    color: #7e7e7e;
   }
 
   .close-btn {
     color: $error-red-600;
 
-    & i {
-      font-size: $font-size-large;
+    & svg {
+      vertical-align: middle;
+      font-size: $font-size-medium;
       cursor: pointer;
 
       &:active {
@@ -146,17 +147,15 @@ $keto-green: #1eb980;
     justify-content: center;
     text-align: center;
 
-    i {
+    svg {
       align-self: center;
       font-size: 65px;
-      color: #fff;
-      opacity: 0.38;
+      color: #474747;
       transition: 0.3s;
 
       &:hover {
         cursor: pointer;
         color: $keto-green;
-        opacity: 1;
         transition: 0.3s;
       }
 
@@ -186,26 +185,26 @@ $keto-green: #1eb980;
     padding-top: 20px;
 
     .submit-btn {
-      align-items: center;
       padding: 5px;
-      font-size: $font-size-display-3;
+      height: 40px;
       background-color: $dp-04;
-      transition: 0.5s;
+      transition: 0.3s;
 
       &.on {
         background-color: $keto-green;
-        transition: 0.5s;
+        transition: 0.3s;
         cursor: pointer;
       }
 
-      .add-i {
-        font-size: $font-size-display-3;
+      svg {
+        width: 100%;
+        height: 100%;
         color: $dp-08;
-        transition: 0.5s;
+        transition: 0.3s;
 
         &.on {
           color: white;
-          transition: 0.5s;
+          transition: 0.3s;
           cursor: pointer;
         }
       }
@@ -221,45 +220,43 @@ $keto-green: #1eb980;
     margin-right: auto;
 
     .submit-btn {
-      align-self: center;
       padding: 5px;
-      font-size: $font-size-display-3;
+      height: 40px;
       background-color: $dp-04;
-      transition: 0.5s;
+      transition: 0.3s;
 
       &.on {
         background-color: $keto-green;
-        transition: 0.5s;
+        transition: 0.3s;
         cursor: pointer;
       }
 
-      .add-i {
-        padding: 0 0 0 5px;
-        font-size: $font-size-display-3;
+      svg {
+        width: 100%;
+        height: 100%;
         color: $dp-08;
-        transition: 0.5s;
+        transition: 0.3s;
 
         &.on {
           color: white;
-          transition: 0.5s;
+          transition: 0.3s;
           cursor: pointer;
         }
       }
     }
 
     .delete-btn {
-      align-self: center;
+      height: 40px;
       padding: 5px;
-      font-size: $font-size-display-3;
       background-color: $error-red-600;
-      transition: 0.5s;
+      transition: 0.3s;
       cursor: pointer;
 
       .delete-i {
-        padding: 0 0 0 5px;
-        font-size: $font-size-display-3;
+        width: 100%;
+        height: 100%;
         color: #fff;
-        transition: 0.5s;
+        transition: 0.3s;
       }
     }
   }
