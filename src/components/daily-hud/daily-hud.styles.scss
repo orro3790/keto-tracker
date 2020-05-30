@@ -9,8 +9,13 @@ $keto-green: #1eb980;
   text-align: center;
 
   .remaining {
+    display: grid;
+    grid-template-columns: 1fr auto;
     text-align: right;
-    cursor: pointer;
+
+    .btn {
+      cursor: pointer;
+    }
   }
 
   .separator {
@@ -18,8 +23,13 @@ $keto-green: #1eb980;
   }
 
   .additive {
+    display: grid;
+    grid-template-columns: auto 1fr;
     text-align: left;
-    cursor: pointer;
+
+    .btn {
+      cursor: pointer;
+    }
   }
 
   .on {

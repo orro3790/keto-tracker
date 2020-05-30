@@ -69,47 +69,40 @@ const DailyChart = ({ setHudModel, carbSettings, diet, hudModel, entries }) => {
     }
   };
 
-  let macroHud;
-  if (diet.calories === '') {
-    macroHud = <div className='daily-hud-loading'>...Loading Macros</div>;
-  } else {
-    macroHud = (
-      <div>
-        <div className='calculation-c'>
-          <div
-            className={`${getStyle('remaining')} remaining`}
-            onClick={toggleRemaining}
-          >
+  return (
+    <div>
+      <div className='calculation-c'>
+        <div className={`${getStyle('remaining')} remaining`}>
+          <div></div>
+          <div className='btn' onClick={toggleRemaining}>
             REMAINING
           </div>
-          <div className='separator'></div>
-          <div
-            className={`${getStyle('additive')} additive`}
-            onClick={toggleAdditive}
-          >
+        </div>
+        <div className='separator'></div>
+        <div className={`${getStyle('additive')} additive`}>
+          <div className='btn' onClick={toggleAdditive}>
             DAILY SUM
           </div>
-        </div>
-        <div className='daily-hud'>
-          <div className='fats macro-c'>
-            {fatsValue}g<div className='l'>fats</div>
-          </div>
-          <div className='carbs macro-c'>
-            {carbsValue}g<div className='l'>{carbLabel}</div>
-          </div>
-          <div className='protein macro-c'>
-            {proteinValue}g<div className='l'>protein</div>
-          </div>
-          <div className=' macro-c'>
-            {caloriesValue}
-            <div className='l'>calories</div>
-          </div>
+          <div></div>
         </div>
       </div>
-    );
-  }
-
-  return <div>{macroHud}</div>;
+      <div className='daily-hud'>
+        <div className='fats macro-c'>
+          {fatsValue}g<div className='l'>fats</div>
+        </div>
+        <div className='carbs macro-c'>
+          {carbsValue}g<div className='l'>{carbLabel}</div>
+        </div>
+        <div className='protein macro-c'>
+          {proteinValue}g<div className='l'>protein</div>
+        </div>
+        <div className=' macro-c'>
+          {caloriesValue}
+          <div className='l'>calories</div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 const mapStateToProps = createStructuredSelector({
