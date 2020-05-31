@@ -9,6 +9,7 @@ import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
+import { MdCheck } from 'react-icons/md';
 import './create-food.styles.scss';
 
 const CreateFood = ({
@@ -178,10 +179,26 @@ const CreateFood = ({
     }
   };
 
+  const getBtnStyle = () => {
+    if (fieldsFilled === true) {
+      return 'submit-btn on';
+    } else {
+      return 'submit-btn';
+    }
+  };
+
+  const getIconStyle = () => {
+    if (fieldsFilled === true) {
+      return 'fas fa-check add-i on';
+    } else {
+      return 'fas fa-check add-i';
+    }
+  };
+
   return (
     <div>
       <form>
-        <div className='create-m'>
+        <div className='template-m'>
           <div className='btn-c'>
             <div></div>
             <div className='back-btn' onClick={handleBack}>
@@ -191,7 +208,7 @@ const CreateFood = ({
               <FaTimes className='fas fa-times' />
             </div>
           </div>
-          <div className='info-c'>
+          <div className='create-m-info-c'>
             <div className='t-s'>
               <FormInput
                 id='name'
@@ -296,13 +313,10 @@ const CreateFood = ({
               <span className='macro-unit'></span>
             </div>
           </div>
-          <div
-            className={`submit-btn ${onCheck()}`}
-            disabled={!isSubmittable}
-            type='submit'
-            onClick={handleSubmit}
-          >
-            <div className={`txt ${onCheck()}`}>Add to Database</div>
+          <div className='submit-r'>
+            <div className={getBtnStyle()} onClick={handleSubmit}>
+              <MdCheck className={getIconStyle()} />
+            </div>
           </div>
         </div>
       </form>

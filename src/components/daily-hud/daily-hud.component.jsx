@@ -4,13 +4,22 @@ import { createStructuredSelector } from 'reselect';
 import {
   selectCarbSettings,
   selectDietSettings,
+  selectWaterSettings,
 } from '../../redux/user/user.selectors';
 import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
 import { selectHudSettings } from '../../redux/daily-hud/daily-hud.selectors';
 import { setHudModel } from '../../redux/daily-hud/daily-hud-actions';
+import { GiWaterDrop } from 'react-icons/gi';
 import './daily-hud.styles.scss';
 
-const DailyChart = ({ setHudModel, carbSettings, diet, hudModel, entries }) => {
+const DailyChart = ({
+  setHudModel,
+  carbSettings,
+  diet,
+  hudModel,
+  entries,
+  water,
+}) => {
   const [dailyFats, setDailyFats] = useState('');
   const [dailyCarbs, setDailyCarbs] = useState('');
   const [dailyProtein, setDailyProtein] = useState('');
@@ -69,6 +78,26 @@ const DailyChart = ({ setHudModel, carbSettings, diet, hudModel, entries }) => {
     }
   };
 
+  let waterCol;
+  let waterUnit = water.u;
+
+  if (water === 'cups') {
+    if (water === 1) {
+      waterUnit = 'cup';
+    }
+  }
+
+  if (water.e === true) {
+    waterCol = (
+      <div className='water-c'>
+        <div className='droplet'>
+          <GiWaterDrop />
+        </div>
+        <div>1 {waterUnit}</div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className='calculation-c'>
@@ -87,6 +116,7 @@ const DailyChart = ({ setHudModel, carbSettings, diet, hudModel, entries }) => {
         </div>
       </div>
       <div className='daily-hud'>
+        {waterCol}
         <div className='fats macro-c'>
           {fatsValue}g<div className='l'>fats</div>
         </div>
@@ -110,6 +140,7 @@ const mapStateToProps = createStructuredSelector({
   entries: selectEntries,
   carbSettings: selectCarbSettings,
   diet: selectDietSettings,
+  water: selectWaterSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({

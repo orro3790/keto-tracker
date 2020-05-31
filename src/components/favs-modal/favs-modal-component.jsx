@@ -19,7 +19,7 @@ import { toggleSearchModal } from '../../redux/search-food-modal/search-food-mod
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 
-const ViewFavs = ({
+const FavsModal = ({
   favFoods,
   toggleFavsModal,
   userId,
@@ -176,4 +176,4 @@ const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ViewFavs);
+export default connect(mapStateToProps, mapDispatchToProps)(FavsModal);

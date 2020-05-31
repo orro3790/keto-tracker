@@ -8,11 +8,12 @@ import {
   toggleSearchModal,
   updateTotals,
 } from './../../redux/search-food-modal/search-food-modal.actions';
+import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
-import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
+import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
 import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
@@ -31,7 +32,7 @@ import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selector
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import { MdCheck, MdDelete } from 'react-icons/md';
 import { IoIosBookmark } from 'react-icons/io';
-import { GiFruitBowl } from 'react-icons/gi';
+import { GiFruitBowl, GiWaterBottle } from 'react-icons/gi';
 import { FaUserTag, FaTimes } from 'react-icons/fa';
 
 const SearchFoodModal = ({
@@ -39,6 +40,7 @@ const SearchFoodModal = ({
   toggleCreateFoodModal,
   toggleFavsModal,
   toggleCustomFoodsModal,
+  toggleWaterModal,
   updateTotals,
   foodReference,
   createFoodReference,
@@ -47,7 +49,6 @@ const SearchFoodModal = ({
   searchModal,
   setEntry,
   carbSettings,
-  userId,
   diet,
   favModal,
   customFoodModal,
@@ -99,7 +100,7 @@ const SearchFoodModal = ({
     } else {
       toggleSearchModal({
         status: 'hidden',
-        meal: 'none',
+        meal: '',
         editMode: false,
         foodToEdit: '',
         listId: '',
@@ -108,8 +109,15 @@ const SearchFoodModal = ({
   };
 
   const openAddCustomFoodModal = () => {
-    handleClose();
+    handleClose('maintainMeal');
     toggleCreateFoodModal({
+      status: 'visible',
+    });
+  };
+
+  const openWaterModal = () => {
+    handleClose('maintainMeal');
+    toggleWaterModal({
       status: 'visible',
     });
   };
@@ -288,7 +296,7 @@ const SearchFoodModal = ({
 
     toggleSearchModal({
       status: 'hidden',
-      meal: 'none',
+      meal: '',
     });
   };
 
@@ -610,13 +618,20 @@ const SearchFoodModal = ({
           <div className='l'>View Favorites</div>
         </div>
 
-        <div className='hud-r-single'>
+        <div className='hud-r'>
+          <div>
+            <GiWaterBottle
+              className='fas fa-folder-open custom'
+              onClick={openWaterModal}
+            />
+          </div>
           <div>
             <FaUserTag
               className='fas fa-folder-open custom'
               onClick={openCustomFoodModal}
             />
           </div>
+          <div className='l'>Add Water</div>
           <div className='l'>View Custom Foods</div>
         </div>
       </div>
@@ -658,6 +673,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
+  toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
   updateTotals: (status) => dispatch(updateTotals(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),

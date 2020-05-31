@@ -127,11 +127,13 @@ const App = ({
     const fade = () => {
       setTimeout(() => {
         setEnabled('off');
-      }, 4000);
+      }, 3500);
     };
     setEnabled('on');
 
-    fade();
+    if (alertModal.sticky !== true) {
+      fade();
+    }
 
     return () => {
       clearTimeout(fade);

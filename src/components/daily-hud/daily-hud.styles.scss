@@ -1,5 +1,8 @@
 $font-size-medium: 16px;
 $dp-24: #373737;
+$keto-orange: #ffa053;
+$keto-pink: #ff5387;
+$keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
 .calculation-c {
@@ -45,7 +48,7 @@ $keto-green: #1eb980;
 
 .daily-hud {
   display: flex;
-  margin: 10px auto 10px auto;
+  margin: auto 10px auto 10px auto;
   text-align: center;
   align-items: center;
   height: 50px;
@@ -60,14 +63,43 @@ $keto-green: #1eb980;
     margin-right: auto;
   }
 
+  .water-c {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    height: 38.4px;
+    width: 100px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .droplet {
+      vertical-align: middle;
+
+      svg {
+        vertical-align: middle;
+        width: 18px;
+        height: 100%;
+        color: $keto-blue;
+      }
+    }
+  }
+
+  .water {
+    justify-items: center;
+    align-items: center;
+
+    .u {
+      padding-left: 2px;
+    }
+  }
+
   .fats {
-    color: #ffa053;
+    color: $keto-orange;
   }
   .carbs {
-    color: #ff5387;
+    color: $keto-pink;
   }
   .protein {
-    color: #53a3ff;
+    color: $keto-blue;
   }
 }
 

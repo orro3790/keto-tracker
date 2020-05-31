@@ -3,7 +3,7 @@ import { MealActionTypes } from './meal.types';
 const INITIAL_STATE = {
   searchModal: {
     status: 'hidden',
-    meal: 'none',
+    meal: '',
   },
 };
 

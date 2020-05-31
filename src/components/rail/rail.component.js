@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 import {
   GiWhiteBook,
   GiHeartBeats,
@@ -12,8 +13,9 @@ import {
 } from 'react-icons/gi';
 import { MdNotifications, MdSettings } from 'react-icons/md';
 import './rail.styles.scss';
+import { createStructuredSelector } from 'reselect';
 
-const Rail = ({ toggleAlertModal }) => {
+const Rail = ({ toggleAlertModal, currentUser }) => {
   let location = useLocation();
 
   let styles = {
@@ -65,8 +67,10 @@ const Rail = ({ toggleAlertModal }) => {
   let icon = <GiExitDoor className={styles.signin} />;
   let signInSignOut = <Link to='/signin'>{icon}</Link>;
 
-  icon = <GiEntryDoor className={styles.signout} onClick={handleSignOut} />;
-  signInSignOut = <div>{icon}</div>;
+  if (currentUser) {
+    icon = <GiEntryDoor className={styles.signout} onClick={handleSignOut} />;
+    signInSignOut = <div>{icon}</div>;
+  }
 
   return (
     <div>
@@ -103,9 +107,13 @@ const Rail = ({ toggleAlertModal }) => {
   );
 };
 
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser,
+});
+
 const mapDispatchToProps = (dispatch) => ({
   toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
   //add a confirmation modal
 });
 
-export default connect(null, mapDispatchToProps)(Rail);
+export default connect(mapStateToProps, mapDispatchToProps)(Rail);

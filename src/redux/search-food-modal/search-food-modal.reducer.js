@@ -3,7 +3,7 @@ import { SearchModalActionTypes } from './search-food-modal.types';
 const INITIAL_STATE = {
   modal: {
     status: 'hidden',
-    meal: 'none',
+    meal: '',
     editMode: false,
     foodToEdit: '',
     listId: '',

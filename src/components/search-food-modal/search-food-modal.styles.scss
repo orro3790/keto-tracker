@@ -59,7 +59,7 @@ $keto-green: #1eb980;
   .results-c {
     display: grid;
     grid-template-rows: 1fr 1fr 2fr 2fr 2fr;
-    padding: 0 20px 20px 20px;
+    padding: 0;
     text-align: center;
 
     .name {
@@ -181,7 +181,7 @@ $keto-green: #1eb980;
 
   .submit-r {
     display: grid;
-    grid-template-columns: 1fr 75px 1fr;
+    grid-template-columns: 1fr 100% 1fr;
     padding-top: 20px;
 
     .submit-btn {

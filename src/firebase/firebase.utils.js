@@ -221,6 +221,9 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
           k: 0,
         },
       },
+      water: {
+        c: 0,
+      },
       currentDate: firebase.firestore.Timestamp.fromDate(anchor),
       dailyMacros: {
         f: 0,

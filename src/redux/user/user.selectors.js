@@ -31,3 +31,8 @@ export const selectCustomFoods = createSelector(
   [selectUser],
   (user) => user.createdFoods
 );
+
+export const selectWaterSettings = createSelector(
+  [selectUser],
+  (user) => user.currentUser.water
+);

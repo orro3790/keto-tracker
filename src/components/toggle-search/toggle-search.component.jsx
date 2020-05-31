@@ -75,7 +75,7 @@ const ToggleSearchModal = ({
     } else {
       toggleSearchModal({
         status: 'hidden',
-        meal: 'none',
+        meal: '',
         editMode: false,
         foodToEdit: '',
         listId: '',

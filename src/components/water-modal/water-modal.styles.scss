@@ -1,0 +1,82 @@
+$font-size-medium: 16px;
+$font-size-display-3: 22px;
+$font-size-display-2: 26px;
+$dp-04: #272727;
+$dp-08: #2e2e2e;
+$keto-blue: #53a3ff;
+$keto-green: #1eb980;
+$keto-orange: #ffa053;
+$error-red-600: #e53935;
+
+.inner-c {
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+  height: 100%;
+
+  .energy-i {
+    display: grid;
+    align-self: center;
+    justify-items: center;
+
+    svg {
+      width: 125px;
+      height: 125px;
+      color: $keto-blue;
+    }
+  }
+
+  .desc {
+    text-align: center;
+    padding-bottom: 10px;
+
+    .goal {
+      color: $keto-blue;
+      padding-left: 3px;
+      font-weight: 600;
+    }
+  }
+
+  .water-s {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 75px 1fr;
+    column-gap: 20px;
+    padding-bottom: 14px;
+    font-size: $font-size-display-3;
+
+    .water-l {
+      display: grid;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .water-in {
+      display: grid;
+      text-align: center;
+      background-color: $dp-08;
+    }
+
+    .water-unit {
+      display: grid;
+      align-items: center;
+      padding: 0;
+    }
+
+    .toggle {
+      display: grid;
+      grid-template-columns: auto 5px 1fr;
+      gap: 0 10px;
+      color: #474747;
+
+      .on {
+        color: $keto-green;
+        transition: 0.3s;
+      }
+
+      .opt {
+        text-align: left;
+        cursor: pointer;
+      }
+    }
+  }
+}
