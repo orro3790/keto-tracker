@@ -24,6 +24,12 @@ $keto-pink: #ff5387;
   }
 }
 
+.set-h-c {
+  .update-i {
+    color: $keto-pink;
+  }
+}
+
 .macro-calc-c {
   display: grid;
   grid-template-columns: 145px 145px auto;
@@ -87,31 +93,26 @@ $keto-pink: #ff5387;
       transition-delay: 0.3s;
     }
   }
-}
-
-.save-btn {
-  padding: 0 5px 0 5px;
-  margin-top: 25px;
-  height: 40px;
-  width: 142.5px;
-  font-size: $font-size-medium;
-  background-color: $keto-green;
-  color: white;
-  border: none;
-  box-sizing: border;
-  transition: 0.3s;
-
-  cursor: pointer;
-  &:focus {
-    outline: none;
+  .error {
+    color: $error-red;
+    margin-top: 25px;
   }
-}
 
-.error {
-  color: $error-red;
-  margin-top: 25px;
-}
+  .save-btn {
+    padding: 0 5px 0 5px;
+    margin-top: 25px;
+    height: 40px;
+    width: 142.5px;
+    font-size: $font-size-medium;
+    background-color: $keto-green;
+    color: white;
+    border: none;
+    box-sizing: border;
+    transition: 0.3s;
 
-.update-i {
-  color: $keto-pink;
+    cursor: pointer;
+    &:focus {
+      outline: none;
+    }
+  }
 }
