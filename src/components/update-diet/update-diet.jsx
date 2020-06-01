@@ -10,6 +10,7 @@ import {
   selectCurrentUserId,
   selectCarbSettings,
 } from '../../redux/user/user.selectors';
+import { GiHealthIncrease } from 'react-icons/gi';
 import './update-diet.styles.scss';
 
 const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
@@ -69,13 +70,13 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
 
   if (fieldsFilled && totalPercentage !== 100 && totalPercentage < 100) {
     metaErrors.push({
-      error: 'Sum of percentages must be 100%.',
+      error: 'Sum of percentages not 100%.',
     });
   }
 
   if (totalPercentage > 100) {
     metaErrors.push({
-      error: "Sum of percentages can't be > 100%.",
+      error: 'Sum of percentages > 100%.',
     });
   }
 
@@ -182,7 +183,10 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
 
   return (
     <div>
-      <div className='t'>Update Diet Settings</div>
+      <div className='set-h-c'>
+        <GiHealthIncrease className='set-i update-i' />
+        <div className='t'>Update Diet</div>
+      </div>
       <div className='macro-calc-c'>
         <div className='left-col'>
           <form className='diet-form' onSubmit={handleSubmit}>
@@ -222,9 +226,6 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
               label={'desired % protein'}
               className='diet-form-row'
             />
-            <button className='save-btn diet-form-row' type='submit'>
-              Save
-            </button>
           </form>
         </div>
         <div className='center-col'>
@@ -240,7 +241,6 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
           <div className='diet-form-row'>
             <FaArrowAltCircleRight className={getArrowStyle(proteinLimit)} />
           </div>
-          <div className='diet-form-row'></div>
         </div>
         <div className='right-col'>
           <div className={getOutputStyle(calorieLimit)}>
@@ -255,9 +255,12 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
           <div className={getOutputStyle(proteinLimit)}>
             {`${proteinInGrams} g protein / day`}
           </div>
-          <div className='diet-form-row error-col small'>{errorModal}</div>
         </div>
+        <button className='save-btn' type='submit' onClick={handleSubmit}>
+          Save
+        </button>
         <div></div>
+        <div className='error'>{errorModal}</div>
       </div>
     </div>
   );

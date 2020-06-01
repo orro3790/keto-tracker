@@ -6,7 +6,7 @@ import FoodFilter from '../../components/food-filter/food-filter.component';
 import { HorizontalBar } from 'react-chartjs-2';
 import {
   toggleSearchModal,
-  updateTotals,
+  updateFirebase,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
@@ -41,7 +41,7 @@ const SearchFoodModal = ({
   toggleFavsModal,
   toggleCustomFoodsModal,
   toggleWaterModal,
-  updateTotals,
+  updateFirebase,
   foodReference,
   createFoodReference,
   suggestionWindow,
@@ -251,7 +251,7 @@ const SearchFoodModal = ({
       updatedEntry = recalculateDailyTotals(updatedEntry);
 
       // before changing the entry state, we want to signal that we want to update the totals
-      updateTotals(true);
+      updateFirebase(true);
 
       // dispatch the new entry obj to state
       setEntry(updatedEntry);
@@ -286,7 +286,7 @@ const SearchFoodModal = ({
     updatedEntry = recalculateDailyTotals(updatedEntry);
 
     // signal that I want to update the totals and push them to firestore
-    updateTotals(true);
+    updateFirebase(true);
 
     // dispatch the new entry obj to state
     setEntry(updatedEntry);
@@ -675,7 +675,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
   toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
-  updateTotals: (status) => dispatch(updateTotals(status)),
+  updateFirebase: (status) => dispatch(updateFirebase(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });

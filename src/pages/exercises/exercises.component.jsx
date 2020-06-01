@@ -25,13 +25,6 @@ const Exercises = ({ toggleAlertModal }) => {
         </div>
         <div className='page-body-c'>
           <div className='t'>Exercises</div>
-          <div className='test-c'></div>
-          <div onClick={handleClick}>Click me</div>
-          <div className='water-hud-c'>
-            <div></div>
-            <WaterModal />
-            <div></div>
-          </div>
         </div>
       </div>
     </div>

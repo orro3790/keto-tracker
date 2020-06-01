@@ -14,7 +14,7 @@ export const selectFoodFilter = createSelector(
 
 export const selectUpdate = createSelector(
   [selectSearchModal],
-  (searchModal) => searchModal.updateTotals
+  (searchModal) => searchModal.updateFirebase
 );
 
 export const selectMeal = createSelector(

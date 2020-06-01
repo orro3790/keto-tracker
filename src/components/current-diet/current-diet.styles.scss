@@ -4,6 +4,7 @@ $dp-24: #373737;
 $keto-orange: #ffa053;
 $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
+$keto-green: #1eb980;
 
 .st {
   display: grid;
@@ -11,7 +12,6 @@ $keto-blue: #53a3ff;
   gap: 0px 10px;
   margin: 20px 0px 0px 0px;
   font-size: $font-size-large;
-  width: 250px;
 }
 
 .current-diet-c {
@@ -20,7 +20,6 @@ $keto-blue: #53a3ff;
   column-gap: 0px;
   align-items: center;
   text-align: center;
-  max-width: 400px;
   margin-top: 20px;
   padding: 20px;
   background-color: $dp-08;
@@ -45,4 +44,8 @@ $keto-blue: #53a3ff;
   .fats {
     color: $keto-orange;
   }
+}
+
+.current-i {
+  color: $keto-green;
 }

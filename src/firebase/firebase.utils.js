@@ -49,6 +49,11 @@ export const createUserDoc = async (userAuth, additionalData) => {
         },
         carbSettings: 't',
         membership: 's',
+        water: {
+          e: true,
+          g: 5,
+          u: 'cups',
+        },
         ...additionalData,
       });
     } catch (error) {

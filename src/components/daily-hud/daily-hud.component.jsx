@@ -18,12 +18,13 @@ const DailyChart = ({
   diet,
   hudModel,
   entries,
-  water,
+  waterSettings,
 }) => {
   const [dailyFats, setDailyFats] = useState('');
   const [dailyCarbs, setDailyCarbs] = useState('');
   const [dailyProtein, setDailyProtein] = useState('');
   const [dailyCalories, setDailyCalories] = useState('');
+  const [dailyWater, setDailyWater] = useState('');
 
   const toggleRemaining = () => {
     setHudModel('remaining');
@@ -37,12 +38,13 @@ const DailyChart = ({
     if (entries !== '') {
       setDailyFats(entries.dailyMacros.f);
       setDailyProtein(entries.dailyMacros.p);
+      setDailyCalories(entries.dailyMacros.e);
+      setDailyWater(entries.water.c);
       if (carbSettings === 'n') {
         setDailyCarbs(entries.dailyMacros.k);
       } else {
         setDailyCarbs(entries.dailyMacros.c);
       }
-      setDailyCalories(entries.dailyMacros.e);
     }
   }, [entries, carbSettings]);
 
@@ -51,6 +53,7 @@ const DailyChart = ({
   let carbsValue = 0;
   let proteinValue = 0;
   let caloriesValue = 0;
+  let waterValue = 0;
   let carbLabel = 'carbs';
 
   if (carbSettings === 'n') {
@@ -63,11 +66,13 @@ const DailyChart = ({
     carbsValue = (diet.carbs - dailyCarbs).toFixed(1);
     proteinValue = (diet.protein - dailyProtein).toFixed(1);
     caloriesValue = (diet.calories - dailyCalories).toFixed(1);
+    waterValue = waterSettings.g - dailyWater;
   } else if (hudModel === 'additive') {
     fatsValue = dailyFats;
     carbsValue = dailyCarbs;
     proteinValue = dailyProtein;
     caloriesValue = dailyCalories;
+    waterValue = dailyWater;
   }
 
   const getStyle = (className) => {
@@ -79,21 +84,23 @@ const DailyChart = ({
   };
 
   let waterCol;
-  let waterUnit = water.u;
+  let waterUnit = waterSettings.u;
 
-  if (water === 'cups') {
-    if (water === 1) {
+  if (waterSettings.u === 'cups') {
+    if (dailyWater === 1) {
       waterUnit = 'cup';
     }
   }
 
-  if (water.e === true) {
+  if (waterSettings.e === true) {
     waterCol = (
       <div className='water-c'>
         <div className='droplet'>
           <GiWaterDrop />
         </div>
-        <div>1 {waterUnit}</div>
+        <div>
+          {waterValue} {waterUnit}
+        </div>
       </div>
     );
   }
@@ -140,7 +147,7 @@ const mapStateToProps = createStructuredSelector({
   entries: selectEntries,
   carbSettings: selectCarbSettings,
   diet: selectDietSettings,
-  water: selectWaterSettings,
+  waterSettings: selectWaterSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({

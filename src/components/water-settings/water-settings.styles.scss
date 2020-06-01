@@ -4,27 +4,26 @@ $font-size-display-2: 26px;
 $dp-08: #2e2e2e;
 $dp-24: #373737;
 $keto-green: #1eb980;
-$keto-orange: #ffa053;
+$keto-blue: #53a3ff;
 
-.carb-set-c {
+.water-set-c {
   .toggle {
     display: grid;
     grid-template-columns: auto 2px 1fr;
     gap: 0 10px;
     margin-top: 20px;
-    width: 250px;
     font-size: $font-size-large;
 
     .separator {
       background-color: #3d3d3d;
     }
 
-    .total {
+    .mL {
       text-align: right;
       cursor: pointer;
     }
 
-    .net {
+    .cups {
       text-align: left;
       cursor: pointer;
     }
@@ -66,6 +65,6 @@ $keto-orange: #ffa053;
   }
 }
 
-.carb-i {
-  color: $keto-orange;
+.water-i {
+  color: $keto-blue;
 }

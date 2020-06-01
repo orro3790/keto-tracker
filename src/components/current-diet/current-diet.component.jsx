@@ -5,6 +5,7 @@ import {
   selectDietSettings,
   selectCarbSettings,
 } from '../../redux/user/user.selectors';
+import { FaChartPie } from 'react-icons/fa';
 import './current-diet.styles.scss';
 
 const CurrentDiet = ({ dietSettings, carbSettings }) => {
@@ -27,7 +28,10 @@ const CurrentDiet = ({ dietSettings, carbSettings }) => {
 
   return (
     <div>
-      <div className='t'>Current Diet</div>
+      <div className='set-h-c'>
+        <FaChartPie className='set-i current-i' />
+        <div className='t'>Current Diet</div>
+      </div>
       <div className='st'>
         <div className='daily-intake'>DAILY INTAKE</div>
       </div>

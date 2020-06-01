@@ -6,10 +6,14 @@ import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { RiWaterFlashLine } from 'react-icons/ri';
 import { MdCheck } from 'react-icons/md';
 import { selectWaterSettings } from '../../redux/user/user.selectors';
-import { selectWater } from '../../redux/date-selector/date-selector.selectors';
+import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
-import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
+import {
+  toggleSearchModal,
+  updateFirebase,
+} from '../../redux/search-food-modal/search-food-modal.actions';
+import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
 
 import './water-modal.styles.scss';
@@ -20,6 +24,9 @@ const WaterModal = ({
   toggleSearchModal,
   toggleWaterModal,
   meal,
+  entries,
+  setEntry,
+  updateFirebase,
 }) => {
   const [input, setInput] = useState('');
 
@@ -43,12 +50,18 @@ const WaterModal = ({
     });
   };
 
-  const handleSubmit = () => {
-    console.log('submitted');
-  };
-
   const handleChange = (e) => {
     setInput(e.target.value);
+  };
+
+  const handleSubmit = () => {
+    // will need to refactor to include unit conversions
+    let copy = Object.assign({}, entries);
+    let totalWater = copy.water.c + parseFloat(input);
+    copy.water.c = totalWater;
+
+    updateFirebase(true);
+    setEntry(copy);
   };
 
   const getBtnStyle = () => {
@@ -70,7 +83,7 @@ const WaterModal = ({
   return (
     <div>
       <form>
-        <div className='template-m'>
+        <div className='submit-template-m'>
           <div className='btn-c'>
             <div></div>
             <div className='back-btn' onClick={handleBack}>
@@ -121,7 +134,7 @@ const WaterModal = ({
 const mapStateToProps = createStructuredSelector({
   waterSettings: selectWaterSettings,
   meal: selectMeal,
-  // water: selectWater,
+  entries: selectEntries,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -129,6 +142,8 @@ const mapDispatchToProps = (dispatch) => ({
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
+  setEntry: (entries) => dispatch(setEntry(entries)),
+  updateFirebase: (status) => dispatch(updateFirebase(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaterModal);

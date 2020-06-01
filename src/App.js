@@ -33,6 +33,7 @@ const App = ({
 }) => {
   const [authUser, setAuthUser] = useState(null);
   const [enabled, setEnabled] = useState('off');
+  const [alertMounted, setAlertMounted] = useState(false);
 
   // call onAuthStateChanged from firebase.auth, so firebase can notify us about user state changes and we can change our state with the user object when a change occurs. The snapshots themselves don't show anything until we call .data() on them. The id value is always used to reference the location of data in the database, so it must be referenced
 
@@ -128,7 +129,14 @@ const App = ({
       setTimeout(() => {
         setEnabled('off');
       }, 3500);
+
+      // css opacity transition effect takes 1s, so clear the modal away completely 1 sec later
+      setTimeout(() => {
+        setAlertMounted(false);
+      }, 4500);
     };
+
+    setAlertMounted(true);
     setEnabled('on');
 
     if (alertModal.sticky !== true) {
@@ -142,7 +150,7 @@ const App = ({
 
   let renderedAlert;
 
-  if (alertModal.status === 'visible') {
+  if (alertModal.status === 'visible' && alertMounted === true) {
     renderedAlert = <AlertModal enabled={enabled} />;
   }
 
@@ -159,7 +167,7 @@ const App = ({
           <Route
             path='/exercises'
             render={() =>
-              currentUser && currentUser.membership === 's' ? (
+              currentUser && currentUser.membership === 'p' ? (
                 <Exercises />
               ) : (
                 <Redirect to='/' />

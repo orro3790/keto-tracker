@@ -148,14 +148,6 @@ const CreateFood = ({
     isSubmittable = true;
   }
 
-  const onCheck = () => {
-    if (fieldsFilled === true) {
-      return 'on';
-    } else {
-      return null;
-    }
-  };
-
   let gramsStyle = 'g opt on';
   let mlStyle = 'ml opt';
 
@@ -198,7 +190,7 @@ const CreateFood = ({
   return (
     <div>
       <form>
-        <div className='template-m'>
+        <div className='submit-template-m'>
           <div className='btn-c'>
             <div></div>
             <div className='back-btn' onClick={handleBack}>

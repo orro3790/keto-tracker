@@ -6,6 +6,7 @@ $dp-08: #2e2e2e;
 $dp-24: #373737;
 $keto-green: #1eb980;
 $error-red: #f06292;
+$keto-pink: #ff5387;
 
 @mixin bp($point) {
   @if $point == large {
@@ -24,45 +25,27 @@ $error-red: #f06292;
 }
 
 .macro-calc-c {
-  margin-top: 20px;
   display: grid;
-  grid-template-columns: 145px 145px 120px;
+  grid-template-columns: 145px 145px auto;
   @include bp(small) {
-    grid-template-columns: 145px 35px 120px;
+    grid-template-columns: 145px 35px auto;
   }
   column-gap: 10px;
+  margin-top: 25px;
 
   .left-col {
     .diet-form {
       height: 100%;
       display: grid;
-      row-gap: 20px;
-      grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-
-      .save-btn {
-        padding: 0 5px 0 5px;
-        margin-top: 25px;
-        height: 40px;
-        width: 142.5px;
-        font-size: $font-size-medium;
-        background-color: $keto-green;
-        color: white;
-        border: none;
-        box-sizing: border;
-        transition: 0.3s;
-
-        cursor: pointer;
-        &:focus {
-          outline: none;
-        }
-      }
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+      row-gap: 25px;
     }
   }
 
   .center-col {
     display: grid;
-    grid-template-rows: 65px 65px 65px 65px 65px;
-    row-gap: 20px;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 25px;
     height: 100%;
     align-self: center;
     text-align: center;
@@ -85,13 +68,9 @@ $error-red: #f06292;
 
   .right-col {
     display: grid;
-    grid-template-rows: 65px 65px 65px 65px 65px;
-    row-gap: 20px;
+    grid-template-rows: auto auto auto auto;
+    row-gap: 25px;
     height: 100%;
-  }
-
-  .error-col {
-    color: $error-red;
   }
 
   .diet-form-row {
@@ -108,4 +87,31 @@ $error-red: #f06292;
       transition-delay: 0.3s;
     }
   }
+}
+
+.save-btn {
+  padding: 0 5px 0 5px;
+  margin-top: 25px;
+  height: 40px;
+  width: 142.5px;
+  font-size: $font-size-medium;
+  background-color: $keto-green;
+  color: white;
+  border: none;
+  box-sizing: border;
+  transition: 0.3s;
+
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
+}
+
+.error {
+  color: $error-red;
+  margin-top: 25px;
+}
+
+.update-i {
+  color: $keto-pink;
 }

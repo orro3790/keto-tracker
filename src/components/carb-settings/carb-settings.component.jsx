@@ -5,6 +5,7 @@ import { updateCarbSettings } from '../../firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { GiWheat } from 'react-icons/gi';
 import './carb-settings.styles.scss';
 
 const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
@@ -93,7 +94,10 @@ const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
 
   return (
     <div>
-      <div className='t'>Carb Settings</div>
+      <div className='set-h-c'>
+        <GiWheat className='set-i carb-i' />
+        <div className='t'>Carb Settings</div>
+      </div>
       <div className='carb-set-c'>
         <div className='toggle'>
           <div

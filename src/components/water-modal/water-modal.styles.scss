@@ -8,6 +8,7 @@ $keto-green: #1eb980;
 $keto-orange: #ffa053;
 $error-red-600: #e53935;
 
+//inherits core styling from .submit-template-m
 .inner-c {
   display: grid;
   grid-template-rows: 1fr auto 1fr;

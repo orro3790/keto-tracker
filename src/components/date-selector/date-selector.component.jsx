@@ -9,7 +9,7 @@ import {
   setCurrentDate,
   setEntry,
 } from '../../redux/date-selector/date-selector.actions';
-import { updateTotals } from '../../redux/search-food-modal/search-food-modal.actions';
+import { updateFirebase } from '../../redux/search-food-modal/search-food-modal.actions';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { getEntry, updateEntry } from '../../firebase/firebase.utils';
 
@@ -18,7 +18,7 @@ const DateSelector = ({
   currentUser,
   setEntry,
   update,
-  updateTotals,
+  updateFirebase,
 }) => {
   const [date, setDate] = useState('...loading');
 
@@ -47,13 +47,13 @@ const DateSelector = ({
     }
   }, [entries]);
 
-  // handles pushing updates to firestore when a change happens to entry state
+  // handles pushing updates to firestore when a change happens to entry state, then sets update state back to false
   useEffect(() => {
     if (entries !== '' && currentUser !== null && update === true) {
       updateEntry(currentUser.id, entries);
-      updateTotals(false);
+      updateFirebase(false);
     }
-  }, [entries, currentUser, update, updateTotals]);
+  }, [entries, currentUser, update, updateFirebase]);
 
   const goToNextDay = () => {
     const loadEntry = async () => {
@@ -105,7 +105,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   setCurrentDate: (datesObj) => dispatch(setCurrentDate(datesObj)),
   setEntry: (entriesObj) => dispatch(setEntry(entriesObj)),
-  updateTotals: (status) => dispatch(updateTotals(status)),
+  updateFirebase: (status) => dispatch(updateFirebase(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DateSelector);
