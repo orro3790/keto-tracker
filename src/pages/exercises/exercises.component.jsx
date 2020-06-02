@@ -2,20 +2,19 @@ import React from 'react';
 import Rail from '../../components/rail/rail.component';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { connect } from 'react-redux';
-import WaterModal from '../../components/water-modal/water-modal.component';
 import './exercises.styles.scss';
 
 const Exercises = ({ toggleAlertModal }) => {
-  const handleClick = () => {
-    toggleAlertModal({
-      title: 'CONFIRM EMAIL',
-      msg:
-        "You're almost there! Check your email for a verification link, then you can start tracking!",
-      img: 'email',
-      status: 'visible',
-      sticky: false,
-    });
-  };
+  // const handleClick = () => {
+  //   toggleAlertModal({
+  //     title: 'CONFIRM EMAIL',
+  //     msg:
+  //       "You're almost there! Check your email for a verification link, then you can start tracking!",
+  //     img: 'email',
+  //     status: 'visible',
+  //     sticky: false,
+  //   });
+  // };
 
   return (
     <div>

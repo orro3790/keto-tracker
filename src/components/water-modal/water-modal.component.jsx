@@ -15,6 +15,7 @@ import {
 } from '../../redux/search-food-modal/search-food-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 
 import './water-modal.styles.scss';
 
@@ -23,6 +24,7 @@ const WaterModal = ({
   createFoodReference,
   toggleSearchModal,
   toggleWaterModal,
+  toggleAlertModal,
   meal,
   entries,
   setEntry,
@@ -57,11 +59,80 @@ const WaterModal = ({
   const handleSubmit = () => {
     // will need to refactor to include unit conversions
     let copy = Object.assign({}, entries);
-    let totalWater = copy.water.c + parseFloat(input);
-    copy.water.c = totalWater;
+    let totalMl = copy.water.t + parseFloat(input);
+    // if user added to diary in 'cups'
+    if (waterSettings.u === 'cups') {
+      totalMl = copy.water.t + parseFloat(input) * 250;
+    }
+    let remainder = waterSettings.g - totalMl;
+    let alertMsg;
+
+    switch (waterSettings.u) {
+      case 'mL':
+        // goal not yet reached
+        if (remainder > 0) {
+          alertMsg = `${input} mL logged. Only ${
+            waterSettings.g - totalMl
+          } mL more to reach your goal today!`;
+        }
+        // goal reached
+        else if (remainder === 0) {
+          alertMsg = `Great job! You reached your goal of drinking ${waterSettings.g} mL of water today!`;
+        }
+        // extra water consumed
+        else if (remainder < 0) {
+          alertMsg = `Great job! You drank an extra ${
+            totalMl - waterSettings.g
+          } mL of water today!`;
+        }
+        break;
+      case 'cups':
+        // goal not yet reached
+        if (remainder > 0) {
+          // format singular form of 'cups'
+          if (input === '1') {
+            alertMsg = `1 cup logged. Only ${(
+              (waterSettings.g - totalMl) /
+              250
+            ).toFixed(2)} more cups to reach your goal today!`;
+          } else {
+            alertMsg = `${input} cups logged. Only ${(
+              (waterSettings.g - totalMl) /
+              250
+            ).toFixed(2)} more cups to reach your goal today!`;
+          }
+        }
+        // goal reached
+        else if (remainder === 0) {
+          alertMsg = `Great job! You reached your goal of drinking ${(
+            waterSettings.g / 250
+          ).toFixed(2)} cups of water today!`;
+        }
+        // extra water consumed
+        else if (remainder < 0) {
+          alertMsg = `Great job! You drank an extra ${(
+            (totalMl - waterSettings.g) /
+            250
+          ).toFixed(2)} cups of water today!`;
+        }
+        break;
+      default:
+        break;
+    }
+
+    copy.water.t = totalMl;
 
     updateFirebase(true);
     setEntry(copy);
+    handleClose();
+
+    toggleAlertModal({
+      title: 'SUCCESS!',
+      msg: alertMsg,
+      img: 'success',
+      status: 'visible',
+      sticky: false,
+    });
   };
 
   const getBtnStyle = () => {
@@ -138,7 +209,7 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),

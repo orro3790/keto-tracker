@@ -39,14 +39,14 @@ const DailyChart = ({
       setDailyFats(entries.dailyMacros.f);
       setDailyProtein(entries.dailyMacros.p);
       setDailyCalories(entries.dailyMacros.e);
-      setDailyWater(entries.water.c);
       if (carbSettings === 'n') {
         setDailyCarbs(entries.dailyMacros.k);
       } else {
         setDailyCarbs(entries.dailyMacros.c);
       }
+      setDailyWater(entries.water.t);
     }
-  }, [entries, carbSettings]);
+  }, [entries, carbSettings, waterSettings]);
 
   // handle how to display the values, searchModal actually calculates the totals before updating firestore
   let fatsValue = 0;
@@ -62,11 +62,15 @@ const DailyChart = ({
     carbLabel = 'carbs';
   }
   if (hudModel === 'remaining') {
-    fatsValue = (diet.fats - dailyFats).toFixed(1);
-    carbsValue = (diet.carbs - dailyCarbs).toFixed(1);
-    proteinValue = (diet.protein - dailyProtein).toFixed(1);
-    caloriesValue = (diet.calories - dailyCalories).toFixed(1);
-    waterValue = waterSettings.g - dailyWater;
+    fatsValue = (diet.fats - dailyFats).toFixed(0);
+    carbsValue = (diet.carbs - dailyCarbs).toFixed(0);
+    proteinValue = (diet.protein - dailyProtein).toFixed(0);
+    caloriesValue = (diet.calories - dailyCalories).toFixed(0);
+    if (waterSettings.g === 'cups') {
+      waterValue = (waterSettings.g - dailyWater).toFixed(2);
+    } else {
+      waterValue = (waterSettings.g - dailyWater).toFixed(0);
+    }
   } else if (hudModel === 'additive') {
     fatsValue = dailyFats;
     carbsValue = dailyCarbs;
@@ -86,10 +90,16 @@ const DailyChart = ({
   let waterCol;
   let waterUnit = waterSettings.u;
 
+  // handle singular form of 'cups' hud display
   if (waterSettings.u === 'cups') {
     if (dailyWater === 1) {
       waterUnit = 'cup';
     }
+  }
+
+  // if user preference is to display in cups, daily mL / 250
+  if (waterSettings.u === 'cups') {
+    waterValue = waterValue / 250;
   }
 
   if (waterSettings.e === true) {

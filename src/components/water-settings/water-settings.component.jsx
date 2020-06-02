@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectWaterSettings } from '../../redux/user/user.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
 import { RiWaterFlashLine } from 'react-icons/ri';
+import FormInput from '../form-input/form-input.component';
+import { setCurrentUser } from '../../redux/user/user.actions';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { updateWaterSettings } from '../../firebase/firebase.utils';
 import './water-settings.styles.scss';
 
-const WaterSettings = ({ waterSettings }) => {
+const WaterSettings = ({ currentUser, toggleAlertModal, entries }) => {
   const [toggle, setToggle] = useState(null);
+  const [waterValue, setWaterValue] = useState('');
 
+  // set the initial state of toggle based on user settings upon mount
   useEffect(() => {
-    switch (waterSettings.u) {
-      case 'ml':
-        setToggle('ml');
+    switch (currentUser.waterSettings.u) {
+      case 'mL':
+        setToggle('mL');
         break;
       case 'cups':
         setToggle('cups');
@@ -19,29 +26,47 @@ const WaterSettings = ({ waterSettings }) => {
       default:
         break;
     }
-  }, [waterSettings]);
+  }, [currentUser]);
 
   let waterDescription = (
     <div className='total-list'>
-      <div>Track water by mL</div>
+      <div>Track water by mL.</div>
       <div>Water consumption will be displayed in mL by default.</div>
+      <div>Set your daily water goal below.</div>
     </div>
   );
 
   if (toggle === 'cups') {
     waterDescription = (
       <div className='net-list'>
-        <div>Track water by cups</div>
+        <div>Track water by cups.</div>
         <div>Water consumption will be displayed in cups by default.</div>
+        <div>Set your daily water goal below.</div>
       </div>
     );
   }
 
-  const toggleTotal = () => {
+  const handleAlert = () => {
+    let msg;
+    if (waterValue !== '') {
+      msg = `Water consumption will now be displayed in ${toggle}. Your goal is to drink ${waterValue} ${toggle} each day.`;
+    } else {
+      msg = `Water consumption will now be displayed in ${toggle}.`;
+    }
+    toggleAlertModal({
+      title: 'SETTINGS SAVED!',
+      msg: msg,
+      img: 'update',
+      status: 'visible',
+      sticky: false,
+    });
+  };
+
+  const toggleMl = () => {
     setToggle('mL');
   };
 
-  const toggleNet = () => {
+  const toggleCups = () => {
     setToggle('cups');
   };
 
@@ -53,8 +78,28 @@ const WaterSettings = ({ waterSettings }) => {
     }
   };
 
-  const saveCarbSettings = () => {
-    console.log('saved');
+  const handleSubmit = () => {
+    if (currentUser.waterSettings !== toggle) {
+      const settings = {
+        u: toggle,
+      };
+      if (waterValue !== '') {
+        settings.g = parseFloat(waterValue);
+      }
+      // only push update if there's a change between state and user settings in firebase
+      updateWaterSettings(currentUser.id, settings);
+      const userCopy = Object.assign({}, currentUser);
+      userCopy.waterSettings.u = toggle;
+      setCurrentUser(userCopy);
+    }
+
+    handleAlert();
+  };
+
+  const handleChange = (e) => {
+    // allow 0-9, 0-5 digits before decimal, optionally includes one decimal point /w 2 digits after decimal
+    const rule2 = /^(\d{0,1}|[1-9]\d{0,4})(\.\d{1,2})?$/;
+    if (e.target.value.match(rule2)) setWaterValue(e.target.value);
   };
 
   return (
@@ -65,16 +110,27 @@ const WaterSettings = ({ waterSettings }) => {
       </div>
       <div className='water-set-c'>
         <div className='toggle'>
-          <div className={`${getStyle('mL')} mL opt`} onClick={toggleTotal}>
+          <div className={`${getStyle('mL')} mL opt`} onClick={toggleMl}>
             ML
           </div>
           <div className='separator'></div>
-          <div className={`${getStyle('cups')} cups opt`} onClick={toggleNet}>
+          <div className={`${getStyle('cups')} cups opt`} onClick={toggleCups}>
             CUPS
           </div>
         </div>
         <div className='desc-c'>{waterDescription}</div>
-        <button className={'save-btn'} type='submit' onClick={saveCarbSettings}>
+
+        <FormInput
+          name='calorieLimit'
+          type='number'
+          inputType='input'
+          value={waterValue}
+          onChange={handleChange}
+          label={`${toggle} per day`}
+          className='water-in'
+        />
+
+        <button className={'save-btn'} type='submit' onClick={handleSubmit}>
           Save
         </button>
       </div>
@@ -83,9 +139,13 @@ const WaterSettings = ({ waterSettings }) => {
 };
 
 const mapStateToProps = createStructuredSelector({
-  waterSettings: selectWaterSettings,
+  currentUser: selectCurrentUser,
+  entries: selectEntries,
 });
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaterSettings);

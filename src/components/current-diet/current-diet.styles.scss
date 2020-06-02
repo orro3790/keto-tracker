@@ -6,14 +6,6 @@ $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
-.st {
-  display: grid;
-  grid-template-columns: 3fr 2px 3fr;
-  gap: 0px 10px;
-  margin: 20px 0px 0px 0px;
-  font-size: $font-size-large;
-}
-
 .current-diet-c {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;

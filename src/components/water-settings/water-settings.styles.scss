@@ -6,11 +6,21 @@ $dp-24: #373737;
 $keto-green: #1eb980;
 $keto-blue: #53a3ff;
 
+.set-h-c {
+  .water-i {
+    color: $keto-blue;
+  }
+}
 .water-set-c {
+  .water-in {
+    width: 145px;
+    margin: 25px auto 0 0;
+  }
   .toggle {
     display: grid;
     grid-template-columns: auto 2px 1fr;
     gap: 0 10px;
+    width: 95px;
     margin-top: 20px;
     font-size: $font-size-large;
 
@@ -63,8 +73,4 @@ $keto-blue: #53a3ff;
       outline: none;
     }
   }
-}
-
-.water-i {
-  color: $keto-blue;
 }

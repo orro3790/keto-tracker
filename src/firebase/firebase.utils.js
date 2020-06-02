@@ -49,9 +49,9 @@ export const createUserDoc = async (userAuth, additionalData) => {
         },
         carbSettings: 't',
         membership: 's',
-        water: {
+        waterSettings: {
           e: true,
-          g: 5,
+          g: 1250,
           u: 'cups',
         },
         ...additionalData,
@@ -227,7 +227,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
         },
       },
       water: {
-        c: 0,
+        t: 0,
       },
       currentDate: firebase.firestore.Timestamp.fromDate(anchor),
       dailyMacros: {
@@ -272,6 +272,29 @@ export const updateCarbSettings = async (userId, setting) => {
   const userRef = firestore.doc(`users/${userId}`);
   try {
     await userRef.update({ carbSettings: setting });
+  } catch (error) {
+    console.log('error creating foodDiary entry', error.message);
+  }
+};
+
+export const updateWaterSettings = async (userId, settings) => {
+  const userRef = firestore.doc(`users/${userId}`);
+  try {
+    if (settings.g) {
+      let goal = settings.g;
+      // if the user input goal in cups, store in firebase as mL regardless ==> conditionally render as cups in hud
+      if (settings.u === 'cups') {
+        goal = parseFloat((settings.g * 250).toFixed(2));
+      }
+      await userRef.update({
+        'waterSettings.u': settings.u,
+        'waterSettings.g': goal,
+      });
+    } else {
+      await userRef.update({
+        'waterSettings.u': settings.u,
+      });
+    }
   } catch (error) {
     console.log('error creating foodDiary entry', error.message);
   }

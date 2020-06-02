@@ -32,9 +32,9 @@ const CurrentDiet = ({ dietSettings, carbSettings }) => {
         <FaChartPie className='set-i current-i' />
         <div className='t'>Current Diet</div>
       </div>
-      <div className='st'>
-        <div className='daily-intake'>DAILY INTAKE</div>
-      </div>
+
+      <div className='daily-goal'>DAILY GOAL</div>
+
       <div className='current-diet-c'>
         <div className='fats macro-c'>
           {fats}g<div className='l'>fats</div>

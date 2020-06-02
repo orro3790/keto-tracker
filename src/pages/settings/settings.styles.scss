@@ -1,4 +1,8 @@
 $font-size-display-2: 26px;
+$font-size-medium: 16px;
+$font-size-large: 20px;
+$keto-green: #1eb980;
+$dp-06: #2c2c2c;
 
 @media only screen and (min-width: 768px) {
   .outer-container {
@@ -39,4 +43,9 @@ $font-size-display-2: 26px;
   .t {
     font-size: $font-size-display-2;
   }
+}
+
+.daily-goal {
+  margin-top: 20px;
+  font-size: $font-size-large;
 }
