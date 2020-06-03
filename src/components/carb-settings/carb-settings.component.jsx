@@ -9,7 +9,7 @@ import { GiWheat } from 'react-icons/gi';
 import './carb-settings.styles.scss';
 
 const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
-  const [toggle, setToggle] = useState(null);
+  const [toggle, setToggle] = useState('add');
 
   useEffect(() => {
     switch (currentUser.carbSettings) {

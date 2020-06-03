@@ -125,26 +125,42 @@ const App = ({
 
   // listen for alerts
   useEffect(() => {
-    const fade = () => {
-      setTimeout(() => {
-        setEnabled('off');
-      }, 3500);
+    let fadeTimer;
+    let unMountAlertTimer;
 
-      // css opacity transition effect takes 1s, so clear the modal away completely 1 sec later
-      setTimeout(() => {
-        setAlertMounted(false);
-      }, 4500);
+    const fade = () => {
+      fadeTimer = setTimeout(() => {
+        setEnabled('off');
+      }, 4000);
     };
 
-    setAlertMounted(true);
-    setEnabled('on');
+    const unMountAlert = () => {
+      // css opacity transition effect takes 1s, so clear the modal away completely 1 sec later
+      unMountAlertTimer = setTimeout(() => {
+        setAlertMounted(false);
+      }, 5000);
+    };
 
-    if (alertModal.sticky !== true) {
-      fade();
+    if (alertModal.status === 'visible') {
+      // if an alert is already mounted, clear the fade and umount timers first
+      clearTimeout(fadeTimer);
+
+      clearTimeout(unMountAlertTimer);
+
+      setAlertMounted(true);
+
+      setEnabled('on');
+
+      if (alertModal.sticky === false) {
+        fade();
+
+        unMountAlert();
+      }
     }
 
     return () => {
-      clearTimeout(fade);
+      clearTimeout(fadeTimer);
+      clearTimeout(unMountAlertTimer);
     };
   }, [alertModal]);
 

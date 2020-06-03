@@ -6,6 +6,7 @@ const INITIAL_STATE = {
     msg: '',
     img: '',
     status: 'hidden',
+    sticky: '',
   },
 };
 

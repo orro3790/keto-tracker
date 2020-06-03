@@ -70,20 +70,25 @@ $keto-green: #1eb980;
       }
     }
 
-    .alert-success {
+    @mixin alert-img {
       align-self: center;
       padding: 10px 0 0 0;
       height: 50px;
       width: 50px;
+    }
+    .alert-success {
+      @include alert-img;
       color: $keto-green;
     }
 
     .alert-error {
-      align-self: center;
-      padding: 10px 0 0 0;
-      height: 50px;
-      width: 50px;
+      @include alert-img;
       color: $error-red-600;
+    }
+
+    .alert-goal-reached {
+      @include alert-img;
+      color: $keto-orange;
     }
   }
 

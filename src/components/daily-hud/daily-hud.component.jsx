@@ -61,16 +61,13 @@ const DailyChart = ({
   } else {
     carbLabel = 'carbs';
   }
+
   if (hudModel === 'remaining') {
     fatsValue = (diet.fats - dailyFats).toFixed(0);
     carbsValue = (diet.carbs - dailyCarbs).toFixed(0);
     proteinValue = (diet.protein - dailyProtein).toFixed(0);
     caloriesValue = (diet.calories - dailyCalories).toFixed(0);
-    if (waterSettings.g === 'cups') {
-      waterValue = (waterSettings.g - dailyWater).toFixed(2);
-    } else {
-      waterValue = (waterSettings.g - dailyWater).toFixed(0);
-    }
+    waterValue = waterSettings.g - dailyWater;
   } else if (hudModel === 'additive') {
     fatsValue = dailyFats;
     carbsValue = dailyCarbs;
@@ -79,27 +76,29 @@ const DailyChart = ({
     waterValue = dailyWater;
   }
 
-  const getStyle = (className) => {
-    if (className === hudModel) {
-      return 'on';
-    } else {
-      return 'off';
-    }
-  };
+  // conditionally render daily water intake based on user's unit preference, then adjust decimal display
+  switch (waterSettings.u) {
+    case 'cups':
+      waterValue = (waterValue / 250).toFixed(2);
+      break;
+    case 'oz':
+      waterValue = (waterValue / 29.5735).toFixed(2);
+      break;
+    case 'mL':
+      waterValue = waterValue.toFixed(0);
+      break;
+    default:
+      break;
+  }
 
   let waterCol;
   let waterUnit = waterSettings.u;
 
-  // handle singular form of 'cups' hud display
+  // if waterUnit is 'cups' ==> handle singular form of 'cups' hud display
   if (waterSettings.u === 'cups') {
     if (dailyWater === 1) {
       waterUnit = 'cup';
     }
-  }
-
-  // if user preference is to display in cups, daily mL / 250
-  if (waterSettings.u === 'cups') {
-    waterValue = waterValue / 250;
   }
 
   if (waterSettings.e === true) {
@@ -114,6 +113,14 @@ const DailyChart = ({
       </div>
     );
   }
+
+  const getStyle = (className) => {
+    if (className === hudModel) {
+      return 'on';
+    } else {
+      return 'off';
+    }
+  };
 
   return (
     <div>

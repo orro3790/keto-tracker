@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { RiWaterFlashLine } from 'react-icons/ri';
-import { MdCheck } from 'react-icons/md';
+import { MdCheck, MdAddCircle, MdRemoveCircle } from 'react-icons/md';
 import { selectWaterSettings } from '../../redux/user/user.selectors';
 import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
 import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
@@ -31,6 +31,7 @@ const WaterModal = ({
   updateFirebase,
 }) => {
   const [input, setInput] = useState('');
+  const [toggle, setToggle] = useState('add');
 
   const handleClose = () => {
     toggleWaterModal({
@@ -59,77 +60,179 @@ const WaterModal = ({
   const handleSubmit = () => {
     // will need to refactor to include unit conversions
     let copy = Object.assign({}, entries);
-    let totalMl = copy.water.t + parseFloat(input);
-    // if user added to diary in 'cups'
-    if (waterSettings.u === 'cups') {
-      totalMl = copy.water.t + parseFloat(input) * 250;
-    }
-    let remainder = waterSettings.g - totalMl;
+    let totalMl = 0;
+    let remainder = 0;
+    let title;
     let alertMsg;
+    let img;
+    let negIntake = false;
+    let conversion;
+
+    // determine add or remove ==> handle conversion to totalMl ==>  calculate remainder for alerts
+    const calculateRemainder = () => {
+      if (toggle === 'add') {
+        title = 'WATER ADDED';
+        switch (waterSettings.u) {
+          case 'mL':
+            totalMl = copy.water.t + parseFloat(input);
+            break;
+          case 'cups':
+            totalMl = copy.water.t + parseFloat(input) * 250;
+            break;
+          case 'oz':
+            totalMl = copy.water.t + parseFloat(input) * 29.5735;
+            break;
+          default:
+            break;
+        }
+      } else if (toggle === 'remove') {
+        title = 'WATER REMOVED';
+        switch (waterSettings.u) {
+          case 'mL':
+            totalMl = copy.water.t - parseFloat(input);
+            break;
+          case 'cups':
+            conversion = parseFloat(input) * 250;
+            totalMl = copy.water.t - conversion;
+            break;
+          case 'oz':
+            conversion = parseFloat(input) * 250;
+            totalMl = copy.water.t - conversion;
+            break;
+          default:
+            break;
+        }
+      }
+      // handle negative daily water intake
+      if (totalMl < 0) {
+        totalMl = 0;
+        negIntake = true;
+      }
+      remainder = waterSettings.g - totalMl;
+    };
 
     switch (waterSettings.u) {
       case 'mL':
-        // goal not yet reached
-        if (remainder > 0) {
-          alertMsg = `${input} mL logged. Only ${
-            waterSettings.g - totalMl
-          } mL more to reach your goal today!`;
+        calculateRemainder();
+        // alert: goal not yet reached
+        if (remainder > 1 && negIntake === false) {
+          alertMsg = `${remainder.toFixed(
+            0
+          )}mL to go to reach your goal today.`;
         }
-        // goal reached
-        else if (remainder === 0) {
-          alertMsg = `Great job! You reached your goal of drinking ${waterSettings.g} mL of water today!`;
+        // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
+        else if (remainder < 1 && remainder >= 0) {
+          alertMsg = `Great job! You reached your goal of drinking ${waterSettings.g}mL of water today!`;
+          img = 'goal-reached';
         }
-        // extra water consumed
+        // alert: extra consumed
         else if (remainder < 0) {
           alertMsg = `Great job! You drank an extra ${
-            totalMl - waterSettings.g
-          } mL of water today!`;
+            parseInt(remainder.toFixed(0)) * -1
+          }mL of water today.`;
+          img = 'goal-reached';
+        }
+        // alert: negative daily water intake
+        if (negIntake === true) {
+          alertMsg = `${waterSettings.g.toFixed(
+            0
+          )}mL to go to reach your goal today.`;
+          img = '';
         }
         break;
       case 'cups':
-        // goal not yet reached
-        if (remainder > 0) {
-          // format singular form of 'cups'
-          if (input === '1') {
-            alertMsg = `1 cup logged. Only ${(
-              (waterSettings.g - totalMl) /
-              250
-            ).toFixed(2)} more cups to reach your goal today!`;
+        calculateRemainder();
+        // alert: goal not yet reached
+        if (remainder > 1 && negIntake === false) {
+          // alert: only 1 cup left to hit goal
+          if (remainder.toFixed(0) === '250') {
+            alertMsg = `1 cup to go to reach your goal today!`;
+            // alert: negative daily water intake
           } else {
-            alertMsg = `${input} cups logged. Only ${(
-              (waterSettings.g - totalMl) /
-              250
-            ).toFixed(2)} more cups to reach your goal today!`;
+            alertMsg = `${(remainder / 250).toFixed(
+              2
+            )} cups to go to reach your goal today!`;
           }
         }
-        // goal reached
-        else if (remainder === 0) {
+        // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
+        else if (
+          parseInt(remainder.toFixed(1)) < 1 &&
+          parseInt(remainder.toFixed(1)) >= 0
+        ) {
           alertMsg = `Great job! You reached your goal of drinking ${(
             waterSettings.g / 250
           ).toFixed(2)} cups of water today!`;
+          img = 'goal-reached';
         }
-        // extra water consumed
+        // alert: extra consumed
         else if (remainder < 0) {
-          alertMsg = `Great job! You drank an extra ${(
-            (totalMl - waterSettings.g) /
-            250
+          alertMsg = `Great job! You drank an extra ${
+            parseFloat((remainder / 250).toFixed(2)) * -1
+          } cups of water today.`;
+          img = 'goal-reached';
+        }
+        // alert: negative values
+        else if (negIntake === true) {
+          alertMsg = `${(waterSettings.g / 250).toFixed(
+            2
+          )} cups to go to reach your goal today.`;
+          img = '';
+        }
+        break;
+      case 'oz':
+        calculateRemainder();
+        // alert: goal not yet reached
+        if (remainder > 1 && negIntake === false) {
+          alertMsg = `${(remainder / 29.5735).toFixed(
+            2
+          )} cups to go to reach your goal today!`;
+        }
+        // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
+        else if (
+          parseInt(remainder.toFixed(1)) < 1 &&
+          parseInt(remainder.toFixed(1)) >= 0
+        ) {
+          alertMsg = `Great job! You reached your goal of drinking ${(
+            waterSettings.g / 29.5735
           ).toFixed(2)} cups of water today!`;
+          img = 'goal-reached';
+        }
+        // alert: extra consumed
+        else if (remainder < 0) {
+          alertMsg = `Great job! You drank an extra ${
+            parseFloat((remainder / 29.5735).toFixed(2)) * -1
+          } cups of water today.`;
+          img = 'goal-reached';
+        }
+        // alert: negative values
+        else if (negIntake === true) {
+          alertMsg = `${(waterSettings.g / 29.5735).toFixed(
+            2
+          )} cups to go to hit your water goal today.`;
+          img = '';
         }
         break;
       default:
         break;
     }
 
-    copy.water.t = totalMl;
+    // save adjusted water value & handle cases of negative daily water consumption.
+    if (totalMl === 0) {
+      copy.water.t = totalMl;
+    } else {
+      copy.water.t = parseFloat(totalMl.toFixed(2));
+    }
 
     updateFirebase(true);
+
     setEntry(copy);
+
     handleClose();
 
     toggleAlertModal({
-      title: 'SUCCESS!',
+      title: title,
       msg: alertMsg,
-      img: 'success',
+      img: img,
       status: 'visible',
       sticky: false,
     });
@@ -151,6 +254,39 @@ const WaterModal = ({
     }
   };
 
+  let goal = waterSettings.g;
+
+  switch (waterSettings.u) {
+    case 'cups':
+      goal = (waterSettings.g / 250).toFixed(2);
+      break;
+    case 'oz':
+      goal = (waterSettings.g / 29.5735).toFixed(2);
+      break;
+    default:
+      break;
+  }
+
+  const toggleAdd = () => {
+    setToggle('add');
+  };
+
+  const toggleRemove = () => {
+    setToggle('remove');
+  };
+
+  const getStyle = (className) => {
+    if (className === toggle) {
+      if (toggle === 'add') {
+        return 'on-add';
+      } else {
+        return 'on-rem';
+      }
+    } else {
+      return 'off';
+    }
+  };
+
   return (
     <div>
       <form>
@@ -167,14 +303,33 @@ const WaterModal = ({
           <div className='inner-c'>
             <div className='energy-i'>
               <RiWaterFlashLine />
+              <div className='desc'>
+                Your goal is to consume
+                <span className='goal'>
+                  {goal} {waterSettings.u}
+                </span>{' '}
+                per day.
+              </div>
             </div>
-            <div className='desc'>
-              Your goal is to consume
-              <span className='goal'>
-                {waterSettings.g} {waterSettings.u}
-              </span>{' '}
-              per day.
+
+            <div className='add-rem-set-c'>
+              <div className='toggle'>
+                <div
+                  className={`${getStyle('add')} add opt`}
+                  onClick={toggleAdd}
+                >
+                  <MdAddCircle />
+                </div>
+                <div className='separator'></div>
+                <div
+                  className={`${getStyle('remove')} remove opt`}
+                  onClick={toggleRemove}
+                >
+                  <MdRemoveCircle />
+                </div>
+              </div>
             </div>
+
             <div className='water-s'>
               <span className='water-l'>Size</span>
               <FormInput

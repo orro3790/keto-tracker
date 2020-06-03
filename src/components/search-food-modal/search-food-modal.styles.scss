@@ -213,7 +213,7 @@ $keto-green: #1eb980;
 
   .submit-r-edit-mode {
     display: grid;
-    grid-template-columns: 75px 75px;
+    grid-template-columns: auto auto;
     gap: 0 20px;
     padding-top: 20px;
     margin-left: auto;

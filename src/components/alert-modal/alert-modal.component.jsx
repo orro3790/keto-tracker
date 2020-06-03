@@ -6,8 +6,14 @@ import { selectAlertModal } from '../../redux/alert-modal/alert-modal.selectors'
 import { signOut } from '../../firebase/firebase.utils';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { MdNotificationsActive, MdCheck, MdErrorOutline } from 'react-icons/md';
-import { FiCheckCircle } from 'react-icons/fi';
-import { GiLetterBomb } from 'react-icons/gi';
+import { FiCheckCircle, FiTarget } from 'react-icons/fi';
+import {
+  GiLetterBomb,
+  GiArcheryTarget,
+  GiEmbrassedEnergy,
+  GiTrophy,
+  GiAchievement,
+} from 'react-icons/gi';
 
 import './alert-modal.styles.scss';
 
@@ -22,6 +28,9 @@ const AlertModal = ({ currentUser, alertModal, enabled, toggleAlertModal }) => {
       break;
     case 'error':
       img = <MdErrorOutline className='alert-error' />;
+      break;
+    case 'goal-reached':
+      img = <GiAchievement className='alert-goal-reached' />;
       break;
     default:
       break;

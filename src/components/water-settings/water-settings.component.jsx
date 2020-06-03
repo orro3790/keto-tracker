@@ -23,27 +23,43 @@ const WaterSettings = ({ currentUser, toggleAlertModal, entries }) => {
       case 'cups':
         setToggle('cups');
         break;
+      case 'oz':
+        setToggle('oz');
+        break;
       default:
         break;
     }
   }, [currentUser]);
 
   let waterDescription = (
-    <div className='total-list'>
+    <div>
       <div>Track water by mL.</div>
       <div>Water consumption will be displayed in mL by default.</div>
       <div>Set your daily water goal below.</div>
     </div>
   );
 
-  if (toggle === 'cups') {
-    waterDescription = (
-      <div className='net-list'>
-        <div>Track water by cups.</div>
-        <div>Water consumption will be displayed in cups by default.</div>
-        <div>Set your daily water goal below.</div>
-      </div>
-    );
+  switch (toggle) {
+    case 'cups':
+      waterDescription = (
+        <div>
+          <div>Track water by cups.</div>
+          <div>Water consumption will be displayed in cups by default.</div>
+          <div>Set your daily water goal below.</div>
+        </div>
+      );
+      break;
+    case 'oz':
+      waterDescription = (
+        <div>
+          <div>Track water by ounces.</div>
+          <div>Water consumption will be displayed in ounces by default.</div>
+          <div>Set your daily water goal below.</div>
+        </div>
+      );
+      break;
+    default:
+      break;
   }
 
   const handleAlert = () => {
@@ -68,6 +84,10 @@ const WaterSettings = ({ currentUser, toggleAlertModal, entries }) => {
 
   const toggleCups = () => {
     setToggle('cups');
+  };
+
+  const toggleOz = () => {
+    setToggle('oz');
   };
 
   const getStyle = (className) => {
@@ -116,6 +136,10 @@ const WaterSettings = ({ currentUser, toggleAlertModal, entries }) => {
           <div className='separator'></div>
           <div className={`${getStyle('cups')} cups opt`} onClick={toggleCups}>
             CUPS
+          </div>
+          <div className='separator'></div>
+          <div className={`${getStyle('oz')} oz opt`} onClick={toggleOz}>
+            OZ
           </div>
         </div>
         <div className='desc-c'>{waterDescription}</div>

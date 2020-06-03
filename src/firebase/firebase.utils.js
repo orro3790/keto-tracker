@@ -282,10 +282,18 @@ export const updateWaterSettings = async (userId, settings) => {
   try {
     if (settings.g) {
       let goal = settings.g;
-      // if the user input goal in cups, store in firebase as mL regardless ==> conditionally render as cups in hud
-      if (settings.u === 'cups') {
-        goal = parseFloat((settings.g * 250).toFixed(2));
+      // store goal as mL base unit regardless of preference ==> conditionally render as cups or oz in hud
+      switch (settings.u) {
+        case 'cups':
+          goal = parseFloat((settings.g * 250).toFixed(2));
+          break;
+        case 'oz':
+          goal = parseFloat((settings.g * 29.5735).toFixed(2));
+          break;
+        default:
+          break;
       }
+
       await userRef.update({
         'waterSettings.u': settings.u,
         'waterSettings.g': goal,
