@@ -104,11 +104,11 @@ const DailyChart = ({
   if (waterSettings.e === true) {
     waterCol = (
       <div className='water-c'>
-        <div className='droplet'>
-          <GiWaterDrop />
-        </div>
         <div>
           {waterValue} {waterUnit}
+        </div>
+        <div className='droplet'>
+          <GiWaterDrop />
         </div>
       </div>
     );
