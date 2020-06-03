@@ -52,8 +52,13 @@ textarea {
 }
 
 @media only screen and (max-width: 600px) {
+  .rail-body-separator {
+    display: grid;
+    grid-template-rows: 75px auto;
+  }
+
   .page-body-c {
-    padding-top: 100px;
+    padding-top: 20px;
     margin: 0 10px 0 10px;
     height: 100vh;
   }

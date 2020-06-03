@@ -42,6 +42,7 @@ const AlertModal = ({ alertModal, enabled, toggleAlertModal }) => {
           img: '',
           status: 'visible',
           callback: '',
+          sticky: false,
         });
       };
       callback = signOutAndNotify;

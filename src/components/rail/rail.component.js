@@ -50,17 +50,13 @@ const Rail = ({ toggleAlertModal, currentUser }) => {
   }
 
   const handleSignOut = () => {
-    // double check that user wants to sign out
-    // setConfirmationMsg({
-    //   question: 'Are you sure you want to sign out?',
-    // });
-    // setModalStatus('visible');
     toggleAlertModal({
       title: 'SIGN OUT',
       msg: 'Are you sure you want to sign out?',
       img: 'confirm',
       status: 'visible',
       callback: 'signOut',
+      sticky: false,
     });
   };
 
@@ -113,7 +109,6 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = (dispatch) => ({
   toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
-  //add a confirmation modal
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Rail);
