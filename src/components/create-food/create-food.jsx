@@ -82,7 +82,7 @@ const CreateFood = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (isSubmittable === true) {
+    if (fieldsFilled === true) {
       // all macros in the database must be based off 100g/ml portions
       const ePer = parseFloat(((calories / size) * 100).toPrecision(4));
       const cPer = parseFloat(((carbs / size) * 100).toPrecision(4));
@@ -126,8 +126,6 @@ const CreateFood = ({
     });
   };
 
-  let isSubmittable = false;
-
   // check that all fields are filled
   let fieldsFilled = false;
 
@@ -142,10 +140,6 @@ const CreateFood = ({
     calories !== ''
   ) {
     fieldsFilled = true;
-  }
-
-  if (fieldsFilled === true) {
-    isSubmittable = true;
   }
 
   let gramsStyle = 'g opt on';

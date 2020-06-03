@@ -13,7 +13,7 @@ import './water-settings.styles.scss';
 
 const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   const [unitToggle, setUnitToggle] = useState(currentUser.waterSettings.u);
-  const [goalAmount, setGoalAmount] = useState('');
+  const [goalInput, setGoalInput] = useState('');
   const [trackingToggle, setTrackingToggle] = useState(
     currentUser.waterSettings.e
   );
@@ -27,7 +27,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
     const msgFormatter = {
       unitToggle: `Water consumption will now be displayed in ${unitToggle}. `,
-      goal: `Your new goal is to drink ${goalAmount} ${unitToggle} each day. `,
+      goal: `Your new goal is to drink ${goalInput} ${unitToggle} each day. `,
       tracking: {
         true: `Water tracking has been enabled.`,
         false: `Water tracking has been disabled. `,
@@ -36,7 +36,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
     if (result === 'success') {
       // check for changes in water settings ==> format alert message ==> push changes to currentUser in state
-      if (goalAmount !== '') {
+      if (goalInput !== '') {
         msg += msgFormatter.goal;
       }
       if (currentUser.waterSettings.u !== unitToggle) {
@@ -58,7 +58,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       // push the changes to currentUser state in app
       const userCopy = Object.assign({}, currentUser);
 
-      userCopy.waterSettings.g = parseFloat(goalAmount);
+      userCopy.waterSettings.g = parseFloat(goalInput);
       userCopy.waterSettings.u = unitToggle;
       userCopy.waterSettings.e = trackingToggle;
 
@@ -108,16 +108,16 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     }
 
     // case 2: check if goal changed ==> convert units if necessary
-    if (goalAmount !== '') {
+    if (goalInput !== '') {
       switch (settings.u) {
         case 'mL':
-          settings.g = parseFloat(goalAmount);
+          settings.g = parseFloat(goalInput);
           break;
         case 'cups':
-          settings.g = parseFloat((goalAmount * 250).toFixed(2));
+          settings.g = parseFloat((goalInput * 250).toFixed(2));
           break;
         case 'oz':
-          settings.g = parseFloat((goalAmount * 29.5735).toFixed(2));
+          settings.g = parseFloat((goalInput * 29.5735).toFixed(2));
           break;
         default:
           break;
@@ -145,7 +145,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   const handleChange = (e) => {
     // allow 0-9, 0-5 digits before decimal, optionally includes one decimal point /w 2 digits after decimal
     const rule2 = /^(\d{0,1}|[1-9]\d{0,4})(\.\d{1,2})?$/;
-    if (e.target.value.match(rule2)) setGoalAmount(e.target.value);
+    if (e.target.value.match(rule2)) setGoalInput(e.target.value);
   };
 
   const handleClick = () => {
@@ -158,27 +158,21 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     case 'mL':
       waterDescription = (
         <div>
-          <div>Track water by mL.</div>
           <div>Water consumption will be displayed in mL by default.</div>
-          <div>Set your daily water goal below.</div>
         </div>
       );
       break;
     case 'cups':
       waterDescription = (
         <div>
-          <div>Track water by cups.</div>
           <div>Water consumption will be displayed in cups by default.</div>
-          <div>Set your daily water goal below.</div>
         </div>
       );
       break;
     case 'oz':
       waterDescription = (
         <div>
-          <div>Track water by ounces.</div>
           <div>Water consumption will be displayed in ounces by default.</div>
-          <div>Set your daily water goal below.</div>
         </div>
       );
       break;
@@ -186,26 +180,46 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       break;
   }
 
-  let toggleIcon;
+  let toggleIcon, goalDesc, unitDesc, currentGoal;
+
+  switch (currentUser.waterSettings.u) {
+    case 'mL':
+      currentGoal = currentUser.waterSettings.g;
+      break;
+    case 'cups':
+      currentGoal = (currentUser.waterSettings.g / 250).toFixed(2);
+      break;
+    case 'oz':
+      currentGoal = (currentUser.waterSettings.g / 29.5735).toFixed(2);
+      break;
+    default:
+      break;
+  }
 
   if (trackingToggle === true) {
     toggleIcon = <BsToggleOn className='on' onClick={handleClick} />;
-  } else {
-    toggleIcon = <BsToggleOff className='off' onClick={handleClick} />;
-  }
-
-  return (
-    <div>
-      <div className='set-h-c'>
-        <RiWaterFlashLine className='set-i water-i' />
-        <div className='t'>Water Settings</div>
+    goalDesc = (
+      <div className='water-set-c'>
+        <div className='desc-c-split'>
+          <div>
+            <FormInput
+              name='calorieLimit'
+              type='number'
+              inputType='input'
+              value={goalInput}
+              onChange={handleChange}
+              placeholder={`set goal (${unitToggle})`}
+              className='water-in'
+            />
+          </div>
+          <div>
+            Current goal is {currentGoal} {currentUser.waterSettings.u} per day.
+          </div>
+        </div>
       </div>
+    );
 
-      <div className='track-water-c'>
-        {toggleIcon}
-        <div>TRACK WATER</div>
-      </div>
-
+    unitDesc = (
       <div className='water-set-c'>
         <div className='toggle'>
           <div className={`${getStyle('mL')} mL opt`} onClick={toggleMl}>
@@ -222,20 +236,37 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
         </div>
         <div className='desc-c'>{waterDescription}</div>
 
-        <FormInput
-          name='calorieLimit'
-          type='number'
-          inputType='input'
-          value={goalAmount}
-          onChange={handleChange}
-          label={`${unitToggle} per day`}
-          className='water-in'
-        />
-
         <button className={'save-btn'} type='submit' onClick={handleSubmit}>
           Save
         </button>
       </div>
+    );
+  } else {
+    toggleIcon = <BsToggleOff className='off' onClick={handleClick} />;
+    goalDesc = (
+      <div className='water-set-c'>
+        <div className='desc-c'>
+          <div>Water tracking has been disabled.</div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className='set-h-c'>
+        <RiWaterFlashLine className='set-i water-i' />
+        <div className='t'>Water Settings</div>
+      </div>
+
+      <div className='track-water-c'>
+        {toggleIcon}
+        <div>TRACK WATER</div>
+      </div>
+
+      {goalDesc}
+
+      {unitDesc}
     </div>
   );
 };
