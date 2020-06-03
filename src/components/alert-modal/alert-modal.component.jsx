@@ -1,23 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
+// import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { selectAlertModal } from '../../redux/alert-modal/alert-modal.selectors';
 import { signOut } from '../../firebase/firebase.utils';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { MdNotificationsActive, MdCheck, MdErrorOutline } from 'react-icons/md';
-import { FiCheckCircle, FiTarget } from 'react-icons/fi';
-import {
-  GiLetterBomb,
-  GiArcheryTarget,
-  GiEmbrassedEnergy,
-  GiTrophy,
-  GiAchievement,
-} from 'react-icons/gi';
+import { FiCheckCircle } from 'react-icons/fi';
+import { GiLetterBomb, GiAchievement } from 'react-icons/gi';
 
 import './alert-modal.styles.scss';
 
-const AlertModal = ({ currentUser, alertModal, enabled, toggleAlertModal }) => {
+const AlertModal = ({ alertModal, enabled, toggleAlertModal }) => {
   let img;
   switch (alertModal.img) {
     case 'email':
@@ -90,7 +84,7 @@ const AlertModal = ({ currentUser, alertModal, enabled, toggleAlertModal }) => {
 
 const mapStateToProps = createStructuredSelector({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
-  currentUser: selectCurrentUser,
+  // currentUser: selectCurrentUser,
   alertModal: selectAlertModal,
 });
 

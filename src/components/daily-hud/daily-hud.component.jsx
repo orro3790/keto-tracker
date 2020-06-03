@@ -20,11 +20,13 @@ const DailyChart = ({
   entries,
   waterSettings,
 }) => {
-  const [dailyFats, setDailyFats] = useState('');
-  const [dailyCarbs, setDailyCarbs] = useState('');
-  const [dailyProtein, setDailyProtein] = useState('');
-  const [dailyCalories, setDailyCalories] = useState('');
-  const [dailyWater, setDailyWater] = useState('');
+  const [dailyEntry, setDailyEntry] = useState({
+    fats: 0,
+    carbs: 0,
+    protein: 0,
+    calories: 0,
+    water: 0,
+  });
 
   const toggleRemaining = () => {
     setHudModel('remaining');
@@ -34,19 +36,35 @@ const DailyChart = ({
     setHudModel('additive');
   };
 
+  const getStyle = (className) => {
+    if (className === hudModel) {
+      return 'on';
+    } else {
+      return 'off';
+    }
+  };
+
   useEffect(() => {
     if (entries !== '') {
-      setDailyFats(entries.dailyMacros.f);
-      setDailyProtein(entries.dailyMacros.p);
-      setDailyCalories(entries.dailyMacros.e);
-      if (carbSettings === 'n') {
-        setDailyCarbs(entries.dailyMacros.k);
+      if (carbSettings === 't') {
+        setDailyEntry({
+          fats: entries.dailyMacros.f,
+          carbs: entries.dailyMacros.c,
+          protein: entries.dailyMacros.p,
+          calories: entries.dailyMacros.e,
+          water: entries.water.t,
+        });
       } else {
-        setDailyCarbs(entries.dailyMacros.c);
+        setDailyEntry({
+          fats: entries.dailyMacros.f,
+          carbs: entries.dailyMacros.k,
+          protein: entries.dailyMacros.p,
+          calories: entries.dailyMacros.e,
+          water: entries.water.t,
+        });
       }
-      setDailyWater(entries.water.t);
     }
-  }, [entries, carbSettings, waterSettings]);
+  }, [entries, carbSettings]);
 
   // handle how to display the values, searchModal actually calculates the totals before updating firestore
   let fatsValue = 0;
@@ -54,6 +72,7 @@ const DailyChart = ({
   let proteinValue = 0;
   let caloriesValue = 0;
   let waterValue = 0;
+
   let carbLabel = 'carbs';
 
   if (carbSettings === 'n') {
@@ -63,17 +82,17 @@ const DailyChart = ({
   }
 
   if (hudModel === 'remaining') {
-    fatsValue = (diet.fats - dailyFats).toFixed(0);
-    carbsValue = (diet.carbs - dailyCarbs).toFixed(0);
-    proteinValue = (diet.protein - dailyProtein).toFixed(0);
-    caloriesValue = (diet.calories - dailyCalories).toFixed(0);
-    waterValue = waterSettings.g - dailyWater;
+    fatsValue = (diet.fats - dailyEntry.fats).toFixed(0);
+    carbsValue = (diet.carbs - dailyEntry.carbs).toFixed(0);
+    proteinValue = (diet.protein - dailyEntry.protein).toFixed(0);
+    caloriesValue = (diet.calories - dailyEntry.calories).toFixed(0);
+    waterValue = waterSettings.g - dailyEntry.water;
   } else if (hudModel === 'additive') {
-    fatsValue = dailyFats;
-    carbsValue = dailyCarbs;
-    proteinValue = dailyProtein;
-    caloriesValue = dailyCalories;
-    waterValue = dailyWater;
+    fatsValue = dailyEntry.fats;
+    carbsValue = dailyEntry.carbs;
+    proteinValue = dailyEntry.protein;
+    caloriesValue = dailyEntry.calories;
+    waterValue = dailyEntry.water;
   }
 
   // conditionally render daily water intake based on user's unit preference, then adjust decimal display
@@ -96,7 +115,7 @@ const DailyChart = ({
 
   // if waterUnit is 'cups' ==> handle singular form of 'cups' hud display
   if (waterSettings.u === 'cups') {
-    if (dailyWater === 1) {
+    if (dailyEntry.water === 1) {
       waterUnit = 'cup';
     }
   }
@@ -113,14 +132,6 @@ const DailyChart = ({
       </div>
     );
   }
-
-  const getStyle = (className) => {
-    if (className === hudModel) {
-      return 'on';
-    } else {
-      return 'off';
-    }
-  };
 
   return (
     <div>

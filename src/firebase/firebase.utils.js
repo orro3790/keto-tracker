@@ -277,34 +277,16 @@ export const updateCarbSettings = async (userId, setting) => {
   }
 };
 
-export const updateWaterSettings = async (userId, settings) => {
-  const userRef = firestore.doc(`users/${userId}`);
-  try {
-    if (settings.g) {
-      let goal = settings.g;
-      // store goal as mL base unit regardless of preference ==> conditionally render as cups or oz in hud
-      switch (settings.u) {
-        case 'cups':
-          goal = parseFloat((settings.g * 250).toFixed(2));
-          break;
-        case 'oz':
-          goal = parseFloat((settings.g * 29.5735).toFixed(2));
-          break;
-        default:
-          break;
-      }
+export const updateWaterSettings = async (currentUser, waterSettings) => {
+  const userRef = firestore.doc(`users/${currentUser.id}`);
 
-      await userRef.update({
-        'waterSettings.u': settings.u,
-        'waterSettings.g': goal,
-      });
-    } else {
-      await userRef.update({
-        'waterSettings.u': settings.u,
-      });
-    }
+  try {
+    await userRef.update({
+      waterSettings,
+    });
+    return 'success';
   } catch (error) {
-    console.log('error creating foodDiary entry', error.message);
+    return 'error';
   }
 };
 

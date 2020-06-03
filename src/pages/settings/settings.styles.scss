@@ -1,4 +1,5 @@
 $font-size-display-2: 26px;
+$font-size-display-1: 30px;
 $font-size-medium: 16px;
 $font-size-large: 20px;
 $keto-green: #1eb980;
@@ -25,10 +26,6 @@ $dp-06: #2c2c2c;
   }
 }
 
-.t {
-  font-size: $font-size-display-2;
-}
-
 .set-h-c {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -41,7 +38,7 @@ $dp-06: #2c2c2c;
   }
 
   .t {
-    font-size: $font-size-display-2;
+    font-size: $font-size-display-1;
   }
 }
 
