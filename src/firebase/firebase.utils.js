@@ -162,15 +162,11 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
       break;
   }
 
-  const month = anchor.getMonth();
-  const date = anchor.getDate();
-  const year = anchor.getFullYear();
-
-  // javascript generates months starting from 0, so month +1 to properly format the string
-  anchor = new Date(`${month + 1}/${date}/${year}`);
+  // drop hr, min, s, ms,
+  anchor.setHours(0, 0, 0, 0);
 
   // firestore stores timestamps in seconds in unix epoch time, but javascript uses milliseconds, so / 1000 first
-  const anchorUtcSeconds = Date.parse(anchor) / 1000;
+  const anchorUtcSeconds = anchor / 1000;
 
   // now check if this date exists in firestore
   const entryRef = firestore.doc(

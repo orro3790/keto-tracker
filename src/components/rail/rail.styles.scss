@@ -10,7 +10,7 @@ $dp-16: #353535;
   height: 100vh;
   width: 100px;
   background-color: $dp-03;
-  z-index: 1;
+  z-index: 0;
 
   @media only screen and (max-width: 600px) {
     display: grid;

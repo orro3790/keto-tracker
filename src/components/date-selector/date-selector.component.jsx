@@ -12,6 +12,9 @@ import {
 import { updateFirebase } from '../../redux/search-food-modal/search-food-modal.actions';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { getEntry, updateEntry } from '../../firebase/firebase.utils';
+import Tippy from '@tippyjs/react';
+import Calendar from 'react-calendar';
+import './calendar.scss';
 
 const DateSelector = ({
   entries,
@@ -20,7 +23,16 @@ const DateSelector = ({
   update,
   updateFirebase,
 }) => {
-  const [date, setDate] = useState('...loading');
+  const [date, setDate] = useState('');
+  const [calDate, setCalDate] = useState(new Date());
+
+  const onChange = (calDate) => {
+    const loadEntry = async () => {
+      const entriesObj = await getEntry(currentUser.id, calDate.getTime());
+      setEntry(entriesObj);
+    };
+    loadEntry().then(() => setCalDate(calDate));
+  };
 
   // When the user is not null, get today's diary entry from firebase
   useEffect(() => {
@@ -87,7 +99,16 @@ const DateSelector = ({
         <div className='yesterday-c' onClick={goToPrevDay}>
           <FaChevronLeft className='fas fa-chevron-left' />
         </div>
-        <div className='today-c'>{date}</div>
+
+        <div>
+          <Tippy
+            interactive={true}
+            content={<Calendar onChange={onChange} value={calDate} />}
+          >
+            <div className='today-c'>{date}</div>
+          </Tippy>
+        </div>
+
         <div className='tomorrow-c' onClick={goToNextDay}>
           <FaChevronRight className='fas fa-chevron-right' />
         </div>
