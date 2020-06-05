@@ -8,17 +8,17 @@ import {
 import { FaChartPie } from 'react-icons/fa';
 import './current-diet.styles.scss';
 
-const CurrentDiet = ({ dietSettings, carbSettings }) => {
+const CurrentDiet = ({ diet, carbSettings }) => {
   // load 0 as default values if currentUser.diet data hasn't been loaded into state yet
   let fats = 0;
   let protein = 0;
   let carbs = 0;
   let calories = 0;
 
-  fats = dietSettings.fats;
-  protein = dietSettings.protein;
-  carbs = dietSettings.carbs;
-  calories = dietSettings.calories;
+  fats = diet.f;
+  protein = diet.p;
+  carbs = diet.c;
+  calories = diet.e;
 
   let carbType = 'carbs';
 
@@ -54,7 +54,7 @@ const CurrentDiet = ({ dietSettings, carbSettings }) => {
 
 const mapStateToProps = createStructuredSelector({
   carbSettings: selectCarbSettings,
-  dietSettings: selectDietSettings,
+  diet: selectDietSettings,
 });
 
 export default connect(mapStateToProps, null)(CurrentDiet);

@@ -9,7 +9,7 @@ import {
   setCurrentDate,
   setEntry,
 } from '../../redux/date-selector/date-selector.actions';
-import { updateFirebase } from '../../redux/search-food-modal/search-food-modal.actions';
+import { allowUpdateFirebase } from '../../redux/search-food-modal/search-food-modal.actions';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { getEntry, updateEntry } from '../../firebase/firebase.utils';
 import Tippy from '@tippyjs/react';
@@ -21,7 +21,7 @@ const DateSelector = ({
   currentUser,
   setEntry,
   update,
-  updateFirebase,
+  allowUpdateFirebase,
 }) => {
   const [date, setDate] = useState('');
   const [calDate, setCalDate] = useState(new Date());
@@ -50,8 +50,9 @@ const DateSelector = ({
   // handles rendering updates to the date in UI
   useEffect(() => {
     if (entries !== '') {
-      let anchor = entries.currentDate.seconds * 1000;
-      anchor = new Date(anchor);
+      let anchor = new Date(entries.currentDate.seconds * 1000);
+      setCalDate(anchor);
+
       anchor = `${
         anchor.getMonth() + 1
       }/${anchor.getDate()}/${anchor.getFullYear()}`;
@@ -63,9 +64,9 @@ const DateSelector = ({
   useEffect(() => {
     if (entries !== '' && currentUser !== null && update === true) {
       updateEntry(currentUser.id, entries);
-      updateFirebase(false);
+      allowUpdateFirebase(false);
     }
-  }, [entries, currentUser, update, updateFirebase]);
+  }, [entries, currentUser, update, allowUpdateFirebase]);
 
   const goToNextDay = () => {
     const loadEntry = async () => {
@@ -76,7 +77,6 @@ const DateSelector = ({
       );
       setEntry(entriesObj);
     };
-
     loadEntry();
   };
 
@@ -126,7 +126,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = (dispatch) => ({
   setCurrentDate: (datesObj) => dispatch(setCurrentDate(datesObj)),
   setEntry: (entriesObj) => dispatch(setEntry(entriesObj)),
-  updateFirebase: (status) => dispatch(updateFirebase(status)),
+  allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(DateSelector);

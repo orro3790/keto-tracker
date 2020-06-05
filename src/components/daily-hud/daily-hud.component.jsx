@@ -21,11 +21,11 @@ const DailyChart = ({
   waterSettings,
 }) => {
   const [dailyEntry, setDailyEntry] = useState({
-    fats: 0,
-    carbs: 0,
-    protein: 0,
-    calories: 0,
-    water: 0,
+    f: 0,
+    c: 0,
+    p: 0,
+    e: 0,
+    w: 0,
   });
 
   const toggleRemaining = () => {
@@ -48,19 +48,19 @@ const DailyChart = ({
     if (entries !== '') {
       if (carbSettings === 't') {
         setDailyEntry({
-          fats: entries.dailyMacros.f,
-          carbs: entries.dailyMacros.c,
-          protein: entries.dailyMacros.p,
-          calories: entries.dailyMacros.e,
-          water: entries.water.t,
+          f: entries.dailyMacros.f,
+          c: entries.dailyMacros.c,
+          p: entries.dailyMacros.p,
+          e: entries.dailyMacros.e,
+          w: entries.water.t,
         });
       } else {
         setDailyEntry({
-          fats: entries.dailyMacros.f,
-          carbs: entries.dailyMacros.k,
-          protein: entries.dailyMacros.p,
-          calories: entries.dailyMacros.e,
-          water: entries.water.t,
+          f: entries.dailyMacros.f,
+          c: entries.dailyMacros.k,
+          p: entries.dailyMacros.p,
+          e: entries.dailyMacros.e,
+          w: entries.water.t,
         });
       }
     }
@@ -82,17 +82,17 @@ const DailyChart = ({
   }
 
   if (hudModel === 'remaining') {
-    fatsValue = (diet.fats - dailyEntry.fats).toFixed(0);
-    carbsValue = (diet.carbs - dailyEntry.carbs).toFixed(0);
-    proteinValue = (diet.protein - dailyEntry.protein).toFixed(0);
-    caloriesValue = (diet.calories - dailyEntry.calories).toFixed(0);
-    waterValue = waterSettings.g - dailyEntry.water;
+    fatsValue = (diet.f - dailyEntry.f).toFixed(0);
+    carbsValue = (diet.c - dailyEntry.c).toFixed(0);
+    proteinValue = (diet.p - dailyEntry.p).toFixed(0);
+    caloriesValue = (diet.e - dailyEntry.e).toFixed(0);
+    waterValue = waterSettings.g - dailyEntry.w;
   } else if (hudModel === 'additive') {
-    fatsValue = dailyEntry.fats;
-    carbsValue = dailyEntry.carbs;
-    proteinValue = dailyEntry.protein;
-    caloriesValue = dailyEntry.calories;
-    waterValue = dailyEntry.water;
+    fatsValue = dailyEntry.f;
+    carbsValue = dailyEntry.c;
+    proteinValue = dailyEntry.p;
+    caloriesValue = dailyEntry.e;
+    waterValue = dailyEntry.w;
   }
 
   // conditionally render daily water intake based on user's unit preference, then adjust decimal display

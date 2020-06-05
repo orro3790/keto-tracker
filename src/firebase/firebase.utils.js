@@ -42,10 +42,11 @@ export const createUserDoc = async (userAuth, additionalData) => {
         displayName,
         hudModel: 'remaining',
         diet: {
-          calories: 2000,
-          protein: 100,
-          carbs: 25,
-          fats: 166,
+          e: 2000,
+          p: 100,
+          c: 25,
+          f: 166,
+          w: 1250,
         },
         carbSettings: 't',
         membership: 's',
@@ -234,9 +235,43 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
         d: 0,
         k: 0,
       },
+      goals: {
+        diet: {
+          snapshot: {
+            f: 0,
+            c: 0,
+            p: 0,
+            e: 0,
+          },
+          hit: {
+            f: true,
+            c: true,
+            p: true,
+            e: true,
+          },
+          precision: {
+            f: 0,
+            c: 0,
+            p: 0,
+            e: 0,
+          },
+        },
+        water: {
+          snapshot: {
+            w: 0,
+          },
+          hit: {
+            w: false,
+          },
+          precision: {
+            w: 0,
+          },
+        },
+      },
     };
     try {
       await entryRef.set({ entry });
+
       return entry;
     } catch (error) {
       console.log('error creating foodDiary entry', error.message);

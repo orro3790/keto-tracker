@@ -5,8 +5,8 @@ export const toggleSearchModal = (status) => ({
   payload: status,
 });
 
-export const updateFirebase = (status) => ({
-  type: SearchModalActionTypes.UPDATE_TOTALS,
+export const allowUpdateFirebase = (status) => ({
+  type: SearchModalActionTypes.ALLOW_ENTRY_UPDATE_FIREBASE,
   payload: status,
 });
 

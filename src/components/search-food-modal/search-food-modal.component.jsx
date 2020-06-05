@@ -6,7 +6,7 @@ import FoodFilter from '../../components/food-filter/food-filter.component';
 import { HorizontalBar } from 'react-chartjs-2';
 import {
   toggleSearchModal,
-  updateFirebase,
+  allowUpdateFirebase,
 } from './../../redux/search-food-modal/search-food-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
@@ -19,6 +19,7 @@ import {
   selectDietSettings,
   selectCarbSettings,
   selectCurrentUserId,
+  selectWaterSettings,
 } from '../../redux/user/user.selectors';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
@@ -41,7 +42,7 @@ const SearchFoodModal = ({
   toggleFavsModal,
   toggleCustomFoodsModal,
   toggleWaterModal,
-  updateFirebase,
+  allowUpdateFirebase,
   foodReference,
   createFoodReference,
   suggestionWindow,
@@ -52,6 +53,7 @@ const SearchFoodModal = ({
   diet,
   favModal,
   customFoodModal,
+  waterSettings,
 }) => {
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
@@ -63,13 +65,41 @@ const SearchFoodModal = ({
   let netCarbs;
 
   if (foodReference !== '') {
+    // renders macros based on user's size input,
     if (sizeInput !== '') {
-      // renders macros based on user's size input
-      calories = ((foodReference.e / 100) * sizeInput).toFixed(1);
-      fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
-      carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
-      protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
-      netCarbs = ((foodReference.k / 100) * sizeInput).toFixed(1);
+      switch (searchModal.editMode) {
+        // all macro data is based off 100g or 100ml in the usda database
+        case false:
+          calories = ((foodReference.e / 100) * sizeInput).toFixed(1);
+          fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
+          carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
+          protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
+          netCarbs = ((foodReference.k / 100) * sizeInput).toFixed(1);
+          break;
+        // if a user already designated a portion size, divide by portion size to get macros per g/ml
+        case true:
+          calories = (
+            (foodReference.e / foodReference.size) *
+            sizeInput
+          ).toFixed(1);
+          fats = ((foodReference.f / foodReference.size) * sizeInput).toFixed(
+            1
+          );
+          carbs = ((foodReference.c / foodReference.size) * sizeInput).toFixed(
+            1
+          );
+          protein = (
+            (foodReference.p / foodReference.size) *
+            sizeInput
+          ).toFixed(1);
+          netCarbs = (
+            (foodReference.k / foodReference.size) *
+            sizeInput
+          ).toFixed(1);
+          break;
+        default:
+          break;
+      }
     } else {
       fats = foodReference.f.toFixed(1);
       carbs = foodReference.c.toFixed(1);
@@ -250,8 +280,11 @@ const SearchFoodModal = ({
       // recalculate daily totals
       updatedEntry = recalculateDailyTotals(updatedEntry);
 
-      // before changing the entry state, we want to signal that we want to update the totals
-      updateFirebase(true);
+      // calculate whether goals have been hit, if today === entry date
+      updatedEntry = calculateGoalStatus(updatedEntry);
+
+      // before changing the entry state, we want to signal that we want to update the entry in firebase
+      allowUpdateFirebase(true);
 
       // dispatch the new entry obj to state
       setEntry(updatedEntry);
@@ -285,8 +318,11 @@ const SearchFoodModal = ({
     // recalculate daily totals
     updatedEntry = recalculateDailyTotals(updatedEntry);
 
+    // calculate whether goals have been hit, if today === entry date
+    updatedEntry = calculateGoalStatus(updatedEntry);
+
     // signal that I want to update the totals and push them to firestore
-    updateFirebase(true);
+    allowUpdateFirebase(true);
 
     // dispatch the new entry obj to state
     setEntry(updatedEntry);
@@ -333,6 +369,71 @@ const SearchFoodModal = ({
     };
 
     return copy;
+  };
+
+  const calculateGoalStatus = (entry) => {
+    let today = new Date();
+    today = today.setHours(0, 0, 0, 0) / 1000;
+
+    // if the current entry is actually today, save the user's diet settings to store a historical snapshot
+    if (today === entry.currentDate.seconds) {
+      entry.goals.diet.snapshot.f = diet.f;
+      entry.goals.diet.snapshot.c = diet.c;
+      entry.goals.diet.snapshot.p = diet.p;
+      entry.goals.diet.snapshot.e = diet.e;
+      entry.goals.water.snapshot.w = waterSettings.g;
+
+      // assume every entry update is the last of the day ==> calculate if goals have been hit
+      // 1. calorie-limit goal
+      if (entry.dailyMacros.e <= diet.e) {
+        entry.goals.diet.hit.e = true;
+      } else {
+        entry.goals.diet.hit.e = false;
+      }
+      // 2. protein-limit goal
+      if (entry.dailyMacros.p <= diet.p) {
+        entry.goals.diet.hit.p = true;
+      } else {
+        entry.goals.diet.hit.p = false;
+      }
+      // 3. fat-limit goal
+      if (entry.dailyMacros.f <= diet.f) {
+        entry.goals.diet.hit.f = true;
+      } else {
+        entry.goals.diet.hit.f = false;
+      }
+      // 4. carb-limit goal
+      if (entry.dailyMacros.c <= diet.c) {
+        entry.goals.diet.hit.c = true;
+      } else {
+        entry.goals.diet.hit.c = false;
+      }
+      // 5. water goal
+      if (entry.water.t >= waterSettings.g) {
+        entry.goals.water.hit.w = true;
+      } else {
+        entry.goals.water.hit.w = false;
+      }
+
+      // calc precision
+      entry.goals.diet.precision.e = parseFloat(
+        (entry.dailyMacros.e / diet.e).toFixed(2)
+      );
+      entry.goals.diet.precision.p = parseFloat(
+        (entry.dailyMacros.p / diet.p).toFixed(2)
+      );
+      entry.goals.diet.precision.f = parseFloat(
+        (entry.dailyMacros.f / diet.f).toFixed(2)
+      );
+      entry.goals.diet.precision.c = parseFloat(
+        (entry.dailyMacros.c / diet.c).toFixed(2)
+      );
+      entry.goals.water.precision.w = parseFloat(
+        (entry.water.t / waterSettings.g).toFixed(2)
+      );
+    }
+
+    return entry;
   };
 
   const getBtnStyle = () => {
@@ -418,35 +519,35 @@ const SearchFoodModal = ({
       case true:
         if (sizeInput !== '') {
           // render chart data based on user input
-          fatsRemaining = (fats / diet.fats) * 100;
-          carbsRemaining = (carbs / diet.carbs) * 100;
-          netCarbsRemaining = (netCarbs / diet.carbs) * 100;
-          proteinRemaining = (protein / diet.protein) * 100;
-          caloriesRemaining = (calories / diet.calories) * 100;
+          fatsRemaining = (fats / diet.f) * 100;
+          carbsRemaining = (carbs / diet.c) * 100;
+          netCarbsRemaining = (netCarbs / diet.c) * 100;
+          proteinRemaining = (protein / diet.p) * 100;
+          caloriesRemaining = (calories / diet.e) * 100;
         } else {
           // render chart data based on foodToEdit's existing macro data
-          fatsRemaining = (foodReference.f / diet.fats) * 100;
-          carbsRemaining = (foodReference.c / diet.carbs) * 100;
-          netCarbsRemaining = (foodReference.k / diet.carbs) * 100;
-          proteinRemaining = (foodReference.p / diet.protein) * 100;
-          caloriesRemaining = (foodReference.e / diet.calories) * 100;
+          fatsRemaining = (foodReference.f / diet.f) * 100;
+          carbsRemaining = (foodReference.c / diet.c) * 100;
+          netCarbsRemaining = (foodReference.k / diet.c) * 100;
+          proteinRemaining = (foodReference.p / diet.p) * 100;
+          caloriesRemaining = (foodReference.e / diet.e) * 100;
         }
         break;
       case false:
         if (sizeInput !== '') {
           // render chart data based on user input
-          fatsRemaining = (fats / diet.fats) * 100;
-          carbsRemaining = (carbs / diet.carbs) * 100;
-          netCarbsRemaining = (netCarbs / diet.carbs) * 100;
-          proteinRemaining = (protein / diet.protein) * 100;
-          caloriesRemaining = (calories / diet.calories) * 100;
+          fatsRemaining = (fats / diet.f) * 100;
+          carbsRemaining = (carbs / diet.c) * 100;
+          netCarbsRemaining = (netCarbs / diet.c) * 100;
+          proteinRemaining = (protein / diet.p) * 100;
+          caloriesRemaining = (calories / diet.e) * 100;
         } else {
           // render chart data based on default macro data
-          fatsRemaining = (foodReference.f / diet.fats) * 100;
-          carbsRemaining = (foodReference.c / diet.carbs) * 100;
-          netCarbsRemaining = (foodReference.k / diet.carbs) * 100;
-          proteinRemaining = (foodReference.p / diet.protein) * 100;
-          caloriesRemaining = (foodReference.e / diet.calories) * 100;
+          fatsRemaining = (foodReference.f / diet.f) * 100;
+          carbsRemaining = (foodReference.c / diet.c) * 100;
+          netCarbsRemaining = (foodReference.k / diet.c) * 100;
+          proteinRemaining = (foodReference.p / diet.p) * 100;
+          caloriesRemaining = (foodReference.e / diet.e) * 100;
         }
         break;
       default:
@@ -667,6 +768,7 @@ const mapStateToProps = createStructuredSelector({
   userId: selectCurrentUserId,
   favModal: selectFavModalStatus,
   customFoodModal: selectCustomFoodsModalStatus,
+  waterSettings: selectWaterSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -675,7 +777,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
   toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
-  updateFirebase: (status) => dispatch(updateFirebase(status)),
+  allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });

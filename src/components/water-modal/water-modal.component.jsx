@@ -11,7 +11,7 @@ import { selectMeal } from '../../redux/search-food-modal/search-food-modal.sele
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
 import {
   toggleSearchModal,
-  updateFirebase,
+  allowUpdateFirebase,
 } from '../../redux/search-food-modal/search-food-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
@@ -28,7 +28,7 @@ const WaterModal = ({
   meal,
   entries,
   setEntry,
-  updateFirebase,
+  allowUpdateFirebase,
 }) => {
   const [input, setInput] = useState('');
   const [toggle, setToggle] = useState('add');
@@ -226,7 +226,7 @@ const WaterModal = ({
       copy.water.t = parseFloat(totalMl.toFixed(2));
     }
 
-    updateFirebase(true);
+    allowUpdateFirebase(true);
 
     setEntry(copy);
 
@@ -372,7 +372,7 @@ const mapDispatchToProps = (dispatch) => ({
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
   setEntry: (entries) => dispatch(setEntry(entries)),
-  updateFirebase: (status) => dispatch(updateFirebase(status)),
+  allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(WaterModal);

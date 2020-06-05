@@ -12,7 +12,7 @@ const INITIAL_STATE = {
     filter: 'usda',
     path: 'usda',
   },
-  updateFirebase: false,
+  allowUpdateFirebase: false,
 };
 
 const searchModalReducer = (state = INITIAL_STATE, action) => {
@@ -22,10 +22,10 @@ const searchModalReducer = (state = INITIAL_STATE, action) => {
         ...state,
         modal: action.payload,
       };
-    case SearchModalActionTypes.UPDATE_TOTALS:
+    case SearchModalActionTypes.ALLOW_ENTRY_UPDATE_FIREBASE:
       return {
         ...state,
-        updateFirebase: action.payload,
+        allowUpdateFirebase: action.payload,
       };
     case SearchModalActionTypes.SET_FOOD_FILTER:
       return {
