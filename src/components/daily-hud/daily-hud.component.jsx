@@ -134,7 +134,7 @@ const DailyChart = ({
   }
 
   return (
-    <div>
+    <div className='daily-hud-outer-c'>
       <div className='calculation-c'>
         <div className={`${getStyle('remaining')} remaining`}>
           <div></div>

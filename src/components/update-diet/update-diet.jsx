@@ -193,7 +193,6 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
             <FormInput
               name='calorieLimit'
               type='number'
-              inputType='input'
               value={calorieLimit}
               onChange={handleChange}
               label={'calories per day'}
@@ -202,7 +201,6 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
             <FormInput
               name='fatLimit'
               type='number'
-              inputType='input'
               value={fatLimit}
               onChange={handleChange}
               label={'desired % fats'}
@@ -211,7 +209,6 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
             <FormInput
               name='carbLimit'
               type='number'
-              inputType='input'
               value={carbLimit}
               onChange={handleChange}
               label={carbLabel}
@@ -220,7 +217,6 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
             <FormInput
               name='proteinLimit'
               type='number'
-              inputType='input'
               value={proteinLimit}
               onChange={handleChange}
               label={'desired % protein'}

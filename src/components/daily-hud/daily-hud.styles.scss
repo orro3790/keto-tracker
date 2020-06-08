@@ -5,6 +5,22 @@ $keto-pink: #ff5387;
 $keto-blue: #53a3ff;
 $keto-green: #1eb980;
 
+@mixin bp($point) {
+  @if $point == large {
+    @media (max-width: 1200px) {
+      @content;
+    }
+  } @else if $point == medium {
+    @media (max-width: 768px) {
+      @content;
+    }
+  } @else if $point == small {
+    @media (max-width: 600px) {
+      @content;
+    }
+  }
+}
+
 .calculation-c {
   display: grid;
   grid-template-columns: 3fr 2px 3fr;
@@ -49,12 +65,19 @@ $keto-green: #1eb980;
 
 .daily-hud {
   display: flex;
-  margin: auto 10px auto 10px auto;
+  margin: auto;
   text-align: center;
   align-items: center;
   height: 50px;
-  margin-left: 20%;
-  margin-right: 20%;
+  margin: 0 20% 0 20%;
+
+  @include bp(medium) {
+    margin: 0 15% 0 15%;
+  }
+
+  @include bp(small) {
+    margin: 0 2.5% 0 2.5%;
+  }
 
   .macro-c {
     display: grid;

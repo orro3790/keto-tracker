@@ -11,7 +11,11 @@ import {
 } from '../../redux/date-selector/date-selector.actions';
 import { allowUpdateFirebase } from '../../redux/search-food-modal/search-food-modal.actions';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { getEntry, updateEntry } from '../../firebase/firebase.utils';
+import {
+  getEntry,
+  updateEntry,
+  updateMetricsData,
+} from '../../firebase/firebase.utils';
 import Tippy from '@tippyjs/react';
 import Calendar from 'react-calendar';
 import './calendar.scss';
@@ -64,6 +68,7 @@ const DateSelector = ({
   useEffect(() => {
     if (entries !== '' && currentUser !== null && update === true) {
       updateEntry(currentUser.id, entries);
+      updateMetricsData(currentUser);
       allowUpdateFirebase(false);
     }
   }, [entries, currentUser, update, allowUpdateFirebase]);
@@ -94,24 +99,22 @@ const DateSelector = ({
   };
 
   return (
-    <div>
-      <div className='date-c'>
-        <div className='yesterday-c' onClick={goToPrevDay}>
-          <FaChevronLeft className='fas fa-chevron-left' />
-        </div>
+    <div className='date-selector-c'>
+      <div className='yesterday-c' onClick={goToPrevDay}>
+        <FaChevronLeft className='fas fa-chevron-left' />
+      </div>
 
-        <div>
-          <Tippy
-            interactive={true}
-            content={<Calendar onChange={onChange} value={calDate} />}
-          >
-            <div className='today-c'>{date}</div>
-          </Tippy>
-        </div>
+      <div>
+        <Tippy
+          interactive={true}
+          content={<Calendar onChange={onChange} value={calDate} />}
+        >
+          <div className='today-c'>{date}</div>
+        </Tippy>
+      </div>
 
-        <div className='tomorrow-c' onClick={goToNextDay}>
-          <FaChevronRight className='fas fa-chevron-right' />
-        </div>
+      <div className='tomorrow-c' onClick={goToNextDay}>
+        <FaChevronRight className='fas fa-chevron-right' />
       </div>
     </div>
   );

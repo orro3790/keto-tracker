@@ -337,9 +337,153 @@ export const toggleFavFood = async (userId, food) => {
       console.log(`error adding ${food.n} to favorites`, error.message);
     }
   } else {
-    // const foodRef = firestore.collection(`users/${userId}/favFoods`);
     querySnapshot.docs.forEach((doc) => doc.ref.delete());
   }
+};
+
+export const updateMetricsData = async (currentUser) => {
+  const initializeMetricsCollection = async () => {
+    // Only update metrics data up until, but not including, today's date which ensures each entry is complete
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 1. Check if the metrics collection exists yet
+    const metricsCollectionRef = firestore.collection(
+      `users/${currentUser.id}/metrics`
+    );
+
+    const metricsCollectionSnapshot = await metricsCollectionRef.get();
+
+    // 2. If metrics collection does not exist ==> fetch all metrics data in foodDiary entries to initialize it
+    if (metricsCollectionSnapshot.empty === true) {
+      const foodDiaryCollectionSnapshot = await firestore
+        .collection(`users/${currentUser.id}/foodDiary`)
+        .where('entry.currentDate', '<', today)
+        .get();
+
+      // Nest the entries in monthlyData, under keys generated from the month & year UNIX time
+      let monthlyData = {};
+
+      foodDiaryCollectionSnapshot.docs.forEach((snapshot) => {
+        const snap = snapshot.data();
+
+        // Reduce entry's date to the month, determining where to nest the data
+        let currentDate = snap.entry.currentDate.seconds;
+        // Convert back to milliseconds to adjust date
+        let month = new Date(currentDate * 1000).setDate(1);
+        // Convert back to seconds for storing in firestore
+        month = month / 1000;
+
+        // If the monthly key doesn't exist (first loop), create it and then append the data, else just append the data
+        if (monthlyData[month] === undefined) {
+          monthlyData[month] = {};
+
+          monthlyData[month][currentDate] = {
+            dailyMacros: snap.entry.dailyMacros,
+            water: snap.entry.water,
+            goals: snap.entry.goals,
+          };
+        } else {
+          // Don't include today's data, because it might not be complete, thus should not be in the dataset
+
+          monthlyData[month][currentDate] = {
+            dailyMacros: snap.entry.dailyMacros,
+            water: snap.entry.water,
+            goals: snap.entry.goals,
+          };
+        }
+      });
+
+      // 3. Create a doc for each item in the monthlyData object
+      Object.keys(monthlyData).forEach(async (month) => {
+        const monthlyDocRef = firestore.doc(
+          `users/${currentUser.id}/metrics/${month}`
+        );
+
+        await monthlyDocRef.set(monthlyData[month]);
+      });
+    }
+    // 3. If metrics collection exists already ==> fetch only the foodDiary entries needed to update it
+    else {
+      // Get the most recent month with metrics data stored in it
+      const lastMonthWithData = metricsCollectionSnapshot.docs[
+        metricsCollectionSnapshot.docs.length - 1
+      ].data();
+
+      // Get the most recent date with metrics data
+      let lastDayWithData = Object.keys(lastMonthWithData);
+      lastDayWithData = lastDayWithData[lastDayWithData.length - 1];
+
+      // Query the foodDiary from latest date in metrics collection onwards, not including today
+      const foodDiaryCollectionSnapshot = await firestore
+        .collection(`users/${currentUser.id}/foodDiary`)
+        .where('entry.currentDate', '>', lastDayWithData)
+        .where('entry.currentDate', '<', today)
+        .get();
+
+      // Nest the entries in monthlyData, under keys generated from the month & year UNIX time
+      let monthlyData = {};
+
+      foodDiaryCollectionSnapshot.docs.forEach((snapshot) => {
+        const snap = snapshot.data();
+
+        // Reduce entry's date to the month, determining where to nest the data
+        let currentDate = snap.entry.currentDate.seconds;
+        // Convert back to milliseconds to adjust date
+        let month = new Date(currentDate * 1000).setDate(1);
+        // Convert back to seconds for storing in firestore
+        month = month / 1000;
+
+        // If the monthly key doesn't exist (first loop), create it and then append the data, else just append the data
+        if (monthlyData[month] === undefined) {
+          monthlyData[month] = {};
+
+          monthlyData[month][currentDate] = {
+            dailyMacros: snap.entry.dailyMacros,
+            water: snap.entry.water,
+            goals: snap.entry.goals,
+          };
+        } else {
+          monthlyData[month][currentDate] = {
+            dailyMacros: snap.entry.dailyMacros,
+            water: snap.entry.water,
+            goals: snap.entry.goals,
+          };
+        }
+      });
+
+      // 3. Create a doc for each item in the monthlyData object
+      Object.keys(monthlyData).forEach(async (month) => {
+        const monthlyDocRef = firestore.doc(
+          `users/${currentUser.id}/metrics/${month}`
+        );
+
+        await monthlyDocRef.set(monthlyData[month]);
+      });
+    }
+  };
+
+  // Only execute if the user's membership status is 'premium'
+  if (currentUser.membership === 'p') {
+    initializeMetricsCollection();
+  }
+};
+
+export const getMetricsData = async (userId) => {
+  // 1. Check if the metrics collection exists yet
+  const metricsCollectionSnapshot = await firestore
+    .collection(`users/${userId}/metrics`)
+    .get();
+
+  // console.log(metricsCollectionSnapshot);
+
+  const data = {};
+
+  metricsCollectionSnapshot.docs.forEach((snapshot) => {
+    data[snapshot.id] = snapshot.data();
+  });
+
+  return data;
 };
 
 export default firebase;

@@ -375,7 +375,7 @@ const SearchFoodModal = ({
     let today = new Date();
     today = today.setHours(0, 0, 0, 0) / 1000;
 
-    // if the current entry is actually today, save the user's diet settings to store a historical snapshot
+    // only calculate and save metrics data if the date is today (prevents tampering with data in past or future)
     if (today === entry.currentDate.seconds) {
       entry.goals.diet.snapshot.f = diet.f;
       entry.goals.diet.snapshot.c = diet.c;

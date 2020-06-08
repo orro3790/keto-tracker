@@ -45,21 +45,23 @@ textarea {
     grid-template-columns: 100px auto;
   }
   .page-body-c {
-    padding-top: 38px;
-    margin: 0 10% 0 10%;
+    margin: 38px 5% 0 5%;
     height: 100vh;
   }
 }
 
 @media only screen and (max-width: 600px) {
   .rail-body-separator {
-    display: grid;
+    /* display: grid; */
     grid-template-rows: 75px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .page-body-c {
-    padding-top: 20px;
-    margin: 0 10px 0 10px;
+    margin: 0 2.5% 0 2.5%;
+    padding-top: 100px;
     height: 100vh;
   }
 }

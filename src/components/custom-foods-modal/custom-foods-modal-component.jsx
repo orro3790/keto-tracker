@@ -147,7 +147,6 @@ const CustomFoodsModal = ({
             <FormInput
               id='name'
               name='search-in'
-              inputType='input'
               type='text'
               onChange={handleChange}
               value={searchInput}

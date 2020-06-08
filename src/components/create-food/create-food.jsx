@@ -116,6 +116,7 @@ const CreateFood = ({
         img: '',
         status: 'visible',
         callback: '',
+        sticky: false,
       });
     }
   };
@@ -199,7 +200,6 @@ const CreateFood = ({
               <FormInput
                 id='name'
                 name='name'
-                inputType='input'
                 type='text'
                 onChange={handleChange}
                 value={name}
@@ -212,7 +212,7 @@ const CreateFood = ({
               <FormInput
                 id='description'
                 name='description'
-                inputType='textarea'
+                textArea
                 onChange={handleChange}
                 value={description}
                 maxLength='100'
@@ -225,7 +225,6 @@ const CreateFood = ({
               <FormInput
                 className='macro-in'
                 name='size'
-                inputType='input'
                 type='number'
                 value={size}
                 onChange={handleChange}
@@ -246,7 +245,6 @@ const CreateFood = ({
               <FormInput
                 className='macro-in'
                 name='fats'
-                inputType='input'
                 type='number'
                 value={fats}
                 onChange={handleChange}
@@ -257,7 +255,6 @@ const CreateFood = ({
               <FormInput
                 className='macro-in'
                 name='carbs'
-                inputType='input'
                 type='number'
                 value={carbs}
                 onChange={handleChange}
@@ -268,7 +265,6 @@ const CreateFood = ({
               <FormInput
                 className='macro-in'
                 name='protein'
-                inputType='input'
                 type='number'
                 value={protein}
                 onChange={handleChange}
@@ -279,7 +275,6 @@ const CreateFood = ({
               <FormInput
                 className='macro-in'
                 name='fiber'
-                inputType='input'
                 type='number'
                 value={fiber}
                 onChange={handleChange}
@@ -290,7 +285,6 @@ const CreateFood = ({
               <FormInput
                 className='macro-in'
                 name='calories'
-                inputType='input'
                 type='number'
                 value={calories}
                 onChange={handleChange}

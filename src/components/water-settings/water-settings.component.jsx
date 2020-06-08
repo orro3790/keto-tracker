@@ -18,8 +18,6 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     currentUser.waterSettings.e
   );
 
-  console.log('rendered');
-
   const handleAlert = (result) => {
     let msg = '',
       title,
@@ -205,7 +203,6 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
             <FormInput
               name='calorieLimit'
               type='number'
-              inputType='input'
               value={goalInput}
               onChange={handleChange}
               placeholder={`set goal (${unitToggle})`}

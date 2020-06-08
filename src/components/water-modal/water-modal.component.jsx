@@ -57,188 +57,192 @@ const WaterModal = ({
     setInput(e.target.value);
   };
 
-  const handleSubmit = () => {
-    // will need to refactor to include unit conversions
-    let copy = Object.assign({}, entries);
-    let totalMl = 0;
-    let remainder = 0;
-    let title;
-    let alertMsg;
-    let img;
-    let negIntake = false;
-    let conversion;
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    // determine add or remove ==> handle conversion to totalMl ==>  calculate remainder for alerts
-    const calculateRemainder = () => {
-      if (toggle === 'add') {
-        title = 'WATER ADDED';
-        switch (waterSettings.u) {
-          case 'mL':
-            totalMl = copy.water.t + parseFloat(input);
-            break;
-          case 'cups':
-            totalMl = copy.water.t + parseFloat(input) * 250;
-            break;
-          case 'oz':
-            totalMl = copy.water.t + parseFloat(input) * 29.5735;
-            break;
-          default:
-            break;
-        }
-      } else if (toggle === 'remove') {
-        title = 'WATER REMOVED';
-        switch (waterSettings.u) {
-          case 'mL':
-            totalMl = copy.water.t - parseFloat(input);
-            break;
-          case 'cups':
-            conversion = parseFloat(input) * 250;
-            totalMl = copy.water.t - conversion;
-            break;
-          case 'oz':
-            conversion = parseFloat(input) * 250;
-            totalMl = copy.water.t - conversion;
-            break;
-          default:
-            break;
-        }
-      }
-      // handle negative daily water intake
-      if (totalMl < 0) {
-        totalMl = 0;
-        negIntake = true;
-      }
-      remainder = waterSettings.g - totalMl;
-    };
+    if (input !== '') {
+      // will need to refactor to include unit conversions
+      let copy = Object.assign({}, entries);
+      let totalMl = 0;
+      let remainder = 0;
+      let title;
+      let alertMsg;
+      let img;
+      let negIntake = false;
+      let conversion;
 
-    switch (waterSettings.u) {
-      case 'mL':
-        calculateRemainder();
-        // alert: goal not yet reached
-        if (remainder > 1 && negIntake === false) {
-          alertMsg = `${remainder.toFixed(
-            0
-          )} mL to go to reach your goal today.`;
-        }
-        // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
-        else if (remainder < 1 && remainder >= 0) {
-          alertMsg = `Great job! You reached your goal of drinking ${waterSettings.g} mL of water today!`;
-          img = 'goal-reached';
-        }
-        // alert: extra consumed
-        else if (remainder < 0) {
-          alertMsg = `Great job! You drank an extra ${
-            parseInt(remainder.toFixed(0)) * -1
-          } mL of water today.`;
-          img = 'goal-reached';
-        }
-        // alert: negative daily water intake
-        if (negIntake === true) {
-          alertMsg = `${waterSettings.g.toFixed(
-            0
-          )} mL to go to reach your goal today.`;
-          img = '';
-        }
-        break;
-      case 'cups':
-        calculateRemainder();
-        // alert: goal not yet reached
-        if (remainder > 1 && negIntake === false) {
-          // alert: only 1 cup left to hit goal
-          if (remainder.toFixed(0) === '250') {
-            alertMsg = `1 cup to go to reach your goal today!`;
-            // alert: negative daily water intake
-          } else {
-            alertMsg = `${(remainder / 250).toFixed(
-              2
-            )} cups to go to reach your goal today!`;
+      // determine add or remove ==> handle conversion to totalMl ==>  calculate remainder for alerts
+      const calculateRemainder = () => {
+        if (toggle === 'add') {
+          title = 'WATER ADDED';
+          switch (waterSettings.u) {
+            case 'mL':
+              totalMl = copy.water.t + parseFloat(input);
+              break;
+            case 'cups':
+              totalMl = copy.water.t + parseFloat(input) * 250;
+              break;
+            case 'oz':
+              totalMl = copy.water.t + parseFloat(input) * 29.5735;
+              break;
+            default:
+              break;
+          }
+        } else if (toggle === 'remove') {
+          title = 'WATER REMOVED';
+          switch (waterSettings.u) {
+            case 'mL':
+              totalMl = copy.water.t - parseFloat(input);
+              break;
+            case 'cups':
+              conversion = parseFloat(input) * 250;
+              totalMl = copy.water.t - conversion;
+              break;
+            case 'oz':
+              conversion = parseFloat(input) * 250;
+              totalMl = copy.water.t - conversion;
+              break;
+            default:
+              break;
           }
         }
-        // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
-        else if (
-          parseInt(remainder.toFixed(1)) < 1 &&
-          parseInt(remainder.toFixed(1)) >= 0
-        ) {
-          alertMsg = `Great job! You reached your goal of drinking ${(
-            waterSettings.g / 250
-          ).toFixed(2)} cups of water today!`;
-          img = 'goal-reached';
+        // handle negative daily water intake
+        if (totalMl < 0) {
+          totalMl = 0;
+          negIntake = true;
         }
-        // alert: extra consumed
-        else if (remainder < 0) {
-          if (parseFloat((remainder / 250).toFixed(2)) * -1 === 1) {
-            alertMsg = `Great job! You drank an extra cup of water today.`;
-          } else
+        remainder = waterSettings.g - totalMl;
+      };
+
+      switch (waterSettings.u) {
+        case 'mL':
+          calculateRemainder();
+          // alert: goal not yet reached
+          if (remainder > 1 && negIntake === false) {
+            alertMsg = `${remainder.toFixed(
+              0
+            )} mL to go to reach your goal today.`;
+          }
+          // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
+          else if (remainder < 1 && remainder >= 0) {
+            alertMsg = `Great job! You reached your goal of drinking ${waterSettings.g} mL of water today!`;
+            img = 'goal-reached';
+          }
+          // alert: extra consumed
+          else if (remainder < 0) {
             alertMsg = `Great job! You drank an extra ${
-              parseFloat((remainder / 250).toFixed(2)) * -1
-            } cups of water today.`;
-          img = 'goal-reached';
-        }
-        // alert: negative values
-        else if (negIntake === true) {
-          alertMsg = `${(waterSettings.g / 250).toFixed(
-            2
-          )} cups to go to reach your goal today.`;
-          img = '';
-        }
-        break;
-      case 'oz':
-        calculateRemainder();
-        // alert: goal not yet reached
-        if (remainder > 1 && negIntake === false) {
-          alertMsg = `${(remainder / 29.5735).toFixed(
-            2
-          )} oz to go to reach your goal today!`;
-        }
-        // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
-        else if (
-          parseInt(remainder.toFixed(1)) < 1 &&
-          parseInt(remainder.toFixed(1)) >= 0
-        ) {
-          alertMsg = `Great job! You reached your goal of drinking ${(
-            waterSettings.g / 29.5735
-          ).toFixed(2)} oz of water today!`;
-          img = 'goal-reached';
-        }
-        // alert: extra consumed
-        else if (remainder < 0) {
-          alertMsg = `Great job! You drank an extra ${
-            parseFloat((remainder / 29.5735).toFixed(2)) * -1
-          } oz of water today.`;
-          img = 'goal-reached';
-        }
-        // alert: negative values
-        else if (negIntake === true) {
-          alertMsg = `${(waterSettings.g / 29.5735).toFixed(
-            2
-          )} oz to go to hit your water goal today.`;
-          img = '';
-        }
-        break;
-      default:
-        break;
+              parseInt(remainder.toFixed(0)) * -1
+            } mL of water today.`;
+            img = 'goal-reached';
+          }
+          // alert: negative daily water intake
+          if (negIntake === true) {
+            alertMsg = `${waterSettings.g.toFixed(
+              0
+            )} mL to go to reach your goal today.`;
+            img = '';
+          }
+          break;
+        case 'cups':
+          calculateRemainder();
+          // alert: goal not yet reached
+          if (remainder > 1 && negIntake === false) {
+            // alert: only 1 cup left to hit goal
+            if (remainder.toFixed(0) === '250') {
+              alertMsg = `1 cup to go to reach your goal today!`;
+              // alert: negative daily water intake
+            } else {
+              alertMsg = `${(remainder / 250).toFixed(
+                2
+              )} cups to go to reach your goal today!`;
+            }
+          }
+          // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
+          else if (
+            parseInt(remainder.toFixed(1)) < 1 &&
+            parseInt(remainder.toFixed(1)) >= 0
+          ) {
+            alertMsg = `Great job! You reached your goal of drinking ${(
+              waterSettings.g / 250
+            ).toFixed(2)} cups of water today!`;
+            img = 'goal-reached';
+          }
+          // alert: extra consumed
+          else if (remainder < 0) {
+            if (parseFloat((remainder / 250).toFixed(2)) * -1 === 1) {
+              alertMsg = `Great job! You drank an extra cup of water today.`;
+            } else
+              alertMsg = `Great job! You drank an extra ${
+                parseFloat((remainder / 250).toFixed(2)) * -1
+              } cups of water today.`;
+            img = 'goal-reached';
+          }
+          // alert: negative values
+          else if (negIntake === true) {
+            alertMsg = `${(waterSettings.g / 250).toFixed(
+              2
+            )} cups to go to reach your goal today.`;
+            img = '';
+          }
+          break;
+        case 'oz':
+          calculateRemainder();
+          // alert: goal not yet reached
+          if (remainder > 1 && negIntake === false) {
+            alertMsg = `${(remainder / 29.5735).toFixed(
+              2
+            )} oz to go to reach your goal today!`;
+          }
+          // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
+          else if (
+            parseInt(remainder.toFixed(1)) < 1 &&
+            parseInt(remainder.toFixed(1)) >= 0
+          ) {
+            alertMsg = `Great job! You reached your goal of drinking ${(
+              waterSettings.g / 29.5735
+            ).toFixed(2)} oz of water today!`;
+            img = 'goal-reached';
+          }
+          // alert: extra consumed
+          else if (remainder < 0) {
+            alertMsg = `Great job! You drank an extra ${
+              parseFloat((remainder / 29.5735).toFixed(2)) * -1
+            } oz of water today.`;
+            img = 'goal-reached';
+          }
+          // alert: negative values
+          else if (negIntake === true) {
+            alertMsg = `${(waterSettings.g / 29.5735).toFixed(
+              2
+            )} oz to go to hit your water goal today.`;
+            img = '';
+          }
+          break;
+        default:
+          break;
+      }
+
+      // save adjusted water value & handle cases of negative daily water consumption.
+      if (totalMl === 0) {
+        copy.water.t = totalMl;
+      } else {
+        copy.water.t = parseFloat(totalMl.toFixed(2));
+      }
+
+      allowUpdateFirebase(true);
+
+      setEntry(copy);
+
+      handleClose();
+
+      toggleAlertModal({
+        title: title,
+        msg: alertMsg,
+        img: img,
+        status: 'visible',
+        sticky: false,
+      });
     }
-
-    // save adjusted water value & handle cases of negative daily water consumption.
-    if (totalMl === 0) {
-      copy.water.t = totalMl;
-    } else {
-      copy.water.t = parseFloat(totalMl.toFixed(2));
-    }
-
-    allowUpdateFirebase(true);
-
-    setEntry(copy);
-
-    handleClose();
-
-    toggleAlertModal({
-      title: title,
-      msg: alertMsg,
-      img: img,
-      status: 'visible',
-      sticky: false,
-    });
   };
 
   const getBtnStyle = () => {
@@ -335,22 +339,22 @@ const WaterModal = ({
 
             <div className='water-s'>
               <span className='water-l'>Size</span>
-              <FormInput
-                className='water-in'
-                name='size'
-                inputType='input'
-                type='number'
-                value={input}
-                onChange={handleChange}
-                placeholder='0'
-              />
+              <form className='water-f' onSubmit={handleSubmit}>
+                <FormInput
+                  name='size'
+                  type='number'
+                  value={input}
+                  onChange={handleChange}
+                  placeholder='0'
+                />
+              </form>
               <div className='water-unit'>
                 <div>{waterSettings.u}</div>
               </div>
             </div>
           </div>
           <div className='water-submit-r'>
-            <div className={getBtnStyle()} onClick={handleSubmit}>
+            <div type='submit' className={getBtnStyle()} onClick={handleSubmit}>
               <MdCheck className={getIconStyle()} />
             </div>
           </div>

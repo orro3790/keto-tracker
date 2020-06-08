@@ -6,31 +6,26 @@ const FormInput = ({
   handleChange,
   label,
   className,
-  inputType,
+  textArea,
   ...otherProps
 }) => {
   let renderInput;
-  switch (inputType) {
-    case 'input':
-      renderInput = (
-        <input
-          className={`form-in ${className}`}
-          onChange={handleChange}
-          {...otherProps}
-        />
-      );
-      break;
-    case 'textarea':
-      renderInput = (
-        <textarea
-          className={`form-in ${className}`}
-          onChange={handleChange}
-          {...otherProps}
-        />
-      );
-      break;
-    default:
-      break;
+  if (textArea) {
+    renderInput = (
+      <textarea
+        className={`form-in ${className}`}
+        onChange={handleChange}
+        {...otherProps}
+      />
+    );
+  } else {
+    renderInput = (
+      <input
+        className={`form-in ${className}`}
+        onChange={handleChange}
+        {...otherProps}
+      />
+    );
   }
 
   return (

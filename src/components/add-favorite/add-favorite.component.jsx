@@ -23,6 +23,7 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
           img: '',
           status: 'visible',
           callback: '',
+          sticky: false,
         });
         break;
       case true:
@@ -32,6 +33,7 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
           img: '',
           status: 'visible',
           callback: '',
+          sticky: false,
         });
         break;
       default:

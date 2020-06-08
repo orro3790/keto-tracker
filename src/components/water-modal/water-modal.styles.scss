@@ -52,10 +52,13 @@ $error-red-600: #e53935;
       justify-content: flex-end;
     }
 
-    .water-in {
+    .water-f {
       display: grid;
-      text-align: center;
-      background-color: $dp-08;
+
+      input {
+        text-align: center;
+        background-color: $dp-08;
+      }
     }
 
     .water-unit {

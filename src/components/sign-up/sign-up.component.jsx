@@ -124,7 +124,6 @@ const SignUp = ({ toggleAlertModal }) => {
       <form className='sign-up-form' onSubmit={handleSubmit}>
         <FormInput
           type='text'
-          inputType='input'
           name='displayName'
           value={displayName}
           onChange={handleChange}
@@ -134,7 +133,6 @@ const SignUp = ({ toggleAlertModal }) => {
         />
         <FormInput
           type='email'
-          inputType='input'
           name='email'
           value={email}
           onChange={handleChange}
@@ -144,7 +142,6 @@ const SignUp = ({ toggleAlertModal }) => {
         />
         <FormInput
           type='password'
-          inputType='input'
           name='password'
           value={password}
           onChange={handleChange}
@@ -154,7 +151,6 @@ const SignUp = ({ toggleAlertModal }) => {
         />
         <FormInput
           type='password'
-          inputType='input'
           name='confirmPassword'
           value={confirmPassword}
           onChange={handleChange}

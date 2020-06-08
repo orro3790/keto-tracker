@@ -9,6 +9,7 @@ import FavsModalReducer from './favs-modal/favs-modal.reducer';
 import customFoodsModalReducer from './custom-foods-modal/custom-foods-modal.reducer';
 import alertModalReducer from './alert-modal/alert-modal.reducer';
 import waterModalReducer from './water-modal/water-modal.reducer';
+import metricsReducer from './metrics/metrics.reducer';
 
 export default combineReducers({
   user: userReducer,
@@ -21,4 +22,5 @@ export default combineReducers({
   customFoodsModal: customFoodsModalReducer,
   alertModal: alertModalReducer,
   waterModal: waterModalReducer,
+  metrics: metricsReducer,
 });
