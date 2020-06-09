@@ -6,7 +6,7 @@ $keto-green: #1eb980;
 $dp-06: #2c2c2c;
 
 @media only screen and (min-width: 768px) {
-  .outer-container {
+  .settings-c {
     display: grid;
     grid-template-columns: auto;
     grid-template-rows: auto;
@@ -17,12 +17,12 @@ $dp-06: #2c2c2c;
 }
 
 @media only screen and (max-width: 768px) {
-  .outer-container {
+  .settings-c {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto;
     gap: 50px;
-    margin: 20px 5% 0 5%;
+    margin: 5px 5% 0 5%;
   }
 }
 

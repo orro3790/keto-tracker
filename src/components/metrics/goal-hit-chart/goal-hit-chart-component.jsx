@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUserId } from '../../redux/user/user.selectors';
-import { selectMetricsData } from '../../redux/metrics/metrics.selectors';
+import { selectCurrentUserId } from '../../../redux/user/user.selectors';
+import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
 import './goal-hit-chart.styles.scss';
 
 const GoalHitChart = ({ data }) => {

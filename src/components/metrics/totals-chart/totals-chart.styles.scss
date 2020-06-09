@@ -1,0 +1,56 @@
+$font-size-large: 20px;
+$dp-04: #272727;
+$dp-08: #2e2e2e;
+$keto-green: #1eb980;
+
+.totals-bar-chart-c {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0 1.5% 0.5% 1%;
+
+  .chart-t-c {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-self: center;
+    justify-self: center;
+
+    padding: 1% 0 0.5% 0;
+
+    .center-col {
+      justify-self: center;
+      cursor: pointer;
+    }
+
+    .right-col {
+      justify-self: right;
+      color: $keto-green;
+      cursor: pointer;
+    }
+  }
+
+  .chart-c {
+    height: 350px;
+  }
+
+  .dropdown-arrow svg {
+    vertical-align: middle;
+    margin-left: 5px;
+    font-size: $font-size-large;
+  }
+
+  .opt-c {
+    background-color: $dp-08;
+    box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
+  }
+
+  .opt {
+    padding: 5px;
+  }
+
+  .liOdd {
+    background-color: $dp-04;
+
+    width: 100%;
+  }
+}

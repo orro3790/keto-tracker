@@ -296,70 +296,65 @@ const WaterModal = ({
 
   return (
     <div>
-      <form>
-        <div className='submit-template-m'>
-          <div className='btn-c'>
-            <div></div>
-            <div className='back-btn' onClick={handleBack}>
-              <FaArrowLeft className='fas fa-arrow-left' />
-            </div>
-            <div className='close-btn' onClick={handleClose}>
-              <FaTimes className='fas fa-times' />
+      <div className='submit-template-m'>
+        <div className='btn-c'>
+          <div></div>
+          <div className='back-btn' onClick={handleBack}>
+            <FaArrowLeft className='fas fa-arrow-left' />
+          </div>
+          <div className='close-btn' onClick={handleClose}>
+            <FaTimes className='fas fa-times' />
+          </div>
+        </div>
+        <div className='inner-c'>
+          <div className='energy-i'>
+            <RiWaterFlashLine />
+            <div className='desc'>
+              Your goal is to consume
+              <span className='goal'>
+                {goal} {waterSettings.u}
+              </span>{' '}
+              per day.
             </div>
           </div>
-          <div className='inner-c'>
-            <div className='energy-i'>
-              <RiWaterFlashLine />
-              <div className='desc'>
-                Your goal is to consume
-                <span className='goal'>
-                  {goal} {waterSettings.u}
-                </span>{' '}
-                per day.
-              </div>
-            </div>
 
-            <div className='add-rem-set-c'>
-              <div className='toggle'>
-                <div
-                  className={`${getStyle('add')} add opt`}
-                  onClick={toggleAdd}
-                >
-                  <MdAddCircle />
-                </div>
-                <div className='separator'></div>
-                <div
-                  className={`${getStyle('remove')} remove opt`}
-                  onClick={toggleRemove}
-                >
-                  <MdRemoveCircle />
-                </div>
+          <div className='add-rem-set-c'>
+            <div className='toggle'>
+              <div className={`${getStyle('add')} add opt`} onClick={toggleAdd}>
+                <MdAddCircle />
               </div>
-            </div>
-
-            <div className='water-s'>
-              <span className='water-l'>Size</span>
-              <form className='water-f' onSubmit={handleSubmit}>
-                <FormInput
-                  name='size'
-                  type='number'
-                  value={input}
-                  onChange={handleChange}
-                  placeholder='0'
-                />
-              </form>
-              <div className='water-unit'>
-                <div>{waterSettings.u}</div>
+              <div className='separator'></div>
+              <div
+                className={`${getStyle('remove')} remove opt`}
+                onClick={toggleRemove}
+              >
+                <MdRemoveCircle />
               </div>
             </div>
           </div>
-          <div className='water-submit-r'>
-            <div type='submit' className={getBtnStyle()} onClick={handleSubmit}>
-              <MdCheck className={getIconStyle()} />
+
+          <div className='water-s'>
+            <span className='water-l'>Size</span>
+            <form className='water-f' onSubmit={handleSubmit}>
+              <FormInput
+                name='size'
+                type='number'
+                value={input}
+                onChange={handleChange}
+                placeholder='0'
+              />
+            </form>
+            <div className='water-unit'>
+              <div>{waterSettings.u}</div>
             </div>
           </div>
         </div>
-      </form>
+        <div className='water-submit-r'>
+          <div type='submit' className={getBtnStyle()} onClick={handleSubmit}>
+            <MdCheck className={getIconStyle()} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

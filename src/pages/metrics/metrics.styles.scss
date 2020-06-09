@@ -8,21 +8,16 @@ $dp-08: #2e2e2e;
 }
 
 .dashboard-c {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
   height: 100%;
-  justify-content: space-between;
+  gap: 50px;
 
   .top-r {
-    height: 50%;
     background-color: $dp-08;
-    margin-bottom: 2.5%;
   }
 
   .bottom-r {
-    flex-direction: row;
-    height: 50%;
     background-color: $dp-08;
-    margin-bottom: 2.5%;
   }
 }

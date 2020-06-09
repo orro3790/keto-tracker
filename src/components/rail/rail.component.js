@@ -70,7 +70,7 @@ const Rail = ({ toggleAlertModal, currentUser }) => {
 
   return (
     <div>
-      <div className='rail-c hidden'>
+      <div className='rail-c'>
         <Link to='/'>
           <div className={styles.logo}>K</div>
         </Link>

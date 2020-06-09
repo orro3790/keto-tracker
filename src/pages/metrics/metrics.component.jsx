@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import Rail from '../../components/rail/rail.component';
-// import GoalHitChart from '../../components/goal-hit-chart/goal-hit-chart-component';
+import TotalsChart from '../../components/metrics/totals-chart/totals-chart.component';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../redux/metrics/metrics.selectors';
+import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { setMetricsData } from '../../redux/metrics/metrics.actions';
 import { getMetricsData } from '../../firebase/firebase.utils';
 import './metrics.styles.scss';
@@ -12,8 +13,6 @@ const Metrics = ({ userId, data, setMetricsData }) => {
   useEffect(() => {
     const initializeData = async () => {
       const masterData = await getMetricsData(userId);
-
-      console.log(masterData);
 
       setMetricsData(masterData);
     };
@@ -31,9 +30,10 @@ const Metrics = ({ userId, data, setMetricsData }) => {
       </div>
 
       <div className='page-body-c'>
-        {/* <div className='chart-c'><GoalHitChart /></div> */}
         <div className='dashboard-c'>
-          <div className='top-r'>Top r</div>
+          <div className='top-r'>
+            <TotalsChart />
+          </div>
           <div className='bottom-r'>
             <div className='bottom-left-c'></div>
             <div className='bottom-right-c'></div>
@@ -46,6 +46,7 @@ const Metrics = ({ userId, data, setMetricsData }) => {
 
 const mapStateToProps = createStructuredSelector({
   data: selectMetricsData,
+  userId: selectCurrentUserId,
 });
 
 const mapDispatchToProps = (dispatch) => ({
