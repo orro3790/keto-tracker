@@ -3,11 +3,12 @@ import { Bar } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
+import { selectWaterSettings } from '../../../redux/user/user.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
 import Tippy from '@tippyjs/react';
 import './totals-chart.styles.scss';
 
-const TotalsChart = ({ data }) => {
+const TotalsChart = ({ data, waterSettings }) => {
   const [chartData, setChartData] = useState({});
   const [targetGoal, setTargetGoal] = useState('e');
   // Define the keys and their corresponding titles
@@ -16,6 +17,7 @@ const TotalsChart = ({ data }) => {
     c: 'Total Carbs (g)',
     p: 'Total Protein (g)',
     e: 'Total Calories (g)',
+    w: `Total Water (${waterSettings.u})`,
   };
 
   useEffect(() => {
@@ -30,9 +32,42 @@ const TotalsChart = ({ data }) => {
     if (targetGoal === 'w') {
       Object.keys(data).forEach((month) => {
         Object.keys(data[month]).forEach((date) => {
-          chartComponents.data.push(data[month][date].water.t);
+          // convert units if necessary
+          switch (waterSettings.u) {
+            case 'mL':
+              chartComponents.data.push(data[month][date].water.t);
+              chartComponents.goal.push(
+                data[month][date].goals.water.snapshot.w
+              );
+              break;
+            case 'cups':
+              chartComponents.data.push(
+                parseFloat((data[month][date].water.t / 250).toFixed(2))
+              );
+              chartComponents.goal.push(
+                parseFloat(
+                  (data[month][date].goals.water.snapshot.w / 250).toFixed(2)
+                )
+              );
+              break;
+            case 'oz':
+              chartComponents.data.push(
+                parseFloat((data[month][date].water.t / 29.5735).toFixed(2))
+              );
+              chartComponents.goal.push(
+                parseFloat(
+                  (data[month][date].goals.water.snapshot.w / 29.5735).toFixed(
+                    2
+                  )
+                )
+              );
+
+              break;
+            default:
+              break;
+          }
+
           chartComponents.dates.push(date);
-          chartComponents.goal.push(data[month][date].goals.water.snapshot.w);
         });
       });
     } else {
@@ -104,7 +139,7 @@ const TotalsChart = ({ data }) => {
 
       chart();
     }
-  }, [data, targetGoal]);
+  }, [data, targetGoal, waterSettings.u]);
 
   const toggleTarget = (e) => {
     switch (e.target.innerText) {
@@ -225,6 +260,7 @@ const TotalsChart = ({ data }) => {
 
 const mapStateToProps = createStructuredSelector({
   data: selectMetricsData,
+  waterSettings: selectWaterSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({});
