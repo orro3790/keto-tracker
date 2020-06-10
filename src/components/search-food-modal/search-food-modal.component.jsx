@@ -476,7 +476,6 @@ const SearchFoodModal = ({
         {
           type: 'category',
           labels: labels,
-
           display: false,
           gridLines: {
             color: '#373737',

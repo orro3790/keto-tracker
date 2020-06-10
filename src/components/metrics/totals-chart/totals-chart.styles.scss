@@ -1,7 +1,10 @@
 $font-size-large: 20px;
 $dp-04: #272727;
+$dp-04-disabled: #414141;
 $dp-08: #2e2e2e;
+$dp-08-disabled: #7e7e7e;
 $keto-green: #1eb980;
+$keto-pink: #ff5387;
 
 .totals-bar-chart-c {
   position: relative;
@@ -16,6 +19,14 @@ $keto-green: #1eb980;
     justify-self: center;
 
     padding: 1% 0 0.5% 0;
+
+    .chart-t {
+      color: $keto-green;
+    }
+
+    .disabled {
+      color: $dp-08-disabled;
+    }
 
     .center-col {
       justify-self: center;
@@ -39,18 +50,18 @@ $keto-green: #1eb980;
     font-size: $font-size-large;
   }
 
-  .opt-c {
-    background-color: $dp-08;
-    box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
-  }
-
   .opt {
-    padding: 5px;
+    padding: 10px;
+    width: 100%;
+    color: $dp-08-disabled;
+
+    &:hover {
+      color: $keto-green;
+    }
   }
 
   .liOdd {
-    background-color: $dp-04;
-
-    width: 100%;
+    background-color: $dp-08;
+    color: $dp-08-disabled;
   }
 }

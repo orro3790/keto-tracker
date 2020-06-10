@@ -10,6 +10,13 @@ import './totals-chart.styles.scss';
 const TotalsChart = ({ data }) => {
   const [chartData, setChartData] = useState({});
   const [targetGoal, setTargetGoal] = useState('e');
+  // Define the keys and their corresponding titles
+  const TITLES = {
+    f: 'Total Fats (g)',
+    c: 'Total Carbs (g)',
+    p: 'Total Protein (g)',
+    e: 'Total Calories (g)',
+  };
 
   useEffect(() => {
     // Don't actually calculate the data, use mock data for now to reduce reads during development
@@ -41,7 +48,7 @@ const TotalsChart = ({ data }) => {
     }
 
     if (chartComponents.dates !== {}) {
-      // convert unix dates into human readable labels
+      // Convert unix dates into human readable labels
       let labels = [];
       chartComponents.dates.forEach((date) => {
         let label = new Date(date * 1000);
@@ -99,42 +106,21 @@ const TotalsChart = ({ data }) => {
     }
   }, [data, targetGoal]);
 
-  let title;
-  switch (targetGoal) {
-    case 'e':
-      title = 'Total Calories Consumed';
-      break;
-    case 'p':
-      title = 'Total Protein Consumed';
-      break;
-    case 'c':
-      title = 'Total Carbs Consumed';
-      break;
-    case 'f':
-      title = 'Total Fats Consumed';
-      break;
-    case 'w':
-      title = 'Total Water Consumed';
-      break;
-    default:
-      break;
-  }
-
   const toggleTarget = (e) => {
     switch (e.target.innerText) {
-      case 'Total Calories Consumed':
+      case TITLES.e:
         setTargetGoal('e');
         break;
-      case 'Total Fats Consumed':
+      case TITLES.f:
         setTargetGoal('f');
         break;
-      case 'Total Carbs Consumed':
+      case TITLES.c:
         setTargetGoal('c');
         break;
-      case 'Total Protein Consumed':
+      case TITLES.p:
         setTargetGoal('p');
         break;
-      case 'Total Water Consumed':
+      case TITLES.w:
         setTargetGoal('w');
         break;
       default:
@@ -152,6 +138,63 @@ const TotalsChart = ({ data }) => {
     animation: {
       duration: 1000,
     },
+    scales: {
+      yAxes: [
+        {
+          gridLines: {
+            color: 'rgba(126, 126, 126, 0.3)',
+          },
+          ticks: {
+            padding: 10,
+            fontColor: '#fff',
+          },
+        },
+      ],
+      xAxes: [
+        {
+          gridLines: {
+            color: 'rgba(126, 126, 126, 0.3)',
+            drawBorder: false,
+          },
+          ticks: {
+            padding: 5,
+            fontColor: '#fff',
+          },
+        },
+      ],
+    },
+  };
+
+  const renderTitles = () => {
+    // pull the keys from the TITLES obj to an array to allow indexing
+    let keys = Object.keys(TITLES);
+
+    // remove the macro currently being viewed, from the list of options to render
+    keys.forEach((key) => {
+      if (key === targetGoal) {
+        let position = keys.indexOf(key);
+        keys.splice(position, 1);
+      }
+    });
+
+    // assemble the option rows and tag each option as either even or odd for styling purposes
+    let array = [];
+
+    keys.forEach((key) => {
+      let styling;
+      if (keys.indexOf(key) % 2 === 0) {
+        styling = 'opt liEven';
+      } else {
+        styling = 'opt liOdd';
+      }
+      array.push(
+        <div key={TITLES[key]} className={styling} onClick={toggleTarget}>
+          {TITLES[key]}
+        </div>
+      );
+    });
+
+    return array;
   };
 
   return (
@@ -159,37 +202,16 @@ const TotalsChart = ({ data }) => {
       <div className='chart-t-c'>
         <div className='left-col'></div>
         <div className='center-col'>
-          <Tippy
-            interactive={true}
-            content={
-              <div className='opt-c'>
-                <div className='opt liOdd' onClick={toggleTarget}>
-                  Total Fats Consumed
-                </div>
-                <div className='opt' onClick={toggleTarget}>
-                  Total Carbs Consumed
-                </div>
-                <div className='opt liOdd' onClick={toggleTarget}>
-                  Total Protein Consumed
-                </div>
-                <div className='opt' onClick={toggleTarget}>
-                  Total Calories Consumed
-                </div>
-                <div className='opt liOdd' onClick={toggleTarget}>
-                  Total Water Consumed
-                </div>
-              </div>
-            }
-          >
+          <Tippy interactive={true} content={<div>{renderTitles()}</div>}>
             <div>
-              <span>{title}</span>
+              <span className='chart-t'>{TITLES[targetGoal]}</span>
               <span className='dropdown-arrow'>
                 <MdArrowDropDown />
               </span>
             </div>
           </Tippy>
         </div>
-        <div className='right-col'>Full History</div>
+        <div className='right-col'></div>
       </div>
       <div className='chart-c'>
         <Bar data={chartData} options={options} />
