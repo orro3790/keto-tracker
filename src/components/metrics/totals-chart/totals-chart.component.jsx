@@ -188,9 +188,9 @@ const TotalsChart = ({ data }) => {
         styling = 'opt liOdd';
       }
       array.push(
-        <div key={TITLES[key]} className={styling} onClick={toggleTarget}>
+        <li key={TITLES[key]} className={styling} onClick={toggleTarget}>
           {TITLES[key]}
-        </div>
+        </li>
       );
     });
 
@@ -202,7 +202,10 @@ const TotalsChart = ({ data }) => {
       <div className='chart-t-c'>
         <div className='left-col'></div>
         <div className='center-col'>
-          <Tippy interactive={true} content={<div>{renderTitles()}</div>}>
+          <Tippy
+            interactive={true}
+            content={<ul className='opt-c'>{renderTitles()}</ul>}
+          >
             <div>
               <span className='chart-t'>{TITLES[targetGoal]}</span>
               <span className='dropdown-arrow'>

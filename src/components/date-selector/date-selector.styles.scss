@@ -1,28 +1,6 @@
 $font-size-display-3: 22px;
 $font-size-display-2: 26px;
 
-.tippy-box[data-theme~='tomato'] {
-  background-color: tomato;
-  color: yellow;
-}
-
-.tippy-tooltip.tomato-theme[data-placement^='top'] .tippy-arrow {
-  border-top-color: tomato;
-}
-.tippy-tooltip.tomato-theme[data-placement^='bottom'] .tippy-arrow {
-  border-bottom-color: tomato;
-}
-.tippy-tooltip.tomato-theme[data-placement^='left'] .tippy-arrow {
-  border-left-color: tomato;
-}
-.tippy-tooltip.tomato-theme[data-placement^='right'] .tippy-arrow {
-  border-right-color: tomato;
-}
-
-.tippy-tooltip.tomato-theme .tippy-svg-arrow {
-  fill: tomato;
-}
-
 .date-selector-c {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;

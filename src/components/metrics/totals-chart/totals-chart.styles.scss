@@ -50,18 +50,28 @@ $keto-pink: #ff5387;
     font-size: $font-size-large;
   }
 
+  .opt-c {
+    margin: 0;
+    padding: 0;
+    background: $dp-08;
+    border: 1px solid $dp-08-disabled;
+    list-style: none;
+  }
+
   .opt {
     padding: 10px;
-    width: 100%;
     color: $dp-08-disabled;
 
     &:hover {
-      color: $keto-green;
+      color: white;
     }
   }
 
   .liOdd {
-    background-color: $dp-08;
     color: $dp-08-disabled;
+  }
+
+  .liEven {
+    width: 100%;
   }
 }
