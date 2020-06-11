@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Rail from '../../components/rail/rail.component';
 import TotalsChart from '../../components/metrics/totals-chart/totals-chart.component';
+import GoalHitChart from '../../components/metrics/goal-hit-chart/goal-hit-chart-component';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../redux/metrics/metrics.selectors';
@@ -35,7 +36,9 @@ const Metrics = ({ userId, data, setMetricsData }) => {
             <TotalsChart />
           </div>
           <div className='bottom-r'>
-            <div className='bottom-left-c'></div>
+            <div className='bottom-left-c'>
+              <GoalHitChart />
+            </div>
             <div className='bottom-right-c'></div>
           </div>
         </div>

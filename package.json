@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@tippyjs/react": "^4.0.2",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-stacked100": "^0.7.1",
     "csvtojson": "^2.0.10",
     "firebase": "^7.14.4",
     "flatpickr": "^4.6.3",

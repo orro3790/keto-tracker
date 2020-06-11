@@ -243,12 +243,6 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
             p: 0,
             e: 0,
           },
-          hit: {
-            f: true,
-            c: true,
-            p: true,
-            e: true,
-          },
           precision: {
             f: 0,
             c: 0,
@@ -259,9 +253,6 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
         water: {
           snapshot: {
             w: 0,
-          },
-          hit: {
-            w: false,
           },
           precision: {
             w: 0,

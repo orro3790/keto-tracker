@@ -17,11 +17,14 @@ $keto-pink: #ff5387;
     grid-template-columns: 1fr 1fr 1fr;
     align-self: center;
     justify-self: center;
-
-    padding: 1% 0 0.5% 0;
+    padding-top: 5px;
 
     .chart-t {
       color: $keto-green;
+    }
+
+    .clickable {
+      cursor: pointer;
     }
 
     .disabled {
@@ -30,7 +33,6 @@ $keto-pink: #ff5387;
 
     .center-col {
       justify-self: center;
-      cursor: pointer;
     }
 
     .right-col {
@@ -41,7 +43,7 @@ $keto-pink: #ff5387;
   }
 
   .chart-c {
-    height: 350px;
+    height: 250px;
   }
 
   .dropdown-arrow svg {

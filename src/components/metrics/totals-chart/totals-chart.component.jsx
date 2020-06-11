@@ -242,8 +242,8 @@ const TotalsChart = ({ data, waterSettings }) => {
             content={<ul className='opt-c'>{renderTitles()}</ul>}
           >
             <div>
-              <span className='chart-t'>{TITLES[targetGoal]}</span>
-              <span className='dropdown-arrow'>
+              <span className='chart-t clickable'>{TITLES[targetGoal]}</span>
+              <span className='dropdown-arrow clickable'>
                 <MdArrowDropDown />
               </span>
             </div>

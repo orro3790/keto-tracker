@@ -280,7 +280,7 @@ const SearchFoodModal = ({
       // recalculate daily totals
       updatedEntry = recalculateDailyTotals(updatedEntry);
 
-      // calculate whether goals have been hit, if today === entry date
+      // calculate whether goal performance, if today === entry date
       updatedEntry = calculateGoalStatus(updatedEntry);
 
       // before changing the entry state, we want to signal that we want to update the entry in firebase
@@ -318,7 +318,7 @@ const SearchFoodModal = ({
     // recalculate daily totals
     updatedEntry = recalculateDailyTotals(updatedEntry);
 
-    // calculate whether goals have been hit, if today === entry date
+    // calculate goal performance, if today === entry date
     updatedEntry = calculateGoalStatus(updatedEntry);
 
     // signal that I want to update the totals and push them to firestore
@@ -383,39 +383,7 @@ const SearchFoodModal = ({
       entry.goals.diet.snapshot.e = diet.e;
       entry.goals.water.snapshot.w = waterSettings.g;
 
-      // assume every entry update is the last of the day ==> calculate if goals have been hit
-      // 1. calorie-limit goal
-      if (entry.dailyMacros.e <= diet.e) {
-        entry.goals.diet.hit.e = true;
-      } else {
-        entry.goals.diet.hit.e = false;
-      }
-      // 2. protein-limit goal
-      if (entry.dailyMacros.p <= diet.p) {
-        entry.goals.diet.hit.p = true;
-      } else {
-        entry.goals.diet.hit.p = false;
-      }
-      // 3. fat-limit goal
-      if (entry.dailyMacros.f <= diet.f) {
-        entry.goals.diet.hit.f = true;
-      } else {
-        entry.goals.diet.hit.f = false;
-      }
-      // 4. carb-limit goal
-      if (entry.dailyMacros.c <= diet.c) {
-        entry.goals.diet.hit.c = true;
-      } else {
-        entry.goals.diet.hit.c = false;
-      }
-      // 5. water goal
-      if (entry.water.t >= waterSettings.g) {
-        entry.goals.water.hit.w = true;
-      } else {
-        entry.goals.water.hit.w = false;
-      }
-
-      // calc precision
+      // assume every entry update is the last of the day ==> calculate precision
       entry.goals.diet.precision.e = parseFloat(
         (entry.dailyMacros.e / diet.e).toFixed(2)
       );
