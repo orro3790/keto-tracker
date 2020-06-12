@@ -18,6 +18,7 @@ import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selector
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import { selectWaterModalStatus } from '../../redux/water-modal/water-modal.selectors';
 import './diary.styles.scss';
+import 'tippy.js/animations/scale.css';
 
 const Diary = ({
   searchModal,

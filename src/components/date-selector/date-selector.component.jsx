@@ -2,7 +2,10 @@ import React, { useEffect, useState } from 'react';
 import './date-selector.styles.scss';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
+import {
+  selectCurrentUserId,
+  selectMembershipSettings,
+} from '../../redux/user/user.selectors';
 import { selectUpdate } from '../../redux/search-food-modal/search-food-modal.selectors';
 import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
 import {
@@ -22,7 +25,10 @@ import './calendar.scss';
 
 const DateSelector = ({
   entries,
-  currentUser,
+  userId,
+  dietSettings,
+  waterSettings,
+  membership,
   setEntry,
   update,
   allowUpdateFirebase,
@@ -32,7 +38,7 @@ const DateSelector = ({
 
   const onChange = (calDate) => {
     const loadEntry = async () => {
-      const entriesObj = await getEntry(currentUser.id, calDate.getTime());
+      const entriesObj = await getEntry(userId, calDate.getTime());
       setEntry(entriesObj);
     };
     loadEntry().then(() => setCalDate(calDate));
@@ -41,7 +47,7 @@ const DateSelector = ({
   // When the user is not null, get today's diary entry from firebase
   useEffect(() => {
     const loadEntry = async () => {
-      const entriesObj = await getEntry(currentUser.id, 0);
+      const entriesObj = await getEntry(userId);
       setEntry(entriesObj);
     };
 
@@ -49,7 +55,7 @@ const DateSelector = ({
     if (entries === '') {
       loadEntry();
     }
-  }, [currentUser, setEntry, entries]);
+  }, [userId, dietSettings, waterSettings, setEntry, entries]);
 
   // handles rendering updates to the date in UI
   useEffect(() => {
@@ -66,17 +72,17 @@ const DateSelector = ({
 
   // handles pushing updates to firestore when a change happens to entry state, then sets update state back to false
   useEffect(() => {
-    if (entries !== '' && currentUser !== null && update === true) {
-      updateEntry(currentUser.id, entries);
-      updateMetricsData(currentUser);
+    if (entries !== '' && userId !== null && update === true) {
+      updateEntry(userId, entries);
+      updateMetricsData(userId, membership);
       allowUpdateFirebase(false);
     }
-  }, [entries, currentUser, update, allowUpdateFirebase]);
+  }, [entries, userId, membership, update, allowUpdateFirebase]);
 
   const goToNextDay = () => {
     const loadEntry = async () => {
       const entriesObj = await getEntry(
-        currentUser.id,
+        userId,
         entries.currentDate.seconds * 1000,
         +1
       );
@@ -88,7 +94,7 @@ const DateSelector = ({
   const goToPrevDay = () => {
     const loadEntry = async () => {
       const entriesObj = await getEntry(
-        currentUser.id,
+        userId,
         entries.currentDate.seconds * 1000,
         -1
       );
@@ -108,6 +114,7 @@ const DateSelector = ({
         <Tippy
           interactive={true}
           content={<Calendar onChange={onChange} value={calDate} />}
+          animation={'scale'}
         >
           <div className='today-c'>{date}</div>
         </Tippy>
@@ -121,7 +128,8 @@ const DateSelector = ({
 };
 
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
+  userId: selectCurrentUserId,
+  membership: selectMembershipSettings,
   entries: selectEntries,
   update: selectUpdate,
 });

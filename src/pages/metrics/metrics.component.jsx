@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import Rail from '../../components/rail/rail.component';
 import TotalsChart from '../../components/metrics/totals-chart/totals-chart.component';
 import GoalHitChart from '../../components/metrics/goal-hit-chart/goal-hit-chart-component';
+import MealChart from '../../components/metrics/meal-chart/meal-chart.component';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../redux/metrics/metrics.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { setMetricsData } from '../../redux/metrics/metrics.actions';
 import { getMetricsData } from '../../firebase/firebase.utils';
+import 'tippy.js/animations/scale.css';
 import './metrics.styles.scss';
 
 const Metrics = ({ userId, data, setMetricsData }) => {
@@ -36,10 +38,13 @@ const Metrics = ({ userId, data, setMetricsData }) => {
             <TotalsChart />
           </div>
           <div className='bottom-r'>
-            <div className='bottom-left-c'>
+            <div className='bottom-c-1'>
               <GoalHitChart />
             </div>
-            <div className='bottom-right-c'></div>
+            <div className='bottom-c-2'>
+              <MealChart />
+            </div>
+            <div className='bottom-c-3'></div>
           </div>
         </div>
       </div>

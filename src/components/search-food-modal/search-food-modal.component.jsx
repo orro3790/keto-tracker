@@ -281,7 +281,7 @@ const SearchFoodModal = ({
       updatedEntry = recalculateDailyTotals(updatedEntry);
 
       // calculate whether goal performance, if today === entry date
-      updatedEntry = calculateGoalStatus(updatedEntry);
+      updatedEntry = calculatePrecision(updatedEntry);
 
       // before changing the entry state, we want to signal that we want to update the entry in firebase
       allowUpdateFirebase(true);
@@ -319,7 +319,7 @@ const SearchFoodModal = ({
     updatedEntry = recalculateDailyTotals(updatedEntry);
 
     // calculate goal performance, if today === entry date
-    updatedEntry = calculateGoalStatus(updatedEntry);
+    updatedEntry = calculatePrecision(updatedEntry);
 
     // signal that I want to update the totals and push them to firestore
     allowUpdateFirebase(true);
@@ -371,7 +371,7 @@ const SearchFoodModal = ({
     return copy;
   };
 
-  const calculateGoalStatus = (entry) => {
+  const calculatePrecision = (entry) => {
     let today = new Date();
     today = today.setHours(0, 0, 0, 0) / 1000;
 

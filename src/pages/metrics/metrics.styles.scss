@@ -1,7 +1,8 @@
 $font-size-display-1: 32px;
-
 $dp-06: #2c2c2c;
 $dp-08: #2e2e2e;
+$dp-08-disabled: #7e7e7e;
+$keto-orange: #ffa053;
 
 .t {
   font-size: $font-size-display-1;
@@ -9,7 +10,7 @@ $dp-08: #2e2e2e;
 
 .dashboard-c {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 300px 300px;
   height: 100%;
   gap: 50px;
 
@@ -19,15 +20,37 @@ $dp-08: #2e2e2e;
 
   .bottom-r {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 0 50px;
 
-    .bottom-left-c {
+    .bottom-c-1 {
       background-color: $dp-08;
     }
 
-    .bottom-right-c {
+    .bottom-c-2 {
+      background-color: $dp-08;
+    }
+
+    .bottom-c-3 {
       background-color: $dp-08;
     }
   }
+}
+
+.chart-desc-tooltip {
+  padding: 10px;
+  background-color: $dp-08;
+  border: 1px solid $dp-08-disabled;
+}
+
+.question-i {
+  color: $dp-08-disabled;
+
+  &:hover {
+    color: $keto-orange;
+  }
+}
+
+.opt {
+  cursor: pointer;
 }

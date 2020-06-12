@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { HorizontalBar } from 'react-chartjs-2';
+import 'chartjs-plugin-stacked100';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
+import { BsQuestionSquareFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
-import 'chartjs-plugin-stacked100';
 import './goal-hit-chart.styles.scss';
 
 const GoalHitChart = ({ data }) => {
@@ -195,8 +196,9 @@ const GoalHitChart = ({ data }) => {
     let keys = Object.keys(thresholds);
 
     // remove the value currently being viewed, from the list of options to render
+
     keys.forEach((key) => {
-      if (key === threshold.value) {
+      if (key === JSON.stringify(threshold.value)) {
         let position = keys.indexOf(key);
         keys.splice(position, 1);
       }
@@ -222,12 +224,28 @@ const GoalHitChart = ({ data }) => {
     return array;
   };
 
-  console.log('rendered');
-
   return (
-    <div className='totals-bar-chart-c'>
-      <div className='chart-t-c'>
-        <div className='left-col'></div>
+    <div className='outer-chart-c'>
+      <div className='header-c-3'>
+        <div className='left-col'>
+          <Tippy
+            content={
+              <div className='chart-desc-tooltip'>
+                This chart displays the % of days that you hit your goals, as
+                defined by your diet settings on each day.
+                <br />
+                <br />
+                Accuracy refers to the range of error between your daily totals
+                and your diet goals.
+              </div>
+            }
+            animation={'scale'}
+          >
+            <div>
+              <BsQuestionSquareFill className='question-i' />
+            </div>
+          </Tippy>
+        </div>
         <div className='center-col'>
           <div className='chart-t'>% Of Days Goal Hit</div>
         </div>
@@ -237,8 +255,8 @@ const GoalHitChart = ({ data }) => {
             content={<ul className='opt-c'>{renderThresholds()}</ul>}
           >
             <div>
-              <span className='chart-t clickable'>
-                Goal +/- {threshold.label}
+              <span className='clickable chart-t'>
+                Accuracy {threshold.label}
               </span>
               <span className='dropdown-arrow clickable'>
                 <MdArrowDropDown />

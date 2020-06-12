@@ -148,6 +148,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
 
   let anchor = new Date();
 
+  // if a date other than today is passed in
   if (anchorDate) {
     anchor = new Date(anchorDate);
   }
@@ -332,7 +333,7 @@ export const toggleFavFood = async (userId, food) => {
   }
 };
 
-export const updateMetricsData = async (currentUser) => {
+export const updateMetricsData = async (userId, membership) => {
   const initializeMetricsCollection = async () => {
     // Only update metrics data up until, but not including, today's date which ensures each entry is complete
     let today = new Date();
@@ -340,15 +341,15 @@ export const updateMetricsData = async (currentUser) => {
 
     // 1. Check if the metrics collection exists yet
     const metricsCollectionRef = firestore.collection(
-      `users/${currentUser.id}/metrics`
+      `users/${userId}/metrics`
     );
 
     const metricsCollectionSnapshot = await metricsCollectionRef.get();
 
-    // 2. If metrics collection does not exist ==> fetch all metrics data in foodDiary entries to initialize it
+    // 2. If metrics collection does not exist ==> fetch all data in foodDiary to initialize it
     if (metricsCollectionSnapshot.empty === true) {
       const foodDiaryCollectionSnapshot = await firestore
-        .collection(`users/${currentUser.id}/foodDiary`)
+        .collection(`users/${userId}/foodDiary`)
         .where('entry.currentDate', '<', today)
         .get();
 
@@ -370,6 +371,10 @@ export const updateMetricsData = async (currentUser) => {
           monthlyData[month] = {};
 
           monthlyData[month][currentDate] = {
+            Breakfast: snap.entry.Breakfast.totals,
+            Lunch: snap.entry.Lunch.totals,
+            Dinner: snap.entry.Dinner.totals,
+            Snacks: snap.entry.Snacks.totals,
             dailyMacros: snap.entry.dailyMacros,
             water: snap.entry.water,
             goals: snap.entry.goals,
@@ -378,6 +383,10 @@ export const updateMetricsData = async (currentUser) => {
           // Don't include today's data, because it might not be complete, thus should not be in the dataset
 
           monthlyData[month][currentDate] = {
+            Breakfast: snap.entry.Breakfast.totals,
+            Lunch: snap.entry.Lunch.totals,
+            Dinner: snap.entry.Dinner.totals,
+            Snacks: snap.entry.Snacks.totals,
             dailyMacros: snap.entry.dailyMacros,
             water: snap.entry.water,
             goals: snap.entry.goals,
@@ -387,9 +396,7 @@ export const updateMetricsData = async (currentUser) => {
 
       // 3. Create a doc for each item in the monthlyData object
       Object.keys(monthlyData).forEach(async (month) => {
-        const monthlyDocRef = firestore.doc(
-          `users/${currentUser.id}/metrics/${month}`
-        );
+        const monthlyDocRef = firestore.doc(`users/${userId}/metrics/${month}`);
 
         await monthlyDocRef.set(monthlyData[month]);
       });
@@ -407,7 +414,7 @@ export const updateMetricsData = async (currentUser) => {
 
       // Query the foodDiary from latest date in metrics collection onwards, not including today
       const foodDiaryCollectionSnapshot = await firestore
-        .collection(`users/${currentUser.id}/foodDiary`)
+        .collection(`users/${userId}/foodDiary`)
         .where('entry.currentDate', '>', lastDayWithData)
         .where('entry.currentDate', '<', today)
         .get();
@@ -425,17 +432,27 @@ export const updateMetricsData = async (currentUser) => {
         // Convert back to seconds for storing in firestore
         month = month / 1000;
 
-        // If the monthly key doesn't exist (first loop), create it and then append the data, else just append the data
+        // If the monthly key doesn't exist (first loop), create it and then append the data
         if (monthlyData[month] === undefined) {
           monthlyData[month] = {};
 
           monthlyData[month][currentDate] = {
+            Breakfast: snap.entry.Breakfast.totals,
+            Lunch: snap.entry.Lunch.totals,
+            Dinner: snap.entry.Dinner.totals,
+            Snacks: snap.entry.Snacks.totals,
             dailyMacros: snap.entry.dailyMacros,
             water: snap.entry.water,
             goals: snap.entry.goals,
           };
-        } else {
+        }
+        //If the monthly key already exists, just append it
+        else {
           monthlyData[month][currentDate] = {
+            Breakfast: snap.entry.Breakfast.totals,
+            Lunch: snap.entry.Lunch.totals,
+            Dinner: snap.entry.Dinner.totals,
+            Snacks: snap.entry.Snacks.totals,
             dailyMacros: snap.entry.dailyMacros,
             water: snap.entry.water,
             goals: snap.entry.goals,
@@ -445,9 +462,7 @@ export const updateMetricsData = async (currentUser) => {
 
       // 3. Create a doc for each item in the monthlyData object
       Object.keys(monthlyData).forEach(async (month) => {
-        const monthlyDocRef = firestore.doc(
-          `users/${currentUser.id}/metrics/${month}`
-        );
+        const monthlyDocRef = firestore.doc(`users/${userId}/metrics/${month}`);
 
         await monthlyDocRef.set(monthlyData[month]);
       });
@@ -455,7 +470,7 @@ export const updateMetricsData = async (currentUser) => {
   };
 
   // Only execute if the user's membership status is 'premium'
-  if (currentUser.membership === 'p') {
+  if (membership === 'p') {
     initializeMetricsCollection();
   }
 };
@@ -465,8 +480,6 @@ export const getMetricsData = async (userId) => {
   const metricsCollectionSnapshot = await firestore
     .collection(`users/${userId}/metrics`)
     .get();
-
-  // console.log(metricsCollectionSnapshot);
 
   const data = {};
 

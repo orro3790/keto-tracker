@@ -5,6 +5,7 @@ import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
 import { selectWaterSettings } from '../../../redux/user/user.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
+import { BsQuestionSquareFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
 import './totals-chart.styles.scss';
 
@@ -233,9 +234,23 @@ const TotalsChart = ({ data, waterSettings }) => {
   };
 
   return (
-    <div className='totals-bar-chart-c'>
-      <div className='chart-t-c'>
-        <div className='left-col'></div>
+    <div className='outer-chart-c'>
+      <div className='header-c-1'>
+        <div className='left-col'>
+          <Tippy
+            content={
+              <div className='chart-desc-tooltip'>
+                This chart displays total calories, macronutrients, and water
+                consumption over the selected time range.
+              </div>
+            }
+            animation={'scale'}
+          >
+            <div>
+              <BsQuestionSquareFill className='question-i' />
+            </div>
+          </Tippy>
+        </div>
         <div className='center-col'>
           <Tippy
             interactive={true}

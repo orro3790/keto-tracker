@@ -36,3 +36,8 @@ export const selectWaterSettings = createSelector(
   [selectUser],
   (user) => user.currentUser.waterSettings
 );
+
+export const selectMembershipSettings = createSelector(
+  [selectUser],
+  (user) => user.currentUser.membership
+);
