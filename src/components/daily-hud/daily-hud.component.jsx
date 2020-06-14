@@ -6,7 +6,7 @@ import {
   selectDietSettings,
   selectWaterSettings,
 } from '../../redux/user/user.selectors';
-import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import { selectHudSettings } from '../../redux/daily-hud/daily-hud.selectors';
 import { setHudModel } from '../../redux/daily-hud/daily-hud-actions';
 import { GiWaterDrop } from 'react-icons/gi';
@@ -17,7 +17,7 @@ const DailyChart = ({
   carbSettings,
   diet,
   hudModel,
-  entries,
+  entry,
   waterSettings,
 }) => {
   const [dailyEntry, setDailyEntry] = useState({
@@ -45,26 +45,26 @@ const DailyChart = ({
   };
 
   useEffect(() => {
-    if (entries !== '') {
+    if (entry !== '') {
       if (carbSettings === 't') {
         setDailyEntry({
-          f: entries.dailyMacros.f,
-          c: entries.dailyMacros.c,
-          p: entries.dailyMacros.p,
-          e: entries.dailyMacros.e,
-          w: entries.water.t,
+          f: entry.dailyMacros.f,
+          c: entry.dailyMacros.c,
+          p: entry.dailyMacros.p,
+          e: entry.dailyMacros.e,
+          w: entry.water.t,
         });
       } else {
         setDailyEntry({
-          f: entries.dailyMacros.f,
-          c: entries.dailyMacros.k,
-          p: entries.dailyMacros.p,
-          e: entries.dailyMacros.e,
-          w: entries.water.t,
+          f: entry.dailyMacros.f,
+          c: entry.dailyMacros.k,
+          p: entry.dailyMacros.p,
+          e: entry.dailyMacros.e,
+          w: entry.water.t,
         });
       }
     }
-  }, [entries, carbSettings]);
+  }, [entry, carbSettings]);
 
   // handle how to display the values, searchModal actually calculates the totals before updating firestore
   let fatsValue = 0;
@@ -172,7 +172,7 @@ const DailyChart = ({
 
 const mapStateToProps = createStructuredSelector({
   hudModel: selectHudSettings,
-  entries: selectEntries,
+  entry: selectEntry,
   carbSettings: selectCarbSettings,
   diet: selectDietSettings,
   waterSettings: selectWaterSettings,

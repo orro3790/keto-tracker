@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import { cloneDeep, indexOf, keys, cloneDeepWith } from 'lodash';
 
 const config = {
   apiKey: 'AIzaSyBmRfC2bNeb6B-_PkOYqk393rH4ghrHGqk',
@@ -46,7 +47,6 @@ export const createUserDoc = async (userAuth, additionalData) => {
           p: 100,
           c: 25,
           f: 166,
-          w: 1250,
         },
         carbSettings: 't',
         membership: 's',
@@ -54,6 +54,10 @@ export const createUserDoc = async (userAuth, additionalData) => {
           e: true,
           g: 1250,
           u: 'cups',
+        },
+        scheduled: {
+          f: {},
+          e: {},
         },
         ...additionalData,
       });
@@ -85,14 +89,75 @@ export const deleteFood = async (userId, food) => {
 export const updateDiet = async (userId, macros) => {
   if (userId === null) return;
 
-  // grab the collection and instantiate an empty doc so it is assigned a random ID
   const userRef = firestore.doc(`users/${userId}`);
 
-  userRef.update({
-    diet: macros,
-  });
+  // check if there are any scheduled food entries that may need to have their diet snapshot updated
+  const snapshot = await userRef.get();
 
-  console.log('diet settings updated');
+  const data = snapshot.data();
+
+  let scheduledEntries = Object.assign({}, data.scheduled.f);
+
+  let entriesEdited = false;
+
+  // If the user has foodDiary entries scheduled, check if some have expired or the diet snapshot needs updating
+  if (Object.keys(scheduledEntries).length !== 0) {
+    let today = new Date();
+
+    // If the scheduled date has passed, remove it
+    Object.keys(scheduledEntries).forEach((date) => {
+      // Firestore timestamps are stored as seconds => * 1000 to convert to milliseconds
+      let scheduledDate = new Date(date * 1000);
+
+      if (scheduledDate < today) {
+        delete scheduledEntries[date];
+        entriesEdited = true;
+      }
+    });
+
+    let dates = Object.keys(scheduledEntries);
+
+    // Updates will be pushed in an all-or-none approach via batch.
+    let batch = firestore.batch();
+
+    if (dates.length > 0) {
+      // Update the diet snapshots in scheduled foodDiary entries.
+      dates.forEach((date) => {
+        const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
+        batch.update(entryRef, { 'entry.goals.diet.snapshot': macros });
+      });
+
+      // Update the user's diet settings, as well as their scheduled entries, if they were edited
+      if (entriesEdited === true) {
+        userRef.update({
+          diet: macros,
+          'scheduled.f': scheduledEntries,
+        });
+      } else {
+        userRef.update({
+          diet: macros,
+        });
+      }
+    }
+
+    // Commit the batch updates to firestore
+    try {
+      batch.commit();
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(Object.keys(scheduledEntries));
+  }
+  // If the user doesn't have any foodDiary entries scheduled, simply update their diet settings in their user doc
+  else {
+    try {
+      userRef.update({
+        diet: macros,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 
 export const addCollectionAndDocuments = async (
@@ -143,8 +208,14 @@ export const addCollectionAndDocuments = async (
   console.log('Done!');
 };
 
-export const getEntry = async (userId, anchorDate, dateShift) => {
-  // currentDate refers to the date currently being viewed, not today's date
+export const getEntry = async (
+  userId,
+  dietSettings,
+  waterSettings,
+  anchorDate,
+  dateShift
+) => {
+  // date refers to the date currently being viewed, not today's date
 
   let anchor = new Date();
 
@@ -177,7 +248,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
 
   const snapShot = await entryRef.get();
 
-  // if this date doesn't exist in the foodDiary, create it
+  // if this date doesn't exist in the foodDiary, return default entry object
   if (snapShot.exists === false) {
     const entry = {
       Breakfast: {
@@ -227,7 +298,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
       water: {
         t: 0,
       },
-      currentDate: firebase.firestore.Timestamp.fromDate(anchor),
+      date: firebase.firestore.Timestamp.fromDate(anchor),
       dailyMacros: {
         f: 0,
         c: 0,
@@ -239,10 +310,10 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
       goals: {
         diet: {
           snapshot: {
-            f: 0,
-            c: 0,
-            p: 0,
-            e: 0,
+            f: dietSettings.f,
+            c: dietSettings.c,
+            p: dietSettings.p,
+            e: dietSettings.e,
           },
           precision: {
             f: 0,
@@ -253,7 +324,7 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
         },
         water: {
           snapshot: {
-            w: 0,
+            w: waterSettings.g,
           },
           precision: {
             w: 0,
@@ -261,23 +332,31 @@ export const getEntry = async (userId, anchorDate, dateShift) => {
         },
       },
     };
-    try {
-      await entryRef.set({ entry });
-
-      return entry;
-    } catch (error) {
-      console.log('error creating foodDiary entry', error.message);
-    }
+    return entry;
   } else {
     return snapShot.data().entry;
   }
 };
 
 export const updateEntry = async (userId, entry) => {
-  // Check if this date exists in firestore
   const entryRef = firestore.doc(
-    `users/${userId}/foodDiary/${entry.currentDate.seconds}`
+    `users/${userId}/foodDiary/${entry.date.seconds}`
   );
+  // check to see if this entry is scheduled for the future (searchModal allows scheduling 7 days in adv.)
+  let today = new Date();
+
+  if (entry.date.seconds * 1000 > today.getTime()) {
+    const userRef = firestore.doc(`users/${userId}`);
+    try {
+      // store the entry date as a key in the scheduled.f obj, no value needed
+      userRef.update({
+        [`scheduled.f.${entry.date.seconds}`]: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   try {
     await entryRef.set({ entry });
     console.log('entry updated in firestore!');
@@ -350,60 +429,48 @@ export const updateMetricsData = async (userId, membership) => {
     if (metricsCollectionSnapshot.empty === true) {
       const foodDiaryCollectionSnapshot = await firestore
         .collection(`users/${userId}/foodDiary`)
-        .where('entry.currentDate', '<', today)
+        .where('entry.date', '<', today)
         .get();
 
       // Nest the entries in monthlyData, under keys generated from the month & year UNIX time
       let monthlyData = {};
 
       foodDiaryCollectionSnapshot.docs.forEach((snapshot) => {
-        const snap = snapshot.data();
+        const data = snapshot.data();
 
         // Reduce entry's date to the month, determining where to nest the data
-        let currentDate = snap.entry.currentDate.seconds;
+        let date = data.entry.date.seconds;
         // Convert back to milliseconds to adjust date
-        let month = new Date(currentDate * 1000).setDate(1);
+        let month = new Date(date * 1000).setDate(1);
         // Convert back to seconds for storing in firestore
         month = month / 1000;
 
         // If the monthly key doesn't exist (first loop), create it and then append the data, else just append the data
         if (monthlyData[month] === undefined) {
           monthlyData[month] = {};
-
-          monthlyData[month][currentDate] = {
-            Breakfast: snap.entry.Breakfast.totals,
-            Lunch: snap.entry.Lunch.totals,
-            Dinner: snap.entry.Dinner.totals,
-            Snacks: snap.entry.Snacks.totals,
-            dailyMacros: snap.entry.dailyMacros,
-            water: snap.entry.water,
-            goals: snap.entry.goals,
-          };
-        } else {
-          // Don't include today's data, because it might not be complete, thus should not be in the dataset
-
-          monthlyData[month][currentDate] = {
-            Breakfast: snap.entry.Breakfast.totals,
-            Lunch: snap.entry.Lunch.totals,
-            Dinner: snap.entry.Dinner.totals,
-            Snacks: snap.entry.Snacks.totals,
-            dailyMacros: snap.entry.dailyMacros,
-            water: snap.entry.water,
-            goals: snap.entry.goals,
-          };
         }
+
+        monthlyData[month][date] = {
+          Breakfast: data.entry.Breakfast.totals,
+          Lunch: data.entry.Lunch.totals,
+          Dinner: data.entry.Dinner.totals,
+          Snacks: data.entry.Snacks.totals,
+          dailyMacros: data.entry.dailyMacros,
+          water: data.entry.water,
+          goals: data.entry.goals,
+        };
       });
 
       // 3. Create a doc for each item in the monthlyData object
       Object.keys(monthlyData).forEach(async (month) => {
         const monthlyDocRef = firestore.doc(`users/${userId}/metrics/${month}`);
-
         await monthlyDocRef.set(monthlyData[month]);
       });
     }
     // 3. If metrics collection exists already ==> fetch only the foodDiary entries needed to update it
     else {
       // Get the most recent month with metrics data stored in it
+      // Because it dates > today can never be stored in metrics, indexing last doc should work.
       const lastMonthWithData = metricsCollectionSnapshot.docs[
         metricsCollectionSnapshot.docs.length - 1
       ].data();
@@ -415,49 +482,37 @@ export const updateMetricsData = async (userId, membership) => {
       // Query the foodDiary from latest date in metrics collection onwards, not including today
       const foodDiaryCollectionSnapshot = await firestore
         .collection(`users/${userId}/foodDiary`)
-        .where('entry.currentDate', '>', lastDayWithData)
-        .where('entry.currentDate', '<', today)
+        .where('entry.date', '>', lastDayWithData)
+        .where('entry.date', '<', today)
         .get();
 
       // Nest the entries in monthlyData, under keys generated from the month & year UNIX time
       let monthlyData = {};
 
       foodDiaryCollectionSnapshot.docs.forEach((snapshot) => {
-        const snap = snapshot.data();
+        const data = snapshot.data();
 
         // Reduce entry's date to the month, determining where to nest the data
-        let currentDate = snap.entry.currentDate.seconds;
+        let date = data.entry.date.seconds;
         // Convert back to milliseconds to adjust date
-        let month = new Date(currentDate * 1000).setDate(1);
+        let month = new Date(date * 1000).setDate(1);
         // Convert back to seconds for storing in firestore
         month = month / 1000;
 
-        // If the monthly key doesn't exist (first loop), create it and then append the data
+        // If the monthly key doesn't exist (first loop), create it and then append the data, else just append the data
         if (monthlyData[month] === undefined) {
           monthlyData[month] = {};
+        }
 
-          monthlyData[month][currentDate] = {
-            Breakfast: snap.entry.Breakfast.totals,
-            Lunch: snap.entry.Lunch.totals,
-            Dinner: snap.entry.Dinner.totals,
-            Snacks: snap.entry.Snacks.totals,
-            dailyMacros: snap.entry.dailyMacros,
-            water: snap.entry.water,
-            goals: snap.entry.goals,
-          };
-        }
-        //If the monthly key already exists, just append it
-        else {
-          monthlyData[month][currentDate] = {
-            Breakfast: snap.entry.Breakfast.totals,
-            Lunch: snap.entry.Lunch.totals,
-            Dinner: snap.entry.Dinner.totals,
-            Snacks: snap.entry.Snacks.totals,
-            dailyMacros: snap.entry.dailyMacros,
-            water: snap.entry.water,
-            goals: snap.entry.goals,
-          };
-        }
+        monthlyData[month][date] = {
+          Breakfast: data.entry.Breakfast.totals,
+          Lunch: data.entry.Lunch.totals,
+          Dinner: data.entry.Dinner.totals,
+          Snacks: data.entry.Snacks.totals,
+          dailyMacros: data.entry.dailyMacros,
+          water: data.entry.water,
+          goals: data.entry.goals,
+        };
       });
 
       // 3. Create a doc for each item in the monthlyData object
@@ -488,6 +543,20 @@ export const getMetricsData = async (userId) => {
   });
 
   return data;
+};
+
+export const dateWriteable = (date) => {
+  // Only allow updates to the firestore +/- 7 days from today's date to limit abuse
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let deltaTime = today - date;
+  let deltaDays = Math.abs(deltaTime / (1000 * 3600 * 24));
+
+  if (deltaDays <= 7) {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export default firebase;

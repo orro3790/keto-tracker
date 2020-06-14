@@ -14,6 +14,7 @@ import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
@@ -22,19 +23,19 @@ import {
   selectWaterSettings,
 } from '../../redux/user/user.selectors';
 import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
-import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import {
   selectSuggestionWindow,
   selectFoodReference,
 } from '../../redux/search-item/search-item.selectors';
-
-import './search-food-modal.styles.scss';
 import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import { MdCheck, MdDelete } from 'react-icons/md';
 import { IoIosBookmark } from 'react-icons/io';
 import { GiFruitBowl, GiWaterBottle } from 'react-icons/gi';
 import { FaUserTag, FaTimes } from 'react-icons/fa';
+import { dateWriteable } from '../../firebase/firebase.utils';
+import './search-food-modal.styles.scss';
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -42,11 +43,12 @@ const SearchFoodModal = ({
   toggleFavsModal,
   toggleCustomFoodsModal,
   toggleWaterModal,
+  toggleAlertModal,
   allowUpdateFirebase,
   foodReference,
   createFoodReference,
   suggestionWindow,
-  entries,
+  entry,
   searchModal,
   setEntry,
   carbSettings,
@@ -221,58 +223,113 @@ const SearchFoodModal = ({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (sizeInput !== '') {
-      let foodCopy = Object.assign({}, foodReference);
-      let entryCopy = Object.assign({}, entries);
-      switch (searchModal.editMode) {
-        case false:
-          if (sizeInput !== '') {
-            foodCopy.e = parseFloat(
-              ((foodReference.e / 100) * sizeInput).toFixed(1)
-            );
-            foodCopy.f = parseFloat(
-              ((foodReference.f / 100) * sizeInput).toFixed(1)
-            );
-            foodCopy.c = parseFloat(
-              ((foodReference.c / 100) * sizeInput).toFixed(1)
-            );
-            foodCopy.p = parseFloat(
-              ((foodReference.p / 100) * sizeInput).toFixed(1)
-            );
-            foodCopy.d = parseFloat(
-              ((foodReference.d / 100) * sizeInput).toFixed(1)
-            );
-            foodCopy.k = parseFloat(
-              ((foodReference.k / 100) * sizeInput).toFixed(1)
-            );
-            foodCopy.size = parseFloat(sizeInput);
+    // Only allow updates to the entry if the entry date is +/- 7 days from today's date to limit abuse
+    if (dateWriteable(entry.date.seconds * 1000) === true) {
+      if (sizeInput !== '') {
+        let foodCopy = Object.assign({}, foodReference);
+        let entryCopy = Object.assign({}, entry);
+        switch (searchModal.editMode) {
+          case false:
+            if (sizeInput !== '') {
+              foodCopy.e = parseFloat(
+                ((foodReference.e / 100) * sizeInput).toFixed(1)
+              );
+              foodCopy.f = parseFloat(
+                ((foodReference.f / 100) * sizeInput).toFixed(1)
+              );
+              foodCopy.c = parseFloat(
+                ((foodReference.c / 100) * sizeInput).toFixed(1)
+              );
+              foodCopy.p = parseFloat(
+                ((foodReference.p / 100) * sizeInput).toFixed(1)
+              );
+              foodCopy.d = parseFloat(
+                ((foodReference.d / 100) * sizeInput).toFixed(1)
+              );
+              foodCopy.k = parseFloat(
+                ((foodReference.k / 100) * sizeInput).toFixed(1)
+              );
+              foodCopy.size = parseFloat(sizeInput);
 
-            entryCopy[searchModal.meal]['foods'].push(foodCopy);
-          }
-          break;
-        case true:
-          if (sizeInput !== '') {
-            foodCopy.f = parseFloat(fats);
-            foodCopy.c = parseFloat(carbs);
-            foodCopy.k = parseFloat(netCarbs);
-            foodCopy.p = parseFloat(protein);
-            foodCopy.e = parseFloat(calories);
-            foodCopy.size = parseFloat(sizeInput);
+              entryCopy[searchModal.meal]['foods'].push(foodCopy);
+            }
+            break;
+          case true:
+            if (sizeInput !== '') {
+              foodCopy.f = parseFloat(fats);
+              foodCopy.c = parseFloat(carbs);
+              foodCopy.k = parseFloat(netCarbs);
+              foodCopy.p = parseFloat(protein);
+              foodCopy.e = parseFloat(calories);
+              foodCopy.size = parseFloat(sizeInput);
 
-            // remove the edited food from the entries obj
-            entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
+              // remove the edited food from the entry obj
+              entryCopy[searchModal.meal]['foods'].splice(
+                searchModal.listId,
+                1
+              );
 
-            // add the updated food to the entries obj back where it used to be
-            entryCopy[searchModal.meal]['foods'].splice(
-              searchModal.listId,
-              0,
-              foodCopy
-            );
-          }
-          break;
-        default:
-          break;
+              // add the updated food to the entry obj back where it used to be
+              entryCopy[searchModal.meal]['foods'].splice(
+                searchModal.listId,
+                0,
+                foodCopy
+              );
+            }
+            break;
+          default:
+            break;
+        }
+
+        // recalculate meal totals
+        let updatedEntry = recalculateTotals(entryCopy);
+
+        // recalculate daily totals
+        updatedEntry = recalculateDailyTotals(updatedEntry);
+
+        // calculate whether goal performance, if today === entry date
+        updatedEntry = calculatePrecision(updatedEntry);
+
+        // before changing the entry state, we want to signal that we want to update the entry in firebase
+        allowUpdateFirebase(true);
+
+        // dispatch the new entry obj to state
+        setEntry(updatedEntry);
+
+        if (favModal === 'visible') {
+          toggleFavsModal({
+            status: 'hidden',
+          });
+        }
+
+        if (customFoodModal === 'visible') {
+          toggleCustomFoodsModal({
+            status: 'hidden',
+          });
+        }
+
+        handleClose();
       }
+    } else {
+      toggleAlertModal({
+        title: 'Sorry!',
+        msg:
+          "Entries can not be added, removed, or updated beyond one week from today's date.",
+        img: 'error',
+        status: 'visible',
+        sticky: false,
+      });
+    }
+  };
+
+  const handleDelete = () => {
+    // Only allow updates to the entry if the entry date is +/- 7 days from today's date, to limit abuse
+    if (dateWriteable(entry.date.seconds * 1000) === true) {
+      // entry state is immutable so make a copy of it first because pushing the edited version
+      const entryCopy = Object.assign({}, entry);
+
+      // remove the edited food from the entry obj
+      entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
 
       // recalculate meal totals
       let updatedEntry = recalculateTotals(entryCopy);
@@ -280,60 +337,32 @@ const SearchFoodModal = ({
       // recalculate daily totals
       updatedEntry = recalculateDailyTotals(updatedEntry);
 
-      // calculate whether goal performance, if today === entry date
+      // calculate goal performance, if today === entry date
       updatedEntry = calculatePrecision(updatedEntry);
 
-      // before changing the entry state, we want to signal that we want to update the entry in firebase
+      // signal that I want to update the totals and push them to firestore
       allowUpdateFirebase(true);
 
       // dispatch the new entry obj to state
       setEntry(updatedEntry);
 
-      if (favModal === 'visible') {
-        toggleFavsModal({
-          status: 'hidden',
-        });
-      }
+      // reset foodReference
+      createFoodReference('');
 
-      if (customFoodModal === 'visible') {
-        toggleCustomFoodsModal({
-          status: 'hidden',
-        });
-      }
-
-      handleClose();
+      toggleSearchModal({
+        status: 'hidden',
+        meal: '',
+      });
+    } else {
+      toggleAlertModal({
+        title: 'Sorry!',
+        msg:
+          "Entries can not be added, removed, or updated beyond one week from today's date.",
+        img: 'error',
+        status: 'visible',
+        sticky: false,
+      });
     }
-  };
-
-  const handleDelete = () => {
-    // entry state is immutable so make a copy of it first because pushing the edited version
-    const entryCopy = Object.assign({}, entries);
-
-    // remove the edited food from the entries obj
-    entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
-
-    // recalculate meal totals
-    let updatedEntry = recalculateTotals(entryCopy);
-
-    // recalculate daily totals
-    updatedEntry = recalculateDailyTotals(updatedEntry);
-
-    // calculate goal performance, if today === entry date
-    updatedEntry = calculatePrecision(updatedEntry);
-
-    // signal that I want to update the totals and push them to firestore
-    allowUpdateFirebase(true);
-
-    // dispatch the new entry obj to state
-    setEntry(updatedEntry);
-
-    // reset foodReference
-    createFoodReference('');
-
-    toggleSearchModal({
-      status: 'hidden',
-      meal: '',
-    });
   };
 
   const recalculateDailyTotals = (entry) => {
@@ -346,14 +375,14 @@ const SearchFoodModal = ({
     let dailyNetCarbs = 0;
     let dailyCalories = 0;
 
-    if (entries !== '') {
+    if (entry !== '') {
       meals.forEach((meal) => {
-        dailyFats += entries[meal].totals.f;
-        dailyProtein += entries[meal].totals.p;
-        dailyCarbs += entries[meal].totals.c;
-        dailyFiber += entries[meal].totals.d;
-        dailyNetCarbs += entries[meal].totals.k;
-        dailyCalories += entries[meal].totals.e;
+        dailyFats += entry[meal].totals.f;
+        dailyProtein += entry[meal].totals.p;
+        dailyCarbs += entry[meal].totals.c;
+        dailyFiber += entry[meal].totals.d;
+        dailyNetCarbs += entry[meal].totals.k;
+        dailyCalories += entry[meal].totals.e;
       });
     }
 
@@ -373,33 +402,33 @@ const SearchFoodModal = ({
 
   const calculatePrecision = (entry) => {
     let today = new Date();
-    today = today.setHours(0, 0, 0, 0) / 1000;
+    today = today.setHours(0, 0, 0, 0);
 
-    // only calculate and save metrics data if the date is today (prevents tampering with data in past or future)
-    if (today === entry.currentDate.seconds) {
+    // only allow the diet snapshot to change if it is not in the past
+    if (entry.date.seconds * 1000 >= today) {
       entry.goals.diet.snapshot.f = diet.f;
       entry.goals.diet.snapshot.c = diet.c;
       entry.goals.diet.snapshot.p = diet.p;
       entry.goals.diet.snapshot.e = diet.e;
       entry.goals.water.snapshot.w = waterSettings.g;
-
-      // assume every entry update is the last of the day ==> calculate precision
-      entry.goals.diet.precision.e = parseFloat(
-        (entry.dailyMacros.e / diet.e).toFixed(2)
-      );
-      entry.goals.diet.precision.p = parseFloat(
-        (entry.dailyMacros.p / diet.p).toFixed(2)
-      );
-      entry.goals.diet.precision.f = parseFloat(
-        (entry.dailyMacros.f / diet.f).toFixed(2)
-      );
-      entry.goals.diet.precision.c = parseFloat(
-        (entry.dailyMacros.c / diet.c).toFixed(2)
-      );
-      entry.goals.water.precision.w = parseFloat(
-        (entry.water.t / waterSettings.g).toFixed(2)
-      );
     }
+
+    // assume every entry update is the last of the day ==> calculate precision
+    entry.goals.diet.precision.e = parseFloat(
+      (entry.dailyMacros.e / diet.e).toFixed(2)
+    );
+    entry.goals.diet.precision.p = parseFloat(
+      (entry.dailyMacros.p / diet.p).toFixed(2)
+    );
+    entry.goals.diet.precision.f = parseFloat(
+      (entry.dailyMacros.f / diet.f).toFixed(2)
+    );
+    entry.goals.diet.precision.c = parseFloat(
+      (entry.dailyMacros.c / diet.c).toFixed(2)
+    );
+    entry.goals.water.precision.w = parseFloat(
+      (entry.water.t / waterSettings.g).toFixed(2)
+    );
 
     return entry;
   };
@@ -728,7 +757,7 @@ const SearchFoodModal = ({
 const mapStateToProps = createStructuredSelector({
   foodReference: selectFoodReference,
   suggestionWindow: selectSuggestionWindow,
-  entries: selectEntries,
+  entry: selectEntry,
   searchModal: selectModal,
   carbSettings: selectCarbSettings,
   diet: selectDietSettings,
@@ -739,13 +768,14 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
+  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
   toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
   toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
   toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
   toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
   toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
   allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
-  setEntry: (entries) => dispatch(setEntry(entries)),
+  setEntry: (entry) => dispatch(setEntry(entry)),
   createFoodReference: (food) => dispatch(createFoodReference(food)),
 });
 

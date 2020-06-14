@@ -15,10 +15,10 @@ const GoalHitChart = ({ data }) => {
 
   let thresholds = {
     '0.01': '1%',
-    '0.025': '2.5%',
     '0.05': '5%',
-    '0.075': '7.5%',
     '0.1': '10%',
+    '0.15': '15%',
+    '0.2': '20%',
   };
 
   const toggleThreshold = (e) => {
@@ -29,28 +29,28 @@ const GoalHitChart = ({ data }) => {
           label: '1%',
         });
         break;
-      case '2.5%':
-        setThreshold({
-          value: 0.025,
-          label: '2.5%',
-        });
-        break;
       case '5%':
         setThreshold({
           value: 0.05,
           label: '5%',
         });
         break;
-      case '7.5%':
-        setThreshold({
-          value: 0.075,
-          label: '7.5%',
-        });
-        break;
       case '10%':
         setThreshold({
           value: 0.1,
           label: '10%',
+        });
+        break;
+      case '15%':
+        setThreshold({
+          value: 0.15,
+          label: '15%',
+        });
+        break;
+      case '20%':
+        setThreshold({
+          value: 0.2,
+          label: '20%',
         });
         break;
       default:

@@ -6,10 +6,10 @@ import { toggleSearchModal } from './../../redux/search-food-modal/search-food-m
 import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
-import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import ToggleSearchModal from '../toggle-search/toggle-search.component';
 
-const Meal = ({ meal, entries, currentUser }) => {
+const Meal = ({ meal, entry, currentUser }) => {
   const [totalFats, setTotalFats] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalNetCarbs, setTotalNetCarbs] = useState(0);
@@ -18,14 +18,14 @@ const Meal = ({ meal, entries, currentUser }) => {
 
   // handles the displaying of totals in the UI, but searchModal handles the calculations
   useEffect(() => {
-    if (entries !== '') {
-      setTotalFats(entries[meal].totals.f);
-      setTotalCarbs(entries[meal].totals.c);
-      setTotalNetCarbs(entries[meal].totals.k);
-      setTotalProtein(entries[meal].totals.p);
-      setTotalCalories(entries[meal].totals.e);
+    if (entry !== '') {
+      setTotalFats(entry[meal].totals.f);
+      setTotalCarbs(entry[meal].totals.c);
+      setTotalNetCarbs(entry[meal].totals.k);
+      setTotalProtein(entry[meal].totals.p);
+      setTotalCalories(entry[meal].totals.e);
     }
-  }, [entries, meal]);
+  }, [entry, meal]);
 
   // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0
   let keygen = -1;
@@ -40,8 +40,8 @@ const Meal = ({ meal, entries, currentUser }) => {
     },
   };
 
-  if (entries !== '') {
-    entryPlaceholder = entries;
+  if (entry !== '') {
+    entryPlaceholder = entry;
   }
 
   let carbType = 'carbs';
@@ -89,7 +89,7 @@ const Meal = ({ meal, entries, currentUser }) => {
 };
 
 const mapStateToProps = createStructuredSelector({
-  entries: selectEntries,
+  entry: selectEntry,
   currentUser: selectCurrentUser,
 });
 

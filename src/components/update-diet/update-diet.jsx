@@ -115,10 +115,10 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
       let updatedDiet = Object.assign({}, diet);
 
       updatedDiet = {
-        fats: parseInt(fatsInGrams),
-        carbs: parseInt(carbsInGrams),
-        protein: parseInt(proteinInGrams),
-        calories: parseInt(calorieLimit),
+        f: parseInt(fatsInGrams),
+        c: parseInt(carbsInGrams),
+        p: parseInt(proteinInGrams),
+        e: parseInt(calorieLimit),
       };
 
       // now update the data in firestore

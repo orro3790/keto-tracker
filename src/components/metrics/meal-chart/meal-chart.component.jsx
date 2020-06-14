@@ -15,7 +15,7 @@ const MealChart = ({ data }) => {
 
   // Define the keys and their corresponding titles
   const OPTIONS = {
-    f: 'Avergae Fats (g)',
+    f: 'Average Fats (g)',
     c: 'Average Carbs (g)',
     p: 'Average Protein (g)',
     e: 'Average Calories',

@@ -1,7 +1,7 @@
 import { DateSelectorActionTypes } from './date-selector.types';
 
 const INITIAL_STATE = {
-  entries: '',
+  entry: '',
 };
 
 const dateSelectorReducer = (state = INITIAL_STATE, action) => {
@@ -14,7 +14,7 @@ const dateSelectorReducer = (state = INITIAL_STATE, action) => {
     case DateSelectorActionTypes.SET_DIARY_ENTRY:
       return {
         ...state,
-        entries: action.payload,
+        entry: action.payload,
       };
     default:
       return state;

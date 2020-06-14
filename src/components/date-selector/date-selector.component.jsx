@@ -5,9 +5,11 @@ import { createStructuredSelector } from 'reselect';
 import {
   selectCurrentUserId,
   selectMembershipSettings,
+  selectDietSettings,
+  selectWaterSettings,
 } from '../../redux/user/user.selectors';
 import { selectUpdate } from '../../redux/search-food-modal/search-food-modal.selectors';
-import { selectEntries } from '../../redux/date-selector/date-selector.selectors';
+import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import {
   setCurrentDate,
   setEntry,
@@ -24,7 +26,7 @@ import Calendar from 'react-calendar';
 import './calendar.scss';
 
 const DateSelector = ({
-  entries,
+  entry,
   userId,
   dietSettings,
   waterSettings,
@@ -36,9 +38,16 @@ const DateSelector = ({
   const [date, setDate] = useState('');
   const [calDate, setCalDate] = useState(new Date());
 
+  // handles getting the entry when a user clicks on a date in the calendar picker
   const onChange = (calDate) => {
     const loadEntry = async () => {
-      const entriesObj = await getEntry(userId, calDate.getTime());
+      // if a user clicks a date on calendar picker, pass calDate.getTime() as the anchor date
+      const entriesObj = await getEntry(
+        userId,
+        dietSettings,
+        waterSettings,
+        calDate.getTime()
+      );
       setEntry(entriesObj);
     };
     loadEntry().then(() => setCalDate(calDate));
@@ -47,20 +56,20 @@ const DateSelector = ({
   // When the user is not null, get today's diary entry from firebase
   useEffect(() => {
     const loadEntry = async () => {
-      const entriesObj = await getEntry(userId);
+      const entriesObj = await getEntry(userId, dietSettings, waterSettings);
       setEntry(entriesObj);
     };
 
-    // if a user has already loaded entries into state, no need to re-load entries into state
-    if (entries === '') {
+    // if a user has already loaded entry into state, no need to re-load entry into state
+    if (entry === '') {
       loadEntry();
     }
-  }, [userId, dietSettings, waterSettings, setEntry, entries]);
+  }, [userId, dietSettings, waterSettings, setEntry, entry]);
 
   // handles rendering updates to the date in UI
   useEffect(() => {
-    if (entries !== '') {
-      let anchor = new Date(entries.currentDate.seconds * 1000);
+    if (entry !== '') {
+      let anchor = new Date(entry.date.seconds * 1000);
       setCalDate(anchor);
 
       anchor = `${
@@ -68,22 +77,26 @@ const DateSelector = ({
       }/${anchor.getDate()}/${anchor.getFullYear()}`;
       setDate(anchor);
     }
-  }, [entries]);
+  }, [entry]);
 
-  // handles pushing updates to firestore when a change happens to entry state, then sets update state back to false
+  // handles updating firestore when update toggle is true
   useEffect(() => {
-    if (entries !== '' && userId !== null && update === true) {
-      updateEntry(userId, entries);
+    if (entry !== '' && userId !== null && update === true) {
+      updateEntry(userId, entry);
+      // if the user's membership is premium, check whether to update metrics
       updateMetricsData(userId, membership);
+      // after update has completed, close the gate to prevent any unintended writes later
       allowUpdateFirebase(false);
     }
-  }, [entries, userId, membership, update, allowUpdateFirebase]);
+  }, [entry, userId, membership, update, allowUpdateFirebase]);
 
   const goToNextDay = () => {
     const loadEntry = async () => {
       const entriesObj = await getEntry(
         userId,
-        entries.currentDate.seconds * 1000,
+        dietSettings,
+        waterSettings,
+        entry.date.seconds * 1000,
         +1
       );
       setEntry(entriesObj);
@@ -95,7 +108,9 @@ const DateSelector = ({
     const loadEntry = async () => {
       const entriesObj = await getEntry(
         userId,
-        entries.currentDate.seconds * 1000,
+        dietSettings,
+        waterSettings,
+        entry.date.seconds * 1000,
         -1
       );
       setEntry(entriesObj);
@@ -130,8 +145,10 @@ const DateSelector = ({
 const mapStateToProps = createStructuredSelector({
   userId: selectCurrentUserId,
   membership: selectMembershipSettings,
-  entries: selectEntries,
+  entry: selectEntry,
   update: selectUpdate,
+  dietSettings: selectDietSettings,
+  waterSettings: selectWaterSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({

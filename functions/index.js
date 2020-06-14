@@ -13,7 +13,7 @@ admin.initializeApp();
 //     const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
 
 //     meals.forEach((meal) => {
-//       if (meal !== 'currentDate') {
+//       if (meal !== 'date') {
 //         data.entry[meal].totals.f = data.entry[meal].foods.reduce(
 //           (accumulator, food) => {
 //             return (accumulator += food.f);

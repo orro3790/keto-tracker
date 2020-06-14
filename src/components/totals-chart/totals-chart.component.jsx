@@ -3,20 +3,20 @@ import './totals-chart.styles.scss';
 import { connect } from 'react-redux';
 import { Doughnut } from 'react-chartjs-2';
 
-const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
+const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
   const [chartData, setChartData] = useState({});
   const [totalsData, setTotalsData] = useState([1, 0, 0, 0]);
 
   useEffect(() => {
     // only try to chart once data has been loaded into state
-    if (entries !== '') {
+    if (entry !== '') {
       // don't overwrite the default chart data unless there are actually calories present
-      if (entries[meal]['foods'].length !== 0) {
-        const totalFats = entries[meal]['totals']['f'];
-        const totalCarbs = entries[meal]['totals']['c'];
-        const totalNetCarbs = entries[meal]['totals']['k'];
-        const totalProtein = entries[meal]['totals']['p'];
-        const totalCalories = entries[meal]['totals']['e'];
+      if (entry[meal]['foods'].length !== 0) {
+        const totalFats = entry[meal]['totals']['f'];
+        const totalCarbs = entry[meal]['totals']['c'];
+        const totalNetCarbs = entry[meal]['totals']['k'];
+        const totalProtein = entry[meal]['totals']['p'];
+        const totalCalories = entry[meal]['totals']['e'];
         if (currentUser.carbSettings === 'n') {
           setTotalsData([
             totalFats,
@@ -29,11 +29,11 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
         }
       }
       // when there are no foods in the meal array, set the chart data back to default values
-      if (entries[meal]['foods'].length === 0) {
+      if (entry[meal]['foods'].length === 0) {
         setTotalsData([1, 0, 0, 0]);
       }
     }
-  }, [entries, meal, currentUser]);
+  }, [entry, meal, currentUser]);
 
   // hide tooltip when no calories present (default state)
   let tooltipStatus = false;
@@ -97,7 +97,7 @@ const TotalsChart = ({ entries, meal, searchModal, currentUser }) => {
 };
 
 const mapStateToProps = (state) => ({
-  entries: state.dateSelector.entries,
+  entry: state.dateSelector.entry,
   searchModal: state.searchModal.modal,
   currentUser: state.user.currentUser,
 });

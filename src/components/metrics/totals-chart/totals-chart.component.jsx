@@ -3,23 +3,30 @@ import { Bar } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
-import { selectWaterSettings } from '../../../redux/user/user.selectors';
+import {
+  selectWaterSettings,
+  selectCarbSettings,
+} from '../../../redux/user/user.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
 import { BsQuestionSquareFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
 import './totals-chart.styles.scss';
 
-const TotalsChart = ({ data, waterSettings }) => {
+const TotalsChart = ({ data, waterSettings, carbSettings }) => {
   const [chartData, setChartData] = useState({});
   const [targetGoal, setTargetGoal] = useState('e');
   // Define the keys and their corresponding titles
-  const TITLES = {
+  let TITLES = {
     f: 'Total Fats (g)',
     c: 'Total Carbs (g)',
     p: 'Total Protein (g)',
     e: 'Total Calories (g)',
     w: `Total Water (${waterSettings.u})`,
   };
+
+  if (carbSettings === 'n') {
+    TITLES.c = 'Total Net Carbs';
+  }
 
   useEffect(() => {
     // Don't actually calculate the data, use mock data for now to reduce reads during development
@@ -183,6 +190,7 @@ const TotalsChart = ({ data, waterSettings }) => {
           ticks: {
             padding: 10,
             fontColor: '#fff',
+            beginAtZero: true,
           },
         },
       ],
@@ -276,6 +284,7 @@ const TotalsChart = ({ data, waterSettings }) => {
 const mapStateToProps = createStructuredSelector({
   data: selectMetricsData,
   waterSettings: selectWaterSettings,
+  carbSettings: selectCarbSettings,
 });
 
 const mapDispatchToProps = (dispatch) => ({});
