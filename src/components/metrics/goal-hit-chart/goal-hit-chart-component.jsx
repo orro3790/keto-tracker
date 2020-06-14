@@ -4,12 +4,13 @@ import 'chartjs-plugin-stacked100';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
+import { selectCarbSettings } from '../../../redux/user/user.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
 import { BsQuestionSquareFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
 import './goal-hit-chart.styles.scss';
 
-const GoalHitChart = ({ data }) => {
+const GoalHitChart = ({ data, carbSettings }) => {
   const [chartData, setChartData] = useState({});
   const [threshold, setThreshold] = useState({ value: 0.05, label: '5%' });
 
@@ -110,8 +111,16 @@ const GoalHitChart = ({ data }) => {
     });
 
     const chartPerformance = () => {
+      let labels;
+
+      if (carbSettings === 'n') {
+        labels = ['Fats', 'Net Carbs', 'Protein', 'Calories', 'Water'];
+      } else {
+        labels = ['Fats', 'Carbs', 'Protein', 'Calories', 'Water'];
+      }
+
       setChartData({
-        labels: ['Fats', 'Carbs', 'Protein', 'Calories', 'Water'],
+        labels: labels,
         datasets: [
           {
             label: 'Goal Hit',
@@ -150,7 +159,7 @@ const GoalHitChart = ({ data }) => {
     };
 
     chartPerformance();
-  }, [data, threshold]);
+  }, [data, threshold, carbSettings]);
 
   // chart options config
   const options = {
@@ -274,6 +283,7 @@ const GoalHitChart = ({ data }) => {
 
 const mapStateToProps = createStructuredSelector({
   data: selectMetricsData,
+  carbSettings: selectCarbSettings,
 });
 
 export default connect(mapStateToProps, null)(GoalHitChart);

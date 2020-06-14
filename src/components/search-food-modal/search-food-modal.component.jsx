@@ -423,9 +423,16 @@ const SearchFoodModal = ({
     entry.goals.diet.precision.f = parseFloat(
       (entry.dailyMacros.f / diet.f).toFixed(2)
     );
-    entry.goals.diet.precision.c = parseFloat(
-      (entry.dailyMacros.c / diet.c).toFixed(2)
-    );
+    // if the user's carb settings are net, use net carbs for calculating carb goal
+    if (carbSettings === 'n') {
+      entry.goals.diet.precision.c = parseFloat(
+        (entry.dailyMacros.k / diet.c).toFixed(2)
+      );
+    } else {
+      entry.goals.diet.precision.c = parseFloat(
+        (entry.dailyMacros.c / diet.c).toFixed(2)
+      );
+    }
     entry.goals.water.precision.w = parseFloat(
       (entry.water.t / waterSettings.g).toFixed(2)
     );
