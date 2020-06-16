@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import FormInput from '../form-input/form-input.component';
-import { updateDiet } from '../../firebase/firebase.utils';
-import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import FormInput from '../../form-input/form-input.component';
+import { updateDiet } from '../../../firebase/firebase.utils';
+import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
 import { FaArrowAltCircleRight } from 'react-icons/fa';
 import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
   selectCurrentUserId,
   selectCarbSettings,
-} from '../../redux/user/user.selectors';
+} from '../../../redux/user/user.selectors';
 import { GiHealthIncrease } from 'react-icons/gi';
 import './update-diet.styles.scss';
 

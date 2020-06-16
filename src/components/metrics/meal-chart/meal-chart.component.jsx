@@ -17,6 +17,8 @@ const MealChart = ({ data }) => {
   const OPTIONS = {
     f: 'Average Fats (g)',
     c: 'Average Carbs (g)',
+    k: 'Average Net Carbs (g)',
+    d: 'Average Fibre (g)',
     p: 'Average Protein (g)',
     e: 'Average Calories',
   };
@@ -26,24 +28,32 @@ const MealChart = ({ data }) => {
       Breakfast: {
         f: 0,
         c: 0,
+        k: 0,
+        d: 0,
         p: 0,
         e: 0,
       },
       Lunch: {
         f: 0,
         c: 0,
+        k: 0,
+        d: 0,
         p: 0,
         e: 0,
       },
       Dinner: {
         f: 0,
         c: 0,
+        k: 0,
+        d: 0,
         p: 0,
         e: 0,
       },
       Snacks: {
         f: 0,
         c: 0,
+        k: 0,
+        d: 0,
         p: 0,
         e: 0,
       },
@@ -56,6 +66,8 @@ const MealChart = ({ data }) => {
         Object.keys(totals).forEach((key) => {
           totals[key].f += parseFloat(data[month][date][key].f);
           totals[key].c += parseFloat(data[month][date][key].c);
+          totals[key].k += parseFloat(data[month][date][key].k);
+          totals[key].d += parseFloat(data[month][date][key].d);
           totals[key].p += parseFloat(data[month][date][key].p);
           totals[key].e += parseFloat(data[month][date][key].e);
         });
@@ -119,6 +131,12 @@ const MealChart = ({ data }) => {
         break;
       case OPTIONS.c:
         setTarget('c');
+        break;
+      case OPTIONS.k:
+        setTarget('k');
+        break;
+      case OPTIONS.d:
+        setTarget('d');
         break;
       case OPTIONS.p:
         setTarget('p');

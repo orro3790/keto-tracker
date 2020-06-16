@@ -23,6 +23,7 @@ const DailyChart = ({
   const [dailyEntry, setDailyEntry] = useState({
     f: 0,
     c: 0,
+    k: 0,
     p: 0,
     e: 0,
     w: 0,
@@ -46,32 +47,23 @@ const DailyChart = ({
 
   useEffect(() => {
     if (entry !== '') {
-      if (carbSettings === 't') {
-        setDailyEntry({
-          f: entry.dailyMacros.f,
-          c: entry.dailyMacros.c,
-          p: entry.dailyMacros.p,
-          e: entry.dailyMacros.e,
-          w: entry.water.t,
-        });
-      } else {
-        setDailyEntry({
-          f: entry.dailyMacros.f,
-          c: entry.dailyMacros.k,
-          p: entry.dailyMacros.p,
-          e: entry.dailyMacros.e,
-          w: entry.water.t,
-        });
-      }
+      setDailyEntry({
+        f: entry.dailyMacros.f,
+        c: entry.dailyMacros.c,
+        k: entry.dailyMacros.k,
+        p: entry.dailyMacros.p,
+        e: entry.dailyMacros.e,
+        w: entry.water.t,
+      });
     }
   }, [entry, carbSettings]);
 
-  // handle how to display the values, searchModal actually calculates the totals before updating firestore
-  let fatsValue = 0;
-  let carbsValue = 0;
-  let proteinValue = 0;
-  let caloriesValue = 0;
-  let waterValue = 0;
+  // handle how to display the values
+  let fatsValue,
+    carbsValue,
+    proteinValue,
+    caloriesValue,
+    waterValue = 0;
 
   let carbLabel = 'carbs';
 
@@ -82,14 +74,17 @@ const DailyChart = ({
   }
 
   if (hudModel === 'remaining') {
-    fatsValue = (diet.f - dailyEntry.f).toFixed(0);
-    carbsValue = (diet.c - dailyEntry.c).toFixed(0);
-    proteinValue = (diet.p - dailyEntry.p).toFixed(0);
-    caloriesValue = (diet.e - dailyEntry.e).toFixed(0);
+    fatsValue = (diet.f - dailyEntry.f).toFixed(1);
+    carbsValue =
+      carbSettings === 'n'
+        ? (diet.c - dailyEntry.k).toFixed(1)
+        : (diet.c - dailyEntry.c).toFixed(1);
+    proteinValue = (diet.p - dailyEntry.p).toFixed(1);
+    caloriesValue = (diet.e - dailyEntry.e).toFixed(1);
     waterValue = waterSettings.g - dailyEntry.w;
   } else if (hudModel === 'additive') {
     fatsValue = dailyEntry.f;
-    carbsValue = dailyEntry.c;
+    carbsValue = carbSettings === 'n' ? dailyEntry.k : diet.c;
     proteinValue = dailyEntry.p;
     caloriesValue = dailyEntry.e;
     waterValue = dailyEntry.w;

@@ -4,36 +4,31 @@ $font-size-display-2: 26px;
 $dp-08: #2e2e2e;
 $dp-24: #373737;
 $keto-green: #1eb980;
-$keto-blue: #53a3ff;
+$keto-orange: #ffa053;
 
-.set-h-c {
-  .water-i {
-    color: $keto-blue;
-  }
-}
-.water-set-c {
+.carb-set-c {
+  margin: 20px 0 0 35px;
+
   .toggle {
     display: grid;
-    grid-template-columns: auto 2px auto 2px 1fr;
+    grid-template-columns: auto 2px 1fr;
     gap: 0 10px;
-    // width: 95px;
     margin-top: 20px;
+    width: 250px;
     font-size: $font-size-large;
 
     .separator {
       background-color: #3d3d3d;
     }
 
-    .opt {
+    .total {
+      text-align: right;
       cursor: pointer;
     }
 
-    .mL {
-      text-align: right;
-    }
-
-    .oz {
+    .net {
       text-align: left;
+      cursor: pointer;
     }
 
     .on {
@@ -55,20 +50,6 @@ $keto-blue: #53a3ff;
     background-color: $dp-08;
   }
 
-  .desc-c-split {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 0 20px;
-    align-items: center;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: $dp-08;
-
-    input {
-      margin-top: none;
-    }
-  }
-
   .save-btn {
     padding: 0 5px 0 5px;
     margin-top: 25px;
@@ -87,24 +68,6 @@ $keto-blue: #53a3ff;
   }
 }
 
-.track-water-c {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0 10px;
-  height: 40px;
-  width: 100%;
-  margin-top: 20px;
-  font-size: $font-size-large;
-  align-items: center;
-
-  svg {
-    width: 30px;
-    height: 30px;
-    color: #3d3d3d;
-    cursor: pointer;
-
-    &.on {
-      color: $keto-green;
-    }
-  }
+.carb-i {
+  color: $keto-orange;
 }

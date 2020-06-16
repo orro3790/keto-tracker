@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
-import FormInput from '../form-input/form-input.component';
-import { setCurrentUser } from '../../redux/user/user.actions';
-import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
-import { updateWaterSettings } from '../../firebase/firebase.utils';
+import { selectCurrentUser } from '../../../redux/user/user.selectors';
+import FormInput from '../../form-input/form-input.component';
+import { setCurrentUser } from '../../../redux/user/user.actions';
+import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
+import { updateWaterSettings } from '../../../firebase/firebase.utils';
 import { RiWaterFlashLine } from 'react-icons/ri';
 import { BsToggleOn, BsToggleOff } from 'react-icons/bs';
 import { cloneDeep } from 'lodash';

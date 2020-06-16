@@ -1,9 +1,9 @@
 import React from 'react';
 import Rail from '../../components/rail/rail.component';
-import UpdateDiet from '../../components/update-diet/update-diet';
-import CarbSettings from '../../components/carb-settings/carb-settings.component.jsx';
-import CurrentDiet from '../../components/current-diet/current-diet.component';
-import WaterSettings from '../../components/water-settings/water-settings.component';
+import UpdateDiet from '../../components/settings/update-diet/update-diet';
+import CarbSettings from '../../components/settings/carb-settings/carb-settings.component.jsx';
+import CurrentDiet from '../../components/settings/current-diet/current-diet.component';
+import WaterSettings from '../../components/settings/water-settings/water-settings.component';
 import './settings.styles.scss';
 
 const Settings = () => {

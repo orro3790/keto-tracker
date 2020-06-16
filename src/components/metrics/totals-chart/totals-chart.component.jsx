@@ -3,30 +3,25 @@ import { Bar } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
-import {
-  selectWaterSettings,
-  selectCarbSettings,
-} from '../../../redux/user/user.selectors';
+import { selectWaterSettings } from '../../../redux/user/user.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
 import { BsQuestionSquareFill } from 'react-icons/bs';
 import Tippy from '@tippyjs/react';
 import './totals-chart.styles.scss';
 
-const TotalsChart = ({ data, waterSettings, carbSettings }) => {
+const TotalsChart = ({ data, waterSettings }) => {
   const [chartData, setChartData] = useState({});
   const [targetGoal, setTargetGoal] = useState('e');
   // Define the keys and their corresponding titles
-  let TITLES = {
+  const OPTIONS = {
     f: 'Total Fats (g)',
     c: 'Total Carbs (g)',
+    d: 'Total Fibre (g)',
+    k: 'Total Net Carbs (g)',
     p: 'Total Protein (g)',
     e: 'Total Calories (g)',
     w: `Total Water (${waterSettings.u})`,
   };
-
-  if (carbSettings === 'n') {
-    TITLES.c = 'Total Net Carbs';
-  }
 
   useEffect(() => {
     // Don't actually calculate the data, use mock data for now to reduce reads during development
@@ -110,6 +105,12 @@ const TotalsChart = ({ data, waterSettings, carbSettings }) => {
           case 'c':
             color = '#ff5387';
             break;
+          case 'd':
+            color = '#b453ff';
+            break;
+          case 'k':
+            color = '#ff5387';
+            break;
           case 'e':
             color = '#fff';
             break;
@@ -151,19 +152,25 @@ const TotalsChart = ({ data, waterSettings, carbSettings }) => {
 
   const toggleTarget = (e) => {
     switch (e.target.innerText) {
-      case TITLES.e:
+      case OPTIONS.e:
         setTargetGoal('e');
         break;
-      case TITLES.f:
+      case OPTIONS.f:
         setTargetGoal('f');
         break;
-      case TITLES.c:
+      case OPTIONS.c:
         setTargetGoal('c');
         break;
-      case TITLES.p:
+      case OPTIONS.d:
+        setTargetGoal('d');
+        break;
+      case OPTIONS.k:
+        setTargetGoal('k');
+        break;
+      case OPTIONS.p:
         setTargetGoal('p');
         break;
-      case TITLES.w:
+      case OPTIONS.w:
         setTargetGoal('w');
         break;
       default:
@@ -210,16 +217,8 @@ const TotalsChart = ({ data, waterSettings, carbSettings }) => {
   };
 
   const renderTitles = () => {
-    // pull the keys from the TITLES obj to an array to allow indexing
-    let keys = Object.keys(TITLES);
-
-    // remove the macro currently being viewed, from the list of options to render
-    keys.forEach((key) => {
-      if (key === targetGoal) {
-        let position = keys.indexOf(key);
-        keys.splice(position, 1);
-      }
-    });
+    // pull the keys from the OPTIONS obj to an array to allow indexing
+    let keys = Object.keys(OPTIONS);
 
     // assemble the option rows and tag each option as either even or odd for styling purposes
     let array = [];
@@ -232,8 +231,8 @@ const TotalsChart = ({ data, waterSettings, carbSettings }) => {
         styling = 'opt liOdd';
       }
       array.push(
-        <li key={TITLES[key]} className={styling} onClick={toggleTarget}>
-          {TITLES[key]}
+        <li key={OPTIONS[key]} className={styling} onClick={toggleTarget}>
+          {OPTIONS[key]}
         </li>
       );
     });
@@ -265,7 +264,7 @@ const TotalsChart = ({ data, waterSettings, carbSettings }) => {
             content={<ul className='opt-c'>{renderTitles()}</ul>}
           >
             <div>
-              <span className='chart-t clickable'>{TITLES[targetGoal]}</span>
+              <span className='chart-t clickable'>{OPTIONS[targetGoal]}</span>
               <span className='dropdown-arrow clickable'>
                 <MdArrowDropDown />
               </span>
@@ -284,9 +283,6 @@ const TotalsChart = ({ data, waterSettings, carbSettings }) => {
 const mapStateToProps = createStructuredSelector({
   data: selectMetricsData,
   waterSettings: selectWaterSettings,
-  carbSettings: selectCarbSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(TotalsChart);
+export default connect(mapStateToProps, null)(TotalsChart);

@@ -203,6 +203,7 @@ const App = ({
           <Route
             path='/settings'
             render={() => (currentUser ? <Settings /> : <Redirect to='/' />)}
+            onLeav
           />
           <Route
             exact

@@ -1,68 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { setCurrentUser } from '../../redux/user/user.actions';
-import { updateCarbSettings } from '../../firebase/firebase.utils';
+import { setCurrentUser } from '../../../redux/user/user.actions';
+import { updateCarbSettings } from '../../../firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
-import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import { selectCurrentUser } from '../../../redux/user/user.selectors';
+import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
 import { GiWheat } from 'react-icons/gi';
 import './carb-settings.styles.scss';
 
 const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
-  const [toggle, setToggle] = useState('add');
+  const [toggle, setToggle] = useState(currentUser.carbSettings);
 
-  useEffect(() => {
-    switch (currentUser.carbSettings) {
-      case 'n':
-        setToggle('net');
-        break;
-      case 't':
-        setToggle('total');
-        break;
-      default:
-        break;
-    }
-  }, [currentUser]);
+  const OPTIONS = {
+    t: 'total',
+    n: 'net',
+  };
 
   const toggleTotal = () => {
-    setToggle('total');
+    setToggle('t');
   };
 
   const toggleNet = () => {
-    setToggle('net');
+    setToggle('n');
   };
 
   const handleAlert = () => {
     toggleAlertModal({
       title: 'SETTINGS SAVED!',
-      msg: `Your carb settings have been changed to ${toggle}.`,
+      msg: `Your carb settings have been changed to ${OPTIONS[toggle]}.`,
       img: 'update',
       status: 'visible',
       sticky: false,
     });
   };
 
-  const saveCarbSettings = () => {
-    let setting;
-    if (toggle === 'total') {
-      setting = 't';
-    } else {
-      setting = 'n';
-    }
+  console.log(toggle);
 
-    if (currentUser.carbSettings !== setting) {
+  const saveCarbSettings = () => {
+    if (currentUser.carbSettings !== toggle) {
       // only push update if there's a change between state and user settings in firebase
-      updateCarbSettings(currentUser.id, setting);
+      updateCarbSettings(currentUser.id, toggle);
       const userCopy = Object.assign({}, currentUser);
-      userCopy.carbSettings = setting;
+      userCopy.carbSettings = toggle;
       setCurrentUser(userCopy);
     }
 
     handleAlert();
   };
 
-  const getStyle = (className) => {
-    if (className === toggle) {
+  const getStyle = (option) => {
+    if (option === OPTIONS[toggle]) {
       return 'on';
     } else {
       return 'off';

@@ -128,6 +128,7 @@ const DateSelector = ({
       <div>
         <Tippy
           interactive={true}
+          trigger='click'
           content={<Calendar onChange={onChange} value={calDate} />}
           animation={'scale'}
         >

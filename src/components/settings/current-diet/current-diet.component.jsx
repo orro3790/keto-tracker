@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
   selectCarbSettings,
-} from '../../redux/user/user.selectors';
+} from '../../../redux/user/user.selectors';
 import { FaChartPie } from 'react-icons/fa';
 import './current-diet.styles.scss';
 
