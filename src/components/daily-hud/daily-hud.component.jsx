@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import {
   selectCarbSettings,
-  selectDietSettings,
   selectWaterSettings,
 } from '../../redux/user/user.selectors';
 import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
@@ -15,7 +14,6 @@ import './daily-hud.styles.scss';
 const DailyChart = ({
   setHudModel,
   carbSettings,
-  diet,
   hudModel,
   entry,
   waterSettings,
@@ -27,6 +25,13 @@ const DailyChart = ({
     p: 0,
     e: 0,
     w: 0,
+    diet: {
+      f: 0,
+      c: 0,
+      k: 0,
+      p: 0,
+      e: 0,
+    },
   });
 
   const toggleRemaining = () => {
@@ -45,6 +50,8 @@ const DailyChart = ({
     }
   };
 
+  console.log(dailyEntry.diet);
+
   useEffect(() => {
     if (entry !== '') {
       setDailyEntry({
@@ -54,6 +61,12 @@ const DailyChart = ({
         p: entry.dailyMacros.p,
         e: entry.dailyMacros.e,
         w: entry.water.t,
+        diet: {
+          f: entry.goals.diet.snapshot.f,
+          c: entry.goals.diet.snapshot.c,
+          p: entry.goals.diet.snapshot.p,
+          e: entry.goals.diet.snapshot.e,
+        },
       });
     }
   }, [entry, carbSettings]);
@@ -74,17 +87,17 @@ const DailyChart = ({
   }
 
   if (hudModel === 'remaining') {
-    fatsValue = (diet.f - dailyEntry.f).toFixed(1);
+    fatsValue = (dailyEntry.diet.f - dailyEntry.f).toFixed(1);
     carbsValue =
       carbSettings === 'n'
-        ? (diet.c - dailyEntry.k).toFixed(1)
-        : (diet.c - dailyEntry.c).toFixed(1);
-    proteinValue = (diet.p - dailyEntry.p).toFixed(1);
-    caloriesValue = (diet.e - dailyEntry.e).toFixed(1);
+        ? (dailyEntry.diet.c - dailyEntry.k).toFixed(1)
+        : (dailyEntry.diet.c - dailyEntry.c).toFixed(1);
+    proteinValue = (dailyEntry.diet.p - dailyEntry.p).toFixed(1);
+    caloriesValue = (dailyEntry.diet.e - dailyEntry.e).toFixed(1);
     waterValue = waterSettings.g - dailyEntry.w;
   } else if (hudModel === 'additive') {
     fatsValue = dailyEntry.f;
-    carbsValue = carbSettings === 'n' ? dailyEntry.k : diet.c;
+    carbsValue = carbSettings === 'n' ? dailyEntry.k : dailyEntry.diet.c;
     proteinValue = dailyEntry.p;
     caloriesValue = dailyEntry.e;
     waterValue = dailyEntry.w;
@@ -128,6 +141,8 @@ const DailyChart = ({
     );
   }
 
+  // Render
+
   return (
     <div className='daily-hud-outer-c'>
       <div className='calculation-c'>
@@ -169,7 +184,6 @@ const mapStateToProps = createStructuredSelector({
   hudModel: selectHudSettings,
   entry: selectEntry,
   carbSettings: selectCarbSettings,
-  diet: selectDietSettings,
   waterSettings: selectWaterSettings,
 });
 
