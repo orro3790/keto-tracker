@@ -86,24 +86,37 @@ export const deleteFood = async (userId, food) => {
 };
 
 export const updateDiet = async (userId, macros) => {
-  if (userId === null) return;
-
   const userRef = firestore.doc(`users/${userId}`);
 
-  // check if there are any scheduled food entries that may need to have their diet snapshot updated
-  const snapshot = await userRef.get();
+  const userSnapshot = await userRef.get();
 
-  const data = snapshot.data();
+  const userData = userSnapshot.data();
 
-  let scheduledEntries = Object.assign({}, data.scheduled.f);
+  // Use a batch approach to ensure all-or-none updates
+  let batch = firestore.batch();
 
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Step 1: If today's entry already exists, stage an update to its diet snapshot
+  const todaysEntryRef = firestore.doc(
+    `users/${userId}/foodDiary/${today / 1000}`
+  );
+
+  const snapshot = await todaysEntryRef.get();
+
+  if (snapshot.exists === true) {
+    batch.update(todaysEntryRef, { 'entry.goals.diet.snapshot': macros });
+  }
+
+  // Step 2: Check if the user has any scheduled entries ==> stage updates to their diet snapshots
+  let scheduledEntries = Object.assign({}, userData.scheduled.f);
+
+  // keep track of whether or not the user's scheduled entries list will need to be updated
   let entriesEdited = false;
 
-  // If the user has foodDiary entries scheduled, check if some have expired or the diet snapshot needs updating
-  if (Object.keys(scheduledEntries).length !== 0) {
-    let today = new Date();
-
-    // If the scheduled date has passed, remove it
+  // Step 3: if entries are scheduled, remove any that have expired
+  if (Object.keys(scheduledEntries).length > 0) {
     Object.keys(scheduledEntries).forEach((date) => {
       // Firestore timestamps are stored as seconds => * 1000 to convert to milliseconds
       let scheduledDate = new Date(date * 1000);
@@ -113,50 +126,39 @@ export const updateDiet = async (userId, macros) => {
         entriesEdited = true;
       }
     });
-
-    let dates = Object.keys(scheduledEntries);
-
-    // Updates will be pushed in an all-or-none approach via batch.
-    let batch = firestore.batch();
-
-    if (dates.length > 0) {
-      // Update the diet snapshots in scheduled foodDiary entries.
-      dates.forEach((date) => {
-        const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
-        batch.update(entryRef, { 'entry.goals.diet.snapshot': macros });
-      });
-
-      // Update the user's diet settings, as well as their scheduled entries, if they were edited
-      if (entriesEdited === true) {
-        userRef.update({
-          diet: macros,
-          'scheduled.f': scheduledEntries,
-        });
-      } else {
-        userRef.update({
-          diet: macros,
-        });
-      }
-    }
-
-    // Commit the batch updates to firestore
-    try {
-      batch.commit();
-    } catch (error) {
-      console.log(error);
-    }
-    console.log(Object.keys(scheduledEntries));
   }
-  // If the user doesn't have any foodDiary entries scheduled, simply update their diet settings in their user doc
-  else {
-    try {
-      userRef.update({
+
+  let dates = Object.keys(scheduledEntries);
+
+  // Step 4: if any entries are still scheduled, stage updates to their diet snapshots
+  if (dates.length > 0) {
+    dates.forEach((date) => {
+      const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
+      batch.update(entryRef, { 'entry.goals.diet.snapshot': macros });
+    });
+  }
+
+  // Step 5: stage update to diet settings and also stage update to the scheduled entries list if it was edited
+  switch (entriesEdited) {
+    case true:
+      batch.update(userRef, {
+        diet: macros,
+        'scheduled.f': scheduledEntries,
+      });
+      break;
+    case false:
+      batch.update(userRef, {
         diet: macros,
       });
-    } catch (error) {
-      console.log(error);
-    }
+      break;
+    default:
+      break;
   }
+
+  // Stage 6: commit all staged updates to firestore
+  try {
+    batch.commit();
+  } catch (error) {}
 };
 
 export const addCollectionAndDocuments = async (
@@ -378,13 +380,83 @@ export const updateCarbSettings = async (userId, setting) => {
   }
 };
 
-export const updateWaterSettings = async (currentUser, waterSettings) => {
-  const userRef = firestore.doc(`users/${currentUser.id}`);
+export const updateWaterSettings = async (userId, waterSettings) => {
+  const userRef = firestore.doc(`users/${userId}`);
 
-  try {
-    await userRef.update({
-      waterSettings,
+  const userSnapshot = await userRef.get();
+
+  const userData = userSnapshot.data();
+
+  // Use a batch approach to ensure all-or-none updates
+  let batch = firestore.batch();
+
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Step 1: If today's entry already exists, stage an update to its water goal snapshot
+  const todaysEntryRef = firestore.doc(
+    `users/${userId}/foodDiary/${today / 1000}`
+  );
+
+  const snapshot = await todaysEntryRef.get();
+
+  if (snapshot.exists === true) {
+    batch.update(todaysEntryRef, {
+      'entry.goals.water.snapshot.w': waterSettings.g,
     });
+  }
+
+  // Step 2: Check if the user has any scheduled entries ==> stage updates to their water goal snapshots
+  let scheduledEntries = Object.assign({}, userData.scheduled.f);
+
+  // keep track of whether or not the user's scheduled entries list will need to be updated
+  let entriesEdited = false;
+
+  // Step 3: if entries are scheduled, remove any that have expired
+  if (Object.keys(scheduledEntries).length > 0) {
+    Object.keys(scheduledEntries).forEach((date) => {
+      // Firestore timestamps are stored as seconds => * 1000 to convert to milliseconds
+      let scheduledDate = new Date(date * 1000);
+
+      if (scheduledDate < today) {
+        delete scheduledEntries[date];
+        entriesEdited = true;
+      }
+    });
+  }
+
+  let dates = Object.keys(scheduledEntries);
+
+  // Step 4: if any entries are still scheduled, stage updates to their water goal snapshots
+  if (dates.length > 0) {
+    dates.forEach((date) => {
+      const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
+      batch.update(entryRef, {
+        'entry.goals.water.snapshot.w': waterSettings.g,
+      });
+    });
+  }
+
+  // Step 5: stage update to water settings and also stage update to the scheduled entries list if it was edited
+  switch (entriesEdited) {
+    case true:
+      batch.update(userRef, {
+        waterSettings: waterSettings,
+        'scheduled.f': scheduledEntries,
+      });
+      break;
+    case false:
+      batch.update(userRef, {
+        waterSettings: waterSettings,
+      });
+      break;
+    default:
+      break;
+  }
+
+  // Stage 6: commit all staged updates to firestore
+  try {
+    batch.commit();
     return 'success';
   } catch (error) {
     return 'error';

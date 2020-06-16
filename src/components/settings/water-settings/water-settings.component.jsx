@@ -62,8 +62,9 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
       setCurrentUser(userCopy);
     } else {
-      title = 'ERROR!';
-      msg = 'There was an error saving your settings.';
+      title = 'OOPS!';
+      msg =
+        "There was an error saving your settings. Don't worry, support has been notified!";
       img = 'error';
     }
 
@@ -125,6 +126,15 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     // case 3: check if tracking settings changed
     if (currentUser.waterSettings.e !== trackingToggle) {
       settings.e = trackingToggle;
+      // If tracking is disabled, also set goal to 0, to accurately depict a goal of 0 in metrics.
+      if (trackingToggle === false) {
+        settings.g = 0;
+      } else {
+        // If the user enabled tracking but did not provide a value, set it to a goal of 1250 mL.
+        if (goalInput === '') {
+          settings.g = 1250;
+        }
+      }
     }
 
     // compare currentUser settings in firestore and settings in state
@@ -134,7 +144,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       currentUser.waterSettings.e !== settings.e
     ) {
       // try to update firebase, store results to check if error or success
-      await updateWaterSettings(currentUser, settings).then((result) => {
+      await updateWaterSettings(currentUser.id, settings).then((result) => {
         handleAlert(result);
       });
     }
@@ -245,6 +255,9 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
         <div className='desc-c'>
           <div>Water tracking has been disabled.</div>
         </div>
+        <button className={'save-btn'} type='submit' onClick={handleSubmit}>
+          Save
+        </button>
       </div>
     );
   }

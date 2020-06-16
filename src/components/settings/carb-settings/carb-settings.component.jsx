@@ -34,8 +34,6 @@ const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
     });
   };
 
-  console.log(toggle);
-
   const saveCarbSettings = () => {
     if (currentUser.carbSettings !== toggle) {
       // only push update if there's a change between state and user settings in firebase
