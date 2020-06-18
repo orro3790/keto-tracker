@@ -16,7 +16,10 @@ import {
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
-import { dateWriteable } from '../../firebase/firebase.utils';
+import {
+  dateWriteable,
+  updateGoalsAndPrecision,
+} from '../../firebase/firebase.utils';
 import './water-modal.styles.scss';
 
 const WaterModal = ({
@@ -236,6 +239,12 @@ const WaterModal = ({
         } else {
           copy.w.t = parseFloat(totalMl.toFixed(2));
         }
+
+        const goals = {
+          w: waterSettings.g,
+        };
+
+        copy = updateGoalsAndPrecision(copy, goals);
 
         allowUpdateFirebase(true);
 

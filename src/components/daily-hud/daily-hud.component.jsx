@@ -92,13 +92,13 @@ const DailyChart = ({
           w: entry.w.t,
         },
         goals: {
-          f: entry.g.d.s.f,
-          c: entry.g.d.s.c,
-          d: entry.g.d.s.d,
-          k: entry.g.d.s.k,
-          p: entry.g.d.s.p,
-          e: entry.g.d.s.e,
-          w: entry.g.w.s.w,
+          f: entry.g.s.f,
+          c: entry.g.s.c,
+          d: entry.g.s.d,
+          k: entry.g.s.k,
+          p: entry.g.s.p,
+          e: entry.g.s.e,
+          w: entry.g.s.w,
         },
         sum: {
           f: 0,
@@ -114,14 +114,16 @@ const DailyChart = ({
         case 'r':
           goals.forEach((goal) => {
             if (values.goals[goal] !== null) {
-              values.sum[goal] = values.goals[goal] - values.consumed[goal];
+              values.sum[goal] = (
+                values.goals[goal] - values.consumed[goal]
+              ).toFixed(1);
             }
           });
           break;
         case 'a':
           goals.forEach((goal) => {
             if (values.goals[goal] !== null) {
-              values.sum[goal] = values.consumed[goal];
+              values.sum[goal] = values.consumed[goal].toFixed(1);
             }
           });
           break;

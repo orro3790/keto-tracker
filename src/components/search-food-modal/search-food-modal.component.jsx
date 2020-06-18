@@ -34,7 +34,10 @@ import { MdCheck, MdDelete } from 'react-icons/md';
 import { IoIosBookmark } from 'react-icons/io';
 import { GiFruitBowl, GiWaterBottle } from 'react-icons/gi';
 import { FaUserTag, FaTimes } from 'react-icons/fa';
-import { dateWriteable } from '../../firebase/firebase.utils';
+import {
+  dateWriteable,
+  updateGoalsAndPrecision,
+} from '../../firebase/firebase.utils';
 import './search-food-modal.styles.scss';
 
 const SearchFoodModal = ({
@@ -231,17 +234,28 @@ const SearchFoodModal = ({
             break;
         }
 
-        // recalculate meal totals
-        let updatedEntry = retotalMacros(entryCopy);
+        // recalculate meal and daily totals
+        entryCopy = retotalMacros(entryCopy);
 
-        // calculate whether goal performance, if today === entry date
-        updatedEntry = calculatePrecision(updatedEntry);
+        // create a goals object to pass to updateGoalsAndPrecision
+        let goals = {
+          c: entryCopy.g.s.c,
+          d: entryCopy.g.s.d,
+          k: entryCopy.g.s.k,
+          e: entryCopy.g.s.e,
+          f: entryCopy.g.s.f,
+          p: entryCopy.g.s.p,
+          w: entryCopy.g.s.w,
+        };
+
+        // update the goal snapshot and precision where necessary
+        entryCopy = updateGoalsAndPrecision(entryCopy, goals);
 
         // before changing the entry state, we want to signal that we want to update the entry in firebase
         allowUpdateFirebase(true);
 
         // dispatch the new entry obj to state
-        setEntry(updatedEntry);
+        setEntry(entryCopy);
 
         if (favModal === 'visible') {
           toggleFavsModal({
@@ -273,22 +287,33 @@ const SearchFoodModal = ({
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date, to limit abuse
     if (dateWriteable(entry.t.seconds * 1000) === true) {
       // entry state is immutable so make a copy of it first because pushing the edited version
-      const entryCopy = Object.assign({}, entry);
+      let entryCopy = Object.assign({}, entry);
 
       // remove the edited food from the entry obj
       entryCopy[searchModal.meal].f.splice(searchModal.listId, 1);
 
       // recalculate meal totals
-      let updatedEntry = retotalMacros(entryCopy);
+      entryCopy = retotalMacros(entryCopy);
 
-      // calculate goal performance, if today === entry date
-      updatedEntry = calculatePrecision(updatedEntry);
+      // create a goals object to pass to updateGoalsAndPrecision
+      let goals = {
+        c: entryCopy.g.s.c,
+        d: entryCopy.g.s.d,
+        k: entryCopy.g.s.k,
+        e: entryCopy.g.s.e,
+        f: entryCopy.g.s.f,
+        p: entryCopy.g.s.p,
+        w: entryCopy.g.s.w,
+      };
+
+      // update the goal snapshot and precision where necessary
+      entryCopy = updateGoalsAndPrecision(entryCopy, goals);
 
       // signal that I want to update the totals and push them to firestore
       allowUpdateFirebase(true);
 
       // dispatch the new entry obj to state
-      setEntry(updatedEntry);
+      setEntry(entryCopy);
 
       // reset foodReference
       createFoodReference('');
@@ -307,40 +332,6 @@ const SearchFoodModal = ({
         sticky: false,
       });
     }
-  };
-
-  const calculatePrecision = (entry) => {
-    let today = new Date();
-    today = today.setHours(0, 0, 0, 0);
-
-    // only allow the diet snapshot to change if it is not in the past
-    if (entry.t.seconds * 1000 >= today) {
-      // determine what the user's active diet g are ==> update diet snapshot and goal precision accordingly
-      let dietGoals = Object.keys(currentDiet);
-
-      dietGoals.forEach((goal) => {
-        if (currentDiet[goal] !== null) {
-          entry.g.d.s[goal] = currentDiet[goal];
-          entry.g.d.p[goal] = parseFloat(
-            (entry.m[goal] / currentDiet[goal]).toFixed(2)
-          );
-        } else {
-          entry.g.d.s[goal] = null;
-          entry.g.d.p[goal] = null;
-        }
-      });
-
-      // also make sure to include the user's water goal if it exists
-      if (waterSettings.e) {
-        entry.g.w.s.w = waterSettings.g;
-        entry.g.w.p.w = parseFloat((entry.w.t / waterSettings.g).toFixed(2));
-      } else {
-        entry.g.w.s.w = null;
-        entry.g.w.p.w = null;
-      }
-    }
-
-    return entry;
   };
 
   const getBtnStyle = () => {
@@ -463,12 +454,12 @@ const SearchFoodModal = ({
     if (sizeInput !== '') {
       // render chart data based on user input
       Object.keys(remaining).forEach((macro) => {
-        remaining[macro] = (macrosCopy[macro] / entry.g.d.s[macro]) * 100;
+        remaining[macro] = (macrosCopy[macro] / entry.g.s[macro]) * 100;
       });
     } else {
       // render chart data based on foodToEdit's existing macro data
       Object.keys(remaining).forEach((macro) => {
-        remaining[macro] = (foodReference[macro] / entry.g.d.s[macro]) * 100;
+        remaining[macro] = (foodReference[macro] / entry.g.s[macro]) * 100;
       });
     }
 

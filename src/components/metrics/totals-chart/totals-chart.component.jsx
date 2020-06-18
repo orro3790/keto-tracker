@@ -39,14 +39,14 @@ const TotalsChart = ({ data, waterSettings }) => {
           switch (waterSettings.u) {
             case 'mL':
               chartComponents.data.push(data[month][date].w.t);
-              chartComponents.goal.push(data[month][date].g.w.s.w);
+              chartComponents.goal.push(data[month][date].g.s.w);
               break;
             case 'cups':
               chartComponents.data.push(
                 parseFloat((data[month][date].w.t / 250).toFixed(2))
               );
               chartComponents.goal.push(
-                parseFloat((data[month][date].g.w.s.w / 250).toFixed(2))
+                parseFloat((data[month][date].g.s.w / 250).toFixed(2))
               );
               break;
             case 'oz':
@@ -54,7 +54,7 @@ const TotalsChart = ({ data, waterSettings }) => {
                 parseFloat((data[month][date].w.t / 29.5735).toFixed(2))
               );
               chartComponents.goal.push(
-                parseFloat((data[month][date].g.w.s.w / 29.5735).toFixed(2))
+                parseFloat((data[month][date].g.s.w / 29.5735).toFixed(2))
               );
 
               break;
@@ -70,7 +70,7 @@ const TotalsChart = ({ data, waterSettings }) => {
         Object.keys(data[month]).forEach((date) => {
           chartComponents.data.push(data[month][date].m[targetGoal]);
           chartComponents.dates.push(date);
-          chartComponents.goal.push(data[month][date].g.d.s[targetGoal]);
+          chartComponents.goal.push(data[month][date].g.s[targetGoal]);
         });
       });
     }

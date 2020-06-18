@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+import { cloneDeep } from 'lodash';
 
 const config = {
   apiKey: 'AIzaSyBmRfC2bNeb6B-_PkOYqk393rH4ghrHGqk',
@@ -42,10 +43,12 @@ export const createUserDoc = async (userAuth, additionalData) => {
         n: displayName,
         h: 'r',
         d: {
-          e: 2000,
-          p: 100,
           c: 25,
+          d: null,
+          k: null,
+          e: 2000,
           f: 166,
+          p: 100,
         },
         c: 't',
         m: 's',
@@ -85,12 +88,28 @@ export const deleteFood = async (userId, food) => {
   }
 };
 
-export const updateDiet = async (userId, macros) => {
+/**
+ * Updates the user's diet. Also updates goal snapshots and precision for any entries >= today's date.
+ * @param {string} userId The current user's Id.
+ * @param {object} macros The user's complete diet settings. All keys must be present, including the user's water goals. Any optional macros that are not being tracked must be set as null values.
+ * @example macros = {
+ * c: 25,
+ * d: null,
+ * k: null,
+ * e: 2000,
+ * f: 166,
+ * p: 100,
+ * w: null
+ * }
+ */
+export const updateDiet = async (userId, goals) => {
   const userRef = firestore.doc(`users/${userId}`);
-
   const userSnapshot = await userRef.get();
-
   const userData = userSnapshot.data();
+
+  // keep a copy of the goals object (does not include the water goals) to update user diet object
+  // goals object will be modified to include water goals, used if need to update entry goal object
+  const macroGoals = cloneDeep(goals);
 
   // Use a batch approach to ensure all-or-none updates
   let batch = firestore.batch();
@@ -105,8 +124,34 @@ export const updateDiet = async (userId, macros) => {
 
   const snapshot = await todaysEntryRef.get();
 
+  const data = snapshot.data();
+
   if (snapshot.exists === true) {
-    batch.update(todaysEntryRef, { 'entry.g.d.s': macros });
+    const precision = {};
+
+    // recalculate precision for today's entry
+    Object.keys(goals).forEach((goal) => {
+      if (goals[goal] !== null) {
+        precision[goal] = parseFloat(
+          (data.entry.m[goal] / goals[goal]).toFixed(2)
+        );
+      } else {
+        precision[goal] = null;
+      }
+    });
+
+    // entry.m totals daily macros, but water is totaled under entry.w.t ==> include it in the update
+    goals.w = userData.w.g;
+    if (goals.w !== null) {
+      precision.w = parseFloat((data.entry.w.t / goals.w).toFixed(2));
+    } else {
+      precision.w = null;
+    }
+
+    batch.update(todaysEntryRef, {
+      'entry.g.s': goals,
+      'entry.g.p': precision,
+    });
   }
 
   // STEP 2: Check if the user has any scheduled entries ==> stage updates to their diet snapshots
@@ -130,25 +175,56 @@ export const updateDiet = async (userId, macros) => {
 
   let dates = Object.keys(scheduledEntries);
 
-  // STEP 4: if any entries are still scheduled, stage updates to their diet snapshots
+  // STEP 4: if any entries are still scheduled, stage updates to their goal snapshots and precision
   if (dates.length > 0) {
-    dates.forEach((date) => {
-      const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
-      batch.update(entryRef, { 'entry.g.d.s': macros });
-    });
+    for (let date in dates) {
+      const entryRef = firestore.doc(
+        `users/${userId}/foodDiary/${dates[date]}`
+      );
+
+      const snapshot = await entryRef.get();
+
+      const data = snapshot.data();
+
+      const precision = {};
+
+      // recalculate precision for today's entry
+      Object.keys(goals).forEach((goal) => {
+        if (goals[goal] !== null) {
+          precision[goal] = parseFloat(
+            (data.entry.m[goal] / goals[goal]).toFixed(2)
+          );
+        } else {
+          precision[goal] = null;
+        }
+      });
+
+      // entry.m totals daily macros, but water is totaled under entry.w.t ==> include it in the update
+      goals.w = userData.w.g;
+      if (goals.w !== null) {
+        precision.w = parseFloat((data.entry.w.t / goals.w).toFixed(2));
+      } else {
+        precision.w = null;
+      }
+
+      batch.update(entryRef, {
+        'entry.g.s': goals,
+        'entry.g.p': precision,
+      });
+    }
   }
 
   // STEP 5: stage update to diet settings and also stage update to the scheduled entries list if it was edited
   switch (entriesEdited) {
     case true:
       batch.update(userRef, {
-        d: macros,
+        d: macroGoals,
         's.f': scheduledEntries,
       });
       break;
     case false:
       batch.update(userRef, {
-        d: macros,
+        d: macroGoals,
       });
       break;
     default:
@@ -310,50 +386,42 @@ export const getEntry = async (
         k: 0,
       },
       g: {
-        d: {
-          s: {
-            f: dietSettings.f,
-            c: null,
-            p: dietSettings.p,
-            e: dietSettings.e,
-            d: null,
-            k: null,
-          },
-          p: {
-            f: 0,
-            c: null,
-            p: 0,
-            e: 0,
-            d: null,
-            k: null,
-          },
+        s: {
+          f: dietSettings.f,
+          c: null,
+          p: dietSettings.p,
+          e: dietSettings.e,
+          d: null,
+          k: null,
+          w: null,
         },
-        w: {
-          s: {
-            w: null,
-          },
-          p: {
-            w: null,
-          },
+        p: {
+          f: 0,
+          c: null,
+          p: 0,
+          e: 0,
+          d: null,
+          k: null,
+          w: null,
         },
       },
     };
 
     // if the user is tracking net carbs, total carbs, or fiber, include it in the default entry's nested goals object
-    const optionalMacros = ['c', 'k', 'd'];
+    const optionalMacros = ['c', 'k', 'd', 'w'];
 
     optionalMacros.forEach((macro) => {
       if (dietSettings[macro]) {
-        entry.g.d.s[macro] = dietSettings[macro];
-        entry.g.d.p[macro] = 0;
+        entry.g.s[macro] = dietSettings[macro];
+        entry.g.p[macro] = 0;
       }
     });
 
     // if the user is tracking water, include it in the default entry's nested goals object and daily total
     if (waterSettings.e) {
       entry.w.t = 0;
-      entry.g.w.s.w = waterSettings.g;
-      entry.g.w.p.w = 0;
+      entry.g.s.w = waterSettings.g;
+      entry.g.p.w = 0;
     }
 
     return entry;
@@ -420,7 +488,7 @@ export const updateCarbSettings = async (userId, diet, setting) => {
 
   if (snapshot.exists === true) {
     batch.update(todaysEntryRef, {
-      'entry.g.d.s': diet,
+      'entry.g.s': diet,
     });
   }
 
@@ -450,7 +518,7 @@ export const updateCarbSettings = async (userId, diet, setting) => {
     dates.forEach((date) => {
       const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
       batch.update(entryRef, {
-        'entry.g.d.s': diet,
+        'entry.g.s': diet,
       });
     });
   }
@@ -497,12 +565,24 @@ export const updateWaterSettings = async (userId, waterSettings) => {
   const snapshot = await todaysEntryRef.get();
 
   if (snapshot.exists === true) {
+    const data = snapshot.data();
+
+    let precision;
+
+    // if water tracking is enabled, water goal cannot be null ==> precision can be calculated
+    if (waterSettings.e) {
+      precision = parseFloat((data.entry.w.t / waterSettings.g).toFixed(2));
+    } else {
+      precision = null;
+    }
+
     batch.update(todaysEntryRef, {
-      'entry.g.w.s.w': waterSettings.g,
+      'entry.g.s.w': waterSettings.g,
+      'entry.g.p.w': precision,
     });
   }
 
-  // STEP 3: check if the user has any scheduled entries ==> stage updates to their water goal snapshots
+  // STEP 3: check if the user has any scheduled entries ==> stage updates to water goal snapshots and precision
   let scheduledEntries = Object.assign({}, userData.s.f);
 
   // keep track of whether or not the user's scheduled entries list will need to be updated
@@ -525,12 +605,29 @@ export const updateWaterSettings = async (userId, waterSettings) => {
 
   // STEP 5: if any entries are still scheduled, stage updates to their water goal snapshots
   if (dates.length > 0) {
-    dates.forEach((date) => {
-      const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
+    for (let date in dates) {
+      const entryRef = firestore.doc(
+        `users/${userId}/foodDiary/${dates[date]}`
+      );
+
+      const snapshot = await entryRef.get();
+
+      const data = snapshot.data();
+
+      let precision;
+
+      // if water tracking is enabled, water goal cannot be null ==> precision can be calculated
+      if (waterSettings.e) {
+        precision = parseFloat((data.entry.w.t / waterSettings.g).toFixed(2));
+      } else {
+        precision = null;
+      }
+
       batch.update(entryRef, {
-        'entry.g.w.s.w': waterSettings.g,
+        'entry.g.s.w': waterSettings.g,
+        'entry.g.p.w': precision,
       });
-    });
+    }
   }
 
   // STEP 6: stage update to scheduled entries list if it was edited
@@ -714,6 +811,54 @@ export const dateWriteable = (date) => {
   } else {
     return false;
   }
+};
+
+/**
+ * Updates the goal snapshot and precision values for a single food diary entry. Diet and water snapshots are updated if the entry date is not in the past. Precision is always recalculated.
+ *
+ * @param {object} entry This is the entry object needing updating
+ * @param {object} goals Represents the user's macro and water goals
+ * @example goals = {
+ * c: 25,
+ * d: null,
+ * k: null,
+ * e: 2000,
+ * f: 166,
+ * p: 100,
+ * w: 1250
+ * }
+ */
+export const updateGoalsAndPrecision = (entry, goals) => {
+  let today = new Date();
+  today = today.setHours(0, 0, 0, 0);
+
+  // only allow the diet snapshot to change if it is not in the past to prevent overwriting historical settings
+  let past = entry.t.seconds * 1000 < today ? true : false;
+
+  // determine what the user's goals are ==> update diet & water snapshots and precision accordingly
+  Object.keys(goals).forEach((goal) => {
+    if (goal !== 'w') {
+      if (goals[goal] !== null) {
+        if (!past) entry.g.s[goal] = goals[goal];
+        entry.g.p[goal] = parseFloat((entry.m[goal] / goals[goal]).toFixed(2));
+      } else {
+        if (!past) entry.g.s[goal] = goals[goal];
+        entry.g.p[goal] = null;
+      }
+    }
+    // water goal snapshot and precision has its own path to total consumed, different from diet macros
+    else {
+      if (goals.w !== null) {
+        if (!past) entry.g.s.w = goals.w;
+        entry.g.p.w = parseFloat((entry.w.t / goals.w).toFixed(2));
+      } else {
+        if (!past) entry.g.s.w = goals.w;
+        entry.g.p.w = null;
+      }
+    }
+  });
+
+  return entry;
 };
 
 export default firebase;

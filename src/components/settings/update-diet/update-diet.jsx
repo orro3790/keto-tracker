@@ -61,7 +61,16 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   // determine whether or not the form can be submitted
   let isSubmittable = false;
 
-  if (fieldsFilled === true && totalPercentage === 100) {
+  // prevent zero grams as they will return NaN or Infinite when calculating precision
+  let zeroGrams = false;
+
+  const checkZeroGrams = (value) => {
+    return value === 0;
+  };
+
+  zeroGrams = Object.values(grams).some(checkZeroGrams);
+
+  if (fieldsFilled === true && totalPercentage === 100 && zeroGrams === false) {
     isSubmittable = true;
   }
 
@@ -77,6 +86,12 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   if (totalPercentage > 100) {
     errors.push({
       error: 'Sum of percentages > 100%.',
+    });
+  }
+
+  if (fieldsFilled && zeroGrams) {
+    errors.push({
+      error: 'All gram values must be > 0.',
     });
   }
 
@@ -121,28 +136,28 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isSubmittable) {
-      let updatedDiet = Object.assign({}, diet);
+      let goals = Object.assign({}, diet);
 
-      updatedDiet = {
-        f: parseInt(grams.f),
-        p: parseInt(grams.p),
-        e: parseInt(calorieGoal),
-      };
+      goals.f = grams.f;
+      goals.p = grams.p;
+      goals.e = parseFloat(calorieGoal);
 
-      // append carb limit as either net carbs or total carbs goal
+      // assign carb goal to either net carbs or total carbs based on user carb settings
       switch (carbSettings) {
         case 't':
-          updatedDiet.c = parseInt(grams.c);
+          goals.c = grams.c;
+          goals.k = null;
           break;
         case 'n':
-          updatedDiet.k = parseInt(grams.c);
+          goals.k = grams.c;
+          goals.c = null;
           break;
         default:
           break;
       }
 
       // now update the data in firestore
-      updateDiet(userId, updatedDiet);
+      updateDiet(userId, goals);
 
       toggleAlertModal({
         title: 'SETTINGS SAVED!',
