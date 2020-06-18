@@ -69,7 +69,7 @@ const DateSelector = ({
   // handles rendering updates to the date in UI
   useEffect(() => {
     if (entry !== '') {
-      let anchor = new Date(entry.date.seconds * 1000);
+      let anchor = new Date(entry.t.seconds * 1000);
       setCalDate(anchor);
 
       anchor = `${
@@ -96,7 +96,7 @@ const DateSelector = ({
         userId,
         dietSettings,
         waterSettings,
-        entry.date.seconds * 1000,
+        entry.t.seconds * 1000,
         +1
       );
       setEntry(entriesObj);
@@ -110,7 +110,7 @@ const DateSelector = ({
         userId,
         dietSettings,
         waterSettings,
-        entry.date.seconds * 1000,
+        entry.t.seconds * 1000,
         -1
       );
       setEntry(entriesObj);

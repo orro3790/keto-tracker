@@ -18,28 +18,55 @@ const DailyChart = ({
   entry,
   waterSettings,
 }) => {
-  const [dailyEntry, setDailyEntry] = useState({
-    f: 0,
-    c: 0,
-    k: 0,
-    p: 0,
-    e: 0,
-    w: 0,
-    diet: {
+  const [values, setValues] = useState({
+    consumed: {
       f: 0,
       c: 0,
+      d: 0,
       k: 0,
       p: 0,
       e: 0,
+      w: 0,
+    },
+    goals: {
+      f: 0,
+      c: 0,
+      d: 0,
+      k: 0,
+      p: 0,
+      e: 0,
+      w: 0,
+    },
+    sum: {
+      f: 0,
+      c: 0,
+      d: 0,
+      k: 0,
+      p: 0,
+      e: 0,
+      w: 0,
     },
   });
 
+  const UNITS = {
+    c: 'cups',
+    m: 'mL',
+    o: 'oz',
+  };
+
+  // if waterUnit is 'cups' ==> handle singular form of 'cups' hud display
+  if (waterSettings.u === 'c') {
+    if (values.consumed.w === 1) {
+      UNITS.c = 'cup';
+    }
+  }
+
   const toggleRemaining = () => {
-    setHudModel('remaining');
+    setHudModel('r');
   };
 
   const toggleAdditive = () => {
-    setHudModel('additive');
+    setHudModel('a');
   };
 
   const getStyle = (className) => {
@@ -50,89 +77,101 @@ const DailyChart = ({
     }
   };
 
-  console.log(dailyEntry.diet);
-
   useEffect(() => {
     if (entry !== '') {
-      setDailyEntry({
-        f: entry.dailyMacros.f,
-        c: entry.dailyMacros.c,
-        k: entry.dailyMacros.k,
-        p: entry.dailyMacros.p,
-        e: entry.dailyMacros.e,
-        w: entry.water.t,
-        diet: {
-          f: entry.goals.diet.snapshot.f,
-          c: entry.goals.diet.snapshot.c,
-          p: entry.goals.diet.snapshot.p,
-          e: entry.goals.diet.snapshot.e,
+      const goals = ['f', 'c', 'd', 'k', 'p', 'e', 'w'];
+
+      let values = {
+        consumed: {
+          f: entry.m.f,
+          c: entry.m.c,
+          d: entry.m.d,
+          k: entry.m.k,
+          p: entry.m.p,
+          e: entry.m.e,
+          w: entry.w.t,
         },
-      });
+        goals: {
+          f: entry.g.d.s.f,
+          c: entry.g.d.s.c,
+          d: entry.g.d.s.d,
+          k: entry.g.d.s.k,
+          p: entry.g.d.s.p,
+          e: entry.g.d.s.e,
+          w: entry.g.w.s.w,
+        },
+        sum: {
+          f: 0,
+          c: 0,
+          d: 0,
+          k: 0,
+          p: 0,
+          e: 0,
+          w: 0,
+        },
+      };
+      switch (hudModel) {
+        case 'r':
+          goals.forEach((goal) => {
+            if (values.goals[goal] !== null) {
+              values.sum[goal] = values.goals[goal] - values.consumed[goal];
+            }
+          });
+          break;
+        case 'a':
+          goals.forEach((goal) => {
+            if (values.goals[goal] !== null) {
+              values.sum[goal] = values.consumed[goal];
+            }
+          });
+          break;
+        default:
+          break;
+      }
+
+      // if water tracking is enabled ==> adjust display of water intake based on user's unit preference
+      if (waterSettings.e) {
+        switch (waterSettings.u) {
+          case 'c':
+            values.sum.w = (values.sum.w / 250).toFixed(2);
+            break;
+          case 'o':
+            values.sum.w = (values.sum.w / 29.5735).toFixed(2);
+            break;
+          case 'm':
+            values.sum.w = values.sum.w.toFixed(0);
+            break;
+          default:
+            break;
+        }
+      }
+
+      setValues(values);
     }
-  }, [entry, carbSettings]);
+  }, [entry, hudModel, waterSettings]);
 
-  // handle how to display the values
-  let fatsValue,
-    carbsValue,
-    proteinValue,
-    caloriesValue,
-    waterValue = 0;
-
-  let carbLabel = 'carbs';
+  // conditionally render carbs, net carbs, and water columns depending on user settings
+  let water, carbs;
 
   if (carbSettings === 'n') {
-    carbLabel = 'net carbs';
+    carbs = (
+      <div className='carbs macro-c'>
+        {values.sum.k}g<div className='l'>net carbs</div>
+      </div>
+    );
   } else {
-    carbLabel = 'carbs';
-  }
-
-  if (hudModel === 'remaining') {
-    fatsValue = (dailyEntry.diet.f - dailyEntry.f).toFixed(1);
-    carbsValue =
-      carbSettings === 'n'
-        ? (dailyEntry.diet.c - dailyEntry.k).toFixed(1)
-        : (dailyEntry.diet.c - dailyEntry.c).toFixed(1);
-    proteinValue = (dailyEntry.diet.p - dailyEntry.p).toFixed(1);
-    caloriesValue = (dailyEntry.diet.e - dailyEntry.e).toFixed(1);
-    waterValue = waterSettings.g - dailyEntry.w;
-  } else if (hudModel === 'additive') {
-    fatsValue = dailyEntry.f;
-    carbsValue = carbSettings === 'n' ? dailyEntry.k : dailyEntry.diet.c;
-    proteinValue = dailyEntry.p;
-    caloriesValue = dailyEntry.e;
-    waterValue = dailyEntry.w;
-  }
-
-  // conditionally render daily water intake based on user's unit preference, then adjust decimal display
-  switch (waterSettings.u) {
-    case 'cups':
-      waterValue = (waterValue / 250).toFixed(2);
-      break;
-    case 'oz':
-      waterValue = (waterValue / 29.5735).toFixed(2);
-      break;
-    case 'mL':
-      waterValue = waterValue.toFixed(0);
-      break;
-    default:
-      break;
-  }
-
-  let waterCol;
-  let waterUnit = waterSettings.u;
-
-  // if waterUnit is 'cups' ==> handle singular form of 'cups' hud display
-  if (waterSettings.u === 'cups') {
-    if (dailyEntry.water === 1) {
-      waterUnit = 'cup';
-    }
+    carbs = (
+      <div className='carbs macro-c'>
+        {values.sum.c}g<div className='l'>carbs</div>
+      </div>
+    );
   }
 
   if (waterSettings.e === true) {
-    waterCol = (
+    water = (
       <div className='water-c'>
         <div>
-          {waterValue} {waterUnit}
+          {values.sum.w} {UNITS[waterSettings.u]}
         </div>
         <div className='droplet'>
           <GiWaterDrop />
@@ -141,19 +180,17 @@ const DailyChart = ({
     );
   }
 
-  // Render
-
   return (
     <div className='daily-hud-outer-c'>
       <div className='calculation-c'>
-        <div className={`${getStyle('remaining')} remaining`}>
+        <div className={`${getStyle('r')} remaining`}>
           <div></div>
           <div className='btn' onClick={toggleRemaining}>
             REMAINING
           </div>
         </div>
         <div className='separator'></div>
-        <div className={`${getStyle('additive')} additive`}>
+        <div className={`${getStyle('a')} additive`}>
           <div className='btn' onClick={toggleAdditive}>
             DAILY SUM
           </div>
@@ -161,18 +198,16 @@ const DailyChart = ({
         </div>
       </div>
       <div className='daily-hud'>
-        {waterCol}
+        {water}
         <div className='fats macro-c'>
-          {fatsValue}g<div className='l'>fats</div>
+          {values.sum.f}g<div className='l'>fats</div>
         </div>
-        <div className='carbs macro-c'>
-          {carbsValue}g<div className='l'>{carbLabel}</div>
-        </div>
+        {carbs}
         <div className='protein macro-c'>
-          {proteinValue}g<div className='l'>protein</div>
+          {values.sum.p}g<div className='l'>protein</div>
         </div>
         <div className=' macro-c'>
-          {caloriesValue}
+          {values.sum.e}
           <div className='l'>calories</div>
         </div>
       </div>

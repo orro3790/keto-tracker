@@ -11,13 +11,13 @@ const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
     // only try to chart once data has been loaded into state
     if (entry !== '') {
       // don't overwrite the default chart data unless there are actually calories present
-      if (entry[meal]['foods'].length !== 0) {
-        const totalFats = entry[meal]['totals']['f'];
-        const totalCarbs = entry[meal]['totals']['c'];
-        const totalNetCarbs = entry[meal]['totals']['k'];
-        const totalProtein = entry[meal]['totals']['p'];
-        const totalCalories = entry[meal]['totals']['e'];
-        if (currentUser.carbSettings === 'n') {
+      if (entry[meal].f.length !== 0) {
+        const totalFats = entry[meal].t.f;
+        const totalCarbs = entry[meal].t.c;
+        const totalNetCarbs = entry[meal].t.k;
+        const totalProtein = entry[meal].t.p;
+        const totalCalories = entry[meal].t.e;
+        if (currentUser.c === 'n') {
           setTotalsData([
             totalFats,
             totalNetCarbs,
@@ -29,7 +29,7 @@ const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
         }
       }
       // when there are no foods in the meal array, set the chart data back to default values
-      if (entry[meal]['foods'].length === 0) {
+      if (entry[meal].f.length === 0) {
         setTotalsData([1, 0, 0, 0]);
       }
     }
@@ -55,7 +55,7 @@ const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
   useEffect(() => {
     let colors;
     let labels;
-    if (currentUser.carbSettings === 'n') {
+    if (currentUser.c === 'n') {
       labels = ['fats', 'net carbs', 'protein'];
     } else {
       labels = ['fats', 'carbs', 'protein'];

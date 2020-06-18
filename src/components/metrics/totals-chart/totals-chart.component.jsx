@@ -38,31 +38,23 @@ const TotalsChart = ({ data, waterSettings }) => {
           // convert units if necessary
           switch (waterSettings.u) {
             case 'mL':
-              chartComponents.data.push(data[month][date].water.t);
-              chartComponents.goal.push(
-                data[month][date].goals.water.snapshot.w
-              );
+              chartComponents.data.push(data[month][date].w.t);
+              chartComponents.goal.push(data[month][date].g.w.s.w);
               break;
             case 'cups':
               chartComponents.data.push(
-                parseFloat((data[month][date].water.t / 250).toFixed(2))
+                parseFloat((data[month][date].w.t / 250).toFixed(2))
               );
               chartComponents.goal.push(
-                parseFloat(
-                  (data[month][date].goals.water.snapshot.w / 250).toFixed(2)
-                )
+                parseFloat((data[month][date].g.w.s.w / 250).toFixed(2))
               );
               break;
             case 'oz':
               chartComponents.data.push(
-                parseFloat((data[month][date].water.t / 29.5735).toFixed(2))
+                parseFloat((data[month][date].w.t / 29.5735).toFixed(2))
               );
               chartComponents.goal.push(
-                parseFloat(
-                  (data[month][date].goals.water.snapshot.w / 29.5735).toFixed(
-                    2
-                  )
-                )
+                parseFloat((data[month][date].g.w.s.w / 29.5735).toFixed(2))
               );
 
               break;
@@ -76,11 +68,9 @@ const TotalsChart = ({ data, waterSettings }) => {
     } else {
       Object.keys(data).forEach((month) => {
         Object.keys(data[month]).forEach((date) => {
-          chartComponents.data.push(data[month][date].dailyMacros[targetGoal]);
+          chartComponents.data.push(data[month][date].m[targetGoal]);
           chartComponents.dates.push(date);
-          chartComponents.goal.push(
-            data[month][date].goals.diet.snapshot[targetGoal]
-          );
+          chartComponents.goal.push(data[month][date].g.d.s[targetGoal]);
         });
       });
     }

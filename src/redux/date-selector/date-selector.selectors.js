@@ -9,5 +9,5 @@ export const selectEntry = createSelector(
 
 export const selectWater = createSelector(
   [selectDateSelector],
-  (dateSelector) => dateSelector.entry.water
+  (dateSelector) => dateSelector.entry.w
 );

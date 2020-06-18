@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 import FormInput from '../../form-input/form-input.component';
-import { setCurrentUser } from '../../../redux/user/user.actions';
 import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
 import { updateWaterSettings } from '../../../firebase/firebase.utils';
 import { RiWaterFlashLine } from 'react-icons/ri';
@@ -12,11 +11,15 @@ import { cloneDeep } from 'lodash';
 import './water-settings.styles.scss';
 
 const WaterSettings = ({ currentUser, toggleAlertModal }) => {
-  const [unitToggle, setUnitToggle] = useState(currentUser.waterSettings.u);
+  const [unitToggle, setUnitToggle] = useState(currentUser.w.u);
   const [goalInput, setGoalInput] = useState('');
-  const [trackingToggle, setTrackingToggle] = useState(
-    currentUser.waterSettings.e
-  );
+  const [trackingToggle, setTrackingToggle] = useState(currentUser.w.e);
+
+  const UNITS = {
+    c: 'cups',
+    m: 'mL',
+    o: 'oz',
+  };
 
   const handleAlert = (result) => {
     let msg = '',
@@ -24,8 +27,8 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       img;
 
     const msgFormatter = {
-      unitToggle: `Water consumption will now be displayed in ${unitToggle}. `,
-      goal: `Your new goal is to drink ${goalInput} ${unitToggle} each day. `,
+      unitToggle: `Water consumption will now be displayed in ${UNITS[unitToggle]}. `,
+      goal: `Your new goal is to drink ${goalInput} ${UNITS[unitToggle]} each day. `,
       tracking: {
         true: `Water tracking has been enabled.`,
         false: `Water tracking has been disabled. `,
@@ -37,10 +40,10 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       if (goalInput !== '') {
         msg += msgFormatter.goal;
       }
-      if (currentUser.waterSettings.u !== unitToggle) {
+      if (currentUser.w.u !== unitToggle) {
         msg += msgFormatter.unitToggle;
       }
-      if (currentUser.waterSettings.e !== trackingToggle) {
+      if (currentUser.w.e !== trackingToggle) {
         if (trackingToggle === true) {
           msg += msgFormatter.tracking.true;
         }
@@ -56,11 +59,9 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       // push the changes to currentUser state in app
       const userCopy = Object.assign({}, currentUser);
 
-      userCopy.waterSettings.g = parseFloat(goalInput);
-      userCopy.waterSettings.u = unitToggle;
-      userCopy.waterSettings.e = trackingToggle;
-
-      setCurrentUser(userCopy);
+      userCopy.w.g = parseFloat(goalInput);
+      userCopy.w.u = unitToggle;
+      userCopy.w.e = trackingToggle;
     } else {
       title = 'OOPS!';
       msg =
@@ -78,15 +79,15 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   };
 
   const toggleMl = () => {
-    setUnitToggle('mL');
+    setUnitToggle('m');
   };
 
   const toggleCups = () => {
-    setUnitToggle('cups');
+    setUnitToggle('c');
   };
 
   const toggleOz = () => {
-    setUnitToggle('oz');
+    setUnitToggle('o');
   };
 
   const getStyle = (className) => {
@@ -98,24 +99,24 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   };
 
   const handleSubmit = async () => {
-    // settings will be passed to firestore update func ==> cloneDeep to preserve currentUser.waterSettings
-    const settings = cloneDeep(currentUser.waterSettings);
+    // settings will be passed to firestore update func ==> cloneDeep to preserve currentUser.w
+    const settings = cloneDeep(currentUser.w);
 
     // case 1: check if unit settings changed
-    if (currentUser.waterSettings !== unitToggle) {
+    if (currentUser.w !== unitToggle) {
       settings.u = unitToggle;
     }
 
     // case 2: check if goal changed ==> convert units if necessary
     if (goalInput !== '') {
       switch (settings.u) {
-        case 'mL':
+        case 'm':
           settings.g = parseFloat(goalInput);
           break;
-        case 'cups':
+        case 'c':
           settings.g = parseFloat((goalInput * 250).toFixed(2));
           break;
-        case 'oz':
+        case 'o':
           settings.g = parseFloat((goalInput * 29.5735).toFixed(2));
           break;
         default:
@@ -124,11 +125,11 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     }
 
     // case 3: check if tracking settings changed
-    if (currentUser.waterSettings.e !== trackingToggle) {
+    if (currentUser.w.e !== trackingToggle) {
       settings.e = trackingToggle;
-      // If tracking is disabled, also set goal to 0, to accurately depict a goal of 0 in metrics.
+      // If tracking is disabled, also set goal to null
       if (trackingToggle === false) {
-        settings.g = 0;
+        settings.g = null;
       } else {
         // If the user enabled tracking but did not provide a value, set it to a goal of 1250 mL.
         if (goalInput === '') {
@@ -139,9 +140,9 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
     // compare currentUser settings in firestore and settings in state
     if (
-      currentUser.waterSettings.g !== settings.g ||
-      currentUser.waterSettings.u !== settings.u ||
-      currentUser.waterSettings.e !== settings.e
+      currentUser.w.g !== settings.g ||
+      currentUser.w.u !== settings.u ||
+      currentUser.w.e !== settings.e
     ) {
       // try to update firebase, store results to check if error or success
       await updateWaterSettings(currentUser.id, settings).then((result) => {
@@ -163,21 +164,21 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   let waterDescription;
 
   switch (unitToggle) {
-    case 'mL':
+    case 'm':
       waterDescription = (
         <div>
           <div>Water consumption will be displayed in mL by default.</div>
         </div>
       );
       break;
-    case 'cups':
+    case 'c':
       waterDescription = (
         <div>
           <div>Water consumption will be displayed in cups by default.</div>
         </div>
       );
       break;
-    case 'oz':
+    case 'o':
       waterDescription = (
         <div>
           <div>Water consumption will be displayed in ounces by default.</div>
@@ -190,15 +191,15 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
   let toggleIcon, goalDesc, unitDesc, currentGoal;
 
-  switch (currentUser.waterSettings.u) {
-    case 'mL':
-      currentGoal = currentUser.waterSettings.g;
+  switch (currentUser.w.u) {
+    case 'm':
+      currentGoal = currentUser.w.g;
       break;
-    case 'cups':
-      currentGoal = (currentUser.waterSettings.g / 250).toFixed(2);
+    case 'c':
+      currentGoal = (currentUser.w.g / 250).toFixed(2);
       break;
-    case 'oz':
-      currentGoal = (currentUser.waterSettings.g / 29.5735).toFixed(2);
+    case 'o':
+      currentGoal = (currentUser.w.g / 29.5735).toFixed(2);
       break;
     default:
       break;
@@ -215,12 +216,12 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
               type='number'
               value={goalInput}
               onChange={handleChange}
-              placeholder={`set goal (${unitToggle})`}
+              placeholder={`set goal (${UNITS[unitToggle]})`}
               className='water-in'
             />
           </div>
           <div>
-            Current goal is {currentGoal} {currentUser.waterSettings.u} per day.
+            Current goal is {currentGoal} {UNITS[currentUser.w.u]} per day.
           </div>
         </div>
       </div>
@@ -229,15 +230,15 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     unitDesc = (
       <div className='water-set-c'>
         <div className='toggle'>
-          <div className={`${getStyle('mL')} mL opt`} onClick={toggleMl}>
+          <div className={`${getStyle('m')} mL opt`} onClick={toggleMl}>
             ML
           </div>
           <div className='separator'></div>
-          <div className={`${getStyle('cups')} cups opt`} onClick={toggleCups}>
+          <div className={`${getStyle('c')} cups opt`} onClick={toggleCups}>
             CUPS
           </div>
           <div className='separator'></div>
-          <div className={`${getStyle('oz')} oz opt`} onClick={toggleOz}>
+          <div className={`${getStyle('o')} oz opt`} onClick={toggleOz}>
             OZ
           </div>
         </div>
@@ -286,7 +287,6 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
   toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
 });
 

@@ -9,7 +9,7 @@ import { FaChartPie } from 'react-icons/fa';
 import './current-diet.styles.scss';
 
 const CurrentDiet = ({ diet, carbSettings }) => {
-  // load 0 as default values if currentUser.diet data hasn't been loaded into state yet
+  // load 0 as default values if currentUser.d data hasn't been loaded into state yet
   let fats = 0;
   let protein = 0;
   let carbs = 0;
@@ -17,13 +17,14 @@ const CurrentDiet = ({ diet, carbSettings }) => {
 
   fats = diet.f;
   protein = diet.p;
-  carbs = diet.c;
   calories = diet.e;
+  carbs = diet.c;
 
   let carbType = 'carbs';
 
   if (carbSettings === 'n') {
     carbType = 'net carbs';
+    carbs = diet.k;
   }
 
   return (

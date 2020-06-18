@@ -47,12 +47,11 @@ const SearchFoodModal = ({
   allowUpdateFirebase,
   foodReference,
   createFoodReference,
-  suggestionWindow,
   entry,
+  currentDiet,
   searchModal,
   setEntry,
   carbSettings,
-  diet,
   favModal,
   customFoodModal,
   waterSettings,
@@ -60,54 +59,69 @@ const SearchFoodModal = ({
   const [chartData, setChartData] = useState({});
   const [sizeInput, setSizeInput] = useState('');
 
-  let calories;
-  let fats;
-  let carbs;
-  let protein;
-  let netCarbs;
+  // ref value is the macro value stored in the foodReference object
+  const macros = {
+    f: {
+      refValue: 0,
+      mealTotal: 0,
+      dailyTotal: 0,
+    },
+    c: {
+      refValue: 0,
+      mealTotal: 0,
+      dailyTotal: 0,
+    },
+    k: {
+      refValue: 0,
+      mealTotal: 0,
+      dailyTotal: 0,
+    },
+    d: {
+      refValue: 0,
+      mealTotal: 0,
+      dailyTotal: 0,
+    },
+    p: {
+      refValue: 0,
+      mealTotal: 0,
+      dailyTotal: 0,
+    },
+    e: {
+      refValue: 0,
+      mealTotal: 0,
+      dailyTotal: 0,
+    },
+  };
 
+  // refers to the keys in the food entry, breakfast, lunch, dinner, snacks
+  const meals = ['b', 'l', 'd', 's'];
+
+  // Handles calculating macro values for food items
   if (foodReference !== '') {
-    // renders macros based on user's size input,
     if (sizeInput !== '') {
-      switch (searchModal.editMode) {
-        // all macro data is based off 100g or 100ml in the usda database
-        case false:
-          calories = ((foodReference.e / 100) * sizeInput).toFixed(1);
-          fats = ((foodReference.f / 100) * sizeInput).toFixed(1);
-          carbs = ((foodReference.c / 100) * sizeInput).toFixed(1);
-          protein = ((foodReference.p / 100) * sizeInput).toFixed(1);
-          netCarbs = ((foodReference.k / 100) * sizeInput).toFixed(1);
-          break;
-        // if a user already designated a portion size, divide by portion size to get macros per g/ml
-        case true:
-          calories = (
-            (foodReference.e / foodReference.size) *
+      // Case 1: If editing an existing food item, pull the size value and calculate macros with it
+      if (searchModal.editMode) {
+        Object.keys(macros).forEach((macro) => {
+          macros[macro].refValue = (
+            (foodReference[macro] / foodReference.size) *
             sizeInput
           ).toFixed(1);
-          fats = ((foodReference.f / foodReference.size) * sizeInput).toFixed(
-            1
-          );
-          carbs = ((foodReference.c / foodReference.size) * sizeInput).toFixed(
-            1
-          );
-          protein = (
-            (foodReference.p / foodReference.size) *
+        });
+      } else {
+        // Case 2: If not editing an existing item display
+        Object.keys(macros).forEach((macro) => {
+          macros[macro].refValue = (
+            (foodReference[macro] / 100) *
             sizeInput
           ).toFixed(1);
-          netCarbs = (
-            (foodReference.k / foodReference.size) *
-            sizeInput
-          ).toFixed(1);
-          break;
-        default:
-          break;
+        });
       }
-    } else {
-      fats = foodReference.f.toFixed(1);
-      carbs = foodReference.c.toFixed(1);
-      protein = foodReference.p.toFixed(1);
-      calories = foodReference.e.toFixed(1);
-      netCarbs = foodReference.k.toFixed(1);
+    }
+    // Case 3: if no size input supplied, display the macros as they are stored in the database, based per 100g
+    else {
+      Object.keys(macros).forEach((macro) => {
+        macros[macro].refValue = foodReference[macro].toFixed(1);
+      });
     }
   }
 
@@ -140,137 +154,73 @@ const SearchFoodModal = ({
     }
   };
 
-  const openAddCustomFoodModal = () => {
-    handleClose('maintainMeal');
-    toggleCreateFoodModal({
-      status: 'visible',
+  const retotalMacros = () => {
+    const entryCopy = Object.assign({}, entry);
+
+    // calculate each macro total for the current meal (stored in searchModal.meal)
+    Object.keys(macros).forEach((macro) => {
+      macros[macro].mealTotal = entry[searchModal.meal].f.reduce(
+        (accumulator, food) => {
+          return (accumulator += food[macro]);
+        },
+        0
+      );
+
+      // push the total to the entry copy
+      entryCopy[searchModal.meal].t[macro] = parseFloat(
+        macros[macro].mealTotal.toFixed(1)
+      );
     });
-  };
 
-  const openWaterModal = () => {
-    handleClose('maintainMeal');
-    toggleWaterModal({
-      status: 'visible',
+    // calculate daily totals for each macro
+    meals.forEach((meal) => {
+      Object.keys(macros).forEach((macro) => {
+        macros[macro].dailyTotal += entry[meal].t[macro];
+      });
     });
-  };
 
-  const openViewFavsModal = () => {
-    handleClose('maintainMeal');
-    toggleFavsModal({
-      status: 'visible',
+    // finally, push the daily totals to the entry copy
+    Object.keys(macros).forEach((macro) => {
+      entryCopy.m[macro] = parseFloat(macros[macro].dailyTotal.toFixed(1));
     });
-  };
 
-  const openCustomFoodModal = () => {
-    handleClose('maintainMeal');
-    toggleCustomFoodsModal({
-      status: 'visible',
-    });
-  };
-
-  const recalculateTotals = (entry) => {
-    if (entry !== '') {
-      const fats = entry[searchModal.meal]['foods'].reduce(
-        (accumulator, food) => {
-          return (accumulator += food.f);
-        },
-        0
-      );
-      const carbs = entry[searchModal.meal]['foods'].reduce(
-        (accumulator, food) => {
-          return (accumulator += food.c);
-        },
-        0
-      );
-      const protein = entry[searchModal.meal]['foods'].reduce(
-        (accumulator, food) => {
-          return (accumulator += food.p);
-        },
-        0
-      );
-      const calories = entry[searchModal.meal]['foods'].reduce(
-        (accumulator, food) => {
-          return (accumulator += food.e);
-        },
-        0
-      );
-      const fiber = entry[searchModal.meal]['foods'].reduce(
-        (accumulator, food) => {
-          return (accumulator += food.d);
-        },
-        0
-      );
-      const netCarbs = entry[searchModal.meal]['foods'].reduce(
-        (accumulator, food) => {
-          return (accumulator += food.k);
-        },
-        0
-      );
-
-      const copy = Object.assign({}, entry);
-
-      copy[searchModal.meal]['totals']['f'] = parseFloat(fats.toFixed(1));
-      copy[searchModal.meal]['totals']['c'] = parseFloat(carbs.toFixed(1));
-      copy[searchModal.meal]['totals']['p'] = parseFloat(protein.toFixed(1));
-      copy[searchModal.meal]['totals']['e'] = parseFloat(calories.toFixed(1));
-      copy[searchModal.meal]['totals']['d'] = parseFloat(fiber.toFixed(1));
-      copy[searchModal.meal]['totals']['k'] = parseFloat(netCarbs.toFixed(1));
-
-      return copy;
-    }
+    return entryCopy;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date to limit abuse
-    if (dateWriteable(entry.date.seconds * 1000) === true) {
+    if (dateWriteable(entry.t.seconds * 1000) === true) {
       if (sizeInput !== '') {
         let foodCopy = Object.assign({}, foodReference);
         let entryCopy = Object.assign({}, entry);
         switch (searchModal.editMode) {
           case false:
             if (sizeInput !== '') {
-              foodCopy.e = parseFloat(
-                ((foodReference.e / 100) * sizeInput).toFixed(1)
-              );
-              foodCopy.f = parseFloat(
-                ((foodReference.f / 100) * sizeInput).toFixed(1)
-              );
-              foodCopy.c = parseFloat(
-                ((foodReference.c / 100) * sizeInput).toFixed(1)
-              );
-              foodCopy.p = parseFloat(
-                ((foodReference.p / 100) * sizeInput).toFixed(1)
-              );
-              foodCopy.d = parseFloat(
-                ((foodReference.d / 100) * sizeInput).toFixed(1)
-              );
-              foodCopy.k = parseFloat(
-                ((foodReference.k / 100) * sizeInput).toFixed(1)
-              );
+              Object.keys(macros).forEach((macro) => {
+                foodCopy[macro] = parseFloat(
+                  ((foodReference[macro] / 100) * sizeInput).toFixed(1)
+                );
+              });
+
               foodCopy.size = parseFloat(sizeInput);
 
-              entryCopy[searchModal.meal]['foods'].push(foodCopy);
+              entryCopy[searchModal.meal].f.push(foodCopy);
             }
             break;
           case true:
             if (sizeInput !== '') {
-              foodCopy.f = parseFloat(fats);
-              foodCopy.c = parseFloat(carbs);
-              foodCopy.k = parseFloat(netCarbs);
-              foodCopy.p = parseFloat(protein);
-              foodCopy.e = parseFloat(calories);
+              Object.keys(macros).forEach((macro) => {
+                foodCopy[macro] = parseFloat(macros[macro].refValue);
+              });
               foodCopy.size = parseFloat(sizeInput);
 
               // remove the edited food from the entry obj
-              entryCopy[searchModal.meal]['foods'].splice(
-                searchModal.listId,
-                1
-              );
+              entryCopy[searchModal.meal].f.splice(searchModal.listId, 1);
 
               // add the updated food to the entry obj back where it used to be
-              entryCopy[searchModal.meal]['foods'].splice(
+              entryCopy[searchModal.meal].f.splice(
                 searchModal.listId,
                 0,
                 foodCopy
@@ -282,10 +232,7 @@ const SearchFoodModal = ({
         }
 
         // recalculate meal totals
-        let updatedEntry = recalculateTotals(entryCopy);
-
-        // recalculate daily totals
-        updatedEntry = recalculateDailyTotals(updatedEntry);
+        let updatedEntry = retotalMacros(entryCopy);
 
         // calculate whether goal performance, if today === entry date
         updatedEntry = calculatePrecision(updatedEntry);
@@ -324,18 +271,15 @@ const SearchFoodModal = ({
 
   const handleDelete = () => {
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date, to limit abuse
-    if (dateWriteable(entry.date.seconds * 1000) === true) {
+    if (dateWriteable(entry.t.seconds * 1000) === true) {
       // entry state is immutable so make a copy of it first because pushing the edited version
       const entryCopy = Object.assign({}, entry);
 
       // remove the edited food from the entry obj
-      entryCopy[searchModal.meal]['foods'].splice(searchModal.listId, 1);
+      entryCopy[searchModal.meal].f.splice(searchModal.listId, 1);
 
       // recalculate meal totals
-      let updatedEntry = recalculateTotals(entryCopy);
-
-      // recalculate daily totals
-      updatedEntry = recalculateDailyTotals(updatedEntry);
+      let updatedEntry = retotalMacros(entryCopy);
 
       // calculate goal performance, if today === entry date
       updatedEntry = calculatePrecision(updatedEntry);
@@ -365,77 +309,36 @@ const SearchFoodModal = ({
     }
   };
 
-  const recalculateDailyTotals = (entry) => {
-    const meals = ['Breakfast', 'Lunch', 'Dinner', 'Snacks'];
-
-    let dailyFats = 0;
-    let dailyProtein = 0;
-    let dailyCarbs = 0;
-    let dailyFiber = 0;
-    let dailyNetCarbs = 0;
-    let dailyCalories = 0;
-
-    if (entry !== '') {
-      meals.forEach((meal) => {
-        dailyFats += entry[meal].totals.f;
-        dailyProtein += entry[meal].totals.p;
-        dailyCarbs += entry[meal].totals.c;
-        dailyFiber += entry[meal].totals.d;
-        dailyNetCarbs += entry[meal].totals.k;
-        dailyCalories += entry[meal].totals.e;
-      });
-    }
-
-    const copy = Object.assign({}, entry);
-
-    copy.dailyMacros = {
-      f: parseFloat(dailyFats.toFixed(1)),
-      p: parseFloat(dailyProtein.toFixed(1)),
-      c: parseFloat(dailyCarbs.toFixed(1)),
-      d: parseFloat(dailyFiber.toFixed(1)),
-      e: parseFloat(dailyCalories.toFixed(1)),
-      k: parseFloat(dailyNetCarbs.toFixed(1)),
-    };
-
-    return copy;
-  };
-
   const calculatePrecision = (entry) => {
     let today = new Date();
     today = today.setHours(0, 0, 0, 0);
 
     // only allow the diet snapshot to change if it is not in the past
-    if (entry.date.seconds * 1000 >= today) {
-      entry.goals.diet.snapshot.f = diet.f;
-      entry.goals.diet.snapshot.c = diet.c;
-      entry.goals.diet.snapshot.p = diet.p;
-      entry.goals.diet.snapshot.e = diet.e;
-      entry.goals.water.snapshot.w = waterSettings.g;
-    }
+    if (entry.t.seconds * 1000 >= today) {
+      // determine what the user's active diet g are ==> update diet snapshot and goal precision accordingly
+      let dietGoals = Object.keys(currentDiet);
 
-    // assume every entry update is the last of the day ==> calculate precision
-    entry.goals.diet.precision.e = parseFloat(
-      (entry.dailyMacros.e / diet.e).toFixed(2)
-    );
-    entry.goals.diet.precision.p = parseFloat(
-      (entry.dailyMacros.p / diet.p).toFixed(2)
-    );
-    entry.goals.diet.precision.f = parseFloat(
-      (entry.dailyMacros.f / diet.f).toFixed(2)
-    );
-    // if the user's carb settings are net, use net carbs for calculating carb goal
-    if (carbSettings === 'n') {
-      entry.goals.diet.precision.c = parseFloat(
-        (entry.dailyMacros.k / diet.c).toFixed(2)
-      );
-    } else {
-      entry.goals.diet.precision.c = parseFloat(
-        (entry.dailyMacros.c / diet.c).toFixed(2)
-      );
+      dietGoals.forEach((goal) => {
+        if (currentDiet[goal] !== null) {
+          entry.g.d.s[goal] = currentDiet[goal];
+          entry.g.d.p[goal] = parseFloat(
+            (entry.m[goal] / currentDiet[goal]).toFixed(2)
+          );
+        } else {
+          entry.g.d.s[goal] = null;
+          entry.g.d.p[goal] = null;
+        }
+      });
+
+      // also make sure to include the user's water goal if it exists
+      if (waterSettings.e) {
+        entry.g.w.s.w = waterSettings.g;
+        entry.g.w.p.w = parseFloat((entry.w.t / waterSettings.g).toFixed(2));
+      } else {
+        entry.g.w.s.w = null;
+        entry.g.w.p.w = null;
+      }
     }
-    entry.goals.water.precision.w = parseFloat(
-      (entry.water.t / waterSettings.g).toFixed(2)
-    );
 
     return entry;
   };
@@ -456,12 +359,38 @@ const SearchFoodModal = ({
     }
   };
 
-  let labels;
+  let labels = ['fats', 'carbs', 'protein', 'calories'];
   if (carbSettings === 'n') {
     labels = ['fats', 'net carbs', 'protein', 'calories'];
-  } else {
-    labels = ['fats', 'carbs', 'protein', 'calories'];
   }
+
+  const openCreateFoodModal = () => {
+    handleClose('maintainMeal');
+    toggleCreateFoodModal({
+      status: 'visible',
+    });
+  };
+
+  const openWaterModal = () => {
+    handleClose('maintainMeal');
+    toggleWaterModal({
+      status: 'visible',
+    });
+  };
+
+  const openFavsModal = () => {
+    handleClose('maintainMeal');
+    toggleFavsModal({
+      status: 'visible',
+    });
+  };
+
+  const openCustomFoodModal = () => {
+    handleClose('maintainMeal');
+    toggleCustomFoodsModal({
+      status: 'visible',
+    });
+  };
 
   // chart options config
   const options = {
@@ -511,67 +440,53 @@ const SearchFoodModal = ({
 
   // update chart rendering based on input values
   useEffect(() => {
-    let fatsRemaining = 0;
-    let carbsRemaining = 0;
-    let proteinRemaining = 0;
-    let caloriesRemaining = 0;
-    let netCarbsRemaining = 0;
+    let remaining = {
+      f: 0,
+      c: 0,
+      d: 0,
+      k: 0,
+      p: 0,
+      e: 0,
+    };
+
+    // must point to primitive values in the obj as passing the entire object into useEffect causes loop rendering
+    let macrosCopy = {
+      f: macros.f.refValue,
+      c: macros.c.refValue,
+      d: macros.d.refValue,
+      k: macros.k.refValue,
+      p: macros.p.refValue,
+      e: macros.e.refValue,
+    };
 
     // switch block controls all of the chart rendering logic
-    switch (searchModal.editMode) {
-      case true:
-        if (sizeInput !== '') {
-          // render chart data based on user input
-          fatsRemaining = (fats / diet.f) * 100;
-          carbsRemaining = (carbs / diet.c) * 100;
-          netCarbsRemaining = (netCarbs / diet.c) * 100;
-          proteinRemaining = (protein / diet.p) * 100;
-          caloriesRemaining = (calories / diet.e) * 100;
-        } else {
-          // render chart data based on foodToEdit's existing macro data
-          fatsRemaining = (foodReference.f / diet.f) * 100;
-          carbsRemaining = (foodReference.c / diet.c) * 100;
-          netCarbsRemaining = (foodReference.k / diet.c) * 100;
-          proteinRemaining = (foodReference.p / diet.p) * 100;
-          caloriesRemaining = (foodReference.e / diet.e) * 100;
-        }
-        break;
-      case false:
-        if (sizeInput !== '') {
-          // render chart data based on user input
-          fatsRemaining = (fats / diet.f) * 100;
-          carbsRemaining = (carbs / diet.c) * 100;
-          netCarbsRemaining = (netCarbs / diet.c) * 100;
-          proteinRemaining = (protein / diet.p) * 100;
-          caloriesRemaining = (calories / diet.e) * 100;
-        } else {
-          // render chart data based on default macro data
-          fatsRemaining = (foodReference.f / diet.f) * 100;
-          carbsRemaining = (foodReference.c / diet.c) * 100;
-          netCarbsRemaining = (foodReference.k / diet.c) * 100;
-          proteinRemaining = (foodReference.p / diet.p) * 100;
-          caloriesRemaining = (foodReference.e / diet.e) * 100;
-        }
-        break;
-      default:
-        break;
+    if (sizeInput !== '') {
+      // render chart data based on user input
+      Object.keys(remaining).forEach((macro) => {
+        remaining[macro] = (macrosCopy[macro] / entry.g.d.s[macro]) * 100;
+      });
+    } else {
+      // render chart data based on foodToEdit's existing macro data
+      Object.keys(remaining).forEach((macro) => {
+        remaining[macro] = (foodReference[macro] / entry.g.d.s[macro]) * 100;
+      });
     }
 
     const chart = () => {
       let data;
       if (carbSettings === 'n') {
         data = [
-          fatsRemaining.toPrecision(3),
-          netCarbsRemaining.toPrecision(3),
-          proteinRemaining.toPrecision(3),
-          caloriesRemaining.toPrecision(3),
+          remaining.f.toPrecision(3),
+          remaining.k.toPrecision(3),
+          remaining.p.toPrecision(3),
+          remaining.e.toPrecision(3),
         ];
       } else {
         data = [
-          fatsRemaining.toPrecision(3),
-          carbsRemaining.toPrecision(3),
-          proteinRemaining.toPrecision(3),
-          caloriesRemaining.toPrecision(3),
+          remaining.f.toPrecision(3),
+          remaining.c.toPrecision(3),
+          remaining.p.toPrecision(3),
+          remaining.e.toPrecision(3),
         ];
       }
 
@@ -589,16 +504,16 @@ const SearchFoodModal = ({
 
     chart();
   }, [
-    suggestionWindow,
+    entry,
+    macros.f.refValue,
+    macros.c.refValue,
+    macros.d.refValue,
+    macros.k.refValue,
+    macros.p.refValue,
+    macros.e.refValue,
     sizeInput,
     searchModal,
-    calories,
-    carbs,
-    netCarbs,
-    fats,
-    protein,
     foodReference,
-    diet,
     carbSettings,
   ]);
 
@@ -649,10 +564,10 @@ const SearchFoodModal = ({
   let carbsOrNetCarbsLabel;
 
   if (carbSettings === 'n') {
-    carbsOrNetCarbs = netCarbs;
+    carbsOrNetCarbs = macros.k.refValue;
     carbsOrNetCarbsLabel = 'net carbs';
   } else {
-    carbsOrNetCarbs = carbs;
+    carbsOrNetCarbs = macros.c.refValue;
     carbsOrNetCarbsLabel = 'carbs';
   }
 
@@ -685,17 +600,17 @@ const SearchFoodModal = ({
 
         <div className='macro-r'>
           <div className='fats col'>
-            <span>{fats}</span>g<div className='l'>fats</div>
+            <span>{macros.f.refValue}</span>g<div className='l'>fats</div>
           </div>
           <div className='carbs col'>
             <span>{carbsOrNetCarbs}</span>g
             <div className='l'>{carbsOrNetCarbsLabel}</div>
           </div>
           <div className='protein col'>
-            <span>{protein}</span>g<div className='l'>protein</div>
+            <span>{macros.p.refValue}</span>g<div className='l'>protein</div>
           </div>
           <div className='calories col'>
-            <span className='val'>{calories}</span>
+            <span className='val'>{macros.e.refValue}</span>
             <div className='l'>calories</div>
           </div>
         </div>
@@ -712,10 +627,10 @@ const SearchFoodModal = ({
           <div>
             <GiFruitBowl
               className='fas fa-utensils add'
-              onClick={openAddCustomFoodModal}
+              onClick={openCreateFoodModal}
             />
           </div>
-          <div onClick={openViewFavsModal}>
+          <div onClick={openFavsModal}>
             <IoIosBookmark className='fas fa-bookmark fav' />
           </div>
           <div className='l'>Create Custom Food</div>
@@ -767,7 +682,7 @@ const mapStateToProps = createStructuredSelector({
   entry: selectEntry,
   searchModal: selectModal,
   carbSettings: selectCarbSettings,
-  diet: selectDietSettings,
+  currentDiet: selectDietSettings,
   userId: selectCurrentUserId,
   favModal: selectFavModalStatus,
   customFoodModal: selectCustomFoodsModalStatus,

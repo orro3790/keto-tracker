@@ -37,24 +37,24 @@ export const createUserDoc = async (userAuth, additionalData) => {
     const createdAt = new Date();
     try {
       await userRef.set({
-        createdAt,
-        email,
-        displayName,
-        hudModel: 'remaining',
-        diet: {
+        a: createdAt,
+        e: email,
+        n: displayName,
+        h: 'r',
+        d: {
           e: 2000,
           p: 100,
           c: 25,
           f: 166,
         },
-        carbSettings: 't',
-        membership: 's',
-        waterSettings: {
+        c: 't',
+        m: 's',
+        w: {
           e: true,
           g: 1250,
-          u: 'cups',
+          u: 'c',
         },
-        scheduled: {
+        s: {
           f: {},
           e: {},
         },
@@ -98,7 +98,7 @@ export const updateDiet = async (userId, macros) => {
   let today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Step 1: If today's entry already exists, stage an update to its diet snapshot
+  // STEP 1: If today's entry already exists, stage an update to its diet snapshot
   const todaysEntryRef = firestore.doc(
     `users/${userId}/foodDiary/${today / 1000}`
   );
@@ -106,16 +106,16 @@ export const updateDiet = async (userId, macros) => {
   const snapshot = await todaysEntryRef.get();
 
   if (snapshot.exists === true) {
-    batch.update(todaysEntryRef, { 'entry.goals.diet.snapshot': macros });
+    batch.update(todaysEntryRef, { 'entry.g.d.s': macros });
   }
 
-  // Step 2: Check if the user has any scheduled entries ==> stage updates to their diet snapshots
-  let scheduledEntries = Object.assign({}, userData.scheduled.f);
+  // STEP 2: Check if the user has any scheduled entries ==> stage updates to their diet snapshots
+  let scheduledEntries = Object.assign({}, userData.s.f);
 
   // keep track of whether or not the user's scheduled entries list will need to be updated
   let entriesEdited = false;
 
-  // Step 3: if entries are scheduled, remove any that have expired
+  // STEP 3: if entries are scheduled, remove any that have expired
   if (Object.keys(scheduledEntries).length > 0) {
     Object.keys(scheduledEntries).forEach((date) => {
       // Firestore timestamps are stored as seconds => * 1000 to convert to milliseconds
@@ -130,32 +130,32 @@ export const updateDiet = async (userId, macros) => {
 
   let dates = Object.keys(scheduledEntries);
 
-  // Step 4: if any entries are still scheduled, stage updates to their diet snapshots
+  // STEP 4: if any entries are still scheduled, stage updates to their diet snapshots
   if (dates.length > 0) {
     dates.forEach((date) => {
       const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
-      batch.update(entryRef, { 'entry.goals.diet.snapshot': macros });
+      batch.update(entryRef, { 'entry.g.d.s': macros });
     });
   }
 
-  // Step 5: stage update to diet settings and also stage update to the scheduled entries list if it was edited
+  // STEP 5: stage update to diet settings and also stage update to the scheduled entries list if it was edited
   switch (entriesEdited) {
     case true:
       batch.update(userRef, {
-        diet: macros,
-        'scheduled.f': scheduledEntries,
+        d: macros,
+        's.f': scheduledEntries,
       });
       break;
     case false:
       batch.update(userRef, {
-        diet: macros,
+        d: macros,
       });
       break;
     default:
       break;
   }
 
-  // Stage 6: commit all staged updates to firestore
+  // STEP 7: commit all staged updates to firestore
   try {
     batch.commit();
   } catch (error) {}
@@ -250,11 +250,12 @@ export const getEntry = async (
   const snapShot = await entryRef.get();
 
   // if this date doesn't exist in the foodDiary, return default entry object
+
   if (snapShot.exists === false) {
     const entry = {
-      Breakfast: {
-        foods: [],
-        totals: {
+      b: {
+        f: [],
+        t: {
           f: 0,
           c: 0,
           p: 0,
@@ -263,9 +264,9 @@ export const getEntry = async (
           k: 0,
         },
       },
-      Lunch: {
-        foods: [],
-        totals: {
+      l: {
+        f: [],
+        t: {
           f: 0,
           c: 0,
           p: 0,
@@ -274,9 +275,9 @@ export const getEntry = async (
           k: 0,
         },
       },
-      Dinner: {
-        foods: [],
-        totals: {
+      d: {
+        f: [],
+        t: {
           f: 0,
           c: 0,
           p: 0,
@@ -285,9 +286,9 @@ export const getEntry = async (
           k: 0,
         },
       },
-      Snacks: {
-        foods: [],
-        totals: {
+      s: {
+        f: [],
+        t: {
           f: 0,
           c: 0,
           p: 0,
@@ -296,11 +297,11 @@ export const getEntry = async (
           k: 0,
         },
       },
-      water: {
-        t: 0,
+      w: {
+        t: null,
       },
-      date: firebase.firestore.Timestamp.fromDate(anchor),
-      dailyMacros: {
+      t: firebase.firestore.Timestamp.fromDate(anchor),
+      m: {
         f: 0,
         c: 0,
         p: 0,
@@ -308,31 +309,53 @@ export const getEntry = async (
         d: 0,
         k: 0,
       },
-      goals: {
-        diet: {
-          snapshot: {
+      g: {
+        d: {
+          s: {
             f: dietSettings.f,
-            c: dietSettings.c,
+            c: null,
             p: dietSettings.p,
             e: dietSettings.e,
+            d: null,
+            k: null,
           },
-          precision: {
+          p: {
             f: 0,
-            c: 0,
+            c: null,
             p: 0,
             e: 0,
+            d: null,
+            k: null,
           },
         },
-        water: {
-          snapshot: {
-            w: waterSettings.g,
+        w: {
+          s: {
+            w: null,
           },
-          precision: {
-            w: 0,
+          p: {
+            w: null,
           },
         },
       },
     };
+
+    // if the user is tracking net carbs, total carbs, or fiber, include it in the default entry's nested goals object
+    const optionalMacros = ['c', 'k', 'd'];
+
+    optionalMacros.forEach((macro) => {
+      if (dietSettings[macro]) {
+        entry.g.d.s[macro] = dietSettings[macro];
+        entry.g.d.p[macro] = 0;
+      }
+    });
+
+    // if the user is tracking water, include it in the default entry's nested goals object and daily total
+    if (waterSettings.e) {
+      entry.w.t = 0;
+      entry.g.w.s.w = waterSettings.g;
+      entry.g.w.p.w = 0;
+    }
+
     return entry;
   } else {
     return snapShot.data().entry;
@@ -341,17 +364,17 @@ export const getEntry = async (
 
 export const updateEntry = async (userId, entry) => {
   const entryRef = firestore.doc(
-    `users/${userId}/foodDiary/${entry.date.seconds}`
+    `users/${userId}/foodDiary/${entry.t.seconds}`
   );
   // check to see if this entry is scheduled for the future (searchModal allows scheduling 7 days in adv.)
   let today = new Date();
 
-  if (entry.date.seconds * 1000 > today.getTime()) {
+  if (entry.t.seconds * 1000 > today.getTime()) {
     const userRef = firestore.doc(`users/${userId}`);
     try {
       // store the entry date as a key in the scheduled.f obj, no value needed
       userRef.update({
-        [`scheduled.f.${entry.date.seconds}`]: true,
+        [`s.f.${entry.t.seconds}`]: true,
       });
     } catch (error) {
       console.log(error);
@@ -371,16 +394,7 @@ export const signOut = () => {
   auth.signOut();
 };
 
-export const updateCarbSettings = async (userId, setting) => {
-  const userRef = firestore.doc(`users/${userId}`);
-  try {
-    await userRef.update({ carbSettings: setting });
-  } catch (error) {
-    console.log('error creating foodDiary entry', error.message);
-  }
-};
-
-export const updateWaterSettings = async (userId, waterSettings) => {
+export const updateCarbSettings = async (userId, diet, setting) => {
   const userRef = firestore.doc(`users/${userId}`);
 
   const userSnapshot = await userRef.get();
@@ -390,10 +404,14 @@ export const updateWaterSettings = async (userId, waterSettings) => {
   // Use a batch approach to ensure all-or-none updates
   let batch = firestore.batch();
 
+  // Stage 1: stage updates the user's carbSettings and diet
+  batch.update(userRef, { c: setting });
+  batch.update(userRef, { d: diet });
+
+  // STEP 2: If today's entry already exists, stage an update to its diet goal snapshot
   let today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // Step 1: If today's entry already exists, stage an update to its water goal snapshot
   const todaysEntryRef = firestore.doc(
     `users/${userId}/foodDiary/${today / 1000}`
   );
@@ -402,17 +420,17 @@ export const updateWaterSettings = async (userId, waterSettings) => {
 
   if (snapshot.exists === true) {
     batch.update(todaysEntryRef, {
-      'entry.goals.water.snapshot.w': waterSettings.g,
+      'entry.g.d.s': diet,
     });
   }
 
-  // Step 2: Check if the user has any scheduled entries ==> stage updates to their water goal snapshots
-  let scheduledEntries = Object.assign({}, userData.scheduled.f);
+  // STEP 3: Check if the user has any scheduled entries ==> stage updates to their carb goal snapshots
+  let scheduledEntries = Object.assign({}, userData.s.f);
 
   // keep track of whether or not the user's scheduled entries list will need to be updated
   let entriesEdited = false;
 
-  // Step 3: if entries are scheduled, remove any that have expired
+  // STEP 3: if entries are scheduled, remove any that have expired
   if (Object.keys(scheduledEntries).length > 0) {
     Object.keys(scheduledEntries).forEach((date) => {
       // Firestore timestamps are stored as seconds => * 1000 to convert to milliseconds
@@ -427,34 +445,102 @@ export const updateWaterSettings = async (userId, waterSettings) => {
 
   let dates = Object.keys(scheduledEntries);
 
-  // Step 4: if any entries are still scheduled, stage updates to their water goal snapshots
+  // STEP 4: if any entries are still scheduled, stage updates to their diet goal snapshots
   if (dates.length > 0) {
     dates.forEach((date) => {
       const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
       batch.update(entryRef, {
-        'entry.goals.water.snapshot.w': waterSettings.g,
+        'entry.g.d.s': diet,
       });
     });
   }
 
-  // Step 5: stage update to water settings and also stage update to the scheduled entries list if it was edited
-  switch (entriesEdited) {
-    case true:
-      batch.update(userRef, {
-        waterSettings: waterSettings,
-        'scheduled.f': scheduledEntries,
-      });
-      break;
-    case false:
-      batch.update(userRef, {
-        waterSettings: waterSettings,
-      });
-      break;
-    default:
-      break;
+  // STEP 5: also stage update to scheduled entries list if it was edited
+  if (entriesEdited) {
+    batch.update(userRef, {
+      's.f': scheduledEntries,
+    });
   }
 
-  // Stage 6: commit all staged updates to firestore
+  // LAST: commit all staged updates to firestore
+  try {
+    batch.commit();
+    return 'success';
+  } catch (error) {
+    return 'error';
+  }
+};
+
+export const updateWaterSettings = async (userId, waterSettings) => {
+  const userRef = firestore.doc(`users/${userId}`);
+
+  const userSnapshot = await userRef.get();
+
+  const userData = userSnapshot.data();
+
+  // Use a batch approach to ensure all-or-none updates
+  let batch = firestore.batch();
+
+  // STEP 1: Stage update to waterSettings
+  batch.update(userRef, {
+    w: waterSettings,
+  });
+
+  // STEP 2: if today's entry already exists, stage an update to its water goal snapshot
+  let today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todaysEntryRef = firestore.doc(
+    `users/${userId}/foodDiary/${today / 1000}`
+  );
+
+  const snapshot = await todaysEntryRef.get();
+
+  if (snapshot.exists === true) {
+    batch.update(todaysEntryRef, {
+      'entry.g.w.s.w': waterSettings.g,
+    });
+  }
+
+  // STEP 3: check if the user has any scheduled entries ==> stage updates to their water goal snapshots
+  let scheduledEntries = Object.assign({}, userData.s.f);
+
+  // keep track of whether or not the user's scheduled entries list will need to be updated
+  let entriesEdited = false;
+
+  // STEP 4: if entries are scheduled, remove any that have expired
+  if (Object.keys(scheduledEntries).length > 0) {
+    Object.keys(scheduledEntries).forEach((date) => {
+      // Firestore timestamps are stored as seconds => * 1000 to convert to milliseconds
+      let scheduledDate = new Date(date * 1000);
+
+      if (scheduledDate < today) {
+        delete scheduledEntries[date];
+        entriesEdited = true;
+      }
+    });
+  }
+
+  let dates = Object.keys(scheduledEntries);
+
+  // STEP 5: if any entries are still scheduled, stage updates to their water goal snapshots
+  if (dates.length > 0) {
+    dates.forEach((date) => {
+      const entryRef = firestore.doc(`users/${userId}/foodDiary/${date}`);
+      batch.update(entryRef, {
+        'entry.g.w.s.w': waterSettings.g,
+      });
+    });
+  }
+
+  // STEP 6: stage update to scheduled entries list if it was edited
+  if (entriesEdited) {
+    batch.update(userRef, {
+      's.f': scheduledEntries,
+    });
+  }
+
+  // STEP 7: commit all staged updates to firestore
   try {
     batch.commit();
     return 'success';
@@ -500,7 +586,7 @@ export const updateMetricsData = async (userId, membership) => {
     if (metricsCollectionSnapshot.empty === true) {
       const foodDiaryCollectionSnapshot = await firestore
         .collection(`users/${userId}/foodDiary`)
-        .where('entry.date', '<', today)
+        .where('entry.t', '<', today)
         .get();
 
       // Nest the entries in monthlyData, under keys generated from the month & year UNIX time
@@ -510,7 +596,7 @@ export const updateMetricsData = async (userId, membership) => {
         const data = snapshot.data();
 
         // Reduce entry's date to the month, determining where to nest the data
-        let date = data.entry.date.seconds;
+        let date = data.entry.t.seconds;
         // Convert back to milliseconds to adjust date
         let month = new Date(date * 1000).setDate(1);
         // Convert back to seconds for storing in firestore
@@ -526,9 +612,9 @@ export const updateMetricsData = async (userId, membership) => {
           Lunch: data.entry.Lunch.totals,
           Dinner: data.entry.Dinner.totals,
           Snacks: data.entry.Snacks.totals,
-          dailyMacros: data.entry.dailyMacros,
-          water: data.entry.water,
-          goals: data.entry.goals,
+          m: data.entry.m,
+          water: data.entry.w,
+          g: data.entry.g,
         };
       });
 
@@ -553,8 +639,8 @@ export const updateMetricsData = async (userId, membership) => {
       // Query the foodDiary from latest date in metrics collection onwards, not including today
       const foodDiaryCollectionSnapshot = await firestore
         .collection(`users/${userId}/foodDiary`)
-        .where('entry.date', '>', lastDayWithData)
-        .where('entry.date', '<', today)
+        .where('entry.t', '>', lastDayWithData)
+        .where('entry.t', '<', today)
         .get();
 
       // Nest the entries in monthlyData, under keys generated from the month & year UNIX time
@@ -564,7 +650,7 @@ export const updateMetricsData = async (userId, membership) => {
         const data = snapshot.data();
 
         // Reduce entry's date to the month, determining where to nest the data
-        let date = data.entry.date.seconds;
+        let date = data.entry.t.seconds;
         // Convert back to milliseconds to adjust date
         let month = new Date(date * 1000).setDate(1);
         // Convert back to seconds for storing in firestore
@@ -580,9 +666,9 @@ export const updateMetricsData = async (userId, membership) => {
           Lunch: data.entry.Lunch.totals,
           Dinner: data.entry.Dinner.totals,
           Snacks: data.entry.Snacks.totals,
-          dailyMacros: data.entry.dailyMacros,
-          water: data.entry.water,
-          goals: data.entry.goals,
+          m: data.entry.m,
+          water: data.entry.w,
+          g: data.entry.g,
         };
       });
 

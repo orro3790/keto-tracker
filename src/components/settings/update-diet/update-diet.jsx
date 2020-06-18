@@ -14,36 +14,45 @@ import { GiHealthIncrease } from 'react-icons/gi';
 import './update-diet.styles.scss';
 
 const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
-  const [fatLimit, setFatLimit] = useState('');
-  const [carbLimit, setCarbLimit] = useState('');
-  const [proteinLimit, setProteinLimit] = useState('');
-  const [calorieLimit, setCalorieLimit] = useState('');
+  const [fatGoal, setFatGoal] = useState('');
+  const [carbGoal, setCarbGoal] = useState('');
+  const [proteinGoal, setProteinGoal] = useState('');
+  const [calorieGoal, setCalorieGoal] = useState('');
+  const grams = {
+    f: 0,
+    c: 0,
+    p: 0,
+  };
 
-  // check that all fields are filled
-  let fieldsFilled = false;
-
-  if (
-    fatLimit !== '' &&
-    carbLimit !== '' &&
-    proteinLimit !== '' &&
-    calorieLimit !== ''
-  ) {
-    fieldsFilled = true;
+  // calculate the macro % goal in grams and store it in the grams obj
+  if (fatGoal !== '') {
+    grams.f = parseInt(((fatGoal / 100) * calorieGoal) / 9);
+  }
+  if (grams.c !== '') {
+    grams.c = parseInt(((carbGoal / 100) * calorieGoal) / 4);
+  }
+  if (grams.p !== '') {
+    grams.p = parseInt(((proteinGoal / 100) * calorieGoal) / 4);
   }
 
-  // check that total percentages add up to 100
+  // validation 1: check that all fields are filled
+  let fieldsFilled =
+    fatGoal !== '' &&
+    carbGoal !== '' &&
+    proteinGoal !== '' &&
+    calorieGoal !== '';
+
+  // validation 2: check that total percentages add up to 100
   let totalPercentage = 0;
 
-  if (fatLimit !== '') {
-    totalPercentage += parseFloat(fatLimit);
+  if (fatGoal !== '') {
+    totalPercentage += parseFloat(fatGoal);
   }
-
-  if (carbLimit !== '') {
-    totalPercentage += parseFloat(carbLimit);
+  if (carbGoal !== '') {
+    totalPercentage += parseFloat(carbGoal);
   }
-
-  if (proteinLimit !== '') {
-    totalPercentage += parseFloat(proteinLimit);
+  if (proteinGoal !== '') {
+    totalPercentage += parseFloat(proteinGoal);
   }
 
   // in order to check whether sum of percentages === 100, apply .toPrecision(3), then convert back to int
@@ -56,8 +65,22 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
     isSubmittable = true;
   }
 
-  // handles conditional rendering of error divs
+  // collect any errors
+  let errors = [];
 
+  if (fieldsFilled && totalPercentage !== 100 && totalPercentage < 100) {
+    errors.push({
+      error: 'Sum of percentages not 100%.',
+    });
+  }
+
+  if (totalPercentage > 100) {
+    errors.push({
+      error: 'Sum of percentages > 100%.',
+    });
+  }
+
+  // render errors to UI
   const renderErrors = (errorsArray) => {
     return errorsArray.map((error) => (
       <div className='diet-form-row' key={error.error}>
@@ -66,21 +89,7 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
     ));
   };
 
-  let metaErrors = [];
-
-  if (fieldsFilled && totalPercentage !== 100 && totalPercentage < 100) {
-    metaErrors.push({
-      error: 'Sum of percentages not 100%.',
-    });
-  }
-
-  if (totalPercentage > 100) {
-    metaErrors.push({
-      error: 'Sum of percentages > 100%.',
-    });
-  }
-
-  let errorModal = renderErrors(metaErrors);
+  let error = renderErrors(errors);
 
   const handleChange = (e) => {
     // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
@@ -90,19 +99,19 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
     const macrosPermitted = /^\d{0,3}(\.\d{1})?$/;
 
     switch (e.target.name) {
-      case 'calorieLimit':
+      case 'calorieGoal':
         if (e.target.value.match(caloriesPermitted))
-          setCalorieLimit(e.target.value);
+          setCalorieGoal(e.target.value);
         break;
-      case 'fatLimit':
-        if (e.target.value.match(macrosPermitted)) setFatLimit(e.target.value);
+      case 'fatGoal':
+        if (e.target.value.match(macrosPermitted)) setFatGoal(e.target.value);
         break;
-      case 'carbLimit':
-        if (e.target.value.match(macrosPermitted)) setCarbLimit(e.target.value);
+      case 'carbGoal':
+        if (e.target.value.match(macrosPermitted)) setCarbGoal(e.target.value);
         break;
-      case 'proteinLimit':
+      case 'proteinGoal':
         if (e.target.value.match(macrosPermitted))
-          setProteinLimit(e.target.value);
+          setProteinGoal(e.target.value);
         break;
       default:
         break;
@@ -115,11 +124,22 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
       let updatedDiet = Object.assign({}, diet);
 
       updatedDiet = {
-        f: parseInt(fatsInGrams),
-        c: parseInt(carbsInGrams),
-        p: parseInt(proteinInGrams),
-        e: parseInt(calorieLimit),
+        f: parseInt(grams.f),
+        p: parseInt(grams.p),
+        e: parseInt(calorieGoal),
       };
+
+      // append carb limit as either net carbs or total carbs goal
+      switch (carbSettings) {
+        case 't':
+          updatedDiet.c = parseInt(grams.c);
+          break;
+        case 'n':
+          updatedDiet.k = parseInt(grams.c);
+          break;
+        default:
+          break;
+      }
 
       // now update the data in firestore
       updateDiet(userId, updatedDiet);
@@ -135,29 +155,13 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
       toggleAlertModal({
         title: 'OOPS!',
         msg:
-          'Make sure all fields have been filled in before trying to save your settings.',
+          'Make sure all fields have been filled in properly before trying to save your settings.',
         img: 'error',
         status: 'visible',
         sticky: false,
       });
     }
   };
-
-  let fatsInGrams = 0;
-  let carbsInGrams = 0;
-  let proteinInGrams = 0;
-
-  if (fatLimit !== '') {
-    fatsInGrams = parseInt(((fatLimit / 100) * calorieLimit) / 9);
-  }
-
-  if (carbsInGrams !== '') {
-    carbsInGrams = parseInt(((carbLimit / 100) * calorieLimit) / 4);
-  }
-
-  if (proteinInGrams !== '') {
-    proteinInGrams = parseInt(((proteinLimit / 100) * calorieLimit) / 4);
-  }
 
   const getArrowStyle = (value) => {
     if (value) {
@@ -191,33 +195,33 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
         <div className='left-col'>
           <form className='diet-form' onSubmit={handleSubmit}>
             <FormInput
-              name='calorieLimit'
+              name='calorieGoal'
               type='number'
-              value={calorieLimit}
+              value={calorieGoal}
               onChange={handleChange}
               label={'calories per day'}
               className='diet-form-row'
             />
             <FormInput
-              name='fatLimit'
+              name='fatGoal'
               type='number'
-              value={fatLimit}
+              value={fatGoal}
               onChange={handleChange}
               label={'desired % fats'}
               className='diet-form-row'
             />
             <FormInput
-              name='carbLimit'
+              name='carbGoal'
               type='number'
-              value={carbLimit}
+              value={carbGoal}
               onChange={handleChange}
               label={carbLabel}
               className='diet-form-row'
             />
             <FormInput
-              name='proteinLimit'
+              name='proteinGoal'
               type='number'
-              value={proteinLimit}
+              value={proteinGoal}
               onChange={handleChange}
               label={'desired % protein'}
               className='diet-form-row'
@@ -226,37 +230,37 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
         </div>
         <div className='center-col'>
           <div className='diet-form-row'>
-            <FaArrowAltCircleRight className={getArrowStyle(calorieLimit)} />
+            <FaArrowAltCircleRight className={getArrowStyle(calorieGoal)} />
           </div>
           <div className='diet-form-row'>
-            <FaArrowAltCircleRight className={getArrowStyle(fatLimit)} />
+            <FaArrowAltCircleRight className={getArrowStyle(fatGoal)} />
           </div>
           <div className='diet-form-row'>
-            <FaArrowAltCircleRight className={getArrowStyle(carbLimit)} />
+            <FaArrowAltCircleRight className={getArrowStyle(carbGoal)} />
           </div>
           <div className='diet-form-row'>
-            <FaArrowAltCircleRight className={getArrowStyle(proteinLimit)} />
+            <FaArrowAltCircleRight className={getArrowStyle(proteinGoal)} />
           </div>
         </div>
         <div className='right-col'>
-          <div className={getOutputStyle(calorieLimit)}>
-            {`${calorieLimit} cal / day`}
+          <div className={getOutputStyle(calorieGoal)}>
+            {`${calorieGoal} cal / day`}
           </div>
-          <div className={getOutputStyle(fatLimit)}>
-            {`${fatsInGrams} g fat / day`}
+          <div className={getOutputStyle(fatGoal)}>
+            {`${grams.f} g fat / day`}
           </div>
-          <div className={getOutputStyle(carbLimit)}>
-            {`${carbsInGrams} g carbs / day`}
+          <div className={getOutputStyle(carbGoal)}>
+            {`${grams.c} g carbs / day`}
           </div>
-          <div className={getOutputStyle(proteinLimit)}>
-            {`${proteinInGrams} g protein / day`}
+          <div className={getOutputStyle(proteinGoal)}>
+            {`${grams.p} g protein / day`}
           </div>
         </div>
         <button className='save-btn' type='submit' onClick={handleSubmit}>
           Save
         </button>
         <div></div>
-        <div className='error'>{errorModal}</div>
+        <div className='error'>{error}</div>
       </div>
     </div>
   );

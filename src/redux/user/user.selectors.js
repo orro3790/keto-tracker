@@ -14,12 +14,12 @@ export const selectCurrentUserId = createSelector(
 
 export const selectCarbSettings = createSelector(
   [selectUser],
-  (user) => user.currentUser.carbSettings
+  (user) => user.currentUser.c
 );
 
 export const selectDietSettings = createSelector(
   [selectUser],
-  (user) => user.currentUser.diet
+  (user) => user.currentUser.d
 );
 
 export const selectFavFoods = createSelector(
@@ -34,10 +34,10 @@ export const selectCustomFoods = createSelector(
 
 export const selectWaterSettings = createSelector(
   [selectUser],
-  (user) => user.currentUser.waterSettings
+  (user) => user.currentUser.w
 );
 
 export const selectMembershipSettings = createSelector(
   [selectUser],
-  (user) => user.currentUser.membership
+  (user) => user.currentUser.m
 );

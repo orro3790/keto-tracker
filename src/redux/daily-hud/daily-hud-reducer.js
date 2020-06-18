@@ -1,7 +1,7 @@
 import { DailyHudActionTypes } from './daily-hud.types';
 
 const INITIAL_STATE = {
-  hudModel: 'remaining',
+  hudModel: 'r',
 };
 
 const dailyHudReducer = (state = INITIAL_STATE, action) => {

@@ -92,14 +92,14 @@ const GoalHitChart = ({ data, carbSettings }) => {
       Object.keys(data[month]).forEach((date) => {
         Object.keys(goalCount).forEach((goal) => {
           if (goal === 'w') {
-            let performance = data[month][date].goals.water.precision[goal];
+            let performance = data[month][date].g.w.p[goal];
             if (performance <= range.ceil && performance >= range.floor) {
               goalCount[goal].hit++;
             } else {
               goalCount[goal].miss++;
             }
           } else {
-            let performance = data[month][date].goals.diet.precision[goal];
+            let performance = data[month][date].g.precision[goal];
             if (performance <= range.ceil && performance >= range.floor) {
               goalCount[goal].hit++;
             } else {

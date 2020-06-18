@@ -183,7 +183,7 @@ const App = ({
           <Route
             path='/exercises'
             render={() =>
-              currentUser && currentUser.membership === 'p' ? (
+              currentUser && currentUser.m === 'p' ? (
                 <Exercises />
               ) : (
                 <Redirect to='/' />
@@ -193,7 +193,7 @@ const App = ({
           <Route
             path='/metrics'
             render={() =>
-              currentUser && currentUser.membership === 'p' ? (
+              currentUser && currentUser.m === 'p' ? (
                 <Metrics />
               ) : (
                 <Redirect to='/' />

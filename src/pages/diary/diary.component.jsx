@@ -63,27 +63,27 @@ const Diary = ({
         <DailyChart />
         <div className='meal-c'>
           <div>
-            <Meal meal={'Breakfast'} />
+            <Meal meal={'b'} />
           </div>
-          <TotalsChart meal={'Breakfast'} />
+          <TotalsChart meal={'b'} />
         </div>
         <div className='meal-c'>
           <div>
-            <Meal meal={'Lunch'} />
+            <Meal meal={'l'} />
           </div>
-          <TotalsChart meal={'Lunch'} />
+          <TotalsChart meal={'l'} />
         </div>
         <div className='meal-c'>
           <div>
-            <Meal meal={'Dinner'} />
+            <Meal meal={'d'} />
           </div>
-          <TotalsChart meal={'Dinner'} />
+          <TotalsChart meal={'d'} />
         </div>
         <div className='meal-c'>
           <div>
-            <Meal meal={'Snacks'} />
+            <Meal meal={'s'} />
           </div>
-          <TotalsChart meal={'Snacks'} />
+          <TotalsChart meal={'s'} />
         </div>
       </div>
     </div>

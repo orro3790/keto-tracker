@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { setCurrentUser } from '../../../redux/user/user.actions';
 import { updateCarbSettings } from '../../../firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
 import { GiWheat } from 'react-icons/gi';
+import { cloneDeep } from 'lodash';
 import './carb-settings.styles.scss';
 
-const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
-  const [toggle, setToggle] = useState(currentUser.carbSettings);
+const CarbSettings = ({ currentUser, toggleAlertModal }) => {
+  const [toggle, setToggle] = useState(currentUser.c);
 
   const OPTIONS = {
     t: 'total',
@@ -35,12 +35,22 @@ const CarbSettings = ({ currentUser, setCurrentUser, toggleAlertModal }) => {
   };
 
   const saveCarbSettings = () => {
-    if (currentUser.carbSettings !== toggle) {
-      // only push update if there's a change between state and user settings in firebase
-      updateCarbSettings(currentUser.id, toggle);
-      const userCopy = Object.assign({}, currentUser);
-      userCopy.carbSettings = toggle;
-      setCurrentUser(userCopy);
+    // only push update if there's a change between state and user settings in firebase
+    if (currentUser.c !== toggle) {
+      let userCopy = cloneDeep(currentUser);
+
+      // if user changed to net carbs => move total carb goal to net carb goal ==> set old goal to null, or vice versa
+      if (toggle === 'n') {
+        userCopy.d.k = userCopy.d.c;
+        userCopy.d.c = null;
+      } else {
+        userCopy.d.c = userCopy.d.k;
+        userCopy.d.k = null;
+      }
+
+      userCopy.c = toggle;
+
+      updateCarbSettings(userCopy.id, userCopy.d, toggle);
     }
 
     handleAlert();
@@ -110,7 +120,6 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setCurrentUser: (user) => dispatch(setCurrentUser(user)),
   toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
 });
 

@@ -33,6 +33,12 @@ const WaterModal = ({
   const [input, setInput] = useState('');
   const [toggle, setToggle] = useState('add');
 
+  const UNITS = {
+    c: 'cups',
+    m: 'mL',
+    o: 'oz',
+  };
+
   const handleClose = () => {
     toggleWaterModal({
       status: 'hidden',
@@ -61,7 +67,7 @@ const WaterModal = ({
     e.preventDefault();
 
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date to limit abuse
-    if (dateWriteable(entry.date.seconds * 1000) === true) {
+    if (dateWriteable(entry.t.seconds * 1000) === true) {
       if (input !== '') {
         // will need to refactor to include unit conversions
         let copy = Object.assign({}, entry);
@@ -78,14 +84,14 @@ const WaterModal = ({
           if (toggle === 'add') {
             title = 'WATER ADDED';
             switch (waterSettings.u) {
-              case 'mL':
-                totalMl = copy.water.t + parseFloat(input);
+              case 'm':
+                totalMl = copy.w.t + parseFloat(input);
                 break;
-              case 'cups':
-                totalMl = copy.water.t + parseFloat(input) * 250;
+              case 'c':
+                totalMl = copy.w.t + parseFloat(input) * 250;
                 break;
-              case 'oz':
-                totalMl = copy.water.t + parseFloat(input) * 29.5735;
+              case 'o':
+                totalMl = copy.w.t + parseFloat(input) * 29.5735;
                 break;
               default:
                 break;
@@ -93,16 +99,16 @@ const WaterModal = ({
           } else if (toggle === 'remove') {
             title = 'WATER REMOVED';
             switch (waterSettings.u) {
-              case 'mL':
-                totalMl = copy.water.t - parseFloat(input);
+              case 'm':
+                totalMl = copy.w.t - parseFloat(input);
                 break;
-              case 'cups':
+              case 'c':
                 conversion = parseFloat(input) * 250;
-                totalMl = copy.water.t - conversion;
+                totalMl = copy.w.t - conversion;
                 break;
-              case 'oz':
+              case 'o':
                 conversion = parseFloat(input) * 250;
-                totalMl = copy.water.t - conversion;
+                totalMl = copy.w.t - conversion;
                 break;
               default:
                 break;
@@ -117,7 +123,7 @@ const WaterModal = ({
         };
 
         switch (waterSettings.u) {
-          case 'mL':
+          case 'm':
             calculateRemainder();
             // alert: goal not yet reached
             if (remainder > 1 && negIntake === false) {
@@ -145,7 +151,7 @@ const WaterModal = ({
               img = '';
             }
             break;
-          case 'cups':
+          case 'c':
             calculateRemainder();
             // alert: goal not yet reached
             if (remainder > 1 && negIntake === false) {
@@ -187,7 +193,7 @@ const WaterModal = ({
               img = '';
             }
             break;
-          case 'oz':
+          case 'o':
             calculateRemainder();
             // alert: goal not yet reached
             if (remainder > 1 && negIntake === false) {
@@ -226,9 +232,9 @@ const WaterModal = ({
 
         // save adjusted water value & handle cases of negative daily water consumption.
         if (totalMl === 0) {
-          copy.water.t = totalMl;
+          copy.w.t = totalMl;
         } else {
-          copy.water.t = parseFloat(totalMl.toFixed(2));
+          copy.w.t = parseFloat(totalMl.toFixed(2));
         }
 
         allowUpdateFirebase(true);
@@ -276,10 +282,10 @@ const WaterModal = ({
   let goal = waterSettings.g;
 
   switch (waterSettings.u) {
-    case 'cups':
+    case 'c':
       goal = (waterSettings.g / 250).toFixed(2);
       break;
-    case 'oz':
+    case 'o':
       goal = (waterSettings.g / 29.5735).toFixed(2);
       break;
     default:
@@ -324,7 +330,7 @@ const WaterModal = ({
             <div className='desc'>
               Your goal is to consume
               <span className='goal'>
-                {goal} {waterSettings.u}
+                {goal} {UNITS[waterSettings.u]}
               </span>{' '}
               per day.
             </div>
@@ -357,7 +363,7 @@ const WaterModal = ({
               />
             </form>
             <div className='water-unit'>
-              <div>{waterSettings.u}</div>
+              <div>{UNITS[waterSettings.u]}</div>
             </div>
           </div>
         </div>

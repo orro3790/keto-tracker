@@ -16,14 +16,21 @@ const Meal = ({ meal, entry, currentUser }) => {
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
 
+  const MEALS = {
+    b: 'Breakfast',
+    l: 'Lunch',
+    d: 'Dinner',
+    s: 'Snacks',
+  };
+
   // handles the displaying of totals in the UI, but searchModal handles the calculations
   useEffect(() => {
     if (entry !== '') {
-      setTotalFats(entry[meal].totals.f);
-      setTotalCarbs(entry[meal].totals.c);
-      setTotalNetCarbs(entry[meal].totals.k);
-      setTotalProtein(entry[meal].totals.p);
-      setTotalCalories(entry[meal].totals.e);
+      setTotalFats(entry[meal].t.f);
+      setTotalCarbs(entry[meal].t.c);
+      setTotalNetCarbs(entry[meal].t.k);
+      setTotalProtein(entry[meal].t.p);
+      setTotalCalories(entry[meal].t.e);
     }
   }, [entry, meal]);
 
@@ -36,7 +43,7 @@ const Meal = ({ meal, entry, currentUser }) => {
 
   let entryPlaceholder = {
     [meal]: {
-      foods: [],
+      f: [],
     },
   };
 
@@ -47,7 +54,7 @@ const Meal = ({ meal, entry, currentUser }) => {
   let carbType = 'carbs';
   let totalCarbsOrNetCarbsValue;
 
-  if (currentUser.carbSettings === 'n') {
+  if (currentUser.c === 'n') {
     carbType = 'net carbs';
     totalCarbsOrNetCarbsValue = totalNetCarbs;
   } else {
@@ -58,12 +65,12 @@ const Meal = ({ meal, entry, currentUser }) => {
   return (
     <div>
       <div className='meal-h-c'>
-        <span className='t'>{meal}</span>
+        <span className='t'>{MEALS[meal]}</span>
         <span>
           <ToggleSearchModal meal={meal} />
         </span>
       </div>
-      {entryPlaceholder[meal]['foods'].map((food) => renderFoodItems(food))}
+      {entryPlaceholder[meal].f.map((food) => renderFoodItems(food))}
       <div className='totals-r'>
         <div className='total-l'>totals</div>
         <div className='totals-c'>
