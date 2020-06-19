@@ -60,11 +60,8 @@ const DateSelector = ({
       setEntry(entriesObj);
     };
 
-    // if a user has already loaded entry into state, no need to re-load entry into state
-    if (entry === '') {
-      loadEntry();
-    }
-  }, [userId, dietSettings, waterSettings, setEntry, entry]);
+    loadEntry();
+  }, [userId, dietSettings, waterSettings, setEntry]);
 
   // handles rendering updates to the date in UI
   useEffect(() => {

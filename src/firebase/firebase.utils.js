@@ -393,7 +393,7 @@ export const getEntry = async (
           e: dietSettings.e,
           d: null,
           k: null,
-          w: null,
+          w: waterSettings.g,
         },
         p: {
           f: 0,
