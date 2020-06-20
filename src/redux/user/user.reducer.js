@@ -2,12 +2,6 @@ import { UserActionTypes } from './user.types';
 
 const INITIAL_STATE = {
   currentUser: null,
-  userMacros: {
-    fats: '',
-    carbs: '',
-    protein: '',
-    calories: '',
-  },
   favFoods: [],
   createdFoods: [],
 };
@@ -18,11 +12,6 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         currentUser: action.payload,
-      };
-    case UserActionTypes.SET_USER_MACROS:
-      return {
-        ...state,
-        userMacros: action.payload,
       };
     case UserActionTypes.SET_FAV_FOODS:
       return {

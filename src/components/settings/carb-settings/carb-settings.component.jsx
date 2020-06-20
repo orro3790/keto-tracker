@@ -37,20 +37,7 @@ const CarbSettings = ({ currentUser, toggleAlertModal }) => {
   const saveCarbSettings = () => {
     // only push update if there's a change between state and user settings in firebase
     if (currentUser.c !== toggle) {
-      let userCopy = cloneDeep(currentUser);
-
-      // if user changed to net carbs => move total carb goal to net carb goal ==> set old goal to null, or vice versa
-      if (toggle === 'n') {
-        userCopy.d.k = userCopy.d.c;
-        userCopy.d.c = null;
-      } else {
-        userCopy.d.c = userCopy.d.k;
-        userCopy.d.k = null;
-      }
-
-      userCopy.c = toggle;
-
-      updateCarbSettings(userCopy.id, userCopy.d, toggle);
+      updateCarbSettings(currentUser.id, toggle);
     }
 
     handleAlert();

@@ -60,8 +60,10 @@ const DateSelector = ({
       setEntry(entriesObj);
     };
 
-    loadEntry();
-  }, [userId, dietSettings, waterSettings, setEntry]);
+    if (entry === '') {
+      loadEntry();
+    }
+  }, [userId, dietSettings, waterSettings, setEntry, entry]);
 
   // handles rendering updates to the date in UI
   useEffect(() => {

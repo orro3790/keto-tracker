@@ -5,11 +5,6 @@ export const setCurrentUser = (user) => ({
   payload: user,
 });
 
-export const setUserMacros = (macros) => ({
-  type: UserActionTypes.SET_USER_MACROS,
-  payload: macros,
-});
-
 export const setFavFoods = (array) => ({
   type: UserActionTypes.SET_FAV_FOODS,
   payload: array,
