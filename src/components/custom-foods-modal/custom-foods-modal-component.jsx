@@ -8,8 +8,8 @@ import {
   selectCurrentUserId,
   selectCustomFoods,
 } from '../../redux/user/user.selectors';
-import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
-import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
+import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
+import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
@@ -39,9 +39,11 @@ const CustomFoodsModal = ({
     toggleSearchModal({
       status: 'visible',
       meal: meal,
-      editMode: false,
-      foodToEdit: '',
-      listId: '',
+      editMode: {
+        enabled: false,
+        food: '',
+        index: '',
+      },
     });
   };
 

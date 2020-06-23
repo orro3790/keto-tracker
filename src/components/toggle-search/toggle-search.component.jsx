@@ -2,18 +2,18 @@ import React from 'react';
 import './toggle-search.styles.scss';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectModal } from '../../redux/search-modal/search-modal.selectors';
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import { selectCreateFoodModalStatus } from '../../redux/create-food/create-food.selectors';
 import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
-import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
+import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import {
   createFoodReference,
   toggleSuggestionWindow,
-} from './../../redux/search-item/search-item.actions.js';
+} from './../../redux/search-item/search-item.actions';
 import { selectSuggestionWindow } from '../../redux/search-item/search-item.selectors';
 import { MdAddBox } from 'react-icons/md';
 
@@ -68,17 +68,21 @@ const ToggleSearchModal = ({
       toggleSearchModal({
         status: 'visible',
         meal: meal,
-        editMode: false,
-        foodToEdit: '',
-        listId: '',
+        editMode: {
+          enabled: false,
+          food: '',
+          index: '',
+        },
       });
     } else {
       toggleSearchModal({
         status: 'hidden',
         meal: '',
-        editMode: false,
-        foodToEdit: '',
-        listId: '',
+        editMode: {
+          enabled: false,
+          food: '',
+          index: '',
+        },
       });
     }
   };

@@ -3,11 +3,11 @@ import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
-import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
+import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { createFood } from '../../firebase/firebase.utils.js';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
-import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { MdCheck } from 'react-icons/md';
 import './create-food.styles.scss';
@@ -36,9 +36,11 @@ const CreateFood = ({
     toggleSearchModal({
       status: 'visible',
       meal: meal,
-      editMode: false,
-      foodToEdit: '',
-      listId: '',
+      editMode: {
+        enabled: false,
+        food: '',
+        index: '',
+      },
     });
   };
 

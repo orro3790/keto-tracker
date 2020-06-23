@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
+import { RootState } from '../../redux/root-reducer';
 import { createStructuredSelector } from 'reselect';
 import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
 import {
   selectCurrentUserId,
   selectFavFoods,
 } from '../../redux/user/user.selectors';
+import { Food } from '../../redux/search-item/search-item.types';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import * as AlertModalTypes from '../../redux/alert-modal/alert-modal.types';
 import './add-favorite.styles.scss';
 import { toggleFavFood } from '../../firebase/firebase.utils';
 import { MdBookmark } from 'react-icons/md';
 
-const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
+type Props = PropsFromRedux;
+
+const AddFavorite = ({
+  foodReference,
+  favFoods,
+  toggleAlertModal,
+  userId,
+}: Props) => {
   const [enabled, setEnabled] = useState(false);
 
   const handleToggleFavFood = () => {
@@ -19,7 +30,7 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
       case false:
         toggleAlertModal({
           title: 'SUCCESS!',
-          msg: `${foodReference.n} has been added to your favorites.`,
+          msg: `${(foodReference as Food).n} has been added to your favorites.`,
           img: '',
           status: 'visible',
           callback: '',
@@ -29,7 +40,9 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
       case true:
         toggleAlertModal({
           title: 'SUCCESS!',
-          msg: `${foodReference.n} has been removed from your favorites.`,
+          msg: `${
+            (foodReference as Food).n
+          } has been removed from your favorites.`,
           img: '',
           status: 'visible',
           callback: '',
@@ -51,7 +64,7 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
   }
 
   useEffect(() => {
-    if (favFoods.some((food) => food.id === foodReference.id)) {
+    if (favFoods.some((food: Food) => food.id === (foodReference as Food).id)) {
       setEnabled(true);
     } else {
       setEnabled(false);
@@ -67,14 +80,27 @@ const AddFavorite = ({ foodReference, favFoods, toggleAlertModal, userId }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  userId: string | undefined;
+  foodReference: Food | '';
+  favFoods: Food[];
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   userId: selectCurrentUserId,
   foodReference: selectFoodReference,
   favFoods: selectFavFoods,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+const mapDispatchToProps = (
+  dispatch: Dispatch<AlertModalTypes.ToggleAlertModal>
+) => ({
+  toggleAlertModal: (status: AlertModalTypes.AlertModal) =>
+    dispatch(toggleAlertModal(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddFavorite);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(AddFavorite);

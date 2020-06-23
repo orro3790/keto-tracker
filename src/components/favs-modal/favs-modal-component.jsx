@@ -15,8 +15,8 @@ import { FixedSizeList as List } from 'react-window';
 import { firestore } from '../../firebase/firebase.utils';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import './favs-modal.styles.scss';
-import { toggleSearchModal } from '../../redux/search-food-modal/search-food-modal.actions';
-import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
+import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 
 const FavsModal = ({
@@ -46,9 +46,11 @@ const FavsModal = ({
     toggleSearchModal({
       status: 'visible',
       meal: meal,
-      editMode: false,
-      foodToEdit: '',
-      listId: '',
+      editMode: {
+        enabled: false,
+        food: '',
+        index: '',
+      },
     });
   };
 

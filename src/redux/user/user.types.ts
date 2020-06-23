@@ -40,6 +40,8 @@ export interface WaterSettings {
   u: UnitTypes;
 }
 
+export type UserId = string;
+
 export type UnitTypes = 'c' | 'm' | 'o';
 
 // Define the shape of the user's diet settings object

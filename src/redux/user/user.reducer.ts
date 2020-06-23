@@ -1,27 +1,30 @@
-import * as UserTypes from './user.types';
+import {
+  Actions,
+  State,
+  SET_CURRENT_USER,
+  SET_CREATED_FOODS,
+  SET_FAV_FOODS,
+} from './user.types';
 
-const INITIAL_STATE: UserTypes.State = {
+const INITIAL_STATE: State = {
   currentUser: null,
   favFoods: [],
   createdFoods: [],
 };
 
-export function userReducer(
-  state = INITIAL_STATE,
-  action: UserTypes.Actions
-): UserTypes.State {
+export function userReducer(state = INITIAL_STATE, action: Actions): State {
   switch (action.type) {
-    case UserTypes.SET_CURRENT_USER:
+    case SET_CURRENT_USER:
       return {
         ...state,
         currentUser: action.payload,
       };
-    case UserTypes.SET_CREATED_FOODS:
+    case SET_CREATED_FOODS:
       return {
         ...state,
         createdFoods: action.payload,
       };
-    case UserTypes.SET_FAV_FOODS:
+    case SET_FAV_FOODS:
       return {
         ...state,
         favFoods: action.payload,

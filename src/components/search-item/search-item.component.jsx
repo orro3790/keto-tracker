@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import {
   createFoodReference,
   toggleSuggestionWindow,
-} from '../../redux/search-item/search-item.actions.js';
+} from '../../redux/search-item/search-item.actions';
 import { FaPlusSquare } from 'react-icons/fa';
 
 const SearchItem = ({

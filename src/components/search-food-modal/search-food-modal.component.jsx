@@ -7,9 +7,9 @@ import { HorizontalBar } from 'react-chartjs-2';
 import {
   toggleSearchModal,
   allowUpdateFirebase,
-} from './../../redux/search-food-modal/search-food-modal.actions';
+} from '../../redux/search-modal/search-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
-import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
+import { createFoodReference } from './../../redux/search-item/search-item.actions';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
@@ -22,7 +22,7 @@ import {
   selectCurrentUserId,
   selectWaterSettings,
 } from '../../redux/user/user.selectors';
-import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectModal } from '../../redux/search-modal/search-modal.selectors';
 import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import {
   selectSuggestionWindow,
@@ -142,17 +142,21 @@ const SearchFoodModal = ({
       toggleSearchModal({
         status: 'hidden',
         meal: searchModal.meal,
-        editMode: false,
-        foodToEdit: '',
-        listId: '',
+        editMode: {
+          enabled: false,
+          food: '',
+          index: '',
+        },
       });
     } else {
       toggleSearchModal({
         status: 'hidden',
         meal: '',
-        editMode: false,
-        foodToEdit: '',
-        listId: '',
+        editMode: {
+          enabled: false,
+          food: '',
+          index: '',
+        },
       });
     }
   };
@@ -220,11 +224,11 @@ const SearchFoodModal = ({
               foodCopy.size = parseFloat(sizeInput);
 
               // remove the edited food from the entry obj
-              entryCopy[searchModal.meal].f.splice(searchModal.listId, 1);
+              entryCopy[searchModal.meal].f.splice(searchModal.index, 1);
 
               // add the updated food to the entry obj back where it used to be
               entryCopy[searchModal.meal].f.splice(
-                searchModal.listId,
+                searchModal.index,
                 0,
                 foodCopy
               );
@@ -290,7 +294,7 @@ const SearchFoodModal = ({
       let entryCopy = Object.assign({}, entry);
 
       // remove the edited food from the entry obj
-      entryCopy[searchModal.meal].f.splice(searchModal.listId, 1);
+      entryCopy[searchModal.meal].f.splice(searchModal.index, 1);
 
       // recalculate meal totals
       entryCopy = retotalMacros(entryCopy);
@@ -321,6 +325,11 @@ const SearchFoodModal = ({
       toggleSearchModal({
         status: 'hidden',
         meal: '',
+        editMode: {
+          enabled: false,
+          food: '',
+          index: '',
+        },
       });
     } else {
       toggleAlertModal({

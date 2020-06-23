@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import FoodItem from './../food-item/food-item.component';
 import './meal.styles.scss';
 import { connect } from 'react-redux';
-import { toggleSearchModal } from './../../redux/search-food-modal/search-food-modal.actions';
-import { createFoodReference } from './../../redux/search-item/search-item.actions.js';
+import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
+import { createFoodReference } from './../../redux/search-item/search-item.actions';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
@@ -34,11 +34,11 @@ const Meal = ({ meal, entry, currentUser }) => {
     }
   }, [entry, meal]);
 
-  // indexing starts at 0, therefore tart from -1 so the first item is assigned a listId of 0
+  // indexing starts at 0, therefore tart from -1 so the first item is assigned a index of 0
   let keygen = -1;
   const renderFoodItems = (food) => {
     keygen++;
-    return <FoodItem key={keygen} listId={keygen} food={food} meal={meal} />;
+    return <FoodItem key={keygen} index={keygen} food={food} meal={meal} />;
   };
 
   let entryPlaceholder = {

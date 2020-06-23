@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
+import { RootState } from '../root-reducer';
 
-const selectSearchModal = (state) => state.searchModal;
+const selectSearchModal = (state: RootState) => state.searchModal;
 
 export const selectModal = createSelector(
   [selectSearchModal],

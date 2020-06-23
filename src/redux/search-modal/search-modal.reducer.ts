@@ -1,12 +1,20 @@
-import { SearchModalActionTypes } from './search-food-modal.types';
+import {
+  State,
+  Actions,
+  TOGGLE_SEARCH_MODAL,
+  ALLOW_ENTRY_UPDATE_FIREBASE,
+  SET_FOOD_FILTER,
+} from './search-modal.types';
 
-const INITIAL_STATE = {
+const INITIAL_STATE: State = {
   modal: {
     status: 'hidden',
     meal: '',
-    editMode: false,
-    foodToEdit: '',
-    listId: '',
+    editMode: {
+      enabled: false,
+      food: '',
+      index: '',
+    },
   },
   foodFilter: {
     filter: 'usda',
@@ -15,19 +23,19 @@ const INITIAL_STATE = {
   allowUpdateFirebase: false,
 };
 
-const searchModalReducer = (state = INITIAL_STATE, action) => {
+const searchModalReducer = (state = INITIAL_STATE, action: Actions): State => {
   switch (action.type) {
-    case SearchModalActionTypes.TOGGLE_SEARCH_MODAL:
+    case TOGGLE_SEARCH_MODAL:
       return {
         ...state,
         modal: action.payload,
       };
-    case SearchModalActionTypes.ALLOW_ENTRY_UPDATE_FIREBASE:
+    case ALLOW_ENTRY_UPDATE_FIREBASE:
       return {
         ...state,
         allowUpdateFirebase: action.payload,
       };
-    case SearchModalActionTypes.SET_FOOD_FILTER:
+    case SET_FOOD_FILTER:
       return {
         ...state,
         foodFilter: action.payload,

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
+import { RootState } from '../root-reducer';
 
-const selectSearchItem = (state) => state.searchItem;
+const selectSearchItem = (state: RootState) => state.searchItem;
 
 export const selectFoodReference = createSelector(
   [selectSearchItem],

@@ -8,13 +8,13 @@ import {
   selectDietSettings,
   selectWaterSettings,
 } from '../../redux/user/user.selectors';
-import { selectUpdate } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectUpdate } from '../../redux/search-modal/search-modal.selectors';
 import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import {
   setCurrentDate,
   setEntry,
 } from '../../redux/date-selector/date-selector.actions';
-import { allowUpdateFirebase } from '../../redux/search-food-modal/search-food-modal.actions';
+import { allowUpdateFirebase } from '../../redux/search-modal/search-modal.actions';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import {
   getEntry,

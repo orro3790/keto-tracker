@@ -15,7 +15,7 @@ import {
 import {
   selectModal,
   selectFoodFilter,
-} from '../../redux/search-food-modal/search-food-modal.selectors';
+} from '../../redux/search-modal/search-modal.selectors';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { toggleSuggestionWindow } from '../../redux/search-item/search-item.actions';

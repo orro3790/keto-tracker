@@ -1,18 +1,23 @@
-import { SearchItemActionTypes } from './search-item.types';
+import {
+  Actions,
+  CREATE_FOOD_REFERENCE,
+  TOGGLE_SUGGESTION_WINDOW,
+  State,
+} from './search-item.types';
 
-const INITIAL_STATE = {
+const INITIAL_STATE: State = {
   foodReference: '',
   suggestionWindow: false,
 };
 
-const searchItemReducer = (state = INITIAL_STATE, action) => {
+const searchItemReducer = (state = INITIAL_STATE, action: Actions) => {
   switch (action.type) {
-    case SearchItemActionTypes.CREATE_FOOD_REFERENCE:
+    case CREATE_FOOD_REFERENCE:
       return {
         ...state,
         foodReference: action.payload,
       };
-    case SearchItemActionTypes.TOGGLE_SUGGESTION_WINDOW:
+    case TOGGLE_SUGGESTION_WINDOW:
       return {
         ...state,
         suggestionWindow: action.payload,

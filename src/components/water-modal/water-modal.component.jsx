@@ -7,12 +7,12 @@ import { RiWaterFlashLine } from 'react-icons/ri';
 import { MdCheck, MdAddCircle, MdRemoveCircle } from 'react-icons/md';
 import { selectWaterSettings } from '../../redux/user/user.selectors';
 import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
-import { selectMeal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
 import {
   toggleSearchModal,
   allowUpdateFirebase,
-} from '../../redux/search-food-modal/search-food-modal.actions';
+} from '../../redux/search-modal/search-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
@@ -56,9 +56,11 @@ const WaterModal = ({
     toggleSearchModal({
       status: 'visible',
       meal: meal,
-      editMode: false,
-      foodToEdit: '',
-      listId: '',
+      editMode: {
+        enabled: false,
+        food: '',
+        index: '',
+      },
     });
   };
 

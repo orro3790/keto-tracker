@@ -1,9 +1,9 @@
 import React from 'react';
 import './edit-item.styles.scss';
 import { connect } from 'react-redux';
-import { createFoodReference } from '../../redux/search-item/search-item.actions.js';
-import { toggleSearchModal } from '../../redux/meal/meal.actions.js';
-import { selectModal } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { createFoodReference } from '../../redux/search-item/search-item.actions';
+import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
+import { selectModal } from '../../redux/search-modal/search-modal.selectors';
 import { createStructuredSelector } from 'reselect';
 import { MdAddBox } from 'react-icons/md';
 

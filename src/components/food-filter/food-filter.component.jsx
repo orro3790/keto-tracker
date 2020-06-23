@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { selectFoodFilter } from '../../redux/search-food-modal/search-food-modal.selectors';
+import { selectFoodFilter } from '../../redux/search-modal/search-modal.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
-import { setFoodFilter } from './../../redux/search-food-modal/search-food-modal.actions';
+import { setFoodFilter } from '../../redux/search-modal/search-modal.actions';
 import { MdVerifiedUser, MdTurnedIn } from 'react-icons/md';
 import { FaUserTag } from 'react-icons/fa';
 import './food-filter.styles.scss';
