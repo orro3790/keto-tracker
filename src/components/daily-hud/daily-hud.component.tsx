@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import {
   selectCarbSettings,
@@ -9,7 +10,13 @@ import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import { selectHudSettings } from '../../redux/daily-hud/daily-hud.selectors';
 import { setHudModel } from '../../redux/daily-hud/daily-hud-actions';
 import { GiWaterDrop } from 'react-icons/gi';
+import { RootState } from '../../redux/root-reducer';
+import * as DailyHudTypes from '../../redux/daily-hud/daily-hud.types';
+import * as UserTypes from '../../redux/user/user.types';
+import { Entry } from '../../redux/date-selector/date-selector.types';
 import './daily-hud.styles.scss';
+
+type Props = PropsFromRedux;
 
 const DailyChart = ({
   setHudModel,
@@ -17,8 +24,8 @@ const DailyChart = ({
   hudModel,
   entry,
   waterSettings,
-}) => {
-  const [values, setValues] = useState({
+}: Props) => {
+  const [values, setValues] = useState<Mapper>({
     consumed: {
       f: 0,
       c: 0,
@@ -48,6 +55,40 @@ const DailyChart = ({
     },
   });
 
+  interface Mapper {
+    [index: string]: any;
+    consumed: {
+      [index: string]: any;
+      f: number;
+      c: number | null;
+      d: number | null;
+      k: number | null;
+      p: number;
+      e: number;
+      w: number | null;
+    };
+    goals: {
+      [index: string]: any;
+      f: number;
+      c: number | null;
+      d: number | null;
+      k: number | null;
+      p: number;
+      e: number;
+      w: number | null;
+    };
+    sum: {
+      [index: string]: any;
+      f: number;
+      c: number | null;
+      d: number | null;
+      k: number | null;
+      p: number;
+      e: number;
+      w: number | null;
+    };
+  }
+
   const UNITS = {
     c: 'cups',
     m: 'mL',
@@ -55,7 +96,8 @@ const DailyChart = ({
   };
 
   // if waterUnit is 'cups' ==> handle singular form of 'cups' hud display
-  if (waterSettings.u === 'c') {
+
+  if (waterSettings?.u === 'c') {
     if (values.consumed.w === 1) {
       UNITS.c = 'cup';
     }
@@ -69,7 +111,7 @@ const DailyChart = ({
     setHudModel('a');
   };
 
-  const getStyle = (className) => {
+  const getStyle = (className: DailyHudTypes.HudModel) => {
     if (className === hudModel) {
       return 'on';
     } else {
@@ -79,9 +121,7 @@ const DailyChart = ({
 
   useEffect(() => {
     if (entry !== '') {
-      const goals = ['f', 'c', 'd', 'k', 'p', 'e', 'w'];
-
-      let values = {
+      const values: Mapper = {
         consumed: {
           f: entry.m.f,
           c: entry.m.c,
@@ -110,9 +150,10 @@ const DailyChart = ({
           w: 0,
         },
       };
+
       switch (hudModel) {
         case 'r':
-          goals.forEach((goal) => {
+          Object.keys(values.goals).forEach((goal) => {
             if (values.goals[goal] !== null) {
               values.sum[goal] = (
                 values.goals[goal] - values.consumed[goal]
@@ -121,7 +162,7 @@ const DailyChart = ({
           });
           break;
         case 'a':
-          goals.forEach((goal) => {
+          Object.keys(values.goals).forEach((goal) => {
             if (values.goals[goal] !== null) {
               values.sum[goal] = values.consumed[goal].toFixed(1);
             }
@@ -132,16 +173,20 @@ const DailyChart = ({
       }
 
       // if water tracking is enabled ==> adjust display of water intake based on user's unit preference
-      if (waterSettings.e) {
-        switch (waterSettings.u) {
+      if (waterSettings?.e) {
+        switch (waterSettings?.u) {
           case 'c':
-            values.sum.w = (values.sum.w / 250).toFixed(2);
+            values.sum.w = parseFloat(
+              ((values.sum.w as number) / 250).toFixed(2)
+            );
             break;
           case 'o':
-            values.sum.w = (values.sum.w / 29.5735).toFixed(2);
+            values.sum.w = parseFloat(
+              ((values.sum.w as number) / 29.5735).toFixed(2)
+            );
             break;
           case 'm':
-            values.sum.w = values.sum.w.toFixed(0);
+            values.sum.w = parseFloat((values.sum.w as number).toFixed(0));
             break;
           default:
             break;
@@ -169,11 +214,11 @@ const DailyChart = ({
     );
   }
 
-  if (waterSettings.e === true) {
+  if (waterSettings?.e === true) {
     water = (
       <div className='water-c'>
         <div>
-          {values.sum.w} {UNITS[waterSettings.u]}
+          {values.sum.w} {UNITS[waterSettings?.u]}
         </div>
         <div className='droplet'>
           <GiWaterDrop />
@@ -217,15 +262,26 @@ const DailyChart = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  hudModel: DailyHudTypes.HudModel;
+  entry: Entry | '';
+  carbSettings: UserTypes.CarbSettings | undefined;
+  waterSettings: UserTypes.WaterSettings | undefined;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   hudModel: selectHudSettings,
   entry: selectEntry,
   carbSettings: selectCarbSettings,
   waterSettings: selectWaterSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setHudModel: (model) => dispatch(setHudModel(model)),
+const mapDispatchToProps = (dispatch: Dispatch<DailyHudTypes.SetHudModel>) => ({
+  setHudModel: (model: DailyHudTypes.HudModel) => dispatch(setHudModel(model)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DailyChart);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(DailyChart);

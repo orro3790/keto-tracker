@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import {
   selectDietSettings,
@@ -7,24 +7,24 @@ import {
 } from '../../../redux/user/user.selectors';
 import { FaChartPie } from 'react-icons/fa';
 import './current-diet.styles.scss';
+import { Diet } from '../../../redux/user/user.types';
+import { RootState } from '../../../redux/root-reducer';
 
-const CurrentDiet = ({ diet, carbSettings }) => {
-  // load 0 as default values if currentUser.d data hasn't been loaded into state yet
-  let fats = 0;
-  let protein = 0;
-  let carbs = 0;
-  let calories = 0;
+type Props = PropsFromRedux;
 
-  fats = diet.f;
-  protein = diet.p;
-  calories = diet.e;
-  carbs = diet.c;
+const CurrentDiet = ({ diet, carbSettings }: Props) => {
+  let fats, protein, carbs, calories;
 
   let carbType = 'carbs';
 
+  fats = diet?.f;
+  protein = diet?.p;
+  calories = diet?.e;
+  carbs = diet?.c;
+
   if (carbSettings === 'n') {
+    carbs = diet?.k;
     carbType = 'net carbs';
-    carbs = diet.k;
   }
 
   return (
@@ -53,9 +53,18 @@ const CurrentDiet = ({ diet, carbSettings }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  carbSettings: 't' | 'n' | undefined;
+  diet: Diet | undefined;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   carbSettings: selectCarbSettings,
   diet: selectDietSettings,
 });
 
-export default connect(mapStateToProps, null)(CurrentDiet);
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(CurrentDiet);

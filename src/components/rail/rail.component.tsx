@@ -1,9 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
-import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { createStructuredSelector } from 'reselect';
 import {
   GiWhiteBook,
   GiHeartBeats,
@@ -12,10 +12,16 @@ import {
   GiHistogram,
 } from 'react-icons/gi';
 import { MdNotifications, MdSettings } from 'react-icons/md';
+import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import * as AlertModalTypes from '../../redux/alert-modal/alert-modal.types';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { User } from '../../redux/user/user.types';
+import { RootState } from '../../redux/root-reducer';
 import './rail.styles.scss';
-import { createStructuredSelector } from 'reselect';
 
-const Rail = ({ toggleAlertModal, currentUser }) => {
+type Props = PropsFromRedux;
+
+const Rail = ({ toggleAlertModal, currentUser }: Props) => {
   let location = useLocation();
 
   let styles = {
@@ -103,12 +109,23 @@ const Rail = ({ toggleAlertModal, currentUser }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  currentUser: User | null;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   currentUser: selectCurrentUser,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+const mapDispatchToProps = (
+  dispatch: Dispatch<AlertModalTypes.ToggleAlertModal>
+) => ({
+  toggleAlertModal: (object: AlertModalTypes.AlertModal) =>
+    dispatch(toggleAlertModal(object)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Rail);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Rail);

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/settings/update-diet/update-diet.tsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/settings/update-diet/update-diet.tsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
+import { Dispatch } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
+import FormInput from '../../form-input/form-input.component';
+import { updateDiet } from '../../../firebase/firebase.utils';
+import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
+import { FaArrowAltCircleRight } from 'react-icons/fa';
+import { createStructuredSelector } from 'reselect';
+import {
+  selectDietSettings,
+  selectCurrentUserId,
+  selectCarbSettings,
+} from '../../../redux/user/user.selectors';
+import { GiHealthIncrease } from 'react-icons/gi';
+import { Diet } from '../../../redux/user/user.types';
+import { RootState } from '../../../redux/root-reducer';
+import './update-diet.styles.scss';
+import {
+  AlertModal,
+  ToggleAlertModalAction,
+} from '../../../redux/alert-modal/alert-modal.types';
+
+type Props = PropsFromRedux;
+
+/**
+ * Shows progress in a given Project.
+ * By giving *spent* and *remaining* time (in hours) it computes the
+ * progress and shows it in the UI.
+ *
+ * @component
+ * @example &lt;caption>Basic&lt;/caption>
+ * &lt;UpdateDiet :fatGoal=50 carbGoal=50, proteinGoal=10, calorieGoal=10 />
+ */
+const UpdateDiet = ({
+  toggleAlertModal,
+  diet,
+  userId,
+  carbSettings,
+}: Props) => {
+  const [fatGoal, setFatGoal] = useState&lt;string>('');
+  const [carbGoal, setCarbGoal] = useState&lt;string>('');
+  const [proteinGoal, setProteinGoal] = useState&lt;string>('');
+  const [calorieGoal, setCalorieGoal] = useState&lt;string>('');
+
+  // type Macro = number | string;
+
+  const grams: Grams = {
+    f: 0,
+    c: 0,
+    p: 0,
+  };
+
+  interface Grams {
+    f: number | string;
+    c: number | string;
+    p: number | string;
+  }
+
+  // calculate the macro % goal in grams and store it in the grams obj
+  if (fatGoal !== '') {
+    grams.f = ((+fatGoal / 100) * +calorieGoal) / 9;
+  }
+  if (grams.c !== '') {
+    grams.c = ((+carbGoal / 100) * +calorieGoal) / 4;
+  }
+  if (grams.p !== '') {
+    grams.p = ((+proteinGoal / 100) * +calorieGoal) / 4;
+  }
+
+  // validation 1: check that all fields are filled
+  let fieldsFilled =
+    fatGoal !== '' &amp;&amp;
+    carbGoal !== '' &amp;&amp;
+    proteinGoal !== '' &amp;&amp;
+    calorieGoal !== '';
+
+  // validation 2: check that total percentages add up to 100
+  let totalPercentage = 0;
+
+  if (fatGoal !== '') {
+    totalPercentage += parseFloat(fatGoal);
+  }
+  if (carbGoal !== '') {
+    totalPercentage += parseFloat(carbGoal);
+  }
+  if (proteinGoal !== '') {
+    totalPercentage += parseFloat(proteinGoal);
+  }
+
+  // in order to check whether sum of percentages === 100, apply .toPrecision(3), then convert back to int
+  totalPercentage = parseInt(totalPercentage.toPrecision(3));
+
+  // determine whether or not the form can be submitted
+  let isSubmittable = false;
+
+  // prevent zero grams as they will return NaN or Infinite when calculating precision
+  let zeroGrams = false;
+
+  const checkZeroGrams = (value: number) => {
+    return value === 0;
+  };
+
+  zeroGrams = Object.values(grams).some(checkZeroGrams);
+
+  if (fieldsFilled === true &amp;&amp; totalPercentage === 100 &amp;&amp; zeroGrams === false) {
+    isSubmittable = true;
+  }
+
+  // collect any errors
+  interface Error {
+    error: string;
+  }
+
+  let errors = [];
+
+  if (fieldsFilled &amp;&amp; totalPercentage !== 100 &amp;&amp; totalPercentage &lt; 100) {
+    errors.push({
+      error: 'Sum of percentages not 100%.',
+    });
+  }
+
+  if (totalPercentage > 100) {
+    errors.push({
+      error: 'Sum of percentages > 100%.',
+    });
+  }
+
+  if (fieldsFilled &amp;&amp; zeroGrams) {
+    errors.push({
+      error: 'All gram values must be > 0.',
+    });
+  }
+
+  // render errors to UI
+  const renderErrors = (errorsArray: Error[]) => {
+    return errorsArray.map((error: Error) => (
+      &lt;div className='diet-form-row' key={error.error}>
+        {error.error}
+      &lt;/div>
+    ));
+  };
+
+  let error = renderErrors(errors);
+
+  const handleChange = (e: React.ChangeEvent&lt;HTMLInputElement>) => {
+    // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
+    const caloriesPermitted = /^\d{0,5}(\.\d{1})?$/;
+
+    // allow empty string or values 0-9, 0-3 digits, optionally including one decimal point /w 1 digit after decimal
+    const macrosPermitted = /^\d{0,3}(\.\d{1})?$/;
+
+    switch (e.target.name) {
+      case 'calorieGoal':
+        if (e.target.value.match(caloriesPermitted))
+          setCalorieGoal(e.target.value);
+        break;
+      case 'fatGoal':
+        if (e.target.value.match(macrosPermitted)) setFatGoal(e.target.value);
+        break;
+      case 'carbGoal':
+        if (e.target.value.match(macrosPermitted)) setCarbGoal(e.target.value);
+        break;
+      case 'proteinGoal':
+        if (e.target.value.match(macrosPermitted))
+          setProteinGoal(e.target.value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubmit = (
+    e: React.FormEvent&lt;HTMLFormElement> | React.MouseEvent&lt;HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    if (isSubmittable) {
+      let goals = Object.assign({}, diet);
+
+      goals.f = +grams.f;
+      goals.p = +grams.p;
+      goals.e = +calorieGoal;
+
+      // assign carb goal to either net carbs or total carbs based on user carb settings
+      switch (carbSettings) {
+        case 't':
+          goals.c = +grams.c;
+          goals.k = null;
+          break;
+        case 'n':
+          goals.k = +grams.c;
+          goals.c = null;
+          break;
+        default:
+          break;
+      }
+
+      // now update the data in firestore
+      updateDiet(userId as string, goals);
+
+      toggleAlertModal({
+        title: 'SETTINGS SAVED!',
+        msg: 'Your diet settings have been updated!',
+        img: 'update',
+        status: 'visible',
+        sticky: false,
+      });
+    } else {
+      toggleAlertModal({
+        title: 'OOPS!',
+        msg:
+          'Make sure all fields have been filled in properly before trying to save your settings.',
+        img: 'error',
+        status: 'visible',
+        sticky: false,
+      });
+    }
+  };
+
+  const getArrowStyle = (value: string) => {
+    if (value) {
+      return 'far fa-arrow-alt-circle-right output-arrow on';
+    } else {
+      return 'far fa-arrow-alt-circle-right output-arrow';
+    }
+  };
+
+  const getOutputStyle = (value: string) => {
+    if (value) {
+      return 'diet-form-row on';
+    } else {
+      return 'diet-form-row off';
+    }
+  };
+
+  let carbLabel = 'desired % carbs';
+
+  if (carbSettings === 'n') {
+    carbLabel = 'desired % net carbs';
+  }
+
+  return (
+    &lt;div>
+      &lt;div className='set-h-c'>
+        &lt;GiHealthIncrease className='set-i update-i' />
+        &lt;div className='t'>Update Diet&lt;/div>
+      &lt;/div>
+      &lt;div className='macro-calc-c'>
+        &lt;div className='left-col'>
+          &lt;form className='diet-form' onSubmit={handleSubmit}>
+            &lt;FormInput
+              name='calorieGoal'
+              type='number'
+              value={calorieGoal}
+              onChange={handleChange}
+              label={'calories per day'}
+              className='diet-form-row'
+            />
+            &lt;FormInput
+              name='fatGoal'
+              type='number'
+              value={fatGoal}
+              onChange={handleChange}
+              label={'desired % fats'}
+              className='diet-form-row'
+            />
+            &lt;FormInput
+              name='carbGoal'
+              type='number'
+              value={carbGoal}
+              onChange={handleChange}
+              label={carbLabel}
+              className='diet-form-row'
+            />
+            &lt;FormInput
+              name='proteinGoal'
+              type='number'
+              value={proteinGoal}
+              onChange={handleChange}
+              label={'desired % protein'}
+              className='diet-form-row'
+            />
+          &lt;/form>
+        &lt;/div>
+        &lt;div className='center-col'>
+          &lt;div className='diet-form-row'>
+            &lt;FaArrowAltCircleRight className={getArrowStyle(calorieGoal)} />
+          &lt;/div>
+          &lt;div className='diet-form-row'>
+            &lt;FaArrowAltCircleRight className={getArrowStyle(fatGoal)} />
+          &lt;/div>
+          &lt;div className='diet-form-row'>
+            &lt;FaArrowAltCircleRight className={getArrowStyle(carbGoal)} />
+          &lt;/div>
+          &lt;div className='diet-form-row'>
+            &lt;FaArrowAltCircleRight className={getArrowStyle(proteinGoal)} />
+          &lt;/div>
+        &lt;/div>
+        &lt;div className='right-col'>
+          &lt;div className={getOutputStyle(calorieGoal)}>
+            {`${calorieGoal} cal / day`}
+          &lt;/div>
+          &lt;div className={getOutputStyle(fatGoal)}>
+            {`${grams.f} g fat / day`}
+          &lt;/div>
+          &lt;div className={getOutputStyle(carbGoal)}>
+            {`${grams.c} g carbs / day`}
+          &lt;/div>
+          &lt;div className={getOutputStyle(proteinGoal)}>
+            {`${grams.p} g protein / day`}
+          &lt;/div>
+        &lt;/div>
+        &lt;button className='save-btn' type='submit' onClick={handleSubmit}>
+          Save
+        &lt;/button>
+        &lt;div>&lt;/div>
+        &lt;div className='error'>{error}&lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+interface Selectors {
+  carbSettings: 't' | 'n' | undefined;
+  diet: Diet | undefined;
+  userId: string | undefined;
+}
+
+const mapStateToProps = createStructuredSelector&lt;RootState, Selectors>({
+  carbSettings: selectCarbSettings,
+  diet: selectDietSettings,
+  userId: selectCurrentUserId,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch&lt;ToggleAlertModalAction>) => ({
+  toggleAlertModal: (object: AlertModal) => dispatch(toggleAlertModal(object)),
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps&lt;typeof connector>;
+
+export default connector(UpdateDiet);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Keto Tracker</a></h2><h3>Classes</h3><ul><li><a href="UpdateDiet.html">UpdateDiet</a></li></ul><h3>Global</h3><ul><li><a href="global.html#dateWriteable">dateWriteable</a></li><li><a href="global.html#FormInput">FormInput</a></li><li><a href="global.html#updateDiet">updateDiet</a></li><li><a href="global.html#updateGoalsAndPrecision">updateGoalsAndPrecision</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Mon Jun 22 2020 10:33:05 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import userReducer from './user/user.reducer';
+import { userReducer } from './user/user.reducer';
 import searchItemReducer from './search-item/search-item.reducer';
 import searchModalReducer from './search-food-modal/search-food-modal.reducer';
 import dateSelectorReducer from './date-selector/date-selector.reducer';
@@ -11,7 +11,7 @@ import alertModalReducer from './alert-modal/alert-modal.reducer';
 import waterModalReducer from './water-modal/water-modal.reducer';
 import metricsReducer from './metrics/metrics.reducer';
 
-export default combineReducers({
+const rootReducer = combineReducers({
   user: userReducer,
   searchItem: searchItemReducer,
   searchModal: searchModalReducer,
@@ -24,3 +24,8 @@ export default combineReducers({
   waterModal: waterModalReducer,
   metrics: metricsReducer,
 });
+
+// Note that we do not have to explicitly declare a new interface for RootState. We can use ReturnType to infer state shape from the rootReducer.
+export type RootState = ReturnType<typeof rootReducer>;
+
+export default rootReducer;

@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
+import { RootState } from '../root-reducer';
 
-const selectDailyHud = (state) => state.dailyHud;
+const selectDailyHud = (state: RootState) => state.dailyHud;
 
 export const selectHudSettings = createSelector(
   [selectDailyHud],

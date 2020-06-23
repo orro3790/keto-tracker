@@ -1,18 +1,22 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
-// import { selectCurrentUser } from '../../redux/user/user.selectors';
-import { selectAlertModal } from '../../redux/alert-modal/alert-modal.selectors';
+import { alertModal } from '../../redux/alert-modal/alert-modal.selectors';
 import { signOut } from '../../firebase/firebase.utils';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
+import * as AlertModalTypes from '../../redux/alert-modal/alert-modal.types';
+import { RootState } from '../../redux/root-reducer';
 import { MdNotificationsActive, MdCheck, MdErrorOutline } from 'react-icons/md';
 import { FiCheckCircle } from 'react-icons/fi';
 import { GiLetterBomb, GiAchievement } from 'react-icons/gi';
-
 import './alert-modal.styles.scss';
 
-const AlertModal = ({ alertModal, enabled, toggleAlertModal }) => {
+type Props = PropsFromRedux;
+
+const AlertModal = ({ alertModal, toggleAlertModal }: Props) => {
   let img;
+
   switch (alertModal.img) {
     case 'email':
       img = <GiLetterBomb className='alert-email' />;
@@ -69,7 +73,7 @@ const AlertModal = ({ alertModal, enabled, toggleAlertModal }) => {
   }
 
   return (
-    <div className={`alert-c ${enabled}`}>
+    <div className={`alert-c ${alertModal.enabled}`}>
       <div className='alert-t'>
         {alertModal.title}
         <div>
@@ -83,15 +87,23 @@ const AlertModal = ({ alertModal, enabled, toggleAlertModal }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  // createdFoods is only used here to check the state after adding an item. It's not really necessary
-  // currentUser: selectCurrentUser,
-  alertModal: selectAlertModal,
+interface Selectors {
+  alertModal: AlertModalTypes.AlertModal;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
+  alertModal: alertModal,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
-  //add a confirmation modal
+const mapDispatchToProps = (
+  dispatch: Dispatch<AlertModalTypes.ToggleAlertModal>
+) => ({
+  toggleAlertModal: (object: AlertModalTypes.AlertModal) =>
+    dispatch(toggleAlertModal(object)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AlertModal);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(AlertModal);

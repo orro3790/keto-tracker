@@ -16,7 +16,7 @@ import {
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from './redux/user/user.selectors';
-import { selectAlertModal } from './redux/alert-modal/alert-modal.selectors';
+import { alertModal } from './redux/alert-modal/alert-modal.selectors';
 import {
   setCurrentUser,
   setFavFoods,
@@ -32,7 +32,7 @@ const App = ({
   alertModal,
 }) => {
   const [authUser, setAuthUser] = useState(null);
-  const [enabled, setEnabled] = useState('off');
+  const [enabled, setEnabled] = useState(false);
   const [alertMounted, setAlertMounted] = useState(false);
 
   // call onAuthStateChanged from firebase.auth, so firebase can notify us about user state changes and we can change our state with the user object when a change occurs. The snapshots themselves don't show anything until we call .data() on them. The id value is always used to reference the location of data in the database, so it must be referenced
@@ -130,7 +130,7 @@ const App = ({
 
     const fade = () => {
       fadeTimer = setTimeout(() => {
-        setEnabled('off');
+        setEnabled(true);
       }, 4000);
     };
 
@@ -149,7 +149,7 @@ const App = ({
 
       setAlertMounted(true);
 
-      setEnabled('on');
+      setEnabled(true);
 
       if (alertModal.sticky === false) {
         fade();
@@ -220,7 +220,7 @@ const App = ({
 
 const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
-  alertModal: selectAlertModal,
+  alertModal: alertModal,
 });
 
 const mapDispatchToProps = (dispatch) => ({

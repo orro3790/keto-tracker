@@ -5,7 +5,6 @@ import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
 import { GiWheat } from 'react-icons/gi';
-import { cloneDeep } from 'lodash';
 import './carb-settings.styles.scss';
 
 const CarbSettings = ({ currentUser, toggleAlertModal }) => {

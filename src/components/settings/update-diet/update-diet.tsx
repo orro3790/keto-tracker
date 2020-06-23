@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import { connect, ConnectedProps } from 'react-redux';
 import FormInput from '../../form-input/form-input.component';
 import { updateDiet } from '../../../firebase/firebase.utils';
 import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
@@ -11,28 +12,47 @@ import {
   selectCarbSettings,
 } from '../../../redux/user/user.selectors';
 import { GiHealthIncrease } from 'react-icons/gi';
+import { Diet } from '../../../redux/user/user.types';
+import { RootState } from '../../../redux/root-reducer';
 import './update-diet.styles.scss';
+import * as AlertModalTypes from '../../../redux/alert-modal/alert-modal.types';
 
-const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
-  const [fatGoal, setFatGoal] = useState('');
-  const [carbGoal, setCarbGoal] = useState('');
-  const [proteinGoal, setProteinGoal] = useState('');
-  const [calorieGoal, setCalorieGoal] = useState('');
-  const grams = {
+type Props = PropsFromRedux;
+
+const UpdateDiet = ({
+  toggleAlertModal,
+  diet,
+  userId,
+  carbSettings,
+}: Props) => {
+  const [fatGoal, setFatGoal] = useState<string>('');
+  const [carbGoal, setCarbGoal] = useState<string>('');
+  const [proteinGoal, setProteinGoal] = useState<string>('');
+  const [calorieGoal, setCalorieGoal] = useState<string>('');
+
+  // type Macro = number | string;
+
+  const grams: Grams = {
     f: 0,
     c: 0,
     p: 0,
   };
 
+  interface Grams {
+    f: number | string;
+    c: number | string;
+    p: number | string;
+  }
+
   // calculate the macro % goal in grams and store it in the grams obj
   if (fatGoal !== '') {
-    grams.f = parseInt(((fatGoal / 100) * calorieGoal) / 9);
+    grams.f = (((+fatGoal / 100) * +calorieGoal) / 9).toFixed(0);
   }
   if (grams.c !== '') {
-    grams.c = parseInt(((carbGoal / 100) * calorieGoal) / 4);
+    grams.c = (((+carbGoal / 100) * +calorieGoal) / 4).toFixed(0);
   }
   if (grams.p !== '') {
-    grams.p = parseInt(((proteinGoal / 100) * calorieGoal) / 4);
+    grams.p = (((+proteinGoal / 100) * +calorieGoal) / 4).toFixed(0);
   }
 
   // validation 1: check that all fields are filled
@@ -46,13 +66,13 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   let totalPercentage = 0;
 
   if (fatGoal !== '') {
-    totalPercentage += parseFloat(fatGoal);
+    totalPercentage += +fatGoal;
   }
   if (carbGoal !== '') {
-    totalPercentage += parseFloat(carbGoal);
+    totalPercentage += +carbGoal;
   }
   if (proteinGoal !== '') {
-    totalPercentage += parseFloat(proteinGoal);
+    totalPercentage += +proteinGoal;
   }
 
   // in order to check whether sum of percentages === 100, apply .toPrecision(3), then convert back to int
@@ -64,7 +84,7 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   // prevent zero grams as they will return NaN or Infinite when calculating precision
   let zeroGrams = false;
 
-  const checkZeroGrams = (value) => {
+  const checkZeroGrams = (value: number) => {
     return value === 0;
   };
 
@@ -75,6 +95,10 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   }
 
   // collect any errors
+  interface Error {
+    error: string;
+  }
+
   let errors = [];
 
   if (fieldsFilled && totalPercentage !== 100 && totalPercentage < 100) {
@@ -96,8 +120,8 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   }
 
   // render errors to UI
-  const renderErrors = (errorsArray) => {
-    return errorsArray.map((error) => (
+  const renderErrors = (errorsArray: Error[]) => {
+    return errorsArray.map((error: Error) => (
       <div className='diet-form-row' key={error.error}>
         {error.error}
       </div>
@@ -106,7 +130,7 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
 
   let error = renderErrors(errors);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // allow empty string or values 0-9, 0-5 digits, optionally including one decimal point /w 1 digit after decimal
     const caloriesPermitted = /^\d{0,5}(\.\d{1})?$/;
 
@@ -133,23 +157,26 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (
+    e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     if (isSubmittable) {
       let goals = Object.assign({}, diet);
 
-      goals.f = grams.f;
-      goals.p = grams.p;
-      goals.e = parseFloat(calorieGoal);
+      // convert all values to float before pushing to firebase
+      goals.f = +grams.f;
+      goals.p = +grams.p;
+      goals.e = +calorieGoal;
 
       // assign carb goal to either net carbs or total carbs based on user carb settings
       switch (carbSettings) {
         case 't':
-          goals.c = grams.c;
+          goals.c = +grams.c;
           goals.k = null;
           break;
         case 'n':
-          goals.k = grams.c;
+          goals.k = +grams.c;
           goals.c = null;
           break;
         default:
@@ -157,7 +184,7 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
       }
 
       // now update the data in firestore
-      updateDiet(userId, goals);
+      updateDiet(userId as string, goals);
 
       toggleAlertModal({
         title: 'SETTINGS SAVED!',
@@ -178,7 +205,7 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
     }
   };
 
-  const getArrowStyle = (value) => {
+  const getArrowStyle = (value: string) => {
     if (value) {
       return 'far fa-arrow-alt-circle-right output-arrow on';
     } else {
@@ -186,7 +213,7 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
     }
   };
 
-  const getOutputStyle = (value) => {
+  const getOutputStyle = (value: string) => {
     if (value) {
       return 'diet-form-row on';
     } else {
@@ -281,14 +308,27 @@ const UpdateDiet = ({ toggleAlertModal, diet, userId, carbSettings }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  carbSettings: 't' | 'n' | undefined;
+  diet: Diet | undefined;
+  userId: string | undefined;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
+  carbSettings: selectCarbSettings,
   diet: selectDietSettings,
   userId: selectCurrentUserId,
-  carbSettings: selectCarbSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+const mapDispatchToProps = (
+  dispatch: Dispatch<AlertModalTypes.ToggleAlertModal>
+) => ({
+  toggleAlertModal: (object: AlertModalTypes.AlertModal) =>
+    dispatch(toggleAlertModal(object)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateDiet);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(UpdateDiet);

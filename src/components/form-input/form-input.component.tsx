@@ -2,14 +2,27 @@ import React from 'react';
 
 import './form-input.styles.scss';
 
+// Define the possible props FormInput may receive
+type Props = {
+  name: string;
+  type: string;
+  value: string;
+  onChange?: any;
+  label?: string;
+  className: string;
+  textArea?: boolean;
+  handleChange?: any;
+};
+
 const FormInput = ({
   handleChange,
   label,
   className,
   textArea,
   ...otherProps
-}) => {
+}: Props) => {
   let renderInput;
+
   if (textArea) {
     renderInput = (
       <textarea
