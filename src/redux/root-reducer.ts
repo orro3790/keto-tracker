@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   dateSelector: dateSelectorReducer,
   dailyHud: dailyHudSelector,
   createFood: createFoodReducer,
-  viewFavs: FavsModalReducer,
+  favsModal: FavsModalReducer,
   customFoodsModal: customFoodsModalReducer,
   alertModal: alertModalReducer,
   waterModal: waterModalReducer,

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
 import { connect } from 'react-redux';
-import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions.js';
+import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { createFood } from '../../firebase/firebase.utils.js';

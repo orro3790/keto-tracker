@@ -1,14 +1,17 @@
-import { ViewFavsActionTypes } from './favs-modal.types';
+import * as Types from './favs-modal.types';
 
-const INITIAL_STATE = {
+const INITIAL_STATE: Types.State = {
   modal: {
     status: 'hidden',
   },
 };
 
-const FavsModalReducer = (state = INITIAL_STATE, action) => {
+const FavsModalReducer = (
+  state = INITIAL_STATE,
+  action: Types.Actions
+): Types.State => {
   switch (action.type) {
-    case ViewFavsActionTypes.TOGGLE_FAVS_MODAL:
+    case Types.TOGGLE_FAVS_MODAL:
       return {
         ...state,
         modal: action.payload,

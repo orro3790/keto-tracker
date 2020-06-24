@@ -18,7 +18,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
     case 'fav':
       favOn = 'on';
       break;
-    case 'user-foods':
+    case 'custom-foods':
       userOn = 'on';
       break;
     default:
@@ -37,9 +37,9 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
         filter: 'usda',
         path: `usda`,
       });
-    } else if (e.currentTarget.className.baseVal.includes('user-foods')) {
+    } else if (e.currentTarget.className.baseVal.includes('custom-foods')) {
       setFoodFilter({
-        filter: 'user-foods',
+        filter: 'custom-foods',
         path: `users/${userId}/createdFoods/`,
       });
     }
@@ -50,7 +50,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
       <div></div>
       <span className='filter-btn'>
         <FaUserTag
-          className={`fas fa-user-tag user-foods ${userOn}`}
+          className={`fas fa-user-tag custom-foods ${userOn}`}
           onClick={toggleFilter}
         />
       </span>

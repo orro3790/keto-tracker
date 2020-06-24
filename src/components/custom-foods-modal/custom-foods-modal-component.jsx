@@ -102,7 +102,7 @@ const CustomFoodsModal = ({
         key={results[index].i}
         food={results[index]}
         index={index}
-        type='user-foods'
+        type='custom-foods'
       />
     </div>
   );

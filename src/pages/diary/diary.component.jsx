@@ -13,7 +13,7 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCreateFoodModalStatus } from '../../redux/create-food/create-food.selectors';
 import { selectFoodReference } from '../../redux/search-item/search-item.selectors';
-import { selectModal } from '../../redux/search-modal/search-modal.selectors';
+import { selectSearchModalStatus } from '../../redux/search-modal/search-modal.selectors';
 import { selectFavModalStatus } from '../../redux/favs-modal/favs-modal.selectors';
 import { selectCustomFoodsModalStatus } from '../../redux/custom-foods-modal/custom-foods-modal.selectors';
 import { selectWaterModalStatus } from '../../redux/water-modal/water-modal.selectors';
@@ -21,7 +21,7 @@ import './diary.styles.scss';
 import 'tippy.js/animations/scale.css';
 
 const Diary = ({
-  searchModal,
+  searchModalStatus,
   createFoodModalStatus,
   viewFavsModalStatus,
   customFoodsModalStatus,
@@ -32,7 +32,7 @@ const Diary = ({
     viewFavsModal,
     customFoodsModal,
     waterModal;
-  if (searchModal.status === 'visible') {
+  if (searchModalStatus === 'visible') {
     searchFoodModal = <SearchFoodModal />;
   }
   if (createFoodModalStatus === 'visible') {
@@ -91,7 +91,7 @@ const Diary = ({
 };
 
 const mapStateToProps = createStructuredSelector({
-  searchModal: selectModal,
+  searchModalStatus: selectSearchModalStatus,
   createFoodModalStatus: selectCreateFoodModalStatus,
   foodReference: selectFoodReference,
   viewFavsModalStatus: selectFavModalStatus,

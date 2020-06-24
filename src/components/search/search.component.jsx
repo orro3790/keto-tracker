@@ -117,7 +117,7 @@ const Search = ({
           </div>
         );
         break;
-      case 'user-foods':
+      case 'custom-foods':
         labelMsg = (
           <div>
             Search

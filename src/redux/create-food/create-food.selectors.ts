@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect';
+import { RootState } from '../root-reducer';
 
-const selectCreateFood = (state) => state.createFood;
+const selectCreateFood = (state: RootState) => state.createFood;
 
 export const selectCreateFoodModalStatus = createSelector(
   [selectCreateFood],

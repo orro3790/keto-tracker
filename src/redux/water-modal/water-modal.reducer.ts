@@ -1,14 +1,17 @@
-import { WaterModalActionTypes } from './water-modal.types';
+import * as Types from './water-modal.types';
 
-const INITIAL_STATE = {
+const INITIAL_STATE: Types.State = {
   modal: {
     status: 'hidden',
   },
 };
 
-const waterModalReducer = (state = INITIAL_STATE, action) => {
+const waterModalReducer = (
+  state = INITIAL_STATE,
+  action: Types.Actions
+): Types.State => {
   switch (action.type) {
-    case WaterModalActionTypes.TOGGLE_WATER_MODAL:
+    case Types.TOGGLE_WATER_MODAL:
       return {
         ...state,
         modal: action.payload,

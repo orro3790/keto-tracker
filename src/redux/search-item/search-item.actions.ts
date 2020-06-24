@@ -1,19 +1,15 @@
-import {
-  CREATE_FOOD_REFERENCE,
-  TOGGLE_SUGGESTION_WINDOW,
-  Food,
-  CreateFoodReference,
-  ToggleSuggestionWindow,
-} from './../search-item/search-item.types';
+import * as Types from './../search-item/search-item.types';
 
-export const createFoodReference = (food: Food | ''): CreateFoodReference => ({
-  type: CREATE_FOOD_REFERENCE,
+export const createFoodReference = (
+  food: Types.Food | ''
+): Types.CreateFoodReference => ({
+  type: Types.CREATE_FOOD_REFERENCE,
   payload: food,
 });
 
 export const toggleSuggestionWindow = (
   status: boolean
-): ToggleSuggestionWindow => ({
-  type: TOGGLE_SUGGESTION_WINDOW,
+): Types.ToggleSuggestionWindow => ({
+  type: Types.TOGGLE_SUGGESTION_WINDOW,
   payload: status,
 });

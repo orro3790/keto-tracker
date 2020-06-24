@@ -1,12 +1,6 @@
-import {
-  State,
-  Actions,
-  TOGGLE_SEARCH_MODAL,
-  ALLOW_ENTRY_UPDATE_FIREBASE,
-  SET_FOOD_FILTER,
-} from './search-modal.types';
+import * as Types from './search-modal.types';
 
-const INITIAL_STATE: State = {
+const INITIAL_STATE: Types.State = {
   modal: {
     status: 'hidden',
     meal: '',
@@ -23,19 +17,22 @@ const INITIAL_STATE: State = {
   allowUpdateFirebase: false,
 };
 
-const searchModalReducer = (state = INITIAL_STATE, action: Actions): State => {
+const searchModalReducer = (
+  state = INITIAL_STATE,
+  action: Types.Actions
+): Types.State => {
   switch (action.type) {
-    case TOGGLE_SEARCH_MODAL:
+    case Types.TOGGLE_SEARCH_MODAL:
       return {
         ...state,
         modal: action.payload,
       };
-    case ALLOW_ENTRY_UPDATE_FIREBASE:
+    case Types.ALLOW_ENTRY_UPDATE_FIREBASE:
       return {
         ...state,
         allowUpdateFirebase: action.payload,
       };
-    case SET_FOOD_FILTER:
+    case Types.SET_FOOD_FILTER:
       return {
         ...state,
         foodFilter: action.payload,

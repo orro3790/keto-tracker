@@ -10,7 +10,7 @@ import {
 } from '../../redux/search-modal/search-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
 import { createFoodReference } from './../../redux/search-item/search-item.actions';
-import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions.js';
+import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { toggleWaterModal } from '../../redux/water-modal/water-modal.actions';

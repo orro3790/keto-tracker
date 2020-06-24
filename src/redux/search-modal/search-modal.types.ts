@@ -13,7 +13,7 @@ export interface Modal {
 
 // Define the shape of the foodFilter object in state
 export interface FoodFilter {
-  filter: 'usda' | 'fav' | 'user-foods';
+  filter: 'usda' | 'fav' | 'custom-foods';
   path: string;
 }
 

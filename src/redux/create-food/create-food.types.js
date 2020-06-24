@@ -1,4 +1,0 @@
-export const CreateFoodActionTypes = {
-  CREATE_FOOD: 'CREATE_FOOD',
-  TOGGLE_CREATE_FOOD_MODAL: 'TOGGLE_CREATE_FOOD_MODAL',
-};

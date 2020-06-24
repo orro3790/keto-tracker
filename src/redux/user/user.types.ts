@@ -60,17 +60,17 @@ export const SET_FAV_FOODS = 'SET_FAV_FOODS';
 export const SET_CREATED_FOODS = 'SET_CREATED_FOODS';
 
 // Define action types
-interface SetCurrentUser {
+export interface SetCurrentUser {
   type: typeof SET_CURRENT_USER;
   payload: User;
 }
 
-interface SetFavFoods {
+export interface SetFavFoods {
   type: typeof SET_FAV_FOODS;
   payload: [];
 }
 
-interface SetCreatedFoods {
+export interface SetCreatedFoods {
   type: typeof SET_CREATED_FOODS;
   payload: [];
 }

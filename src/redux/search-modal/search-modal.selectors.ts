@@ -22,3 +22,8 @@ export const selectMeal = createSelector(
   [selectSearchModal],
   (searchModal) => searchModal.modal.meal
 );
+
+export const selectSearchModalStatus = createSelector(
+  [selectSearchModal],
+  (searchModal) => searchModal.modal.status
+);
