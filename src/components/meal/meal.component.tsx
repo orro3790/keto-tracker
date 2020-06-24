@@ -1,21 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import FoodItem from './../food-item/food-item.component';
-import './meal.styles.scss';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
+
+import FoodItem from '../food-item/food-item.component';
 import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
-import { createFoodReference } from './../../redux/search-item/search-item.actions';
+import { createFoodReference } from '../../redux/search-item/search-item.actions';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
 import ToggleSearchModal from '../toggle-search/toggle-search.component';
+import './meal.styles.scss';
+import { RootState } from '../../redux/root-reducer';
+import { User } from '../../redux/user/user.types';
 
-const Meal = ({ meal, entry, currentUser }) => {
+import * as TDateSelector from '../../redux/date-selector/date-selector.types';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+
+type PropsFromParent = {
+  meal: TSearchModal.MealNames;
+};
+type Props = PropsFromRedux & PropsFromParent;
+
+const Meal = ({ meal, entry, currentUser }: Props) => {
   const [totalFats, setTotalFats] = useState(0);
   const [totalCarbs, setTotalCarbs] = useState(0);
   const [totalNetCarbs, setTotalNetCarbs] = useState(0);
   const [totalProtein, setTotalProtein] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
 
+  // Mapper from key to human-readable string
   const MEALS = {
     b: 'Breakfast',
     l: 'Lunch',
@@ -36,17 +50,20 @@ const Meal = ({ meal, entry, currentUser }) => {
 
   // indexing starts at 0, therefore tart from -1 so the first item is assigned a index of 0
   let keygen = -1;
-  const renderFoodItems = (food) => {
+
+  const renderFoodItems = (food: TSearchItem.Food) => {
     keygen++;
     return <FoodItem key={keygen} index={keygen} food={food} meal={meal} />;
   };
 
+  // initial state of entry is '', need to handle when an entry has not loaded into state yet
   let entryPlaceholder = {
     [meal]: {
       f: [],
     },
   };
 
+  // if an entry object exists in state, assign it to entryPlaceholder so renderFoodItems can map over it
   if (entry !== '') {
     entryPlaceholder = entry;
   }
@@ -54,7 +71,7 @@ const Meal = ({ meal, entry, currentUser }) => {
   let carbType = 'carbs';
   let totalCarbsOrNetCarbsValue;
 
-  if (currentUser.c === 'n') {
+  if (currentUser?.c === 'n') {
     carbType = 'net carbs';
     totalCarbsOrNetCarbsValue = totalNetCarbs;
   } else {
@@ -70,7 +87,9 @@ const Meal = ({ meal, entry, currentUser }) => {
           <ToggleSearchModal meal={meal} />
         </span>
       </div>
-      {entryPlaceholder[meal].f.map((food) => renderFoodItems(food))}
+      {entryPlaceholder[meal].f.map((food: TSearchItem.Food) =>
+        renderFoodItems(food)
+      )}
       <div className='totals-r'>
         <div className='total-l'>totals</div>
         <div className='totals-c'>
@@ -95,14 +114,27 @@ const Meal = ({ meal, entry, currentUser }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  entry: TDateSelector.Entry | '';
+  currentUser: User | null;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   entry: selectEntry,
   currentUser: selectCurrentUser,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createFoodReference: (food) => dispatch(createFoodReference(food)),
+type Actions = TSearchModal.ToggleSearchModal | TSearchItem.CreateFoodReference;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleSearchModal: (status: TSearchModal.Modal) =>
+    dispatch(toggleSearchModal(status)),
+  createFoodReference: (food: TSearchItem.Food) =>
+    dispatch(createFoodReference(food)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Meal);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Meal);

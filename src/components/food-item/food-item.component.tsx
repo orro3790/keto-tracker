@@ -11,15 +11,15 @@ import { selectModal } from '../../redux/search-modal/search-modal.selectors';
 import './food-item.styles.scss';
 import { Food } from '../../redux/search-item/search-item.types';
 import { CarbSettings } from '../../redux/user/user.types';
-import * as SearchItemTypes from '../../redux/search-item/search-item.types';
-import * as SearchModalTypes from '../../redux/search-modal/search-modal.types';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
 
 type Props = PropsFromRedux & PropsFromParent;
 
 type PropsFromParent = {
   food: Food;
   index: number;
-  meal: 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks';
+  meal: TSearchModal.MealNames;
 };
 
 const FoodItem = ({
@@ -90,7 +90,7 @@ const FoodItem = ({
 };
 
 interface Selectors {
-  searchModal: SearchModalTypes.Modal;
+  searchModal: TSearchModal.Modal;
   foodReference: Food | '';
   carbSettings: CarbSettings | undefined;
 }
@@ -101,12 +101,10 @@ const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   carbSettings: selectCarbSettings,
 });
 
-const mapDispatchToProps = (
-  dispatch: Dispatch<
-    SearchModalTypes.ToggleSearchModal | SearchItemTypes.CreateFoodReference
-  >
-) => ({
-  toggleSearchModal: (status: SearchModalTypes.Modal) =>
+type Actions = TSearchModal.ToggleSearchModal | TSearchItem.CreateFoodReference;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleSearchModal: (status: TSearchModal.Modal) =>
     dispatch(toggleSearchModal(status)),
   createFoodReference: (food: Food | '') => dispatch(createFoodReference(food)),
 });

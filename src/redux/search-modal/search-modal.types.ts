@@ -3,13 +3,15 @@ import { Food } from '../search-item/search-item.types';
 // Define the shape of the modal object in state
 export interface Modal {
   status: 'hidden' | 'visible';
-  meal: '' | 'Breakfast' | 'Lunch' | 'Dinner' | 'Snacks';
+  meal: '' | MealNames;
   editMode: {
     enabled: boolean;
     food: '' | Food;
     index: '' | number;
   };
 }
+
+export type MealNames = 'b' | 'l' | 'd' | 's';
 
 // Define the shape of the foodFilter object in state
 export interface FoodFilter {

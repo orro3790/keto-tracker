@@ -3,6 +3,7 @@ export interface State {
 }
 
 export interface Meal {
+  [index: string]: any;
   f: object[];
   t: {
     f: number;
@@ -15,6 +16,7 @@ export interface Meal {
 }
 
 export interface Entry {
+  [index: string]: any;
   b: Meal;
   l: Meal;
   d: Meal;
