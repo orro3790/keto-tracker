@@ -1,16 +1,30 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { updateCarbSettings } from '../../../firebase/firebase.utils';
-import { createStructuredSelector } from 'reselect';
-import { selectCurrentUser } from '../../../redux/user/user.selectors';
+import {
+  selectCurrentUserId,
+  selectCarbSettings,
+} from '../../../redux/user/user.selectors';
 import { toggleAlertModal } from '../../../redux/alert-modal/alert-modal.actions';
+import * as TAlertModal from '../../../redux/alert-modal/alert-modal.types';
+import * as TUser from '../../../redux/user/user.types';
 import { GiWheat } from 'react-icons/gi';
 import './carb-settings.styles.scss';
+import { RootState } from '../../../redux/root-reducer';
+import { createStructuredSelector } from 'reselect';
 
-const CarbSettings = ({ currentUser, toggleAlertModal }) => {
-  const [toggle, setToggle] = useState(currentUser.c);
+type Props = PropsFromRedux;
 
-  const OPTIONS = {
+const CarbSettings = ({ userId, carbSettings, toggleAlertModal }: Props) => {
+  const [toggle, setToggle] = useState<TUser.CarbSettings>(carbSettings!);
+
+  interface Options {
+    t: 'total';
+    n: 'net';
+  }
+
+  const OPTIONS: Options = {
     t: 'total',
     n: 'net',
   };
@@ -35,14 +49,14 @@ const CarbSettings = ({ currentUser, toggleAlertModal }) => {
 
   const saveCarbSettings = () => {
     // only push update if there's a change between state and user settings in firebase
-    if (currentUser.c !== toggle) {
-      updateCarbSettings(currentUser.id, toggle);
+    if (carbSettings !== toggle) {
+      updateCarbSettings(userId, toggle);
     }
 
     handleAlert();
   };
 
-  const getStyle = (option) => {
+  const getStyle = (option: 'total' | 'net') => {
     if (option === OPTIONS[toggle]) {
       return 'on';
     } else {
@@ -60,7 +74,7 @@ const CarbSettings = ({ currentUser, toggleAlertModal }) => {
     </div>
   );
 
-  if (toggle === 'net') {
+  if (OPTIONS[toggle] === 'net') {
     carbDescription = (
       <div className='net-list'>
         <div>Net carbs is the sum of total carbs minus fiber.</div>
@@ -101,12 +115,25 @@ const CarbSettings = ({ currentUser, toggleAlertModal }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser,
+interface Selectors {
+  userId: TUser.UserId | undefined;
+  carbSettings: TUser.CarbSettings | undefined;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
+  userId: selectCurrentUserId,
+  carbSettings: selectCarbSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+const mapDispatchToProps = (
+  dispatch: Dispatch<TAlertModal.ToggleAlertModal>
+) => ({
+  toggleAlertModal: (status: TAlertModal.Modal) =>
+    dispatch(toggleAlertModal(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CarbSettings);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(CarbSettings);

@@ -95,7 +95,7 @@ const mapStateToProps = createStructuredSelector<RootState, Selectors>({
 const mapDispatchToProps = (
   dispatch: Dispatch<AlertModalTypes.ToggleAlertModal>
 ) => ({
-  toggleAlertModal: (status: AlertModalTypes.AlertModal) =>
+  toggleAlertModal: (status: AlertModalTypes.Modal) =>
     dispatch(toggleAlertModal(status)),
 });
 

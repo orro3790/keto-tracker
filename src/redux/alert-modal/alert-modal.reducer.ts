@@ -1,6 +1,6 @@
-import { State, Actions, TOGGLE_ALERT_MODAL } from './alert-modal.types';
+import * as Types from './alert-modal.types';
 
-const INITIAL_STATE: State = {
+const INITIAL_STATE: Types.State = {
   modal: {
     title: '',
     msg: '',
@@ -11,9 +11,12 @@ const INITIAL_STATE: State = {
   },
 };
 
-const alertModalReducer = (state = INITIAL_STATE, action: Actions): State => {
+const alertModalReducer = (
+  state = INITIAL_STATE,
+  action: Types.Actions
+): Types.State => {
   switch (action.type) {
-    case TOGGLE_ALERT_MODAL:
+    case Types.TOGGLE_ALERT_MODAL:
       return {
         ...state,
         modal: action.payload,

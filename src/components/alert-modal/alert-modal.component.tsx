@@ -88,7 +88,7 @@ const AlertModal = ({ alertModal, toggleAlertModal }: Props) => {
 };
 
 interface Selectors {
-  alertModal: AlertModalTypes.AlertModal;
+  alertModal: AlertModalTypes.Modal;
 }
 
 const mapStateToProps = createStructuredSelector<RootState, Selectors>({
@@ -98,7 +98,7 @@ const mapStateToProps = createStructuredSelector<RootState, Selectors>({
 const mapDispatchToProps = (
   dispatch: Dispatch<AlertModalTypes.ToggleAlertModal>
 ) => ({
-  toggleAlertModal: (object: AlertModalTypes.AlertModal) =>
+  toggleAlertModal: (object: AlertModalTypes.Modal) =>
     dispatch(toggleAlertModal(object)),
 });
 

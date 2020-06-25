@@ -1,10 +1,10 @@
 // Define the shape of the alert modal reducer
 export interface State {
-  modal: AlertModal;
+  modal: Modal;
 }
 
 // Define the shape of the alert modal object
-export interface AlertModal {
+export interface Modal {
   title: string;
   msg: string;
   img: string;
@@ -20,7 +20,7 @@ export const TOGGLE_ALERT_MODAL = 'TOGGLE_ALERT_MODAL';
 // Define action types
 export interface ToggleAlertModal {
   type: typeof TOGGLE_ALERT_MODAL;
-  payload: AlertModal;
+  payload: Modal;
 }
 
 // Define all possible actions
