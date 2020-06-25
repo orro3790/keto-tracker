@@ -9,9 +9,11 @@ type Props = {
   value: string;
   onChange?: any;
   label?: string;
-  className: string;
+  className?: string;
   textArea?: boolean;
   handleChange?: any;
+  id?: string;
+  required?: boolean;
 };
 
 const FormInput = ({

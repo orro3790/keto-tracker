@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import EditItem from '../edit-item/edit-item.component';
-import FormInput from '../../components/form-input/form-input.component';
+import FormInput from '../form-input/form-input.component';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
 
@@ -18,6 +19,13 @@ import './favs-modal.styles.scss';
 import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import * as TFavsModal from '../../redux/favs-modal/favs-modal.types';
+import { RootState } from '../../redux/root-reducer';
+import { Food } from '../../redux/search-item/search-item.types';
+
+type Props = PropsFromRedux;
 
 const FavsModal = ({
   favFoods,
@@ -26,11 +34,11 @@ const FavsModal = ({
   meal,
   toggleSearchModal,
   createFoodReference,
-}) => {
-  const [searchInput, setSearchInput] = useState('');
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState(favFoods);
-  const [submitting, setSubmitting] = useState(false);
+}: Props) => {
+  const [searchInput, setSearchInput] = useState<string>('');
+  const [query, setQuery] = useState<string>('');
+  const [results, setResults] = useState<any[]>(favFoods);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const handleClose = () => {
     toggleFavsModal({
@@ -54,13 +62,13 @@ const FavsModal = ({
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setQuery(searchInput);
     setSubmitting(true);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
@@ -80,13 +88,15 @@ const FavsModal = ({
           .where('n', '==', query.toUpperCase())
           .get();
 
-        setResults(
-          response.docs.map((snapshot) => {
-            const snap = snapshot.data();
-            snap.id = snapshot.id;
-            return snap;
-          })
-        );
+        const favs: object[] = [];
+
+        response.docs.forEach((snapshot) => {
+          const snap = snapshot.data();
+          snap.id = snapshot.id;
+          favs.push(snap);
+        });
+
+        setResults(favs);
       };
 
       fetchData();
@@ -97,14 +107,9 @@ const FavsModal = ({
     // };
   }, [query, userId, submitting]);
 
-  let Row = ({ index, style }) => (
+  let row = ({ index, style }: any) => (
     <div style={style}>
-      <EditItem
-        key={results[index].i}
-        food={results[index]}
-        index={index}
-        type='fav'
-      />
+      <EditItem key={results[index].i} food={results[index]} index={index} />
     </div>
   );
 
@@ -126,7 +131,7 @@ const FavsModal = ({
             itemSize={50}
             width={width}
           >
-            {Row}
+            {row}
           </List>
         )}
       </AutoSizer>
@@ -164,17 +169,35 @@ const FavsModal = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  favFoods: [];
+  userId: string | undefined;
+  meal: TSearchModal.MealNames | '';
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   // createdFoods is only used here to check the state after adding an item. It's not really necessary
   favFoods: selectFavFoods,
   userId: selectCurrentUserId,
   meal: selectMeal,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createFoodReference: (food) => dispatch(createFoodReference(food)),
+type Actions =
+  | TSearchModal.ToggleSearchModal
+  | TSearchItem.CreateFoodReference
+  | TFavsModal.ToggleFavsModal;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleFavsModal: (status: TFavsModal.Modal) =>
+    dispatch(toggleFavsModal(status)),
+  toggleSearchModal: (status: TSearchModal.Modal) =>
+    dispatch(toggleSearchModal(status)),
+  createFoodReference: (food: TSearchItem.Food | '') =>
+    dispatch(createFoodReference(food)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FavsModal);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(FavsModal);

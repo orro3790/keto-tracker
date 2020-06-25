@@ -103,7 +103,7 @@ const SearchFoodModal = ({
   if (foodReference !== '') {
     if (sizeInput !== '') {
       // Case 1: If editing an existing food item, pull the size value and calculate macros with it
-      if (searchModal.editMode) {
+      if (searchModal.editMode.enabled === true) {
         Object.keys(macros).forEach((macro) => {
           macros[macro].refValue = (
             (foodReference[macro] / foodReference.size) *
@@ -202,7 +202,7 @@ const SearchFoodModal = ({
       if (sizeInput !== '') {
         let foodCopy = Object.assign({}, foodReference);
         let entryCopy = Object.assign({}, entry);
-        switch (searchModal.editMode) {
+        switch (searchModal.editMode.enabled) {
           case false:
             if (sizeInput !== '') {
               Object.keys(macros).forEach((macro) => {
@@ -519,7 +519,7 @@ const SearchFoodModal = ({
 
   let placeholder;
 
-  switch (searchModal.editMode) {
+  switch (searchModal.editMode.enabled) {
     case false:
       placeholder = `100${foodReference.u}`;
       break;
@@ -536,7 +536,7 @@ const SearchFoodModal = ({
 
   let submitRow;
 
-  if (searchModal.editMode === false) {
+  if (searchModal.editMode.enabled === false) {
     submitRow = (
       <div className='submit-r'>
         <div></div>

@@ -95,7 +95,7 @@ const Search = ({
 
   let labelMsg;
 
-  if (searchModal.editMode === true) {
+  if (searchModal.editMode.enabled === true) {
     labelMsg = `Replace "${foodReference.n}" with ...`;
   } else {
     switch (foodFilter.filter) {

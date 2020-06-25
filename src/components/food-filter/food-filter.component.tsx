@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -10,7 +10,6 @@ import { FaUserTag } from 'react-icons/fa';
 import './food-filter.styles.scss';
 import { RootState } from '../../redux/root-reducer';
 import * as TSearchModal from '../../redux/search-modal/search-modal.types';
-import * as TUser from '../../redux/user/user.types';
 
 type Props = PropsFromRedux;
 
@@ -32,7 +31,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }: Props) => {
   }
 
   // dispatch food filter to state so it will remember last preference upon reopening of search modal
-  const toggleFilter = (e: MouseEvent<SVGElement>) => {
+  const toggleFilter = (e: React.MouseEvent<SVGElement>) => {
     if (e.currentTarget.className.baseVal.includes('fav')) {
       setFoodFilter({
         filter: 'fav',
@@ -78,7 +77,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }: Props) => {
 
 interface Selectors {
   foodFilter: TSearchModal.FoodFilter;
-  userId: TUser.UserId | undefined;
+  userId: string | undefined;
 }
 
 const mapStateToProps = createStructuredSelector<RootState, Selectors>({

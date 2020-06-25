@@ -83,7 +83,7 @@ const AddFavorite = ({
 interface Selectors {
   userId: string | undefined;
   foodReference: Food | '';
-  favFoods: Food[];
+  favFoods: [];
 }
 
 const mapStateToProps = createStructuredSelector<RootState, Selectors>({
