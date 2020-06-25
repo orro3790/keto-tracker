@@ -1,11 +1,21 @@
 import React from 'react';
 import './search-item.styles.scss';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import {
   createFoodReference,
   toggleSuggestionWindow,
 } from '../../redux/search-item/search-item.actions';
 import { FaPlusSquare } from 'react-icons/fa';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import { selectSuggestionWindow } from '../../redux/search-item/search-item.selectors';
+
+type PropsFromParent = {
+  food: TSearchItem.Food;
+  index: number;
+};
+
+type Props = PropsFromRedux & PropsFromParent;
 
 const SearchItem = ({
   food,
@@ -13,13 +23,13 @@ const SearchItem = ({
   toggleSuggestionWindow,
   suggestionWindow,
   index,
-}) => {
+}: Props) => {
   const handleClick = () => {
     createFoodReference(food);
     toggleSuggestionWindow(!suggestionWindow);
   };
 
-  const truncate = (string) => {
+  const truncate = (string: string) => {
     if (string !== '') {
       if (string.length > 50) {
         return `${string.slice(0, 50)}...`;
@@ -43,13 +53,19 @@ const SearchItem = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  suggestionWindow: state.searchItem.suggestionWindow,
+const mapStateToProps = () => ({
+  suggestionWindow: selectSuggestionWindow,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  createFoodReference: (food) => dispatch(createFoodReference(food)),
-  toggleSuggestionWindow: (status) => dispatch(toggleSuggestionWindow(status)),
+const mapDispatchToProps = (dispatch: Dispatch<TSearchItem.Actions>) => ({
+  createFoodReference: (food: TSearchItem.Food) =>
+    dispatch(createFoodReference(food)),
+  toggleSuggestionWindow: (status: boolean) =>
+    dispatch(toggleSuggestionWindow(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchItem);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SearchItem);
