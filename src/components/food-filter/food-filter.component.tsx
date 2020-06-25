@@ -1,5 +1,6 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { MouseEvent } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { selectFoodFilter } from '../../redux/search-modal/search-modal.selectors';
 import { selectCurrentUserId } from '../../redux/user/user.selectors';
@@ -7,8 +8,13 @@ import { setFoodFilter } from '../../redux/search-modal/search-modal.actions';
 import { MdVerifiedUser, MdTurnedIn } from 'react-icons/md';
 import { FaUserTag } from 'react-icons/fa';
 import './food-filter.styles.scss';
+import { RootState } from '../../redux/root-reducer';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TUser from '../../redux/user/user.types';
 
-const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
+type Props = PropsFromRedux;
+
+const FoodFilter = ({ foodFilter, setFoodFilter, userId }: Props) => {
   let userOn, favOn, usdaOn;
 
   switch (foodFilter.filter) {
@@ -26,7 +32,7 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
   }
 
   // dispatch food filter to state so it will remember last preference upon reopening of search modal
-  const toggleFilter = (e) => {
+  const toggleFilter = (e: MouseEvent<SVGElement>) => {
     if (e.currentTarget.className.baseVal.includes('fav')) {
       setFoodFilter({
         filter: 'fav',
@@ -70,14 +76,25 @@ const FoodFilter = ({ foodFilter, setFoodFilter, userId }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  foodFilter: TSearchModal.FoodFilter;
+  userId: TUser.UserId | undefined;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   foodFilter: selectFoodFilter,
   userId: selectCurrentUserId,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setFoodFilter: (filter) => dispatch(setFoodFilter(filter)),
-  //add a confirmation modal
+const mapDispatchToProps = (
+  dispatch: Dispatch<TSearchModal.SetFoodFilter>
+) => ({
+  setFoodFilter: (filter: TSearchModal.FoodFilter) =>
+    dispatch(setFoodFilter(filter)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FoodFilter);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(FoodFilter);
