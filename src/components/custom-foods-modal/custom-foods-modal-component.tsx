@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import EditItem from '../edit-item/edit-item.component';
-import FormInput from '../../components/form-input/form-input.component';
-import { connect } from 'react-redux';
+import FormInput from '../form-input/form-input.component';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
 import { createStructuredSelector } from 'reselect';
 import {
   selectCurrentUserId,
   selectCustomFoods,
 } from '../../redux/user/user.selectors';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TCustomFoodsModal from '../../redux/custom-foods-modal/custom-foods-modal.types';
 import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
@@ -17,6 +21,9 @@ import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { firestore } from '../../firebase/firebase.utils';
 import './custom-foods-modal.styles.scss';
+import { RootState } from '../../redux/root-reducer';
+
+type Props = PropsFromRedux;
 
 const CustomFoodsModal = ({
   customFoods,
@@ -25,11 +32,11 @@ const CustomFoodsModal = ({
   toggleSearchModal,
   meal,
   createFoodReference,
-}) => {
-  const [searchInput, setSearchInput] = useState('');
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [submitting, setSubmitting] = useState(false);
+}: Props) => {
+  const [searchInput, setSearchInput] = useState<string>('');
+  const [query, setQuery] = useState<string>('');
+  const [results, setResults] = useState<any>([]);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const handleBack = () => {
     toggleCustomFoodsModal({
@@ -53,13 +60,13 @@ const CustomFoodsModal = ({
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setQuery(searchInput);
     setSubmitting(true);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
@@ -79,13 +86,15 @@ const CustomFoodsModal = ({
           .where('n', '==', query.toUpperCase())
           .get();
 
-        setResults(
-          response.docs.map((snapshot) => {
-            const snap = snapshot.data();
-            snap.id = snapshot.id;
-            return snap;
-          })
-        );
+        const customFoodsArray: object[] = [];
+
+        response.docs.forEach((snapshot) => {
+          const snap = snapshot.data();
+          snap.id = snapshot.id;
+          customFoodsArray.push(snap);
+        });
+
+        setResults(customFoodsArray);
       };
 
       fetchData();
@@ -96,14 +105,9 @@ const CustomFoodsModal = ({
     // };
   }, [query, userId, submitting]);
 
-  let Row = ({ index, style }) => (
+  let row = ({ index, style }: any) => (
     <div style={style}>
-      <EditItem
-        key={results[index].i}
-        food={results[index]}
-        index={index}
-        type='custom-foods'
-      />
+      <EditItem key={results[index].i} food={results[index]} index={index} />
     </div>
   );
 
@@ -125,7 +129,7 @@ const CustomFoodsModal = ({
             itemSize={50}
             width={width}
           >
-            {Row}
+            {row}
           </List>
         )}
       </AutoSizer>
@@ -163,16 +167,34 @@ const CustomFoodsModal = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  customFoods: [];
+  userId: string | undefined;
+  meal: 'b' | 'l' | 'd' | 's' | '';
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   customFoods: selectCustomFoods,
   userId: selectCurrentUserId,
   meal: selectMeal,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  createFoodReference: (food) => dispatch(createFoodReference(food)),
+type Actions =
+  | TSearchModal.ToggleSearchModal
+  | TSearchItem.CreateFoodReference
+  | TCustomFoodsModal.ToggleCustomFoodsModal;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleCustomFoodsModal: (object: TCustomFoodsModal.Modal) =>
+    dispatch(toggleCustomFoodsModal(object)),
+  toggleSearchModal: (object: TSearchModal.Modal) =>
+    dispatch(toggleSearchModal(object)),
+  createFoodReference: (food: TSearchItem.Food | '') =>
+    dispatch(createFoodReference(food)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomFoodsModal);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(CustomFoodsModal);
