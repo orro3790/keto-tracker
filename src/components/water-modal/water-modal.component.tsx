@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { RiWaterFlashLine } from 'react-icons/ri';
@@ -20,7 +21,17 @@ import {
   dateWriteable,
   updateGoalsAndPrecision,
 } from '../../firebase/firebase.utils';
+import * as TDateSelector from '../../redux/date-selector/date-selector.types';
+import * as TUser from '../../redux/user/user.types';
+import * as TAlertModal from '../../redux/alert-modal/alert-modal.types';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import * as TWaterModal from '../../redux/water-modal/water-modal.types';
+import { RootState } from '../../redux/root-reducer';
+import { cloneDeep } from 'lodash';
 import './water-modal.styles.scss';
+
+type Props = PropsFromRedux;
 
 const WaterModal = ({
   waterSettings,
@@ -32,7 +43,7 @@ const WaterModal = ({
   entry,
   setEntry,
   allowUpdateFirebase,
-}) => {
+}: Props) => {
   const [input, setInput] = useState('');
   const [toggle, setToggle] = useState('add');
 
@@ -64,31 +75,37 @@ const WaterModal = ({
     });
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date to limit abuse
-    if (dateWriteable(entry.t.seconds * 1000) === true) {
+    if (
+      dateWriteable((entry as TDateSelector.Entry).t.seconds * 1000) === true
+    ) {
       if (input !== '') {
         // will need to refactor to include unit conversions
-        let copy = Object.assign({}, entry);
+        let copy = cloneDeep(entry) as TDateSelector.Entry;
         let totalMl = 0;
         let remainder = 0;
-        let title;
-        let alertMsg;
-        let img;
-        let negIntake = false;
-        let conversion;
+        let title: string = '',
+          alertMsg: string,
+          img: string,
+          conversion: number;
+        let negIntake = true;
 
         // determine add or remove ==> handle conversion to totalMl ==>  calculate remainder for alerts
+
+        /**
+         * Calculate the amount of water remaining in an entry object, based on the user's water consumption goals.
+         */
         const calculateRemainder = () => {
-          if (toggle === 'add') {
+          if (toggle === 'add' && copy.w.t !== null) {
             title = 'WATER ADDED';
-            switch (waterSettings.u) {
+            switch (waterSettings?.u) {
               case 'm':
                 totalMl = copy.w.t + parseFloat(input);
                 break;
@@ -101,9 +118,9 @@ const WaterModal = ({
               default:
                 break;
             }
-          } else if (toggle === 'remove') {
+          } else if (toggle === 'remove' && copy.w.t !== null) {
             title = 'WATER REMOVED';
-            switch (waterSettings.u) {
+            switch (waterSettings?.u) {
               case 'm':
                 totalMl = copy.w.t - parseFloat(input);
                 break;
@@ -124,14 +141,14 @@ const WaterModal = ({
             totalMl = 0;
             negIntake = true;
           }
-          remainder = waterSettings.g - totalMl;
+          remainder = waterSettings?.g! - totalMl;
         };
 
-        switch (waterSettings.u) {
+        switch (waterSettings?.u) {
           case 'm':
             calculateRemainder();
             // alert: goal not yet reached
-            if (remainder > 1 && negIntake === false) {
+            if (remainder > 1 && !negIntake) {
               alertMsg = `${remainder.toFixed(
                 0
               )} mL to go to reach your goal today.`;
@@ -159,7 +176,7 @@ const WaterModal = ({
           case 'c':
             calculateRemainder();
             // alert: goal not yet reached
-            if (remainder > 1 && negIntake === false) {
+            if (remainder > 1 && !negIntake) {
               // alert: only 1 cup left to hit goal
               if (remainder.toFixed(0) === '250') {
                 alertMsg = `1 cup to go to reach your goal today!`;
@@ -191,7 +208,7 @@ const WaterModal = ({
               img = 'goal-reached';
             }
             // alert: negative values
-            else if (negIntake === true) {
+            else if (!negIntake) {
               alertMsg = `${(waterSettings.g / 250).toFixed(
                 2
               )} cups to go to reach your goal today.`;
@@ -201,7 +218,7 @@ const WaterModal = ({
           case 'o':
             calculateRemainder();
             // alert: goal not yet reached
-            if (remainder > 1 && negIntake === false) {
+            if (remainder > 1 && !negIntake) {
               alertMsg = `${(remainder / 29.5735).toFixed(
                 2
               )} oz to go to reach your goal today!`;
@@ -243,10 +260,10 @@ const WaterModal = ({
         }
 
         const goals = {
-          w: waterSettings.g,
+          w: waterSettings!.g,
         };
 
-        copy = updateGoalsAndPrecision(copy, goals);
+        copy = updateGoalsAndPrecision(copy, goals) as TDateSelector.Entry;
 
         allowUpdateFirebase(true);
 
@@ -255,9 +272,9 @@ const WaterModal = ({
         handleClose();
 
         toggleAlertModal({
-          title: title,
-          msg: alertMsg,
-          img: img,
+          title: title!,
+          msg: alertMsg!,
+          img: img!,
           status: 'visible',
           sticky: false,
         });
@@ -290,14 +307,14 @@ const WaterModal = ({
     }
   };
 
-  let goal = waterSettings.g;
+  let goal = waterSettings?.g;
 
-  switch (waterSettings.u) {
+  switch (waterSettings?.u) {
     case 'c':
-      goal = (waterSettings.g / 250).toFixed(2);
+      goal = +(waterSettings.g / 250).toFixed(2);
       break;
     case 'o':
-      goal = (waterSettings.g / 29.5735).toFixed(2);
+      goal = +(waterSettings.g / 29.5735).toFixed(2);
       break;
     default:
       break;
@@ -311,7 +328,7 @@ const WaterModal = ({
     setToggle('remove');
   };
 
-  const getStyle = (className) => {
+  const getStyle = (className: string) => {
     if (className === toggle) {
       if (toggle === 'add') {
         return 'on-add';
@@ -341,7 +358,7 @@ const WaterModal = ({
             <div className='desc'>
               Your goal is to consume
               <span className='goal'>
-                {goal} {UNITS[waterSettings.u]}
+                {goal} {UNITS[waterSettings!.u]}
               </span>{' '}
               per day.
             </div>
@@ -374,12 +391,12 @@ const WaterModal = ({
               />
             </form>
             <div className='water-unit'>
-              <div>{UNITS[waterSettings.u]}</div>
+              <div>{UNITS[waterSettings!.u]}</div>
             </div>
           </div>
         </div>
         <div className='water-submit-r'>
-          <div type='submit' className={getBtnStyle()} onClick={handleSubmit}>
+          <div className={getBtnStyle()} onClick={handleSubmit}>
             <MdCheck className={getIconStyle()} />
           </div>
         </div>
@@ -388,19 +405,42 @@ const WaterModal = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
-  waterSettings: selectWaterSettings,
-  meal: selectMeal,
+interface Selectors {
+  waterSettings: TUser.WaterSettings | undefined;
+  meal: 'b' | 'l' | 'd' | 's' | '';
+  entry: TDateSelector.Entry | '';
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   entry: selectEntry,
+  meal: selectMeal,
+  waterSettings: selectWaterSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
-  createFoodReference: (food) => dispatch(createFoodReference(food)),
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
-  setEntry: (entry) => dispatch(setEntry(entry)),
-  allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
+type Actions =
+  | TAlertModal.ToggleAlertModal
+  | TSearchItem.CreateFoodReference
+  | TSearchModal.ToggleSearchModal
+  | TWaterModal.ToggleWaterModal
+  | TSearchModal.AllowUpdateFirebase
+  | TDateSelector.SetEntry;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleAlertModal: (status: TAlertModal.Modal) =>
+    dispatch(toggleAlertModal(status)),
+  createFoodReference: (food: TSearchItem.Food | '') =>
+    dispatch(createFoodReference(food)),
+  toggleSearchModal: (status: TSearchModal.Modal) =>
+    dispatch(toggleSearchModal(status)),
+  toggleWaterModal: (status: TWaterModal.Modal) =>
+    dispatch(toggleWaterModal(status)),
+  allowUpdateFirebase: (status: boolean) =>
+    dispatch(allowUpdateFirebase(status)),
+  setEntry: (object: TDateSelector.Entry) => dispatch(setEntry(object)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WaterModal);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(WaterModal);

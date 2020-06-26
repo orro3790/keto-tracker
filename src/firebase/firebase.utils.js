@@ -870,7 +870,7 @@ export const getMetricsData = async (userId) => {
 /**
  * Checks whether current entry is +/- 7 days from today's date before pushing entry to firebase, to limit abuse.
  * @function
- * @param {Date} date - A javascript date object
+ * @param {number} date A unix timestamp in seconds format.
  */
 export const dateWriteable = (date) => {
   // Only allow updates to the firestore +/- 7 days from today's date to limit abuse
