@@ -20,8 +20,8 @@ import { FixedSizeList as List } from 'react-window';
 import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { firestore } from '../../firebase/firebase.utils';
-import './custom-foods-modal.styles.scss';
 import { RootState } from '../../redux/root-reducer';
+import './custom-foods-modal.styles.scss';
 
 type Props = PropsFromRedux;
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './date-selector.styles.scss';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import {
   selectCurrentUserId,
@@ -23,7 +24,13 @@ import {
 } from '../../firebase/firebase.utils';
 import Tippy from '@tippyjs/react';
 import Calendar from 'react-calendar';
+import { RootState } from '../../redux/root-reducer';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TDateSelector from '../../redux/date-selector/date-selector.types';
+import * as TUser from '../../redux/user/user.types';
 import './calendar.scss';
+
+type Props = PropsFromRedux;
 
 const DateSelector = ({
   entry,
@@ -34,23 +41,23 @@ const DateSelector = ({
   setEntry,
   update,
   allowUpdateFirebase,
-}) => {
-  const [date, setDate] = useState('');
+}: Props) => {
+  const [date, setDate] = useState<string>('');
   const [calDate, setCalDate] = useState(new Date());
 
   // handles getting the entry when a user clicks on a date in the calendar picker
-  const onChange = (calDate) => {
+  const onChange = (calDate: Date | Date[]) => {
     const loadEntry = async () => {
       // if a user clicks a date on calendar picker, pass calDate.getTime() as the anchor date
       const entriesObj = await getEntry(
         userId,
         dietSettings,
         waterSettings,
-        calDate.getTime()
+        (calDate as Date).getTime()
       );
       setEntry(entriesObj);
     };
-    loadEntry().then(() => setCalDate(calDate));
+    loadEntry().then(() => setCalDate(calDate as Date));
   };
 
   // When the user is not null, get today's diary entry from firebase
@@ -71,10 +78,10 @@ const DateSelector = ({
       let anchor = new Date(entry.t.seconds * 1000);
       setCalDate(anchor);
 
-      anchor = `${
+      let dateUI = `${
         anchor.getMonth() + 1
       }/${anchor.getDate()}/${anchor.getFullYear()}`;
-      setDate(anchor);
+      setDate(dateUI);
     }
   }, [entry]);
 
@@ -95,7 +102,7 @@ const DateSelector = ({
         userId,
         dietSettings,
         waterSettings,
-        entry.t.seconds * 1000,
+        (entry as TDateSelector.Entry).t.seconds * 1000,
         +1
       );
       setEntry(entriesObj);
@@ -109,7 +116,7 @@ const DateSelector = ({
         userId,
         dietSettings,
         waterSettings,
-        entry.t.seconds * 1000,
+        (entry as TDateSelector.Entry).t.seconds * 1000,
         -1
       );
       setEntry(entriesObj);
@@ -142,7 +149,16 @@ const DateSelector = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  userId: string | undefined;
+  membership: 's' | 'p' | undefined;
+  entry: TDateSelector.Entry | '';
+  update: boolean;
+  dietSettings: TUser.Diet | undefined;
+  waterSettings: TUser.WaterSettings | undefined;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   userId: selectCurrentUserId,
   membership: selectMembershipSettings,
   entry: selectEntry,
@@ -151,10 +167,20 @@ const mapStateToProps = createStructuredSelector({
   waterSettings: selectWaterSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  setCurrentDate: (datesObj) => dispatch(setCurrentDate(datesObj)),
-  setEntry: (entriesObj) => dispatch(setEntry(entriesObj)),
-  allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
+type Actions =
+  | TDateSelector.SetCurrentDate
+  | TDateSelector.SetEntry
+  | TSearchModal.AllowUpdateFirebase;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  setCurrentDate: (object: object) => dispatch(setCurrentDate(object)),
+  setEntry: (object: TDateSelector.Entry) => dispatch(setEntry(object)),
+  allowUpdateFirebase: (status: boolean) =>
+    dispatch(allowUpdateFirebase(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DateSelector);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(DateSelector);
