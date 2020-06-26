@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import FormInput from '../form-input/form-input.component';
-import SearchItemSuggestion from './../search-item/search-item.component';
+import SearchItemSuggestion from '../search-item/search-item.component';
 import { firestore } from '../../firebase/firebase.utils';
 import { createStructuredSelector } from 'reselect';
 import {
@@ -20,6 +21,11 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { FixedSizeList as List } from 'react-window';
 import { toggleSuggestionWindow } from '../../redux/search-item/search-item.actions';
 import './search.styles.scss';
+import { RootState } from '../../redux/root-reducer';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+
+type Props = PropsFromRedux;
 
 const Search = ({
   suggestionWindow,
@@ -29,17 +35,17 @@ const Search = ({
   userId,
   favFoods,
   toggleSuggestionWindow,
-}) => {
+}: Props) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<'' | any[]>('');
   const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setQuery(searchInput);
     setSubmitting(true);
@@ -57,9 +63,8 @@ const Search = ({
       const fetchData = async () => {
         if (foodFilter.filter === 'fav') {
           const response = favFoods.filter(
-            (food) => food.n === query.toUpperCase()
+            (food: TSearchItem.Food) => food.n === query.toUpperCase()
           );
-          console.log(response);
           setResults(response);
         } else {
           const response = await firestore
@@ -67,13 +72,15 @@ const Search = ({
             .where('n', '==', query.toUpperCase())
             .get();
 
-          setResults(
-            response.docs.map((snapshot) => {
-              const snap = snapshot.data();
-              snap.id = snapshot.id;
-              return snap;
-            })
-          );
+          let responses: any = [];
+
+          response.docs.forEach((snapshot) => {
+            const snap = snapshot.data();
+            snap.id = snapshot.id;
+            responses.push(snap);
+          });
+
+          setResults(responses);
         }
       };
       fetchData();
@@ -83,20 +90,12 @@ const Search = ({
     // return () => {
     //   cleanup;
     // };
-  }, [
-    submitting,
-    query,
-    foodFilter,
-    userId,
-    favFoods,
-    searchModal.foodFilter,
-    toggleSuggestionWindow,
-  ]);
+  }, [submitting, query, foodFilter, userId, favFoods, toggleSuggestionWindow]);
 
   let labelMsg;
 
   if (searchModal.editMode.enabled === true) {
-    labelMsg = `Replace "${foodReference.n}" with ...`;
+    labelMsg = `Replace "${(foodReference as TSearchItem.Food).n}" with ...`;
   } else {
     switch (foodFilter.filter) {
       case 'usda':
@@ -133,7 +132,7 @@ const Search = ({
 
   let rendered;
 
-  const Row = ({ index, style }) => (
+  const row = ({ index, style }: any) => (
     <div style={style}>
       <SearchItemSuggestion
         key={results[index].i}
@@ -154,7 +153,7 @@ const Search = ({
               itemSize={50}
               width={width}
             >
-              {Row}
+              {row}
             </List>
           )}
         </AutoSizer>
@@ -182,7 +181,16 @@ const Search = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  suggestionWindow: boolean;
+  searchModal: TSearchModal.Modal;
+  foodReference: TSearchItem.Food | '';
+  userId: string | undefined;
+  favFoods: any;
+  foodFilter: TSearchModal.FoodFilter;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   suggestionWindow: selectSuggestionWindow,
   searchModal: selectModal,
   foodReference: selectFoodReference,
@@ -191,8 +199,15 @@ const mapStateToProps = createStructuredSelector({
   foodFilter: selectFoodFilter,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleSuggestionWindow: (status) => dispatch(toggleSuggestionWindow(status)),
+const mapDispatchToProps = (
+  dispatch: Dispatch<TSearchItem.ToggleSuggestionWindow>
+) => ({
+  toggleSuggestionWindow: (status: boolean) =>
+    dispatch(toggleSuggestionWindow(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Search);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(Search);

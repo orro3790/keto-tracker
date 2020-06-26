@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import './totals-chart.styles.scss';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { Doughnut } from 'react-chartjs-2';
+import { selectEntry } from '../../redux/date-selector/date-selector.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import * as TUser from '../../redux/user/user.types';
+import * as TDateSelector from '../../redux/date-selector/date-selector.types';
+import './totals-chart.styles.scss';
+import { RootState } from '../../redux/root-reducer';
 
-const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
+type PropsFromParent = { meal: 'b' | 'l' | 'd' | 's' | '' };
+type Props = PropsFromRedux & PropsFromParent;
+
+const TotalsChart = ({ entry, meal, currentUser }: Props) => {
   const [chartData, setChartData] = useState({});
   const [totalsData, setTotalsData] = useState([1, 0, 0, 0]);
 
@@ -17,7 +26,7 @@ const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
         const totalNetCarbs = entry[meal].t.k;
         const totalProtein = entry[meal].t.p;
         const totalCalories = entry[meal].t.e;
-        if (currentUser.c === 'n') {
+        if (currentUser?.c === 'n') {
           setTotalsData([
             totalFats,
             totalNetCarbs,
@@ -53,9 +62,9 @@ const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
   };
 
   useEffect(() => {
-    let colors;
-    let labels;
-    if (currentUser.c === 'n') {
+    let colors: string[] | string;
+    let labels: string[];
+    if (currentUser?.c === 'n') {
       labels = ['fats', 'net carbs', 'protein'];
     } else {
       labels = ['fats', 'carbs', 'protein'];
@@ -96,10 +105,18 @@ const TotalsChart = ({ entry, meal, searchModal, currentUser }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  entry: state.dateSelector.entry,
-  searchModal: state.searchModal.modal,
-  currentUser: state.user.currentUser,
+interface Selectors {
+  entry: TDateSelector.Entry | '';
+  currentUser: TUser.User | null;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
+  entry: selectEntry,
+  currentUser: selectCurrentUser,
 });
 
-export default connect(mapStateToProps)(TotalsChart);
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(TotalsChart);

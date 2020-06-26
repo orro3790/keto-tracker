@@ -11,9 +11,9 @@ export interface Food {
   d: number;
   e: number;
   f: number;
-  g: number;
-  i: number;
-  id: string;
+  g?: number;
+  i?: number;
+  id?: string;
   k: number;
   n: string;
   p: number;

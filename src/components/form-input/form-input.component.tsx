@@ -4,7 +4,7 @@ import './form-input.styles.scss';
 
 // Define the possible props FormInput may receive
 type Props = {
-  label?: string;
+  label?: string | JSX.Element;
   className?: string;
   textArea?: boolean;
   handleChange?: any;
