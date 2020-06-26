@@ -5,8 +5,9 @@ import './form-input.styles.scss';
 // Define the possible props FormInput may receive
 type Props = {
   name: string;
-  type: string;
-  value: string;
+  type?: string;
+  value?: string | number;
+  placeholder?: string;
   onChange?: any;
   label?: string;
   className?: string;
@@ -14,6 +15,8 @@ type Props = {
   handleChange?: any;
   id?: string;
   required?: boolean;
+  maxLength?: any;
+  otherProps?: any;
 };
 
 const FormInput = ({
@@ -48,9 +51,7 @@ const FormInput = ({
       {renderInput}
       {/* if there's a label, dynamically assign classname that checks if there's a label value and then applies shrink class to it, and form-in-l*/}
       {label ? (
-        <label
-          className={`${otherProps.value.length ? 'shrink' : ''} form-in-l`}
-        >
+        <label className={`${className ? 'shrink' : ''} form-in-l`}>
           {label}
         </label>
       ) : null}

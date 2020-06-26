@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FormInput from '../form-input/form-input.component';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleAlertModal } from '../../redux/alert-modal/alert-modal.actions';
 import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
@@ -10,7 +11,13 @@ import { selectCurrentUserId } from '../../redux/user/user.selectors';
 import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { MdCheck } from 'react-icons/md';
+import { RootState } from '../../redux/root-reducer';
+import * as TCreateFoodModal from '../../redux/create-food/create-food.types';
+import * as TAlertModal from '../../redux/alert-modal/alert-modal.types';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
 import './create-food.styles.scss';
+
+type Props = PropsFromRedux;
 
 const CreateFood = ({
   toggleCreateFoodModal,
@@ -18,16 +25,16 @@ const CreateFood = ({
   toggleAlertModal,
   meal,
   toggleSearchModal,
-}) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [calories, setCalories] = useState('');
-  const [size, setSize] = useState('');
-  const [fats, setFats] = useState('');
-  const [carbs, setCarbs] = useState('');
-  const [fiber, setFiber] = useState('');
-  const [protein, setProtein] = useState('');
-  const [unit, setUnit] = useState('g');
+}: Props) => {
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [calories, setCalories] = useState<string>('');
+  const [size, setSize] = useState<string | number>('');
+  const [fats, setFats] = useState<string>('');
+  const [carbs, setCarbs] = useState<string>('');
+  const [fiber, setFiber] = useState<string>('');
+  const [protein, setProtein] = useState<string>('');
+  const [unit, setUnit] = useState<string>('g');
 
   const handleBack = () => {
     toggleCreateFoodModal({
@@ -44,7 +51,7 @@ const CreateFood = ({
     });
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // allow 0-9, 0-4 digits before decimal, optionally includes one decimal point /w 1 digit after decimal
     const rule1 = /^(\d{0,1}|[1-9]\d{0,3})(\.\d{1,1})?$/;
 
@@ -81,16 +88,16 @@ const CreateFood = ({
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (fieldsFilled === true) {
       // all macros in the database must be based off 100g/ml portions
-      const ePer = parseFloat(((calories / size) * 100).toPrecision(4));
-      const cPer = parseFloat(((carbs / size) * 100).toPrecision(4));
-      const fPer = parseFloat(((fats / size) * 100).toPrecision(4));
-      const pPer = parseFloat(((protein / size) * 100).toPrecision(4));
-      const dPer = parseFloat(((fiber / size) * 100).toPrecision(4));
+      const ePer = parseFloat(((+calories / +size) * 100).toFixed(2));
+      const cPer = parseFloat(((+carbs / +size) * 100).toFixed(2));
+      const fPer = parseFloat(((+fats / +size) * 100).toFixed(2));
+      const pPer = parseFloat(((+protein / +size) * 100).toFixed(2));
+      const dPer = parseFloat(((+fiber / +size) * 100).toFixed(2));
       const kPer = cPer - dPer;
 
       // implement ability to add by label:
@@ -160,10 +167,10 @@ const CreateFood = ({
       break;
   }
 
-  const toggleUnit = (e) => {
-    if (e.target.className.includes('g')) {
+  const toggleUnit = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).className.includes('g')) {
       setUnit('g');
-    } else if (e.target.className.includes('ml')) {
+    } else if ((e.target as HTMLElement).className.includes('ml')) {
       setUnit('ml');
     }
   };
@@ -306,15 +313,32 @@ const CreateFood = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  userId: string | undefined;
+  meal: 'b' | 'l' | 'd' | 's' | '';
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   userId: selectCurrentUserId,
   meal: selectMeal,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
+type Actions =
+  | TCreateFoodModal.ToggleCreateFoodModal
+  | TAlertModal.ToggleAlertModal
+  | TSearchModal.ToggleSearchModal;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleCreateFoodModal: (status: TCreateFoodModal.Modal) =>
+    dispatch(toggleCreateFoodModal(status)),
+  toggleAlertModal: (status: TAlertModal.Modal) =>
+    dispatch(toggleAlertModal(status)),
+  toggleSearchModal: (status: TSearchModal.Modal) =>
+    dispatch(toggleSearchModal(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateFood);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(CreateFood);
