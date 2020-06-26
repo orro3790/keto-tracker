@@ -3,10 +3,10 @@ import './App.css';
 import AlertModal from './components/alert-modal/alert-modal.component';
 import Home from './pages/home/home.component';
 import Diary from './pages/diary/diary.component';
-import Exercises from './pages/exercises/exercises.component.jsx';
-import Metrics from './pages/metrics/metrics.component.jsx';
-import Settings from './pages/settings/settings.component.jsx';
-import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component.jsx';
+import Exercises from './pages/exercises/exercises.component';
+import Metrics from './pages/metrics/metrics.component';
+import Settings from './pages/settings/settings.component';
+import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import {
   BrowserRouter as Router,
   Switch,
