@@ -1,31 +1,19 @@
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 
 import './form-input.styles.scss';
 
 // Define the possible props FormInput may receive
 type Props = {
-  name: string;
-  type?: string;
-  value?: string | number;
-  placeholder?: string;
-  onChange?: any;
   label?: string;
   className?: string;
   textArea?: boolean;
   handleChange?: any;
-  id?: string;
-  required?: boolean;
-  maxLength?: any;
   otherProps?: any;
 };
 
-const FormInput = ({
-  handleChange,
-  label,
-  className,
-  textArea,
-  ...otherProps
-}: Props) => {
+const FormInput: React.FC<
+  Props & React.InputHTMLAttributes<Props> & React.AreaHTMLAttributes<Props>
+> = ({ handleChange, label, className, textArea, ...otherProps }: Props) => {
   let renderInput;
 
   if (textArea) {

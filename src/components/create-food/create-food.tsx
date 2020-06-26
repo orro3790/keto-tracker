@@ -212,7 +212,7 @@ const CreateFood = ({
                 type='text'
                 onChange={handleChange}
                 value={name}
-                maxLength='70'
+                maxLength={70}
                 label='Give your food a name ...'
                 required
               />
@@ -224,7 +224,7 @@ const CreateFood = ({
                 textArea
                 onChange={handleChange}
                 value={description}
-                maxLength='100'
+                maxLength={100}
                 label='Give your food a description ...'
                 required
               />
