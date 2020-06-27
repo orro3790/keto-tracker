@@ -9,9 +9,6 @@ import {
   selectCurrentUserId,
   selectCustomFoods,
 } from '../../redux/user/user.selectors';
-import * as TSearchItem from '../../redux/search-item/search-item.types';
-import * as TSearchModal from '../../redux/search-modal/search-modal.types';
-import * as TCustomFoodsModal from '../../redux/custom-foods-modal/custom-foods-modal.types';
 import { selectMeal } from '../../redux/search-modal/search-modal.selectors';
 import { toggleSearchModal } from '../../redux/search-modal/search-modal.actions';
 import { createFoodReference } from '../../redux/search-item/search-item.actions';
@@ -21,6 +18,9 @@ import { ReactComponent as Logo } from '../../assets/no-results.svg';
 import { FaTimes, FaArrowLeft } from 'react-icons/fa';
 import { firestore } from '../../firebase/firebase.utils';
 import { RootState } from '../../redux/root-reducer';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TCustomFoodsModal from '../../redux/custom-foods-modal/custom-foods-modal.types';
 import './custom-foods-modal.styles.scss';
 
 type Props = PropsFromRedux;
@@ -105,7 +105,12 @@ const CustomFoodsModal = ({
     // };
   }, [query, userId, submitting]);
 
-  let row = ({ index, style }: any) => (
+  type RowProps = {
+    index: number;
+    style: React.CSSProperties | undefined;
+  };
+
+  let row = ({ index, style }: RowProps) => (
     <div style={style}>
       <EditItem key={results[index].i} food={results[index]} index={index} />
     </div>

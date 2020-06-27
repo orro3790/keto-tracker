@@ -107,7 +107,12 @@ const FavsModal = ({
     // };
   }, [query, userId, submitting]);
 
-  let row = ({ index, style }: any) => (
+  type RowProps = {
+    index: number;
+    style: React.CSSProperties | undefined;
+  };
+
+  let row = ({ index, style }: RowProps) => (
     <div style={style}>
       <EditItem key={results[index].i} food={results[index]} index={index} />
     </div>

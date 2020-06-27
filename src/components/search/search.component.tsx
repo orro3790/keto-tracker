@@ -38,7 +38,7 @@ const Search = ({
 }: Props) => {
   const [searchInput, setSearchInput] = useState('');
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<'' | any[]>('');
+  const [results, setResults] = useState<'' | TSearchItem.Food[]>('');
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -132,11 +132,16 @@ const Search = ({
 
   let rendered;
 
-  const row = ({ index, style }: any) => (
+  type RowProps = {
+    index: number;
+    style: React.CSSProperties | undefined;
+  };
+
+  const row = ({ index, style }: RowProps) => (
     <div style={style}>
       <SearchItemSuggestion
-        key={results[index].i}
-        food={results[index]}
+        key={(results[index] as TSearchItem.Food).i}
+        food={results[index] as TSearchItem.Food}
         index={index}
       />
     </div>
@@ -186,7 +191,7 @@ interface Selectors {
   searchModal: TSearchModal.Modal;
   foodReference: TSearchItem.Food | '';
   userId: string | undefined;
-  favFoods: any;
+  favFoods: TSearchItem.Food[];
   foodFilter: TSearchModal.FoodFilter;
 }
 
