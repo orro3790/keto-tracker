@@ -36,7 +36,7 @@ export interface ScheduledEntries {
 // Define the shape of the user's water settings object
 export interface WaterSettings {
   e: boolean;
-  g: number;
+  g: number | null;
   u: UnitTypes;
 }
 

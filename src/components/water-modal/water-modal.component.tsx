@@ -167,7 +167,7 @@ const WaterModal = ({
             }
             // alert: negative daily water intake
             if (negIntake === true) {
-              alertMsg = `${waterSettings.g.toFixed(
+              alertMsg = `${waterSettings.g!.toFixed(
                 0
               )} mL to go to reach your goal today.`;
               img = '';
@@ -193,7 +193,7 @@ const WaterModal = ({
               parseInt(remainder.toFixed(1)) >= 0
             ) {
               alertMsg = `Great job! You reached your goal of drinking ${(
-                waterSettings.g / 250
+                waterSettings.g! / 250
               ).toFixed(2)} cups of water today!`;
               img = 'goal-reached';
             }
@@ -209,7 +209,7 @@ const WaterModal = ({
             }
             // alert: negative values
             else if (!negIntake) {
-              alertMsg = `${(waterSettings.g / 250).toFixed(
+              alertMsg = `${(waterSettings.g! / 250).toFixed(
                 2
               )} cups to go to reach your goal today.`;
               img = '';
@@ -229,7 +229,7 @@ const WaterModal = ({
               parseInt(remainder.toFixed(1)) >= 0
             ) {
               alertMsg = `Great job! You reached your goal of drinking ${(
-                waterSettings.g / 29.5735
+                waterSettings.g! / 29.5735
               ).toFixed(2)} oz of water today!`;
               img = 'goal-reached';
             }
@@ -242,7 +242,7 @@ const WaterModal = ({
             }
             // alert: negative values
             else if (negIntake === true) {
-              alertMsg = `${(waterSettings.g / 29.5735).toFixed(
+              alertMsg = `${(waterSettings.g! / 29.5735).toFixed(
                 2
               )} oz to go to hit your water goal today.`;
               img = '';
@@ -311,10 +311,10 @@ const WaterModal = ({
 
   switch (waterSettings?.u) {
     case 'c':
-      goal = +(waterSettings.g / 250).toFixed(2);
+      goal = +(waterSettings.g! / 250).toFixed(2);
       break;
     case 'o':
-      goal = +(waterSettings.g / 29.5735).toFixed(2);
+      goal = +(waterSettings.g! / 29.5735).toFixed(2);
       break;
     default:
       break;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../../redux/user/user.selectors';
 import FormInput from '../../form-input/form-input.component';
@@ -8,12 +9,17 @@ import { updateWaterSettings } from '../../../firebase/firebase.utils';
 import { RiWaterFlashLine } from 'react-icons/ri';
 import { BsToggleOn, BsToggleOff } from 'react-icons/bs';
 import { cloneDeep } from 'lodash';
+import * as TUser from '../../../redux/user/user.types';
+import * as TAlertModal from '../../../redux/alert-modal/alert-modal.types';
 import './water-settings.styles.scss';
+import { RootState } from '../../../redux/root-reducer';
 
-const WaterSettings = ({ currentUser, toggleAlertModal }) => {
-  const [unitToggle, setUnitToggle] = useState(currentUser.w.u);
+type Props = PropsFromRedux;
+
+const WaterSettings = ({ currentUser, toggleAlertModal }: Props) => {
+  const [unitToggle, setUnitToggle] = useState(currentUser?.w.u);
   const [goalInput, setGoalInput] = useState('');
-  const [trackingToggle, setTrackingToggle] = useState(currentUser.w.e);
+  const [trackingToggle, setTrackingToggle] = useState(currentUser?.w.e);
 
   const UNITS = {
     c: 'cups',
@@ -21,14 +27,18 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     o: 'oz',
   };
 
-  const handleAlert = (result) => {
+  const handleAlert = (result: string) => {
     let msg = '',
       title,
       img;
 
     const msgFormatter = {
-      unitToggle: `Water consumption will now be displayed in ${UNITS[unitToggle]}. `,
-      goal: `Your new goal is to drink ${goalInput} ${UNITS[unitToggle]} each day. `,
+      unitToggle: `Water consumption will now be displayed in ${
+        UNITS[unitToggle!]
+      }. `,
+      goal: `Your new goal is to drink ${goalInput} ${
+        UNITS[unitToggle!]
+      } each day. `,
       tracking: {
         true: `Water tracking has been enabled.`,
         false: `Water tracking has been disabled. `,
@@ -40,10 +50,10 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       if (goalInput !== '') {
         msg += msgFormatter.goal;
       }
-      if (currentUser.w.u !== unitToggle) {
+      if (currentUser?.w.u !== unitToggle) {
         msg += msgFormatter.unitToggle;
       }
-      if (currentUser.w.e !== trackingToggle) {
+      if (currentUser?.w.e !== trackingToggle) {
         if (trackingToggle === true) {
           msg += msgFormatter.tracking.true;
         }
@@ -60,8 +70,8 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
       const userCopy = Object.assign({}, currentUser);
 
       userCopy.w.g = parseFloat(goalInput);
-      userCopy.w.u = unitToggle;
-      userCopy.w.e = trackingToggle;
+      userCopy.w.u = unitToggle!;
+      userCopy.w.e = trackingToggle!;
     } else {
       title = 'OOPS!';
       msg =
@@ -90,8 +100,8 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     setUnitToggle('o');
   };
 
-  const getStyle = (className) => {
-    if (className === unitToggle) {
+  const getStyle = (className: 'm' | 'o' | 'c') => {
+    if (className === unitToggle!) {
       return 'on';
     } else {
       return 'off';
@@ -99,12 +109,12 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   };
 
   const handleSubmit = async () => {
-    // settings will be passed to firestore update func ==> cloneDeep to preserve currentUser.w
-    const settings = cloneDeep(currentUser.w);
+    // settings will be passed to firestore update func ==> cloneDeep to preserve currentUser?.w
+    const settings = cloneDeep(currentUser?.w) as TUser.WaterSettings;
 
     // case 1: check if unit settings changed
-    if (currentUser.w !== unitToggle) {
-      settings.u = unitToggle;
+    if (currentUser?.w !== unitToggle) {
+      settings.u = unitToggle!;
     }
 
     // case 2: check if goal changed ==> convert units if necessary
@@ -114,10 +124,10 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
           settings.g = parseFloat(goalInput);
           break;
         case 'c':
-          settings.g = parseFloat((goalInput * 250).toFixed(2));
+          settings.g = parseFloat((+goalInput * 250).toFixed(2));
           break;
         case 'o':
-          settings.g = parseFloat((goalInput * 29.5735).toFixed(2));
+          settings.g = parseFloat((+goalInput * 29.5735).toFixed(2));
           break;
         default:
           break;
@@ -125,8 +135,8 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
     }
 
     // case 3: check if tracking settings changed
-    if (currentUser.w.e !== trackingToggle) {
-      settings.e = trackingToggle;
+    if (currentUser?.w.e !== trackingToggle) {
+      settings.e = trackingToggle!;
       // If tracking is disabled, also set goal to null
       if (trackingToggle === false) {
         settings.g = null;
@@ -140,18 +150,18 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
     // compare currentUser settings in firestore and settings in state
     if (
-      currentUser.w.g !== settings.g ||
-      currentUser.w.u !== settings.u ||
-      currentUser.w.e !== settings.e
+      currentUser?.w.g !== settings.g ||
+      currentUser?.w.u !== settings.u ||
+      currentUser?.w.e !== settings.e
     ) {
       // try to update firebase, store results to check if error or success
-      await updateWaterSettings(currentUser.id, settings).then((result) => {
+      await updateWaterSettings(currentUser?.id, settings).then((result) => {
         handleAlert(result);
       });
     }
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // allow 0-9, 0-5 digits before decimal, optionally includes one decimal point /w 2 digits after decimal
     const rule2 = /^(\d{0,1}|[1-9]\d{0,4})(\.\d{1,2})?$/;
     if (e.target.value.match(rule2)) setGoalInput(e.target.value);
@@ -191,15 +201,15 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
 
   let toggleIcon, goalDesc, unitDesc, currentGoal;
 
-  switch (currentUser.w.u) {
+  switch (currentUser?.w.u) {
     case 'm':
-      currentGoal = currentUser.w.g;
+      currentGoal = currentUser?.w.g;
       break;
     case 'c':
-      currentGoal = (currentUser.w.g / 250).toFixed(2);
+      currentGoal = (currentUser?.w.g! / 250).toFixed(2);
       break;
     case 'o':
-      currentGoal = (currentUser.w.g / 29.5735).toFixed(2);
+      currentGoal = (currentUser?.w.g! / 29.5735).toFixed(2);
       break;
     default:
       break;
@@ -216,12 +226,12 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
               type='number'
               value={goalInput}
               onChange={handleChange}
-              placeholder={`set goal (${UNITS[unitToggle]})`}
+              placeholder={`set goal (${UNITS[unitToggle!]})`}
               className='water-in'
             />
           </div>
           <div>
-            Current goal is {currentGoal} {UNITS[currentUser.w.u]} per day.
+            Current goal is {currentGoal} {UNITS[currentUser?.w.u!]} per day.
           </div>
         </div>
       </div>
@@ -282,12 +292,23 @@ const WaterSettings = ({ currentUser, toggleAlertModal }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  currentUser: TUser.User | null;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   currentUser: selectCurrentUser,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
+const mapDispatchToProps = (
+  dispatch: Dispatch<TAlertModal.ToggleAlertModal>
+) => ({
+  toggleAlertModal: (status: TAlertModal.Modal) =>
+    dispatch(toggleAlertModal(status)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WaterSettings);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(WaterSettings);
