@@ -6,6 +6,7 @@ export interface Meal {
   [index: string]: any;
   f: object[];
   t: {
+    [index: string]: any;
     f: number;
     c: number;
     p: number;
@@ -26,6 +27,7 @@ export interface Entry {
   };
   t: any;
   m: {
+    [index: string]: any;
     f: number;
     c: number;
     p: number;
@@ -35,6 +37,7 @@ export interface Entry {
   };
   g: {
     s: {
+      [index: string]: any;
       f: number;
       c: number | null;
       p: number;
@@ -44,6 +47,7 @@ export interface Entry {
       w: number | null;
     };
     p: {
+      [index: string]: any;
       f: number;
       c: number | null;
       p: number;

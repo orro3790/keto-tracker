@@ -6,6 +6,7 @@ export interface State {
 
 // Define the shape of Food object
 export interface Food {
+  [index: string]: any;
   b: string;
   c: number;
   d: number;

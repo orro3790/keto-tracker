@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
-import Search from './../search/search.component';
-import AddFavorite from '../../components/add-favorite/add-favorite.component';
-import FoodFilter from '../../components/food-filter/food-filter.component';
+import { connect, ConnectedProps } from 'react-redux';
+import { Dispatch } from 'redux';
+import Search from '../search/search.component';
+import AddFavorite from '../add-favorite/add-favorite.component';
+import FoodFilter from '../food-filter/food-filter.component';
 import { HorizontalBar } from 'react-chartjs-2';
 import {
   toggleSearchModal,
   allowUpdateFirebase,
 } from '../../redux/search-modal/search-modal.actions';
 import { setEntry } from '../../redux/date-selector/date-selector.actions';
-import { createFoodReference } from './../../redux/search-item/search-item.actions';
+import { createFoodReference } from '../../redux/search-item/search-item.actions';
 import { toggleFavsModal } from '../../redux/favs-modal/favs-modal.actions';
 import { toggleCreateFoodModal } from '../../redux/create-food/create-food.actions';
 import { toggleCustomFoodsModal } from '../../redux/custom-foods-modal/custom-foods-modal.actions';
@@ -34,11 +35,24 @@ import { MdCheck, MdDelete } from 'react-icons/md';
 import { IoIosBookmark } from 'react-icons/io';
 import { GiFruitBowl, GiWaterBottle } from 'react-icons/gi';
 import { FaUserTag, FaTimes } from 'react-icons/fa';
+import { cloneDeep } from 'lodash';
 import {
   dateWriteable,
   updateGoalsAndPrecision,
 } from '../../firebase/firebase.utils';
+import { RootState } from '../../redux/root-reducer';
+import * as TSearchModal from '../../redux/search-modal/search-modal.types';
+import * as TSearchItem from '../../redux/search-item/search-item.types';
+import * as TUser from '../../redux/user/user.types';
+import * as TDateSelector from '../../redux/date-selector/date-selector.types';
+import * as TFavsModal from '../../redux/favs-modal/favs-modal.types';
+import * as TCustomFoodsModal from '../../redux/custom-foods-modal/custom-foods-modal.types';
+import * as TWaterModal from '../../redux/water-modal/water-modal.types';
+import * as TAlertModal from '../../redux/alert-modal/alert-modal.types';
+import * as TCreateFoodModal from '../../redux/create-food/create-food.types';
 import './search-food-modal.styles.scss';
+
+type Props = PropsFromRedux;
 
 const SearchFoodModal = ({
   toggleSearchModal,
@@ -51,19 +65,51 @@ const SearchFoodModal = ({
   foodReference,
   createFoodReference,
   entry,
-  currentDiet,
   searchModal,
   setEntry,
   carbSettings,
   favModal,
   customFoodModal,
-  waterSettings,
-}) => {
-  const [chartData, setChartData] = useState({});
-  const [sizeInput, setSizeInput] = useState('');
+}: Props) => {
+  const [chartData, setChartData] = useState<object>({});
+  const [sizeInput, setSizeInput] = useState<string>('');
+
+  interface MacrosCalculator {
+    [index: string]: any;
+    f: {
+      refValue: number;
+      mealTotal: number;
+      dailyTotal: number;
+    };
+    c: {
+      refValue: number;
+      mealTotal: number;
+      dailyTotal: number;
+    };
+    k: {
+      refValue: number;
+      mealTotal: number;
+      dailyTotal: number;
+    };
+    d: {
+      refValue: number;
+      mealTotal: number;
+      dailyTotal: number;
+    };
+    p: {
+      refValue: number;
+      mealTotal: number;
+      dailyTotal: number;
+    };
+    e: {
+      refValue: number;
+      mealTotal: number;
+      dailyTotal: number;
+    };
+  }
 
   // ref value is the macro value stored in the foodReference object
-  const macros = {
+  const macros: MacrosCalculator = {
     f: {
       refValue: 0,
       mealTotal: 0,
@@ -96,7 +142,7 @@ const SearchFoodModal = ({
     },
   };
 
-  // refers to the keys in the food entry, breakfast, lunch, dinner, snacks
+  // refers to the keys in the food entry, breakfast, lunch, dinner, snacks, used for iterators
   const meals = ['b', 'l', 'd', 's'];
 
   // Handles calculating macro values for food items
@@ -106,8 +152,8 @@ const SearchFoodModal = ({
       if (searchModal.editMode.enabled === true) {
         Object.keys(macros).forEach((macro) => {
           macros[macro].refValue = (
-            (foodReference[macro] / foodReference.size) *
-            sizeInput
+            (foodReference[macro] / foodReference.size!) *
+            +sizeInput
           ).toFixed(1);
         });
       } else {
@@ -115,7 +161,7 @@ const SearchFoodModal = ({
         Object.keys(macros).forEach((macro) => {
           macros[macro].refValue = (
             (foodReference[macro] / 100) *
-            sizeInput
+            +sizeInput
           ).toFixed(1);
         });
       }
@@ -128,7 +174,7 @@ const SearchFoodModal = ({
     }
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // regEx, allow empty string, or values from 0-9 and 0-4 digits
     const permitted = /^[ 0-9]{0,4}$/;
     if (e.target.value.match(permitted)) {
@@ -136,9 +182,12 @@ const SearchFoodModal = ({
     }
   };
 
-  const handleClose = (maintainMeal) => {
+  // Can be passed either maintain meal: true/false, or receive mouse click event to close modal manually
+  const handleClose = (
+    maintainMeal: boolean | React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
     // pass handleClose anything, if it receives an input parameter, it will maintain the meal
-    if (maintainMeal) {
+    if (maintainMeal === true) {
       toggleSearchModal({
         status: 'hidden',
         meal: searchModal.meal,
@@ -161,17 +210,16 @@ const SearchFoodModal = ({
     }
   };
 
+  // Calculate macro totals for the current meal
   const retotalMacros = () => {
-    const entryCopy = Object.assign({}, entry);
+    const entryCopy = cloneDeep(entry as TDateSelector.Entry);
 
-    // calculate each macro total for the current meal (stored in searchModal.meal)
     Object.keys(macros).forEach((macro) => {
-      macros[macro].mealTotal = entry[searchModal.meal].f.reduce(
-        (accumulator, food) => {
-          return (accumulator += food[macro]);
-        },
-        0
-      );
+      macros[macro].mealTotal = (entry as TDateSelector.Entry)[
+        searchModal.meal
+      ].f.reduce((accumulator: number, food: TSearchItem.Food) => {
+        return (accumulator += food[macro]);
+      }, 0);
 
       // push the total to the entry copy
       entryCopy[searchModal.meal].t[macro] = parseFloat(
@@ -182,7 +230,9 @@ const SearchFoodModal = ({
     // calculate daily totals for each macro
     meals.forEach((meal) => {
       Object.keys(macros).forEach((macro) => {
-        macros[macro].dailyTotal += entry[meal].t[macro];
+        macros[macro].dailyTotal += (entry as TDateSelector.Entry)[meal].t[
+          macro
+        ];
       });
     });
 
@@ -194,41 +244,54 @@ const SearchFoodModal = ({
     return entryCopy;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date to limit abuse
-    if (dateWriteable(entry.t.seconds * 1000) === true) {
+    if (
+      dateWriteable((entry as TDateSelector.Entry).t.seconds * 1000) === true
+    ) {
       if (sizeInput !== '') {
         let foodCopy = Object.assign({}, foodReference);
-        let entryCopy = Object.assign({}, entry);
+        let entryCopy = cloneDeep(entry as TDateSelector.Entry);
+
         switch (searchModal.editMode.enabled) {
           case false:
             if (sizeInput !== '') {
               Object.keys(macros).forEach((macro) => {
-                foodCopy[macro] = parseFloat(
-                  ((foodReference[macro] / 100) * sizeInput).toFixed(1)
+                (foodCopy as TSearchItem.Food)[macro] = parseFloat(
+                  (
+                    ((foodReference as TSearchItem.Food)[macro] / 100) *
+                    +sizeInput
+                  ).toFixed(1)
                 );
               });
 
-              foodCopy.size = parseFloat(sizeInput);
+              (foodCopy as TSearchItem.Food).size = parseFloat(sizeInput);
 
-              entryCopy[searchModal.meal].f.push(foodCopy);
+              (entryCopy as TDateSelector.Entry)[searchModal.meal].f.push(
+                foodCopy
+              );
             }
             break;
           case true:
             if (sizeInput !== '') {
               Object.keys(macros).forEach((macro) => {
-                foodCopy[macro] = parseFloat(macros[macro].refValue);
+                (foodCopy as TSearchItem.Food)[macro] = parseFloat(
+                  macros[macro].refValue
+                );
               });
-              foodCopy.size = parseFloat(sizeInput);
+              (foodCopy as TSearchItem.Food).size = parseFloat(sizeInput);
 
               // remove the edited food from the entry obj
-              entryCopy[searchModal.meal].f.splice(searchModal.index, 1);
+              (entryCopy as TDateSelector.Entry)[searchModal.meal].f.splice(
+                searchModal.editMode.index,
+                1
+              );
 
               // add the updated food to the entry obj back where it used to be
-              entryCopy[searchModal.meal].f.splice(
-                searchModal.index,
+              (entryCopy as TDateSelector.Entry)[searchModal.meal].f.splice(
+                searchModal.editMode.index,
                 0,
                 foodCopy
               );
@@ -239,7 +302,7 @@ const SearchFoodModal = ({
         }
 
         // recalculate meal and daily totals
-        entryCopy = retotalMacros(entryCopy);
+        entryCopy = retotalMacros();
 
         // create a goals object to pass to updateGoalsAndPrecision
         let goals = {
@@ -253,13 +316,16 @@ const SearchFoodModal = ({
         };
 
         // update the goal snapshot and precision where necessary
-        entryCopy = updateGoalsAndPrecision(entryCopy, goals);
+        entryCopy = updateGoalsAndPrecision(
+          entryCopy,
+          goals
+        ) as TDateSelector.Entry;
 
         // before changing the entry state, we want to signal that we want to update the entry in firebase
         allowUpdateFirebase(true);
 
         // dispatch the new entry obj to state
-        setEntry(entryCopy);
+        setEntry(entryCopy as TDateSelector.Entry);
 
         if (favModal === 'visible') {
           toggleFavsModal({
@@ -273,7 +339,7 @@ const SearchFoodModal = ({
           });
         }
 
-        handleClose();
+        handleClose(false);
       }
     } else {
       toggleAlertModal({
@@ -289,15 +355,17 @@ const SearchFoodModal = ({
 
   const handleDelete = () => {
     // Only allow updates to the entry if the entry date is +/- 7 days from today's date, to limit abuse
-    if (dateWriteable(entry.t.seconds * 1000) === true) {
+    if (
+      dateWriteable((entry as TDateSelector.Entry).t.seconds * 1000) === true
+    ) {
       // entry state is immutable so make a copy of it first because pushing the edited version
-      let entryCopy = Object.assign({}, entry);
+      let entryCopy = cloneDeep(entry as TDateSelector.Entry);
 
       // remove the edited food from the entry obj
-      entryCopy[searchModal.meal].f.splice(searchModal.index, 1);
+      entryCopy[searchModal.meal].f.splice(searchModal.editMode.index, 1);
 
       // recalculate meal totals
-      entryCopy = retotalMacros(entryCopy);
+      entryCopy = retotalMacros();
 
       // create a goals object to pass to updateGoalsAndPrecision
       let goals = {
@@ -311,7 +379,10 @@ const SearchFoodModal = ({
       };
 
       // update the goal snapshot and precision where necessary
-      entryCopy = updateGoalsAndPrecision(entryCopy, goals);
+      entryCopy = updateGoalsAndPrecision(
+        entryCopy,
+        goals
+      ) as TDateSelector.Entry;
 
       // signal that I want to update the totals and push them to firestore
       allowUpdateFirebase(true);
@@ -365,28 +436,28 @@ const SearchFoodModal = ({
   }
 
   const openCreateFoodModal = () => {
-    handleClose('maintainMeal');
+    handleClose(true);
     toggleCreateFoodModal({
       status: 'visible',
     });
   };
 
   const openWaterModal = () => {
-    handleClose('maintainMeal');
+    handleClose(true);
     toggleWaterModal({
       status: 'visible',
     });
   };
 
   const openFavsModal = () => {
-    handleClose('maintainMeal');
+    handleClose(true);
     toggleFavsModal({
       status: 'visible',
     });
   };
 
   const openCustomFoodModal = () => {
-    handleClose('maintainMeal');
+    handleClose(true);
     toggleCustomFoodsModal({
       status: 'visible',
     });
@@ -440,7 +511,16 @@ const SearchFoodModal = ({
 
   // update chart rendering based on input values
   useEffect(() => {
-    let remaining = {
+    interface Macros {
+      [index: string]: any;
+      f: number;
+      c: number;
+      d: number;
+      k: number;
+      p: number;
+      e: number;
+    }
+    let remaining: Macros = {
       f: 0,
       c: 0,
       d: 0,
@@ -450,7 +530,7 @@ const SearchFoodModal = ({
     };
 
     // must point to primitive values in the obj as passing the entire object into useEffect causes loop rendering
-    let macrosCopy = {
+    let macrosCopy: Macros = {
       f: macros.f.refValue,
       c: macros.c.refValue,
       d: macros.d.refValue,
@@ -463,12 +543,16 @@ const SearchFoodModal = ({
     if (sizeInput !== '') {
       // render chart data based on user input
       Object.keys(remaining).forEach((macro) => {
-        remaining[macro] = (macrosCopy[macro] / entry.g.s[macro]) * 100;
+        remaining[macro] =
+          (macrosCopy[macro] / (entry as TDateSelector.Entry).g.s[macro]) * 100;
       });
     } else {
       // render chart data based on foodToEdit's existing macro data
       Object.keys(remaining).forEach((macro) => {
-        remaining[macro] = (foodReference[macro] / entry.g.s[macro]) * 100;
+        remaining[macro] =
+          ((foodReference as TSearchItem.Food)[macro] /
+            (entry as TDateSelector.Entry).g.s[macro]) *
+          100;
       });
     }
 
@@ -521,13 +605,15 @@ const SearchFoodModal = ({
 
   switch (searchModal.editMode.enabled) {
     case false:
-      placeholder = `100${foodReference.u}`;
+      placeholder = `100${(foodReference as TSearchItem.Food).u}`;
       break;
     case true:
-      if (foodReference.size !== undefined) {
-        placeholder = `${foodReference.size}${foodReference.u}`;
+      if ((foodReference as TSearchItem.Food).size !== undefined) {
+        placeholder = `${(foodReference as TSearchItem.Food).size}${
+          (foodReference as TSearchItem.Food).u
+        }`;
       } else {
-        placeholder = `100${foodReference.u}`;
+        placeholder = `100${(foodReference as TSearchItem.Food).u}`;
       }
       break;
     default:
@@ -676,29 +762,65 @@ const SearchFoodModal = ({
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  foodReference: TSearchItem.Food | '';
+  suggestionWindow: boolean;
+  entry: TDateSelector.Entry | '';
+  searchModal: TSearchModal.Modal;
+  carbSettings: TUser.CarbSettings | undefined;
+  currentDiet: TUser.Diet | undefined;
+  waterSettings: TUser.WaterSettings | undefined;
+  userId: string | undefined;
+  favModal: 'hidden' | 'visible';
+  customFoodModal: 'hidden' | 'visible';
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   foodReference: selectFoodReference,
   suggestionWindow: selectSuggestionWindow,
   entry: selectEntry,
   searchModal: selectModal,
   carbSettings: selectCarbSettings,
   currentDiet: selectDietSettings,
+  waterSettings: selectWaterSettings,
   userId: selectCurrentUserId,
   favModal: selectFavModalStatus,
   customFoodModal: selectCustomFoodsModalStatus,
-  waterSettings: selectWaterSettings,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleAlertModal: (status) => dispatch(toggleAlertModal(status)),
-  toggleSearchModal: (status) => dispatch(toggleSearchModal(status)),
-  toggleCreateFoodModal: (status) => dispatch(toggleCreateFoodModal(status)),
-  toggleFavsModal: (status) => dispatch(toggleFavsModal(status)),
-  toggleWaterModal: (status) => dispatch(toggleWaterModal(status)),
-  toggleCustomFoodsModal: (status) => dispatch(toggleCustomFoodsModal(status)),
-  allowUpdateFirebase: (status) => dispatch(allowUpdateFirebase(status)),
-  setEntry: (entry) => dispatch(setEntry(entry)),
-  createFoodReference: (food) => dispatch(createFoodReference(food)),
+type Actions =
+  | TAlertModal.ToggleAlertModal
+  | TSearchModal.ToggleSearchModal
+  | TCreateFoodModal.ToggleCreateFoodModal
+  | TFavsModal.ToggleFavsModal
+  | TWaterModal.ToggleWaterModal
+  | TCustomFoodsModal.ToggleCustomFoodsModal
+  | TSearchModal.AllowUpdateFirebase
+  | TDateSelector.SetEntry
+  | TSearchItem.CreateFoodReference;
+
+const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
+  toggleAlertModal: (status: TAlertModal.Modal) =>
+    dispatch(toggleAlertModal(status)),
+  toggleSearchModal: (status: TSearchModal.Modal) =>
+    dispatch(toggleSearchModal(status)),
+  toggleCreateFoodModal: (status: TCreateFoodModal.Modal) =>
+    dispatch(toggleCreateFoodModal(status)),
+  toggleFavsModal: (status: TFavsModal.Modal) =>
+    dispatch(toggleFavsModal(status)),
+  toggleWaterModal: (status: TWaterModal.Modal) =>
+    dispatch(toggleWaterModal(status)),
+  toggleCustomFoodsModal: (status: TCustomFoodsModal.Modal) =>
+    dispatch(toggleCustomFoodsModal(status)),
+  allowUpdateFirebase: (status: boolean) =>
+    dispatch(allowUpdateFirebase(status)),
+  setEntry: (entry: TDateSelector.Entry) => dispatch(setEntry(entry)),
+  createFoodReference: (food: TSearchItem.Food | '') =>
+    dispatch(createFoodReference(food)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchFoodModal);
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(SearchFoodModal);
