@@ -7,8 +7,8 @@ export interface State {
 export interface Modal {
   title: string;
   msg: string;
-  img: string;
-  status: string;
+  icon?: string;
+  status: 'visible' | 'hidden';
   sticky: boolean;
   callback?: string;
   enabled?: boolean;

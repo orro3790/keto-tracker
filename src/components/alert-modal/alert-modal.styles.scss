@@ -32,12 +32,12 @@ $keto-green: #1eb980;
   box-shadow: (0 3px 6px rgba(0, 0, 0, 0.3));
   z-index: 4;
 
-  &.on {
+  &.full-opacity {
     opacity: 1;
     transition: 0.5s;
   }
 
-  &.off {
+  &.zero-opacity {
     opacity: 0;
     transition: 1s;
   }
@@ -56,7 +56,7 @@ $keto-green: #1eb980;
     font-size: $font-size-medium;
   }
 
-  .alert-img-c {
+  .alert-icon-c {
     display: grid;
     justify-items: center;
 

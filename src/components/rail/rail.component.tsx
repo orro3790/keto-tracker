@@ -59,7 +59,7 @@ const Rail = ({ toggleAlertModal, currentUser }: Props) => {
     toggleAlertModal({
       title: 'SIGN OUT',
       msg: 'Are you sure you want to sign out?',
-      img: 'confirm',
+      icon: 'confirm',
       status: 'visible',
       callback: 'signOut',
       sticky: false,

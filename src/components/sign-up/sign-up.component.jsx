@@ -17,7 +17,7 @@ const SignUp = ({ toggleAlertModal }) => {
       title: 'CONFIRM EMAIL',
       msg:
         "You're almost there! Check your email for a verification link, then you can start tracking!",
-      img: 'email',
+      icon: 'email',
       status: 'visible',
       sticky: false,
     });

@@ -12,23 +12,27 @@ import { FiCheckCircle } from 'react-icons/fi';
 import { GiLetterBomb, GiAchievement } from 'react-icons/gi';
 import './alert-modal.styles.scss';
 
-type Props = PropsFromRedux;
+type PropsFromParent = {
+  fadeClass: 'zero-opacity' | 'full-opacity';
+};
 
-const AlertModal = ({ alertModal, toggleAlertModal }: Props) => {
-  let img;
+type Props = PropsFromRedux & PropsFromParent;
 
-  switch (alertModal.img) {
+const AlertModal = ({ alertModal, toggleAlertModal, fadeClass }: Props) => {
+  let icon: any;
+
+  switch (alertModal.icon) {
     case 'email':
-      img = <GiLetterBomb className='alert-email' />;
+      icon = <GiLetterBomb className='alert-email' />;
       break;
     case 'update':
-      img = <FiCheckCircle className='alert-success' />;
+      icon = <FiCheckCircle className='alert-success' />;
       break;
     case 'error':
-      img = <MdErrorOutline className='alert-error' />;
+      icon = <MdErrorOutline className='alert-error' />;
       break;
     case 'goal-reached':
-      img = <GiAchievement className='alert-goal-reached' />;
+      icon = <GiAchievement className='alert-goal-reached' />;
       break;
     default:
       break;
@@ -43,7 +47,7 @@ const AlertModal = ({ alertModal, toggleAlertModal }: Props) => {
         toggleAlertModal({
           title: 'SUCCESS!',
           msg: 'You are now signed out.',
-          img: '',
+          icon: '',
           status: 'visible',
           callback: '',
           sticky: false,
@@ -73,7 +77,7 @@ const AlertModal = ({ alertModal, toggleAlertModal }: Props) => {
   }
 
   return (
-    <div className={`alert-c ${alertModal.enabled}`}>
+    <div className={`alert-c ${fadeClass}`}>
       <div className='alert-t'>
         {alertModal.title}
         <div>
@@ -81,7 +85,7 @@ const AlertModal = ({ alertModal, toggleAlertModal }: Props) => {
         </div>
       </div>
       <div className='alert-msg'>{alertModal.msg}</div>
-      <div className='alert-img-c'>{img}</div>
+      <div className='alert-icon-c'>{icon}</div>
       <div className='alert-btn-s'>{btn}</div>
     </div>
   );

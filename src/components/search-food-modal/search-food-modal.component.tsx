@@ -70,6 +70,7 @@ const SearchFoodModal = ({
   carbSettings,
   favModal,
   customFoodModal,
+  waterSettings,
 }: Props) => {
   const [chartData, setChartData] = useState<object>({});
   const [sizeInput, setSizeInput] = useState<string>('');
@@ -346,7 +347,7 @@ const SearchFoodModal = ({
         title: 'Sorry!',
         msg:
           "Entries can not be added, removed, or updated beyond one week from today's date.",
-        img: 'error',
+        icon: 'error',
         status: 'visible',
         sticky: false,
       });
@@ -407,7 +408,7 @@ const SearchFoodModal = ({
         title: 'Sorry!',
         msg:
           "Entries can not be added, removed, or updated beyond one week from today's date.",
-        img: 'error',
+        icon: 'error',
         status: 'visible',
         sticky: false,
       });
@@ -443,10 +444,20 @@ const SearchFoodModal = ({
   };
 
   const openWaterModal = () => {
-    handleClose(true);
-    toggleWaterModal({
-      status: 'visible',
-    });
+    if ((waterSettings as TUser.WaterSettings).e === true) {
+      handleClose(true);
+      toggleWaterModal({
+        status: 'visible',
+      });
+    } else {
+      toggleAlertModal({
+        title: 'TRACKING IS DISABLED',
+        msg:
+          'Click "Track Water" in your Water Settings to enable water tracking.',
+        status: 'visible',
+        sticky: false,
+      });
+    }
   };
 
   const openFavsModal = () => {

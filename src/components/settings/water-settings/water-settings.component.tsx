@@ -30,7 +30,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }: Props) => {
   const handleAlert = (result: string) => {
     let msg = '',
       title,
-      img;
+      icon;
 
     const msgFormatter = {
       unitToggle: `Water consumption will now be displayed in ${
@@ -64,7 +64,7 @@ const WaterSettings = ({ currentUser, toggleAlertModal }: Props) => {
       }
 
       title = 'SETTINGS SAVED!';
-      img = 'success';
+      icon = 'success';
 
       // push the changes to currentUser state in app
       const userCopy = Object.assign({}, currentUser);
@@ -76,13 +76,13 @@ const WaterSettings = ({ currentUser, toggleAlertModal }: Props) => {
       title = 'OOPS!';
       msg =
         "There was an error saving your settings. Don't worry, support has been notified!";
-      img = 'error';
+      icon = 'error';
     }
 
     toggleAlertModal({
       title: title,
       msg: msg,
-      img: img,
+      icon: icon,
       status: 'visible',
       sticky: false,
     });
