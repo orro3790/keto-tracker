@@ -48,12 +48,14 @@ const Search = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setQuery(searchInput);
+    // submitting can be used to make sure that a fetch occurs only when a user explicitely submits the form. This way, the useEffect below won't cause unecessary get requests
     setSubmitting(true);
   };
 
   useEffect(() => {
     // check that query !== '' to prevent a fetch upon mount
     if (query !== '' && submitting === true) {
+      console.log('fetched');
       const fetchData = async () => {
         if (foodFilter.filter === 'fav') {
           const response = favFoods.filter(
