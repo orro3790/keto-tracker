@@ -51,12 +51,6 @@ const Search = ({
     setSubmitting(true);
   };
 
-  // when a user changes filters, clear the input field and results
-  useEffect(() => {
-    setResults('');
-    setSearchInput('');
-  }, [foodFilter]);
-
   useEffect(() => {
     // check that query !== '' to prevent a fetch upon mount
     if (query !== '' && submitting === true) {

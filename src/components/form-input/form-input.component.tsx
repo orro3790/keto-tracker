@@ -45,11 +45,9 @@ const FormInput: React.FC<
   return (
     <div className='group'>
       {renderInput}
-      {/* if there's a label, dynamically assign classname that checks if there's a label value and then applies shrink class to it, and form-in-l*/}
+      {/* if there's a label, dynamically assign classname that checks if there's a label value and then applies shrink class to it, as long as there is a value present in the input */}
       {label ? (
-        <label className={`${className ? 'shrink' : ''} form-in-l`}>
-          {label}
-        </label>
+        <label className={`${value ? 'shrink' : ''} form-in-l`}>{label}</label>
       ) : null}
     </div>
   );

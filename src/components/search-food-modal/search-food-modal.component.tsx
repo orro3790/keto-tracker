@@ -185,31 +185,16 @@ const SearchFoodModal = ({
   };
 
   // Can be passed either maintain meal: true/false, or receive mouse click event to close modal manually
-  const handleClose = (
-    maintainMeal: boolean | React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    // pass handleClose anything, if it receives an input parameter, it will maintain the meal
-    if (maintainMeal === true) {
-      toggleSearchModal({
-        status: 'hidden',
-        meal: searchModal.meal,
-        editMode: {
-          enabled: false,
-          food: '',
-          index: '',
-        },
-      });
-    } else {
-      toggleSearchModal({
-        status: 'hidden',
-        meal: '',
-        editMode: {
-          enabled: false,
-          food: '',
-          index: '',
-        },
-      });
-    }
+  const handleClose = () => {
+    toggleSearchModal({
+      status: 'hidden',
+      meal: searchModal.meal,
+      editMode: {
+        enabled: false,
+        food: '',
+        index: '',
+      },
+    });
   };
 
   // Calculate macro totals for the current meal
@@ -342,7 +327,7 @@ const SearchFoodModal = ({
           });
         }
 
-        handleClose(false);
+        handleClose();
       }
     } else {
       toggleAlertModal({
@@ -439,7 +424,7 @@ const SearchFoodModal = ({
   }
 
   const openCreateFoodModal = () => {
-    handleClose(true);
+    handleClose();
     toggleCreateFoodModal({
       status: 'visible',
     });
@@ -447,7 +432,7 @@ const SearchFoodModal = ({
 
   const openWaterModal = () => {
     if ((waterSettings as TUser.WaterSettings).e === true) {
-      handleClose(true);
+      handleClose();
       toggleWaterModal({
         status: 'visible',
       });
@@ -463,14 +448,14 @@ const SearchFoodModal = ({
   };
 
   const openFavsModal = () => {
-    handleClose(true);
+    handleClose();
     toggleFavsModal({
       status: 'visible',
     });
   };
 
   const openCustomFoodModal = () => {
-    handleClose(true);
+    handleClose();
     toggleCustomFoodsModal({
       status: 'visible',
     });
@@ -726,13 +711,11 @@ const SearchFoodModal = ({
 
   // Do not display the hudContainer if the suggestion window is showing
   if (
-    suggestionWindow === 'visible' ||
-    favModal === 'visible' ||
-    customFoodModal === 'visible' ||
-    foodReference !== ''
+    (suggestionWindow !== 'visible' ||
+      favModal !== 'visible' ||
+      customFoodModal !== 'visible') &&
+    foodReference === ''
   ) {
-    hudContainer = null;
-  } else {
     hudContainer = (
       <div className='hud'>
         <div className='hud-r'>
