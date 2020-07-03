@@ -55,7 +55,6 @@ const Search = ({
   useEffect(() => {
     // check that query !== '' to prevent a fetch upon mount
     if (query !== '' && submitting === true) {
-      console.log('fetched');
       const fetchData = async () => {
         if (foodFilter.filter === 'fav') {
           const response = favFoods.filter(
