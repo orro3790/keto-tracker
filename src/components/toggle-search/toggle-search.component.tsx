@@ -43,8 +43,8 @@ const ToggleSearchModal = ({
 }: Props) => {
   const handleClick = () => {
     // reset suggestionWindow and there is no foodReference still in state, then open modal
-    if (suggestionWindow === true) {
-      toggleSuggestionWindow(false);
+    if (suggestionWindow === 'visible') {
+      toggleSuggestionWindow({ status: 'hidden' });
     }
 
     // if any other modals are open, close them
@@ -108,7 +108,7 @@ const ToggleSearchModal = ({
 
 interface Selectors {
   searchModal: TSearchModal.Modal;
-  suggestionWindow: boolean;
+  suggestionWindow: 'hidden' | 'visible';
   customFoodsModalStatus: 'hidden' | 'visible';
   createFoodModalStatus: 'hidden' | 'visible';
   favModalStatus: 'hidden' | 'visible';
@@ -133,7 +133,7 @@ type Actions =
 const mapDispatchToProps = (dispatch: Dispatch<Actions>) => ({
   toggleSearchModal: (status: TSearchModal.Modal) =>
     dispatch(toggleSearchModal(status)),
-  toggleSuggestionWindow: (status: boolean) =>
+  toggleSuggestionWindow: (status: TSearchItem.Visibility) =>
     dispatch(toggleSuggestionWindow(status)),
   toggleCustomFoodsModal: (status: TCustomFoodsModal.Modal) =>
     dispatch(toggleCustomFoodsModal(status)),

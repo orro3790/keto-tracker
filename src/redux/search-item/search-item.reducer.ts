@@ -2,7 +2,9 @@ import * as Types from './../search-item/search-item.types';
 
 const INITIAL_STATE: Types.State = {
   foodReference: '',
-  suggestionWindow: false,
+  suggestionWindow: {
+    status: 'hidden',
+  },
 };
 
 const searchItemReducer = (state = INITIAL_STATE, action: Types.Actions) => {

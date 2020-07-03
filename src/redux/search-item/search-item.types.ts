@@ -1,7 +1,12 @@
+// Define the shape of the modal object in state
+export interface Visibility {
+  status: 'hidden' | 'visible';
+}
+
 // Define the shape of the searchItem State
 export interface State {
   foodReference: '' | Food;
-  suggestionWindow: boolean;
+  suggestionWindow: Visibility;
 }
 
 // Define the shape of Food object
@@ -34,7 +39,7 @@ export interface CreateFoodReference {
 
 export interface ToggleSuggestionWindow {
   type: typeof TOGGLE_SUGGESTION_WINDOW;
-  payload: boolean;
+  payload: Visibility;
 }
 
 // Define all possible action types

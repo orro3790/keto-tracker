@@ -10,5 +10,5 @@ export const selectFoodReference = createSelector(
 
 export const selectSuggestionWindow = createSelector(
   [selectSearchItem],
-  (searchItem) => searchItem.suggestionWindow
+  (searchItem) => searchItem.suggestionWindow.status
 );

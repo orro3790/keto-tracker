@@ -8,7 +8,6 @@ import {
 } from '../../redux/search-item/search-item.actions';
 import { FaPlusSquare } from 'react-icons/fa';
 import * as TSearchItem from '../../redux/search-item/search-item.types';
-import { selectSuggestionWindow } from '../../redux/search-item/search-item.selectors';
 
 type PropsFromParent = {
   food: TSearchItem.Food;
@@ -21,12 +20,16 @@ const SearchItem = ({
   food,
   createFoodReference,
   toggleSuggestionWindow,
-  suggestionWindow,
   index,
 }: Props) => {
+  /**
+   * When a user clicks on an item in the suggestion window, always collapse the window
+   */
   const handleClick = () => {
     createFoodReference(food);
-    toggleSuggestionWindow(!suggestionWindow);
+    toggleSuggestionWindow({
+      status: 'hidden',
+    });
   };
 
   const truncate = (string: string) => {
@@ -53,18 +56,14 @@ const SearchItem = ({
   );
 };
 
-const mapStateToProps = () => ({
-  suggestionWindow: selectSuggestionWindow,
-});
-
 const mapDispatchToProps = (dispatch: Dispatch<TSearchItem.Actions>) => ({
   createFoodReference: (food: TSearchItem.Food) =>
     dispatch(createFoodReference(food)),
-  toggleSuggestionWindow: (status: boolean) =>
+  toggleSuggestionWindow: (status: TSearchItem.Visibility) =>
     dispatch(toggleSuggestionWindow(status)),
 });
 
-const connector = connect(mapStateToProps, mapDispatchToProps);
+const connector = connect(null, mapDispatchToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

@@ -84,7 +84,7 @@ const Search = ({
         }
       };
       fetchData();
-      toggleSuggestionWindow(true);
+      toggleSuggestionWindow({ status: 'visible' });
       setSubmitting(false);
     }
     // return () => {
@@ -147,7 +147,7 @@ const Search = ({
     </div>
   );
 
-  if (suggestionWindow === true) {
+  if (suggestionWindow === 'visible') {
     rendered = (
       <div className='wrap'>
         <AutoSizer>
@@ -187,7 +187,7 @@ const Search = ({
 };
 
 interface Selectors {
-  suggestionWindow: boolean;
+  suggestionWindow: 'hidden' | 'visible';
   searchModal: TSearchModal.Modal;
   foodReference: TSearchItem.Food | '';
   userId: string | undefined;
@@ -207,7 +207,7 @@ const mapStateToProps = createStructuredSelector<RootState, Selectors>({
 const mapDispatchToProps = (
   dispatch: Dispatch<TSearchItem.ToggleSuggestionWindow>
 ) => ({
-  toggleSuggestionWindow: (status: boolean) =>
+  toggleSuggestionWindow: (status: TSearchItem.Visibility) =>
     dispatch(toggleSuggestionWindow(status)),
 });
 

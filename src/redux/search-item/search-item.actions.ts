@@ -8,7 +8,7 @@ export const createFoodReference = (
 });
 
 export const toggleSuggestionWindow = (
-  status: boolean
+  status: Types.Visibility
 ): Types.ToggleSuggestionWindow => ({
   type: Types.TOGGLE_SUGGESTION_WINDOW,
   payload: status,

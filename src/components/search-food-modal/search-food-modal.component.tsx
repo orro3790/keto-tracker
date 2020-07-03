@@ -71,6 +71,7 @@ const SearchFoodModal = ({
   favModal,
   customFoodModal,
   waterSettings,
+  suggestionWindow,
 }: Props) => {
   const [chartData, setChartData] = useState<object>({});
   const [sizeInput, setSizeInput] = useState<string>('');
@@ -212,15 +213,16 @@ const SearchFoodModal = ({
   };
 
   // Calculate macro totals for the current meal
-  const retotalMacros = () => {
-    const entryCopy = cloneDeep(entry as TDateSelector.Entry);
+  const retotalMacros = (entryCopy: TDateSelector.Entry) => {
+    // const entryCopy = cloneDeep(entry as TDateSelector.Entry);
 
     Object.keys(macros).forEach((macro) => {
-      macros[macro].mealTotal = (entry as TDateSelector.Entry)[
-        searchModal.meal
-      ].f.reduce((accumulator: number, food: TSearchItem.Food) => {
-        return (accumulator += food[macro]);
-      }, 0);
+      macros[macro].mealTotal = entryCopy[searchModal.meal].f.reduce(
+        (accumulator: number, food: TSearchItem.Food) => {
+          return (accumulator += food[macro]);
+        },
+        0
+      );
 
       // push the total to the entry copy
       entryCopy[searchModal.meal].t[macro] = parseFloat(
@@ -231,9 +233,7 @@ const SearchFoodModal = ({
     // calculate daily totals for each macro
     meals.forEach((meal) => {
       Object.keys(macros).forEach((macro) => {
-        macros[macro].dailyTotal += (entry as TDateSelector.Entry)[meal].t[
-          macro
-        ];
+        macros[macro].dailyTotal += entryCopy[meal].t[macro];
       });
     });
 
@@ -273,6 +273,8 @@ const SearchFoodModal = ({
               (entryCopy as TDateSelector.Entry)[searchModal.meal].f.push(
                 foodCopy
               );
+
+              console.log(entryCopy);
             }
             break;
           case true:
@@ -303,7 +305,7 @@ const SearchFoodModal = ({
         }
 
         // recalculate meal and daily totals
-        entryCopy = retotalMacros();
+        entryCopy = retotalMacros(entryCopy);
 
         // create a goals object to pass to updateGoalsAndPrecision
         let goals = {
@@ -366,7 +368,7 @@ const SearchFoodModal = ({
       entryCopy[searchModal.meal].f.splice(searchModal.editMode.index, 1);
 
       // recalculate meal totals
-      entryCopy = retotalMacros();
+      entryCopy = retotalMacros(entryCopy);
 
       // create a goals object to pass to updateGoalsAndPrecision
       let goals = {
@@ -657,6 +659,7 @@ const SearchFoodModal = ({
   }
 
   let resultsContainer;
+  let hudContainer;
   let carbsOrNetCarbs;
   let carbsOrNetCarbsLabel;
 
@@ -668,7 +671,7 @@ const SearchFoodModal = ({
     carbsOrNetCarbsLabel = 'carbs';
   }
 
-  if (foodReference !== '') {
+  if (foodReference !== '' && suggestionWindow === 'hidden') {
     resultsContainer = (
       <div className='results-c'>
         <div className='name'>
@@ -718,7 +721,19 @@ const SearchFoodModal = ({
       </div>
     );
   } else {
-    resultsContainer = (
+    resultsContainer = null;
+  }
+
+  // Do not display the hudContainer if the suggestion window is showing
+  if (
+    suggestionWindow === 'visible' ||
+    favModal === 'visible' ||
+    customFoodModal === 'visible' ||
+    foodReference !== ''
+  ) {
+    hudContainer = null;
+  } else {
+    hudContainer = (
       <div className='hud'>
         <div className='hud-r'>
           <div>
@@ -766,8 +781,8 @@ const SearchFoodModal = ({
         <div className='search-s'>
           <Search />
         </div>
-
         {resultsContainer}
+        {hudContainer}
       </div>
     </div>
   );
@@ -775,7 +790,7 @@ const SearchFoodModal = ({
 
 interface Selectors {
   foodReference: TSearchItem.Food | '';
-  suggestionWindow: boolean;
+  suggestionWindow: 'hidden' | 'visible';
   entry: TDateSelector.Entry | '';
   searchModal: TSearchModal.Modal;
   carbSettings: TUser.CarbSettings | undefined;
