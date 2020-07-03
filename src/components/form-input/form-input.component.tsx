@@ -9,11 +9,19 @@ type Props = {
   textArea?: boolean;
   handleChange?: any;
   otherProps?: any;
+  value: any;
 };
 
 const FormInput: React.FC<
   Props & React.InputHTMLAttributes<Props> & React.AreaHTMLAttributes<Props>
-> = ({ handleChange, label, className, textArea, ...otherProps }: Props) => {
+> = ({
+  handleChange,
+  label,
+  className,
+  textArea,
+  value,
+  ...otherProps
+}: Props) => {
   let renderInput;
 
   if (textArea) {

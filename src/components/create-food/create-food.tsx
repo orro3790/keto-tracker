@@ -122,7 +122,7 @@ const CreateFood = ({
       toggleAlertModal({
         title: 'SUCCESS!',
         msg: `${newFood.n} has been added to custom foods list! You can now add it to your diary.`,
-        img: '',
+        icon: '',
         status: 'visible',
         callback: '',
         sticky: false,

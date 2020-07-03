@@ -189,7 +189,7 @@ const UpdateDiet = ({
       toggleAlertModal({
         title: 'SETTINGS SAVED!',
         msg: 'Your diet settings have been updated!',
-        img: 'update',
+        icon: 'update',
         status: 'visible',
         sticky: false,
       });
@@ -198,7 +198,7 @@ const UpdateDiet = ({
         title: 'OOPS!',
         msg:
           'Make sure all fields have been filled in properly before trying to save your settings.',
-        img: 'error',
+        icon: 'error',
         status: 'visible',
         sticky: false,
       });

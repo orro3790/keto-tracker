@@ -4,7 +4,7 @@ const INITIAL_STATE: Types.State = {
   modal: {
     title: '',
     msg: '',
-    img: '',
+    icon: '',
     status: 'hidden',
     sticky: false,
     enabled: false,

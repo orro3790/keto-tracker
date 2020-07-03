@@ -31,7 +31,7 @@ const AddFavorite = ({
         toggleAlertModal({
           title: 'SUCCESS!',
           msg: `${(foodReference as Food).n} has been added to your favorites.`,
-          img: '',
+          icon: '',
           status: 'visible',
           callback: '',
           sticky: false,
@@ -43,7 +43,7 @@ const AddFavorite = ({
           msg: `${
             (foodReference as Food).n
           } has been removed from your favorites.`,
-          img: '',
+          icon: '',
           status: 'visible',
           callback: '',
           sticky: false,

@@ -41,7 +41,7 @@ const CarbSettings = ({ userId, carbSettings, toggleAlertModal }: Props) => {
     toggleAlertModal({
       title: 'SETTINGS SAVED!',
       msg: `Your carb settings have been changed to ${OPTIONS[toggle]}.`,
-      img: 'update',
+      icon: 'update',
       status: 'visible',
       sticky: false,
     });

@@ -93,7 +93,7 @@ const WaterModal = ({
         let remainder = 0;
         let title: string = '',
           alertMsg: string,
-          img: string,
+          icon: string,
           conversion: number;
         let negIntake = true;
 
@@ -156,21 +156,21 @@ const WaterModal = ({
             // alert: goal reached, allow for rounding errors, remainder between 0 - 1 mL
             else if (remainder < 1 && remainder >= 0) {
               alertMsg = `Great job! You reached your goal of drinking ${waterSettings.g} mL of water today!`;
-              img = 'goal-reached';
+              icon = 'goal-reached';
             }
             // alert: extra consumed
             else if (remainder < 0) {
               alertMsg = `Great job! You drank an extra ${
                 parseInt(remainder.toFixed(0)) * -1
               } mL of water today.`;
-              img = 'goal-reached';
+              icon = 'goal-reached';
             }
             // alert: negative daily water intake
             if (negIntake === true) {
               alertMsg = `${waterSettings.g!.toFixed(
                 0
               )} mL to go to reach your goal today.`;
-              img = '';
+              icon = '';
             }
             break;
           case 'c':
@@ -195,7 +195,7 @@ const WaterModal = ({
               alertMsg = `Great job! You reached your goal of drinking ${(
                 waterSettings.g! / 250
               ).toFixed(2)} cups of water today!`;
-              img = 'goal-reached';
+              icon = 'goal-reached';
             }
             // alert: extra consumed
             else if (remainder < 0) {
@@ -205,14 +205,14 @@ const WaterModal = ({
                 alertMsg = `Great job! You drank an extra ${
                   parseFloat((remainder / 250).toFixed(2)) * -1
                 } cups of water today.`;
-              img = 'goal-reached';
+              icon = 'goal-reached';
             }
             // alert: negative values
             else if (!negIntake) {
               alertMsg = `${(waterSettings.g! / 250).toFixed(
                 2
               )} cups to go to reach your goal today.`;
-              img = '';
+              icon = '';
             }
             break;
           case 'o':
@@ -231,21 +231,21 @@ const WaterModal = ({
               alertMsg = `Great job! You reached your goal of drinking ${(
                 waterSettings.g! / 29.5735
               ).toFixed(2)} oz of water today!`;
-              img = 'goal-reached';
+              icon = 'goal-reached';
             }
             // alert: extra consumed
             else if (remainder < 0) {
               alertMsg = `Great job! You drank an extra ${
                 parseFloat((remainder / 29.5735).toFixed(2)) * -1
               } oz of water today.`;
-              img = 'goal-reached';
+              icon = 'goal-reached';
             }
             // alert: negative values
             else if (negIntake === true) {
               alertMsg = `${(waterSettings.g! / 29.5735).toFixed(
                 2
               )} oz to go to hit your water goal today.`;
-              img = '';
+              icon = '';
             }
             break;
           default:
@@ -274,7 +274,7 @@ const WaterModal = ({
         toggleAlertModal({
           title: title!,
           msg: alertMsg!,
-          img: img!,
+          icon: icon!,
           status: 'visible',
           sticky: false,
         });
@@ -284,7 +284,7 @@ const WaterModal = ({
         title: 'Sorry!',
         msg:
           "Entries can not be added, removed, or updated beyond one week from today's date.",
-        img: 'error',
+        icon: 'error',
         status: 'visible',
         sticky: false,
       });
