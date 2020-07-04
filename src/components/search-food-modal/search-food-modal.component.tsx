@@ -709,12 +709,18 @@ const SearchFoodModal = ({
     resultsContainer = null;
   }
 
-  // Do not display the hudContainer if the suggestion window is showing
+  /**
+   * Only show the modal HUD (open ___ modal buttons) if:
+   * 1: favModal is not visible
+   * 2: customFoodModal is not visible
+   * 3: foodReference is in default state, meaning the user is not looking at a food's detail view
+   * 4: suggestion window is not visible
+   */
   if (
-    (suggestionWindow !== 'visible' ||
-      favModal !== 'visible' ||
-      customFoodModal !== 'visible') &&
-    foodReference === ''
+    favModal !== 'visible' &&
+    customFoodModal !== 'visible' &&
+    foodReference === '' &&
+    suggestionWindow !== 'visible'
   ) {
     hudContainer = (
       <div className='hud'>
