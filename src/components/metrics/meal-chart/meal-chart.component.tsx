@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import 'chartjs-plugin-stacked100';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import { selectMetricsData } from '../../../redux/metrics/metrics.selectors';
 import { MdArrowDropDown } from 'react-icons/md';
 import { BsQuestionSquareFill } from 'react-icons/bs';
 import './meal-chart.styles.scss';
 import Tippy from '@tippyjs/react';
+import { RootState } from '../../../redux/root-reducer';
 
-const MealChart = ({ data }) => {
+type Props = PropsFromRedux;
+
+const MealChart = ({ data }: Props) => {
   const [chartData, setChartData] = useState({});
   const [target, setTarget] = useState('e');
 
   // Define the keys and their corresponding titles
-  const OPTIONS = {
+  interface Options {
+    [index: string]: string;
+    f: 'Average Fats (g)';
+    c: 'Average Carbs (g)';
+    k: 'Average Net Carbs (g)';
+    d: 'Average Fibre (g)';
+    p: 'Average Protein (g)';
+    e: 'Average Calories';
+  }
+
+  const OPTIONS: Options = {
     f: 'Average Fats (g)',
     c: 'Average Carbs (g)',
     k: 'Average Net Carbs (g)',
@@ -24,8 +37,47 @@ const MealChart = ({ data }) => {
   };
 
   useEffect(() => {
-    let totals = {
-      Breakfast: {
+    interface Totals {
+      [index: string]: any;
+      b: {
+        [index: string]: number;
+        f: number;
+        c: number;
+        p: number;
+        e: number;
+        d: number;
+        k: number;
+      };
+      l: {
+        [index: string]: number;
+        f: number;
+        c: number;
+        p: number;
+        e: number;
+        d: number;
+        k: number;
+      };
+      d: {
+        [index: string]: number;
+        f: number;
+        c: number;
+        p: number;
+        e: number;
+        d: number;
+        k: number;
+      };
+      s: {
+        [index: string]: number;
+        f: number;
+        c: number;
+        p: number;
+        e: number;
+        d: number;
+        k: number;
+      };
+    }
+    let totals: Totals = {
+      b: {
         f: 0,
         c: 0,
         k: 0,
@@ -33,7 +85,7 @@ const MealChart = ({ data }) => {
         p: 0,
         e: 0,
       },
-      Lunch: {
+      l: {
         f: 0,
         c: 0,
         k: 0,
@@ -41,7 +93,7 @@ const MealChart = ({ data }) => {
         p: 0,
         e: 0,
       },
-      Dinner: {
+      d: {
         f: 0,
         c: 0,
         k: 0,
@@ -49,7 +101,7 @@ const MealChart = ({ data }) => {
         p: 0,
         e: 0,
       },
-      Snacks: {
+      s: {
         f: 0,
         c: 0,
         k: 0,
@@ -83,10 +135,10 @@ const MealChart = ({ data }) => {
           {
             label: 'Meal Breakdown',
             data: [
-              (totals.Breakfast[target] / entryCount).toFixed(2),
-              (totals.Lunch[target] / entryCount).toFixed(2),
-              (totals.Dinner[target] / entryCount).toFixed(2),
-              (totals.Snacks[target] / entryCount).toFixed(2),
+              (totals.b[target] / entryCount).toFixed(2),
+              (totals.l[target] / entryCount).toFixed(2),
+              (totals.d[target] / entryCount).toFixed(2),
+              (totals.s[target] / entryCount).toFixed(2),
             ],
             backgroundColor: ['#ffa053', '#ff5387', '#53a3ff', '#53f9ff'],
             borderWidth: 2,
@@ -121,8 +173,8 @@ const MealChart = ({ data }) => {
     },
   };
 
-  const toggleTarget = (e) => {
-    switch (e.target.innerText) {
+  const toggleTarget = (e: React.MouseEvent) => {
+    switch ((e.target as HTMLElement).innerText) {
       case OPTIONS.e:
         setTarget('e');
         break;
@@ -141,13 +193,15 @@ const MealChart = ({ data }) => {
       case OPTIONS.p:
         setTarget('p');
         break;
-      case OPTIONS.w:
-        setTarget('w');
-        break;
+      // case OPTIONS.w:
+      //   setTarget('w');
+      //   break;
       default:
         break;
     }
   };
+
+  console.log(data);
 
   const renderOptions = () => {
     // pull the keys from the TITLES obj to an array to allow indexing
@@ -162,7 +216,7 @@ const MealChart = ({ data }) => {
     });
 
     // assemble the option rows and tag each option as either even or odd for styling purposes
-    let array = [];
+    let array: JSX.Element[] = [];
 
     keys.forEach((key) => {
       let styling;
@@ -222,8 +276,16 @@ const MealChart = ({ data }) => {
   );
 };
 
-const mapStateToProps = createStructuredSelector({
+interface Selectors {
+  data: any;
+}
+
+const mapStateToProps = createStructuredSelector<RootState, Selectors>({
   data: selectMetricsData,
 });
 
-export default connect(mapStateToProps, null)(MealChart);
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default connector(MealChart);

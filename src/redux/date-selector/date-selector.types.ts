@@ -29,11 +29,11 @@ export interface Entry {
   m: {
     [index: string]: any;
     f: number;
-    c: number;
+    c: number | null;
     p: number;
     e: number;
     d: number;
-    k: number;
+    k: number | null;
   };
   g: {
     s: {

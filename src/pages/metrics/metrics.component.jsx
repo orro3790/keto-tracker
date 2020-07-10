@@ -38,9 +38,7 @@ const Metrics = ({ userId, data, setMetricsData }) => {
             <TotalsChart />
           </div>
           <div className='bottom-r'>
-            <div className='bottom-c-1'>
-              <GoalHitChart />
-            </div>
+            <div className='bottom-c-1'>{/* <GoalHitChart /> */}</div>
             <div className='bottom-c-2'>
               <MealChart />
             </div>

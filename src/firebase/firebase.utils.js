@@ -773,10 +773,10 @@ export const updateMetricsData = async (userId, membership) => {
         }
 
         monthlyData[month][date] = {
-          Breakfast: data.entry.Breakfast.totals,
-          Lunch: data.entry.Lunch.totals,
-          Dinner: data.entry.Dinner.totals,
-          Snacks: data.entry.Snacks.totals,
+          b: data.entry.b.t,
+          l: data.entry.l.t,
+          d: data.entry.d.t,
+          s: data.entry.s.t,
           m: data.entry.m,
           water: data.entry.w,
           g: data.entry.g,
@@ -827,10 +827,10 @@ export const updateMetricsData = async (userId, membership) => {
         }
 
         monthlyData[month][date] = {
-          Breakfast: data.entry.Breakfast.totals,
-          Lunch: data.entry.Lunch.totals,
-          Dinner: data.entry.Dinner.totals,
-          Snacks: data.entry.Snacks.totals,
+          b: data.entry.b.t,
+          l: data.entry.l.t,
+          d: data.entry.d.t,
+          s: data.entry.s.t,
           m: data.entry.m,
           water: data.entry.w,
           g: data.entry.g,
