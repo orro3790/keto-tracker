@@ -778,7 +778,7 @@ export const updateMetricsData = async (userId, membership) => {
           d: data.entry.d.t,
           s: data.entry.s.t,
           m: data.entry.m,
-          water: data.entry.w,
+          w: data.entry.w,
           g: data.entry.g,
         };
       });
@@ -832,7 +832,7 @@ export const updateMetricsData = async (userId, membership) => {
           d: data.entry.d.t,
           s: data.entry.s.t,
           m: data.entry.m,
-          water: data.entry.w,
+          w: data.entry.w,
           g: data.entry.g,
         };
       });

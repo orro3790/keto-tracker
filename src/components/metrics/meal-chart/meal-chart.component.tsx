@@ -9,23 +9,34 @@ import { BsQuestionSquareFill } from 'react-icons/bs';
 import './meal-chart.styles.scss';
 import Tippy from '@tippyjs/react';
 import { RootState } from '../../../redux/root-reducer';
+import * as TMetrics from '../../../redux/metrics/metrics.types';
 
 type Props = PropsFromRedux;
 
+// Define the possible macro keys
+type MacroKeys = 'f' | 'c' | 'k' | 'd' | 'p' | 'e';
+
+// Define the possible meal keys
+type MealKeys = 'b' | 'l' | 'd' | 's';
+
+// Define the shape of the totals object, used to sum each respective macro
+type Totals = {
+  [K in MealKeys]: TMetrics.Macros;
+};
+
+// Define the shape of the Options object which will handle mapping macro keys to chart title displayed in UI
+interface Options {
+  f: 'Average Fats (g)';
+  c: 'Average Carbs (g)';
+  k: 'Average Net Carbs (g)';
+  d: 'Average Fibre (g)';
+  p: 'Average Protein (g)';
+  e: 'Average Calories';
+}
+
 const MealChart = ({ data }: Props) => {
   const [chartData, setChartData] = useState({});
-  const [target, setTarget] = useState('e');
-
-  // Define the keys and their corresponding titles
-  interface Options {
-    [index: string]: string;
-    f: 'Average Fats (g)';
-    c: 'Average Carbs (g)';
-    k: 'Average Net Carbs (g)';
-    d: 'Average Fibre (g)';
-    p: 'Average Protein (g)';
-    e: 'Average Calories';
-  }
+  const [target, setTarget] = useState<MacroKeys>('e');
 
   const OPTIONS: Options = {
     f: 'Average Fats (g)',
@@ -37,118 +48,81 @@ const MealChart = ({ data }: Props) => {
   };
 
   useEffect(() => {
-    interface Totals {
-      [index: string]: any;
-      b: {
-        [index: string]: number;
-        f: number;
-        c: number;
-        p: number;
-        e: number;
-        d: number;
-        k: number;
+    if (data !== '') {
+      let totals: Totals = {
+        b: {
+          f: 0,
+          c: 0,
+          k: 0,
+          d: 0,
+          p: 0,
+          e: 0,
+        },
+        l: {
+          f: 0,
+          c: 0,
+          k: 0,
+          d: 0,
+          p: 0,
+          e: 0,
+        },
+        d: {
+          f: 0,
+          c: 0,
+          k: 0,
+          d: 0,
+          p: 0,
+          e: 0,
+        },
+        s: {
+          f: 0,
+          c: 0,
+          k: 0,
+          d: 0,
+          p: 0,
+          e: 0,
+        },
       };
-      l: {
-        [index: string]: number;
-        f: number;
-        c: number;
-        p: number;
-        e: number;
-        d: number;
-        k: number;
-      };
-      d: {
-        [index: string]: number;
-        f: number;
-        c: number;
-        p: number;
-        e: number;
-        d: number;
-        k: number;
-      };
-      s: {
-        [index: string]: number;
-        f: number;
-        c: number;
-        p: number;
-        e: number;
-        d: number;
-        k: number;
-      };
-    }
-    let totals: Totals = {
-      b: {
-        f: 0,
-        c: 0,
-        k: 0,
-        d: 0,
-        p: 0,
-        e: 0,
-      },
-      l: {
-        f: 0,
-        c: 0,
-        k: 0,
-        d: 0,
-        p: 0,
-        e: 0,
-      },
-      d: {
-        f: 0,
-        c: 0,
-        k: 0,
-        d: 0,
-        p: 0,
-        e: 0,
-      },
-      s: {
-        f: 0,
-        c: 0,
-        k: 0,
-        d: 0,
-        p: 0,
-        e: 0,
-      },
-    };
 
-    let entryCount = 1;
+      let entryCount = 1;
 
-    Object.keys(data).forEach((month) => {
-      Object.keys(data[month]).forEach((date) => {
-        Object.keys(totals).forEach((key) => {
-          totals[key].f += parseFloat(data[month][date][key].f);
-          totals[key].c += parseFloat(data[month][date][key].c);
-          totals[key].k += parseFloat(data[month][date][key].k);
-          totals[key].d += parseFloat(data[month][date][key].d);
-          totals[key].p += parseFloat(data[month][date][key].p);
-          totals[key].e += parseFloat(data[month][date][key].e);
+      Object.keys(data).forEach((month) => {
+        Object.keys(data[month]).forEach((date) => {
+          Object.keys(totals).forEach((key) => {
+            totals[key as MealKeys].f += data[month][date][key as MealKeys].f;
+            totals[key as MealKeys].c += data[month][date][key as MealKeys].c;
+            totals[key as MealKeys].k += data[month][date][key as MealKeys].k;
+            totals[key as MealKeys].d += data[month][date][key as MealKeys].d;
+            totals[key as MealKeys].p += data[month][date][key as MealKeys].p;
+            totals[key as MealKeys].e += data[month][date][key as MealKeys].e;
+          });
+          // Keep count of how many dates are processed, for calculating the averages
+          entryCount += 1;
         });
-        // Keep count of how many dates are processed, for calculating the averages
-        entryCount += 1;
       });
-    });
 
-    const chartPerformance = () => {
-      setChartData({
-        labels: ['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
-        datasets: [
-          {
-            label: 'Meal Breakdown',
-            data: [
-              (totals.b[target] / entryCount).toFixed(2),
-              (totals.l[target] / entryCount).toFixed(2),
-              (totals.d[target] / entryCount).toFixed(2),
-              (totals.s[target] / entryCount).toFixed(2),
-            ],
-            backgroundColor: ['#ffa053', '#ff5387', '#53a3ff', '#53f9ff'],
-            borderWidth: 2,
-            borderColor: '#2e2e2e',
-          },
-        ],
-      });
-    };
+      const chartPerformance = () => {
+        setChartData({
+          labels: ['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
+          datasets: [
+            {
+              label: 'Meal Breakdown',
+              data: [
+                (totals.b[target] / entryCount).toFixed(2),
+                (totals.l[target] / entryCount).toFixed(2),
+                (totals.d[target] / entryCount).toFixed(2),
+                (totals.s[target] / entryCount).toFixed(2),
+              ],
+              backgroundColor: ['#ffa053', '#ff5387', '#53a3ff', '#53f9ff'],
+              borderWidth: 2,
+              borderColor: '#2e2e2e',
+            },
+          ],
+        });
+      };
 
-    chartPerformance();
+      chartPerformance();
+    }
   }, [data, target]);
 
   const options = {
@@ -201,8 +175,6 @@ const MealChart = ({ data }: Props) => {
     }
   };
 
-  console.log(data);
-
   const renderOptions = () => {
     // pull the keys from the TITLES obj to an array to allow indexing
     let keys = Object.keys(OPTIONS);
@@ -226,14 +198,20 @@ const MealChart = ({ data }: Props) => {
         styling = 'opt liOdd';
       }
       array.push(
-        <li key={OPTIONS[key]} className={styling} onClick={toggleTarget}>
-          {OPTIONS[key]}
+        <li
+          key={OPTIONS[key as MacroKeys]}
+          className={styling}
+          onClick={toggleTarget}
+        >
+          {OPTIONS[key as MacroKeys]}
         </li>
       );
     });
 
     return array;
   };
+
+  console.log(data);
 
   return (
     <div className='outer-chart-c'>
@@ -277,7 +255,7 @@ const MealChart = ({ data }: Props) => {
 };
 
 interface Selectors {
-  data: any;
+  data: TMetrics.Data | '';
 }
 
 const mapStateToProps = createStructuredSelector<RootState, Selectors>({
