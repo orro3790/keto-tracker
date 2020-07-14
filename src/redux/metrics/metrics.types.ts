@@ -19,6 +19,9 @@ export interface Goal {
   w: number | null;
 }
 
+// Define the Goal object's keys, used primarily for indexing in forEach blocks
+export type GoalKeys = 'f' | 'c' | 'p' | 'e' | 'd' | 'k' | 'w';
+
 // Define the shape of an individual date within the monthly data object
 export interface Datum {
   b: Macros;
