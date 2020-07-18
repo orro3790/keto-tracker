@@ -12,6 +12,12 @@ import './totals-chart.styles.scss';
 const TotalsChart = ({ data, waterSettings }) => {
   const [chartData, setChartData] = useState({});
   const [targetGoal, setTargetGoal] = useState('e');
+  const UNITS = {
+    c: 'cups',
+    m: 'ml',
+    o: 'oz',
+  };
+
   // Define the keys and their corresponding titles
   const OPTIONS = {
     f: 'Total Fats (g)',
@@ -20,7 +26,7 @@ const TotalsChart = ({ data, waterSettings }) => {
     k: 'Total Net Carbs (g)',
     p: 'Total Protein (g)',
     e: 'Total Calories (g)',
-    w: `Total Water (${waterSettings.u})`,
+    w: `Total Water (${UNITS[waterSettings.u]})`,
   };
 
   useEffect(() => {
@@ -37,11 +43,11 @@ const TotalsChart = ({ data, waterSettings }) => {
         Object.keys(data[month]).forEach((date) => {
           // convert units if necessary
           switch (waterSettings.u) {
-            case 'mL':
+            case 'm':
               chartComponents.data.push(data[month][date].w.t);
               chartComponents.goal.push(data[month][date].g.s.w);
               break;
-            case 'cups':
+            case 'c':
               chartComponents.data.push(
                 parseFloat((data[month][date].w.t / 250).toFixed(2))
               );
@@ -49,7 +55,7 @@ const TotalsChart = ({ data, waterSettings }) => {
                 parseFloat((data[month][date].g.s.w / 250).toFixed(2))
               );
               break;
-            case 'oz':
+            case 'o':
               chartComponents.data.push(
                 parseFloat((data[month][date].w.t / 29.5735).toFixed(2))
               );

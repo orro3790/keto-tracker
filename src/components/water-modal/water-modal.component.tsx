@@ -95,7 +95,7 @@ const WaterModal = ({
           alertMsg: string,
           icon: string,
           conversion: number;
-        let negIntake = true;
+        let negIntake = false;
 
         // determine add or remove ==> handle conversion to totalMl ==>  calculate remainder for alerts
 
@@ -144,6 +144,8 @@ const WaterModal = ({
           remainder = waterSettings?.g! - totalMl;
         };
 
+        console.log(`totalML: ${totalMl}, negIntake: ${negIntake}`);
+
         switch (waterSettings?.u) {
           case 'm':
             calculateRemainder();
@@ -166,7 +168,7 @@ const WaterModal = ({
               icon = 'goal-reached';
             }
             // alert: negative daily water intake
-            if (negIntake === true) {
+            if (!negIntake) {
               alertMsg = `${waterSettings.g!.toFixed(
                 0
               )} mL to go to reach your goal today.`;
@@ -241,7 +243,7 @@ const WaterModal = ({
               icon = 'goal-reached';
             }
             // alert: negative values
-            else if (negIntake === true) {
+            else if (negIntake) {
               alertMsg = `${(waterSettings.g! / 29.5735).toFixed(
                 2
               )} oz to go to hit your water goal today.`;

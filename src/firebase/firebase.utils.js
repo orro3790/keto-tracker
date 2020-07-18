@@ -879,7 +879,7 @@ export const dateWriteable = (date) => {
   let deltaTime = today - date;
   let deltaDays = Math.abs(deltaTime / (1000 * 3600 * 24));
 
-  if (deltaDays <= 20) {
+  if (deltaDays <= 7) {
     return true;
   } else {
     return false;

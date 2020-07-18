@@ -158,11 +158,9 @@ const GoalHitChart = ({ data, carbSettings }: Props) => {
       const chartPerformance = () => {
         let labels;
 
-        if (carbSettings === 'n') {
-          labels = ['Fats', 'Net Carbs', 'Protein', 'Calories', 'Water'];
-        } else {
-          labels = ['Fats', 'Carbs', 'Protein', 'Calories', 'Water'];
-        }
+        labels = ['Fats', 'Carbs', 'Net Carbs', 'Protein', 'Calories', 'Water'];
+
+        console.log(goalCount);
 
         setChartData({
           labels: labels,
@@ -172,12 +170,14 @@ const GoalHitChart = ({ data, carbSettings }: Props) => {
               data: [
                 goalCount.f.hit,
                 goalCount.c.hit,
+                goalCount.k.hit,
                 goalCount.p.hit,
                 goalCount.e.hit,
                 goalCount.w.hit,
               ],
               backgroundColor: [
                 '#ffa053',
+                '#ff5387',
                 '#ff5387',
                 '#53a3ff',
                 '#fff',
@@ -191,6 +191,7 @@ const GoalHitChart = ({ data, carbSettings }: Props) => {
               data: [
                 goalCount.f.miss,
                 goalCount.c.miss,
+                goalCount.k.miss,
                 goalCount.p.miss,
                 goalCount.e.miss,
                 goalCount.w.miss,
